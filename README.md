@@ -44,4 +44,7 @@ Open up [http://localhost:3000](http://localhost:3000) and you should be ready t
 ## "Us" tools 🔨
 
 - [Trello](https://trello.com/invite/lakoe/ATTI52566ceb8c2448e8496c00ab3cf6b26c017FFA28) : See your ticketing here
+- [Figma Design](https://www.figma.com/file/V6ao7aamP8Nwph2KoHRR3X/Bakulan-Store?type=design&node-id=346%3A25727&mode=design&t=UFaZM6PCFbKUsF52-1) : See the project design here
+- [Database Schema](https://drive.google.com/file/d/1zU6LPC0zrnuYIHocus10BB2jbE5XuBxV/view) : See the project database schema here
 - [Prisma Builder](https://www.prismabuilder.io/) : Make prisma database schema easily
+- [Task Distribution](https://docs.google.com/spreadsheets/d/13ysbxGGYTZyGAqPBGwyTDPn95F_0iHl4u2WRIMd0WfU/edit?usp=sharing) : See your task distribution here
