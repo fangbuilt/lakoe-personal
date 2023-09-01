@@ -30,7 +30,7 @@ DATABASE_URL="postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE?schema=public"
 Push schema to your database (migrating schema to your database) :
 
 ```sh
-npx migrate db push
+npx prisma migrate dev
 ```
 
 Afterwards, start the Remix development server like so:
