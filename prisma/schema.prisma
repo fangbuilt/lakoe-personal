@@ -11,236 +11,237 @@ datasource db {
 }
 
 // your beautiful schema goes below :
-model user {
-  id           String         @id @unique @default(uuid())
+model User {
+  id           String       @id @unique @default(uuid())
   name         String
-  phone        String         @unique
+  email        String       @unique
+  phone        String       @unique
   password     String
-  role_id      role?         @relation(fields: [rolesId], references: [id])
-  profile_id   profile?
-  rolesId      String?
+  rolesId      Role?        @relation(fields: [role_id], references: [id])
+  profile_id   Profile?
+  role_id      String?
   users_stores user_store[]
-  carts        cart[]
-  cart_items   cart_item[]
-  invoices     invoice[]
-  payments     payment[]
+  carts        Cart[]
+  cart_items   Cart_Item[]
+  invoices     Invoice[]
+  payments     Payment[]
 
   @@map("users")
 }
 
-model role {
-  id    String  @id @unique @default(uuid())
+model Role {
+  id    String @id @unique @default(uuid())
   name  String
-  users user[]
+  users User[]
 
   @@map("roles")
 }
 
-model profile {
-  id        String      @id @unique @default(uuid())
+model Profile {
+  id        String     @id @unique @default(uuid())
   locations String
-  user_id   user?      @relation(fields: [usersId], references: [id])
-  usersId   String? @unique
-  location location[]
+  usersId   User?      @relation(fields: [user_id], references: [id])
+  user_id   String?    @unique
+  location  Location[]
 
   @@map("profiles")
 }
 
-model store {
-  id                    String                  @id @unique @default(uuid())
+model Store {
+  id                    String                @id @unique @default(uuid())
   name                  String
   slogan                String?
   description           String
   domain                String
   logo_attachment       String?
   banner_attachment     String?
-  decorations           decoration?
+  decorations           Decoration?
   users_stores          user_store[]
-  stores_on_decorations store_on_decoration[]
-  operation_hours       operation_hour[]
-  message_templates     message_template[]
-  locations             location[]
-  products              product[]
-  categories            category[]
-  carts                 cart[]
-  cart_items            cart_item[]
+  stores_on_decorations Store_On_Decoration[]
+  operation_hours       Operation_Hour[]
+  message_templates     Message_Template[]
+  locations             Location[]
+  products              Product[]
+  categories            Category[]
+  carts                 Cart[]
+  cart_items            Cart_Item[]
 
-@@map("stores")
+  @@map("stores")
 }
 
 model user_store {
   id       String  @id @unique @default(uuid())
-  user_id  user?  @relation(fields: [usersId], references: [id])
-  store_id store? @relation(fields: [storesId], references: [id])
-  usersId  String?
-  storesId String?
+  usersId  User?   @relation(fields: [user_id], references: [id])
+  storesId Store?  @relation(fields: [store_id], references: [id])
+  user_id  String?
+  store_id String?
 
   @@map("users_stores")
 }
 
-model decoration {
-  id                    String                  @id @unique @default(uuid())
+model Decoration {
+  id                    String                @id @unique @default(uuid())
   type                  String
-  stores                store?                 @relation(fields: [storesId], references: [id])
-  storesId              String? @unique
-  stores_on_decorations store_on_decoration[]
+  storesId                Store?                @relation(fields: [store_id], references: [id])
+  store_id              String?               @unique
+  stores_on_decorations Store_On_Decoration[]
 
   @@map("decorations")
 }
 
-model store_on_decoration {
+model Store_On_Decoration {
   id            String      @id @unique @default(uuid())
-  decoration_id decoration? @relation(fields: [decorationId], references: [id])
-  store_id      store?     @relation(fields: [storesId], references: [id])
-  decorationId  String?
-  storesId      String?
+  decorationId Decoration? @relation(fields: [decoration_id], references: [id])
+  storesId      Store?      @relation(fields: [store_id], references: [id])
+  decoration_id  String?
+  store_id      String?
 
   @@map("stores_on_decorations")
 }
 
-model operation_hour {
+model Operation_Hour {
   id       String   @id @unique @default(uuid())
   day      String
   open_at  DateTime
   close_at DateTime
   is_off   Boolean?
-  store_id store?  @relation(fields: [storesId], references: [id])
-  storesId String?
+  storesId Store?   @relation(fields: [store_id], references: [id])
+  store_id String?
 
   @@map("operation_hours")
 }
 
-model message_template {
+model Message_Template {
   id       String  @id @unique @default(uuid())
   name     String
   content  String
-  store_id store? @relation(fields: [storesId], references: [id])
-  storesId String?
+  storesId Store?  @relation(fields: [store_id], references: [id])
+  store_id String?
 
   @@map("message_templates")
 }
 
-model location {
-  id               String    @id @unique @default(uuid())
+model Location {
+  id               String   @id @unique @default(uuid())
   name             String
   address          String
   postal_code      String
   city_district    String
   latitude         String
   longtitude       String
-  store_id         store?   @relation(fields: [storesId], references: [id])
-  profile_id       profile? @relation(fields: [profilesId], references: [id])
+  storesId         Store?   @relation(fields: [store_id], references: [id])
+  profilesId       Profile? @relation(fields: [profile_id], references: [id])
   is_main_location Boolean
-  storesId         String?
-  profilesId       String?
+  store_id         String?
+  profile_id       String?
 
   @@map("locations")
 }
 
-model product {
-  id                     String                   @id @unique @default(uuid())
+model Product {
+  id                     String                @id @unique @default(uuid())
   name                   String
   description            String
   attachments            String
-  is_active              Boolean                  @default(true)
+  is_active              Boolean               @default(true)
   variants               String
   size                   String[]
   minumum_order          Int
-  store_id               store?                  @relation(fields: [storesId], references: [id])
-  storesId               String?
-  variant               variant[]
-  products_on_categories product_on_category[]
-  cart_items             cart_item[]
+  storesId               Store?                @relation(fields: [store_id], references: [id])
+  store_id               String?
+  variant                Variant[]
+  products_on_categories Product_On_Category[]
+  cart_items             Cart_Item[]
 
   @@map("products")
 }
 
-model variant {
-  id              String            @id @unique @default(uuid())
+model Variant {
+  id              String           @id @unique @default(uuid())
   name            String
   is_active       Boolean
-  product_id      product?         @relation(fields: [productsId], references: [id])
-  productsId      String?
-  variant_options variant_option[]
+  productsId      Product?         @relation(fields: [product_id], references: [id])
+  product_id      String?
+  variant_options Variant_Option[]
 
   @@map("variants")
 }
 
-model variant_option {
-  id                    String                  @id @unique @default(uuid())
+model Variant_Option {
+  id                    String                 @id @unique @default(uuid())
   name                  String
-  variant_id            variant?               @relation(fields: [variantsId], references: [id])
-  variantsId            String?
-  variant_option_values variant_option_value[]
+  variantsId            Variant?               @relation(fields: [variant_id], references: [id])
+  variant_id            String?
+  variant_option_values Variant_Option_Value[]
 
   @@map("variant_options")
 }
 
-model variant_option_value {
-  id                String           @id @unique @default(uuid())
-  variant_option_id variant_option? @relation(fields: [variant_optionsId], references: [id])
-  sku               String
-  weight            Float
-  stock             Int
-  price             Float
-  is_active         Boolean          @default(true)
-  variant_optionsId String?
+model Variant_Option_Value {
+  id                 String          @id @unique @default(uuid())
+  variant_optionId   Variant_Option? @relation(fields: [variant_options_id], references: [id])
+  sku                String
+  weight             Float
+  stock              Int
+  price              Float
+  is_active          Boolean         @default(true)
+  variant_options_id String?
 
   @@map("variant_option_values")
 }
 
-model category {
-  id                     String                   @id @unique @default(uuid())
+model Category {
+  id                     String                @id @unique @default(uuid())
   name                   String
-  store_id               store?                  @relation(fields: [storesId], references: [id])
-  storesId               String?
-  products_on_categories product_on_category[]
+  storeId               Store?                @relation(fields: [store_id], references: [id])
+  store_id               String?
+  products_on_categories Product_On_Category[]
 
   @@map("categories")
 }
 
-model product_on_category {
-  id           String      @id @unique @default(uuid())
-  product_id   product?   @relation(fields: [productsId], references: [id])
-  category_id  category? @relation(fields: [categoriesId], references: [id])
-  productsId   String?
-  categoriesId String?
+model Product_On_Category {
+  id           String    @id @unique @default(uuid())
+  productsId   Product?  @relation(fields: [product_id], references: [id])
+  categoriesId Category? @relation(fields: [category_id], references: [id])
+  product_id   String?
+  category_id  String?
 
   @@map("products_on_categories")
 }
 
-model cart {
-  id         String       @id @unique @default(uuid())
+model Cart {
+  id         String      @id @unique @default(uuid())
   prices     Float
   discount   Float
-  user_id    user?       @relation(fields: [usersId], references: [id])
-  store_id   store?      @relation(fields: [storesId], references: [id])
-  usersId    String?
-  storesId   String?
-  cart_items cart_item[]
-  invoices   invoice[]
+  userId     User?       @relation(fields: [users_id], references: [id])
+  storeId    Store?      @relation(fields: [store_id], references: [id])
+  users_id   String?
+  store_id   String?
+  cart_items Cart_Item[]
+  invoices   Invoice[]
 
   @@map("carts")
 }
 
-model cart_item {
-  id         String    @id @unique @default(uuid())
+model Cart_Item {
+  id         String   @id @unique @default(uuid())
   qty        Int
   price      Float
-  product_id product? @relation(fields: [productsId], references: [id])
-  cart_id    cart?    @relation(fields: [cartsId], references: [id])
-  user_id    user?    @relation(fields: [usersId], references: [id])
-  store_id   store?   @relation(fields: [storesId], references: [id])
-  productsId String?
-  cartsId    String?
-  usersId    String?
-  storesId   String?
+  productId  Product? @relation(fields: [product_id], references: [id])
+  cartId     Cart?    @relation(fields: [cart_id], references: [id])
+  userId     User?    @relation(fields: [user_id], references: [id])
+  storeId    Store?   @relation(fields: [store_id], references: [id])
+  product_id String?
+  cart_id    String?
+  user_id    String?
+  store_id   String?
 
   @@map("cart_items")
 }
 
-model invoice {
-  id                  String    @id @unique @default(uuid())
+model Invoice {
+  id                  String   @id @unique @default(uuid())
   prices              Float
   discount            Float
   status              String
@@ -251,40 +252,41 @@ model invoice {
   receiver_address    String
   receiver_name       String
   invoice_number      String
-  cart_id             cart?    @relation(fields: [cartsId], references: [id])
-  payment_id          payment? @relation(fields: [paymentsId], references: [id])
-  courier_id          courier?
-  user_id             user?    @relation(fields: [usersId], references: [id])
-  cartsId             String?
-  paymentsId          String? @unique
-  usersId             String?
+  cartId              Cart?    @relation(fields: [cart_id], references: [id], map: "invoice_cart_fk")
+  paymentId           Payment? @relation(fields: [payment_id], references: [id], map: "invoice_payment_fk")
+  courierId           Courier? @relation(fields: [courier_id], references: [id], map: "invoice_courier_fk")
+  userId              User?    @relation(fields: [user_id], references: [id], map: "invoice_user_fk")
+  cart_id             String?  @unique(map: "invoice_cart_id_unique")
+  payment_id          String?  @unique(map: "invoice_payment_id_unique")
+  courier_id          String?  @unique(map: "invoice_courier_id_unique")
+  user_id             String?  @unique(map: "invoice_user_id_unique")
 
   @@map("invoices")
 }
 
-model payment {
-  id         String    @id @unique @default(uuid())
+model Payment {
+  id         String   @id @unique @default(uuid())
   bank       String
   va_number  String
   amount     Float
   order_id   Int?
   status     String
-  invoice_id invoice?
-  user_id    user?    @relation(fields: [usersId], references: [id])
+  invoice_id Invoice?
+  user_id    User?    @relation(fields: [usersId], references: [id])
   usersId    String?
 
   @@map("payments")
 }
 
-model courier {
+model Courier {
   id                   String    @id @unique @default(uuid())
   courier_code         String
   courier_service_name String
   courier_service_code String
   price                Float
-  invoice_id           invoice? @relation(fields: [invoicesId], references: [id])
-  invoicesId           String? @unique
+  invoices             Invoice[]
 
   @@map("couriers")
 }
+
 
