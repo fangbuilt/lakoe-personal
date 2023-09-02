@@ -12,7 +12,7 @@ import {
 import { useLocation, useNavigate } from '@remix-run/react';
 import BagFilled from '~/assets/icon-pack/bag-filled.svg';
 import BagOutline from '~/assets/icon-pack/bag-outline.svg';
-import BoxFiled from '~/assets/icon-pack/box-filled.svg';
+import BoxFilled from '~/assets/icon-pack/box-filled.svg';
 import BoxOutline from '~/assets/icon-pack/box-outline.svg';
 import HomeFilled from '~/assets/icon-pack/home-filled.svg';
 import HomeOutline from '~/assets/icon-pack/home-outline.svg';
@@ -20,14 +20,21 @@ import SettingFilled from '~/assets/icon-pack/setting-filled.svg';
 import SettingOutline from '~/assets/icon-pack/setting-outline.svg';
 import ActiveDot from '~/assets/icon-pack/active-dot.svg';
 import InactiveDot from '~/assets/icon-pack/inactive-dot.svg';
+import ProfileFilled from '~/assets/icon-pack/profile-filled.svg';
+import ProfileOutline from '~/assets/icon-pack/profile-outline.svg';
 
 export function LeftNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
-    <Flex direction={'column'} h={'100vh'} gap={5}>
-      <Stack px={5} mt={5}>
+    <Flex
+      direction={'column'}
+      h={'100vh'}
+      py={4}
+      justifyContent={'space-between'}
+    >
+      <Stack px={4}>
         <Button
           justifyContent={'left'}
           leftIcon={
@@ -38,7 +45,7 @@ export function LeftNavigation() {
             )
           }
           variant={location.pathname === '/dashboard' ? 'solid' : 'ghost'}
-          py={7}
+          py={6}
           onClick={() => navigate('/dashboard')}
           textColor={location.pathname === '/dashboard' ? '#0086B4' : 'unset'}
         >
@@ -54,7 +61,7 @@ export function LeftNavigation() {
             )
           }
           variant={location.pathname === '/order' ? 'solid' : 'ghost'}
-          py={7}
+          py={6}
           onClick={() => navigate('/order')}
           textColor={location.pathname === '/order' ? '#0086B4' : 'unset'}
         >
@@ -64,13 +71,13 @@ export function LeftNavigation() {
           justifyContent={'left'}
           leftIcon={
             location.pathname === '/product' ? (
-              <Image src={BoxFiled} />
+              <Image src={BoxFilled} />
             ) : (
               <Image src={BoxOutline} />
             )
           }
           variant={location.pathname === '/product' ? 'solid' : 'ghost'}
-          py={7}
+          py={6}
           onClick={() => navigate('/product')}
           textColor={location.pathname === '/product' ? '#0086B4' : 'unset'}
         >
@@ -99,7 +106,7 @@ export function LeftNavigation() {
                   ? 'solid'
                   : 'ghost'
               }
-              py={7}
+              py={6}
               textColor={
                 location.pathname.startsWith('/configuration')
                   ? '#0086B4'
@@ -126,7 +133,7 @@ export function LeftNavigation() {
                       ? 'solid'
                       : 'ghost'
                   }
-                  py={7}
+                  py={5}
                   onClick={() => navigate('/configuration/store_configuration')}
                   textColor={
                     location.pathname === '/configuration/store_configuration'
@@ -134,7 +141,7 @@ export function LeftNavigation() {
                       : 'unset'
                   }
                 >
-                  Pengaturan Toko
+                  Atur Toko
                 </Button>
                 <Button
                   justifyContent={'left'}
@@ -150,7 +157,7 @@ export function LeftNavigation() {
                       ? 'solid'
                       : 'ghost'
                   }
-                  py={7}
+                  py={5}
                   onClick={() => navigate('/configuration/shipment')}
                   textColor={
                     location.pathname === '/configuration/shipment'
@@ -174,7 +181,7 @@ export function LeftNavigation() {
                       ? 'solid'
                       : 'ghost'
                   }
-                  py={7}
+                  py={5}
                   onClick={() => navigate('/configuration/payment_method')}
                   textColor={
                     location.pathname === '/configuration/payment_method'
@@ -188,6 +195,25 @@ export function LeftNavigation() {
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
+      </Stack>
+
+      <Stack px={4} pb={'7.5vh'}>
+        <Button
+          justifyContent={'left'}
+          leftIcon={
+            location.pathname === '/profile' ? (
+              <Image src={ProfileFilled} />
+            ) : (
+              <Image src={ProfileOutline} />
+            )
+          }
+          variant={location.pathname === '/profile' ? 'solid' : 'ghost'}
+          py={6}
+          onClick={() => navigate('/profile')}
+          textColor={location.pathname === '/profile' ? '#0086B4' : 'unset'}
+        >
+          Profile
+        </Button>
       </Stack>
     </Flex>
   );
