@@ -48,25 +48,11 @@ export function LeftNavigation() {
           py={6}
           onClick={() => navigate('/dashboard')}
           textColor={location.pathname === '/dashboard' ? '#0086B4' : 'unset'}
+          fontWeight={location.pathname === '/dashboard' ? 'bold' : 'semibold'}
         >
           Dashboard
         </Button>
-        <Button
-          justifyContent={'left'}
-          leftIcon={
-            location.pathname === '/order' ? (
-              <Image src={BagFilled} />
-            ) : (
-              <Image src={BagOutline} />
-            )
-          }
-          variant={location.pathname === '/order' ? 'solid' : 'ghost'}
-          py={6}
-          onClick={() => navigate('/order')}
-          textColor={location.pathname === '/order' ? '#0086B4' : 'unset'}
-        >
-          Pesanan
-        </Button>
+
         <Button
           justifyContent={'left'}
           leftIcon={
@@ -80,8 +66,27 @@ export function LeftNavigation() {
           py={6}
           onClick={() => navigate('/product')}
           textColor={location.pathname === '/product' ? '#0086B4' : 'unset'}
+          fontWeight={location.pathname === '/product' ? 'bold' : 'semibold'}
         >
           Produk
+        </Button>
+
+        <Button
+          justifyContent={'left'}
+          leftIcon={
+            location.pathname === '/order' ? (
+              <Image src={BagFilled} />
+            ) : (
+              <Image src={BagOutline} />
+            )
+          }
+          variant={location.pathname === '/order' ? 'solid' : 'ghost'}
+          py={6}
+          onClick={() => navigate('/order')}
+          textColor={location.pathname === '/order' ? '#0086B4' : 'unset'}
+          fontWeight={location.pathname === '/order' ? 'bold' : 'semibold'}
+        >
+          Pesanan
         </Button>
 
         <Accordion
@@ -112,6 +117,11 @@ export function LeftNavigation() {
                   ? '#0086B4'
                   : 'unset'
               }
+              fontWeight={
+                location.pathname.startsWith('/configuration')
+                  ? 'bold'
+                  : 'semibold'
+              }
             >
               Pengaturan
               <AccordionIcon ms={'auto'} />
@@ -140,6 +150,11 @@ export function LeftNavigation() {
                       ? '#0086B4'
                       : 'unset'
                   }
+                  fontWeight={
+                    location.pathname === '/configuration/store_configuration'
+                      ? 'medium'
+                      : 'normal'
+                  }
                 >
                   Atur Toko
                 </Button>
@@ -163,6 +178,11 @@ export function LeftNavigation() {
                     location.pathname === '/configuration/shipment'
                       ? '#0086B4'
                       : 'unset'
+                  }
+                  fontWeight={
+                    location.pathname === '/configuration/shipment'
+                      ? 'medium'
+                      : 'normal'
                   }
                 >
                   Pengiriman
@@ -188,6 +208,11 @@ export function LeftNavigation() {
                       ? '#0086B4'
                       : 'unset'
                   }
+                  fontWeight={
+                    location.pathname === '/configuration/payment_method'
+                      ? 'medium'
+                      : 'normal'
+                  }
                 >
                   Metode Pembayaran
                 </Button>
@@ -211,6 +236,7 @@ export function LeftNavigation() {
           py={6}
           onClick={() => navigate('/profile')}
           textColor={location.pathname === '/profile' ? '#0086B4' : 'unset'}
+          fontWeight={location.pathname === '/profile' ? 'bold' : 'semibold'}
         >
           Profile
         </Button>
