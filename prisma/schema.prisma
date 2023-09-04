@@ -25,8 +25,8 @@ model User {
   cartItems   CartItem[]
   invoices    Invoice[]
   payments    Payment[]
-  createAt    DateTime    @default(now())
-  updateAt    DateTime    @default(now())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now())
 
   @@map("users")
 }
@@ -35,8 +35,8 @@ model Role {
   id       String   @id @unique @default(uuid())
   name     String
   users    User[]
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("roles")
 }
@@ -47,8 +47,8 @@ model Profile {
   user      User?      @relation(fields: [userId], references: [id])
   userId    String?    @unique
   location  Location[]
-  createAt  DateTime   @default(now())
-  updateAt  DateTime   @default(now())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now())
 
   @@map("profiles")
 }
@@ -70,8 +70,8 @@ model Store {
   categories        Category[]
   carts             Cart[]
   cartItems         CartItem[]
-  createAt          DateTime          @default(now())
-  updateAt          DateTime          @default(now())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now())
 
   @@map("stores")
 }
@@ -82,7 +82,7 @@ model UserStore {
   store    Store?   @relation(fields: [storeId], references: [id])
   userId   String?
   storeId  String?
-  createAt DateTime
+  createdAt DateTime
 
   @@map("users_stores")
 }
@@ -91,8 +91,8 @@ model Decoration {
   id                String            @id @unique @default(uuid())
   type              String
   storesdecorations StoreDecoration[]
-  createAt          DateTime          @default(now())
-  updateAt          DateTime          @default(now())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now())
 
   @@map("decorations")
 }
@@ -103,8 +103,8 @@ model StoreDecoration {
   store        Store?      @relation(fields: [storeId], references: [id])
   decorationId String?
   storeId      String?
-  createAt     DateTime    @default(now())
-  updateAt     DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now())
 
   @@map("stores_decorations")
 }
@@ -117,8 +117,8 @@ model OperationHour {
   isOff    Boolean?
   store    Store?   @relation(fields: [storeId], references: [id])
   storeId  String?
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("operation_hours")
 }
@@ -129,8 +129,8 @@ model MessageTemplate {
   content  String
   store    Store?   @relation(fields: [storeId], references: [id])
   storeId  String?
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("message_templates")
 }
@@ -148,8 +148,8 @@ model Location {
   isMainLocation Boolean
   storeId        String?
   profileId      String?
-  createAt       DateTime @default(now())
-  updateAt       DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
 
   @@map("locations")
 }
@@ -168,8 +168,8 @@ model Product {
   variant            Variant[]
   productsCategories ProductCategory[]
   cartItems          CartItem[]
-  createAt           DateTime          @default(now())
-  updateAt           DateTime          @default(now())
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @default(now())
 
   @@map("products")
 }
@@ -181,8 +181,8 @@ model Variant {
   product        Product?        @relation(fields: [productId], references: [id])
   productId      String?
   variantOptions VariantOption[]
-  createAt       DateTime        @default(now())
-  updateAt       DateTime        @default(now())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @default(now())
 
   @@map("variants")
 }
@@ -193,8 +193,8 @@ model VariantOption {
   variant             Variant?             @relation(fields: [variantId], references: [id])
   variantId           String?
   variantOptionValues VariantOptionValue[]
-  createAt            DateTime             @default(now())
-  updateAt            DateTime             @default(now())
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @default(now())
 
   @@map("variant_options")
 }
@@ -208,8 +208,8 @@ model VariantOptionValue {
   price            Float
   isActive         Boolean        @default(true)
   variantOptionsId String?
-  createAt         DateTime       @default(now())
-  updateAt         DateTime       @default(now())
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @default(now())
 
   @@map("variant_option_values")
 }
@@ -220,8 +220,8 @@ model Category {
   store              Store?            @relation(fields: [storeId], references: [id])
   storeId            String?
   productsCategories ProductCategory[]
-  createAt           DateTime          @default(now())
-  updateAt           DateTime          @default(now())
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @default(now())
 
   @@map("categories")
 }
@@ -232,8 +232,8 @@ model ProductCategory {
   categories Category? @relation(fields: [categoryId], references: [id])
   productId  String?
   categoryId String?
-  createAt   DateTime  @default(now())
-  updateAt   DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
 
   @@map("products_categories")
 }
@@ -248,8 +248,8 @@ model Cart {
   storeId   String?
   cartItems CartItem[]
   invoices  Invoice[]
-  createAt  DateTime   @default(now())
-  updateAt  DateTime   @default(now())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now())
 
   @@map("carts")
 }
@@ -266,8 +266,8 @@ model CartItem {
   cartId    String?
   userId    String?
   storeId   String?
-  createAt  DateTime @default(now())
-  updateAt  DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
 
   @@map("cart_items")
 }
@@ -293,8 +293,8 @@ model Invoice {
   courierId          String?  @unique(map: "invoice_courier_id_unique")
   userId             String?  @unique(map: "invoice_user_id_unique")
   invoiceHistory             InvoiceHistory[]
-  createAt           DateTime @default(now())
-  updateAt           DateTime @default(now())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @default(now())
 
   @@map("invoices")
 }
@@ -309,8 +309,8 @@ model Payment {
   user     User?    @relation(fields: [usersId], references: [id])
   usersId  String?
 
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("payments")
 }
@@ -323,8 +323,8 @@ model Courier {
   price              Float
   invoice            Invoice[]
 
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("couriers")
 }
@@ -334,8 +334,8 @@ model InvoiceHistory {
   status String
   invoice   Invoice? @relation(fields: [invoiceId], references: [id])
   invoiceId String?
-  createAt  DateTime @default(now())
-  updateAt  DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
 
   @@map("invoice_histories")
 }
