@@ -1,10 +1,13 @@
-import { Box, Button, Card, Image, Text } from "@chakra-ui/react";
+import { Box, Divider, Image, Text } from "@chakra-ui/react";
 import documentIcon from "~/assets/DetailOrderIcon/document.svg";
-import calender from "~/assets/DetailOrderIcon/calendar-2.svg"
-import barcode from "~/assets/DetailOrderIcon/barcode.svg"
-import copy from "~/assets/DetailOrderIcon/copy.svg"
-import profile from "~/assets/DetailOrderIcon/profile-circle.svg"
-import whatsapp from "~/assets/DetailOrderIcon/whatsapp.svg"
+import calender from "~/assets/DetailOrderIcon/calendar-2.svg";
+import barcode from "~/assets/DetailOrderIcon/barcode.svg";
+import copy from "~/assets/DetailOrderIcon/copy.svg";
+import profile from "~/assets/DetailOrderIcon/profile-circle.svg";
+import whatsapp from "~/assets/DetailOrderIcon/whatsapp.svg";
+import box from "~/assets/DetailOrderIcon/box.svg";
+import truck from "~/assets/DetailOrderIcon/truck-fast.svg";
+import wallet from "~/assets/DetailOrderIcon/wallet.svg";
 
 export default function StatusOrderDetail() {
   return (
@@ -17,71 +20,335 @@ export default function StatusOrderDetail() {
         margin={3}
       >
         <Text>Daftar Pesanan</Text>
-        <Card gap={3} padding={3} margin={3}>
-          <Box display={"flex"} gap={3}>
-            <Box>
-              <Image src={documentIcon} />
-            </Box>
-            <Box display={"flex"} flexDirection={"column"} gap={3}>
-              <Button width={"150px"} background={"yellow.400"}>
+        <Box
+          display={"flex"}
+          padding={`var(--3, 12px)var(--5, 20px)`}
+          gap={`var(--3, 12px)`}
+          borderRadius={`var(--rounded-lg, 12px)`}
+          background={`var(--gray-50, #FFF)`}
+        >
+          <Box>
+            <Image
+              height={"24px"}
+              width={"24px"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              src={documentIcon}
+            />
+          </Box>
+          <Box display={"flex"} flexDirection={"column"} gap={3}>
+            <Box
+              background={"yellow.400"}
+              display={"flex"}
+              height={"24px"}
+              padding={`var(--1, 4px) var(--2, 8px)`}
+              justifyContent={"center"}
+              alignItems={"center"}
+              gap={`var(--1, 4px)`}
+              borderRadius={`var(--rounded, 4px)`}
+              width={"150px"}
+            >
+              <Text
+                textAlign={"center"}
+                fontSize={"14px"}
+                fontWeight={"600"}
+                lineHeight={"15.5px"}
+              >
                 Belum Dibayar
-              </Button>
-              <Text>
-                Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
-                <Text as={"span"} fontWeight={"bold"}>
-                  {" "}
-                  10 Agustus 2023 - 00:00 WIB
-                </Text>
-                . Silahkan tunggu sampai pembayaran terkonfirmasi sebelum
-                mengirimkan barang.
               </Text>
-              <Text>Lihat RIwayat Pesanan</Text>
+            </Box>
+            <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
+              Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
+              <Text as={"span"} fontWeight={"700"}>
+                {" "}
+                10 Agustus 2023 - 00:00 WIB
+              </Text>
+              . Silahkan tunggu sampai pembayaran terkonfirmasi sebelum
+              mengirimkan barang.
+            </Text>
+            <Text>Lihat RIwayat Pesanan</Text>
+          </Box>
+        </Box>
+        <Box
+          display={"flex"}
+          padding={`var(--3, 12px)var(--5, 20px)`}
+          gap={`var(--3, 12px)`}
+          borderRadius={`var(--rounded-lg, 12px)`}
+          background={`var(--gray-50, #FFF)`}
+          flexDirection={"column"}
+        >
+          <Box display={"flex"} justifyContent={"space-between"}>
+            <Box display={"flex"} gap={3}>
+              <Image
+                height={"24px"}
+                width={"24px"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                src={calender}
+              />
+              <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
+                Tanggal
+              </Text>
+            </Box>
+            <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+              09 Agustus 2023 - 19:43 WIB
+            </Text>
+          </Box>
+          <Box display={"flex"} justifyContent={"space-between"}>
+            <Box display={"flex"} gap={3}>
+              <Image
+                height={"24px"}
+                width={"24px"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                src={barcode}
+              />
+              <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
+                Invoice
+              </Text>
+            </Box>
+            <Box display={"flex"} gap={3}>
+              <Image
+                height={"24px"}
+                width={"24px"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                src={copy}
+              />
+              <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+                INV/120983298470123740325
+              </Text>
             </Box>
           </Box>
-        </Card>
-        <Card gap={3} padding={3} margin={3}>
-          <Box display={"flex"} flexDirection={"column"} gap={3}>
-            <Box display={"flex"} justifyContent={"space-between"}>
-              <Box display={"flex"} gap={3}>
-                <Image src={calender} />
-                <Text>Tanggal</Text>
-              </Box>
-              <Text>09 Agustus 2023 - 19:43 WIB</Text>
+          <Box display={"flex"} justifyContent={"space-between"}>
+            <Box display={"flex"} gap={3}>
+              <Image
+                height={"24px"}
+                width={"24px"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                src={profile}
+              />
+              <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
+                Pembeli
+              </Text>
             </Box>
-            <Box display={"flex"} justifyContent={"space-between"}>
-              <Box display={"flex"} gap={3}>
-                <Image src={barcode} />
-                <Text>Invoice</Text>
-              </Box>
-              <Box display={"flex"} gap={3}>
-                <Image src={copy} />
-                <Text>INV 120983298470123740325</Text>
-              </Box>
-            </Box>
-            <Box display={"flex"} justifyContent={"space-between"}>
-              <Box display={"flex"} gap={3}>
-                <Image src={profile} />
-                <Text>Pembeli</Text>
-              </Box>
-              <Box display={"flex"} gap={3}>
-                <Box
-                  display={"flex"}
-                  width={"32px"}
-                  height={"32px"}
-                  padding={`var(--1, 4px)`}
+            <Box display={"flex"} gap={3} justifyContent={'center'} alignItems={'center'}>
+              <Box
+                display={"flex"}
+                width={"32px"}
+                height={"32px"}
+                padding={`var(--1, 4px)`}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={`var(--1, 4px)`}
+                borderRadius={`var(--rounded-full, 9999px)`}
+                background={`var(--green-800, #008F5D)`}
+              >
+                <Image
+                  height={"24px"}
+                  width={"24px"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                  gap={`var(--1, 4px)`}
-                  borderRadius={`var(--rounded-full, 9999px)`}
-                  background={`var(--green-800, #008F5D)`}
+                  src={whatsapp}
+                />
+              </Box>
+              <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+                Angga Ganteng
+              </Text>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          display={"flex"}
+          padding={`var(--3, 12px)var(--5, 20px)`}
+          gap={`var(--3, 12px)`}
+          borderRadius={`var(--rounded-lg, 12px)`}
+          background={`var(--gray-50, #FFF)`}
+        >
+          <Box>
+            <Image
+              height={"24px"}
+              width={"24px"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              src={box}
+            />
+          </Box>
+          <Box display={"flex"} flexDirection={"column"} gap={1}>
+            <Box>
+              <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
+                Detail Produk
+              </Text>
+            </Box>
+            <Box>
+              <Text>card produk</Text>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          display={"flex"}
+          padding={`var(--3, 12px)var(--5, 20px)`}
+          gap={`var(--3, 12px)`}
+          borderRadius={`var(--rounded-lg, 12px)`}
+          background={`var(--gray-50, #FFF)`}
+        >
+          <Box>
+            <Image
+              height={"24px"}
+              width={"24px"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              src={truck}
+            />
+          </Box>
+          <Box display={"flex"} flexDirection={"column"} gap={1}>
+            <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
+              Detail Pengiriman
+            </Text>
+            <Box display={"flex"}>
+              <Text
+                fontSize={"14px"}
+                fontWeight={"400"}
+                lineHeight={"20px"}
+                width={"192px"}
+              >
+                Kurir
+              </Text>
+              <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
+                J&T - Reguler
+              </Text>
+            </Box>
+            <Box display={"flex"}>
+              <Text
+                fontSize={"14px"}
+                fontWeight={"400"}
+                lineHeight={"20px"}
+                width={"192px"}
+              >
+                No. Resi
+              </Text>
+              <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
+                {" "}
+                -{" "}
+              </Text>
+            </Box>
+            <Box display={"flex"}>
+              <Text
+                fontSize={"14px"}
+                fontWeight={"400"}
+                lineHeight={"20px"}
+                width={"192px"}
+              >
+                Alamat
+              </Text>
+              <Box display={"flex"} flexDirection={"column"}>
+                <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+                  jln elang 4 sawah lama
+                </Text>
+                <Text
+                  color={`var(--text-gray, #909090)`}
+                  fontSize={"14px"}
+                  fontWeight={"400"}
+                  lineHeight={"20px"}
                 >
-                  <Image src={whatsapp}/>
-                </Box>
-                <Text>Angga Ganteng</Text>
+                  08298123128974213
+                </Text>
+                <Text
+                  color={`var(--text-gray, #909090)`}
+                  fontSize={"14px"}
+                  fontWeight={"400"}
+                  lineHeight={"20px"}
+                >
+                  Angga ganteng
+                </Text>
               </Box>
             </Box>
           </Box>
-        </Card>
+        </Box>
+        <Box
+          display={"flex"}
+          padding={`var(--3, 12px)var(--5, 20px)`}
+          gap={`var(--3, 12px)`}
+          borderRadius={`var(--rounded-lg, 12px)`}
+          background={`var(--gray-50, #FFF)`}
+        >
+          <Box>
+            <Image
+              height={"24px"}
+              width={"24px"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              src={wallet}
+            />
+          </Box>
+          <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+            <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
+              Rincian Pembayaran
+            </Text>
+            <Box display={"flex"} justifyContent={"space-between"}>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+                  Total Harga (1 barang)
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
+                  Rp180.000
+                </Text>
+              </Box>
+            </Box>
+            <Box display={"flex"} justifyContent={"space-between"}>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+                  Total Ongkos Kirim (10kg)
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
+                  Rp10.000
+                </Text>
+              </Box>
+            </Box>
+            <Box display={"flex"} justifyContent={"space-between"}>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+                  Diskon
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
+                  Rp0
+                </Text>
+              </Box>
+            </Box>
+            <Box display={"flex"} justifyContent={"space-between"}>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
+                  Biaya Layanan
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
+                  Rp0
+                </Text>
+              </Box>
+            </Box>
+            <Divider />
+            <Box display={"flex"} justifyContent={"space-between"}>
+              <Box>
+                <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"20px"}>
+                  Total Penjualan
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize={"18px"} fontWeight={"700"} lineHeight={"24px"}>
+                  Rp190.000
+                </Text>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </>
   );
