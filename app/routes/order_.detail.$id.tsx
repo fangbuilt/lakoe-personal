@@ -1,9 +1,12 @@
-import StatusOrderDetail from "~/modules/order/components/statusOrderDetail";
+import { ImplementGrid } from '~/layouts/Grid';
+import StatusOrderDetail from '~/modules/order/components/statusOrderDetail';
 
- export default function OrderDetailId() {
+export default function OrderDetailId() {
   return (
     <>
-    <StatusOrderDetail />
+      <ImplementGrid>
+        <StatusOrderDetail />
+      </ImplementGrid>
     </>
-  )
- }
+  );
+}

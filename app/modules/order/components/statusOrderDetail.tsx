@@ -1,6 +1,10 @@
 import {
   Box,
+  Card,
+  CardBody,
   Divider,
+  Flex,
+  Heading,
   Image,
   Step,
   StepDescription,
@@ -22,7 +26,11 @@ import truck from '~/assets/DetailOrderIcon/truck-fast.svg';
 import wallet from '~/assets/DetailOrderIcon/wallet.svg';
 import { useOrderDetalil } from '../hooks/useOrderDetail';
 import { BsCircleFill } from 'react-icons/bs';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+} from '@chakra-ui/icons';
 
 export default function StatusOrderDetail() {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
@@ -36,7 +44,12 @@ export default function StatusOrderDetail() {
         padding={3}
         margin={3}
       >
-        <Text>Daftar Pesanan</Text>
+        <Flex>
+          <Text color={'#0EADD7'}>Daftar Pesanan</Text>{' '}
+          <Text>
+            <ChevronRightIcon /> CREWNECK BASIC-BLACK...
+          </Text>
+        </Flex>
         <Box
           display={'flex'}
           padding={`var(--3, 12px)var(--5, 20px)`}
@@ -224,7 +237,7 @@ export default function StatusOrderDetail() {
                 />
               </Box>
               <Text fontSize={'14px'} fontWeight={'400'} lineHeight={'20px'}>
-                Angga Ganteng
+                Tes Dulu Nggak sih
               </Text>
             </Box>
           </Box>
@@ -252,7 +265,130 @@ export default function StatusOrderDetail() {
               </Text>
             </Box>
             <Box>
-              <Text>card produk</Text>
+              {/* <Box> */}
+              {/* {data.map((card) => ( */}
+              <Card
+                // key={card.id}
+                overflow="hidden"
+                variant="outline"
+                display={'flex'}
+                justifyContent={'space-between'}
+
+                // margin={"50px 5% 10px"}
+              >
+                {/* atas */}
+                {/* <Box
+                    display={"flex"}
+                    justifyContent={"space-between"}
+                    padding={"15px"}
+                  >
+                    <Box>
+                      <Button
+                        padding={"4px 8px"}
+                        borderRadius={"4px"}
+                        backgroundColor={"#E8C600"}
+                        fontSize={"14px"}
+                        fontWeight={"600"}
+                        size={"sm"}
+                        mb={2}
+                      >
+                        Belum dibayar
+                      </Button>
+
+                      <Text
+                        fontSize={"14px"}
+                        fontWeight={"500"}
+                        lineHeight={"16px"}
+                        color={"#909090"}
+                      >
+                        INV/20230809/MPL/00003432
+                      </Text>
+                    </Box>
+                    <Box
+                      display={"flex"}
+                      justifyContent={"center"}
+                      flexDirection={"column"}
+                    >
+                      <Button
+                        borderRadius={"15px"}
+                        padding={"4px 12px"}
+                        border={"1px solid #D5D5D5"}
+                        size={"sm"}
+                        bg={"transparent"}
+                      >
+                        Hubungi Penjual
+                      </Button>
+                    </Box>
+                  </Box> */}
+
+                <Divider w={'100%'} />
+
+                {/* bawah */}
+                <Box
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  padding={'15px'}
+                >
+                  <Box display={'flex'}>
+                    <Box
+                      display={'flex'}
+                      justifyContent={'center'}
+                      flexDirection={'column'}
+                    >
+                      <Image
+                        objectFit="cover"
+                        width={'52px'}
+                        height={'52px'}
+                        src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2xvdGhlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"
+                        alt="brown clothes"
+                        borderRadius={'8px'}
+                      />
+                    </Box>
+
+                    <Box>
+                      <CardBody>
+                        <Heading
+                          size="md"
+                          fontSize={'16px'}
+                          lineHeight={'20px'}
+                          fontWeight={'700'}
+                        >
+                          CREWNECK BASIC-BLACK | sweeter polos hodie polos
+                          crewneck - S
+                        </Heading>
+                        <Text
+                          py="2"
+                          fontSize={'14px'}
+                          color={'#909090'}
+                          lineHeight={'16px'}
+                        >
+                          2 Barang
+                        </Text>
+                      </CardBody>
+                    </Box>
+                  </Box>
+                  <Box
+                    justifyContent={'center'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    flex={'end'}
+                  >
+                    <Text
+                      fontSize={'14px'}
+                      fontWeight={'500'}
+                      color={'#909090'}
+                      lineHeight={'16px'}
+                    >
+                      Total Belanja
+                    </Text>
+                    <Text fontSize={'14px'} fontWeight={'700'}>
+                      190.000
+                    </Text>
+                  </Box>
+                </Box>
+              </Card>
+              {/* ))} */}
+              {/* </Box> */}
             </Box>
           </Box>
         </Box>
@@ -330,7 +466,7 @@ export default function StatusOrderDetail() {
                   fontWeight={'400'}
                   lineHeight={'20px'}
                 >
-                  Angga ganteng
+                  Tes Dulu Nggak sih
                 </Text>
               </Box>
             </Box>
