@@ -114,7 +114,6 @@ export default function StatusOrderDetail() {
             {isOrderHistoryVisible && (
               <Stepper
                 size={'sm'}
-                // fontSize={"5em"}
                 border={'1px solid #E6E6E6'}
                 borderRadius={'12px'}
                 index={activeStep}
@@ -130,7 +129,6 @@ export default function StatusOrderDetail() {
                       <StepStatus
                         complete={<BsCircleFill />}
                         incomplete={<BsCircleFill color="gray" />}
-                        // nextStep={<BsCircleFill color="gray" />}
                         active={<BsCircleFill color="gray" />}
                       />
                     </StepIndicator>
@@ -265,65 +263,14 @@ export default function StatusOrderDetail() {
               </Text>
             </Box>
             <Box>
-              {/* <Box> */}
-              {/* {data.map((card) => ( */}
               <Card
-                // key={card.id}
                 overflow="hidden"
                 variant="outline"
                 display={'flex'}
                 justifyContent={'space-between'}
-
-                // margin={"50px 5% 10px"}
               >
-                {/* atas */}
-                {/* <Box
-                    display={"flex"}
-                    justifyContent={"space-between"}
-                    padding={"15px"}
-                  >
-                    <Box>
-                      <Button
-                        padding={"4px 8px"}
-                        borderRadius={"4px"}
-                        backgroundColor={"#E8C600"}
-                        fontSize={"14px"}
-                        fontWeight={"600"}
-                        size={"sm"}
-                        mb={2}
-                      >
-                        Belum dibayar
-                      </Button>
-
-                      <Text
-                        fontSize={"14px"}
-                        fontWeight={"500"}
-                        lineHeight={"16px"}
-                        color={"#909090"}
-                      >
-                        INV/20230809/MPL/00003432
-                      </Text>
-                    </Box>
-                    <Box
-                      display={"flex"}
-                      justifyContent={"center"}
-                      flexDirection={"column"}
-                    >
-                      <Button
-                        borderRadius={"15px"}
-                        padding={"4px 12px"}
-                        border={"1px solid #D5D5D5"}
-                        size={"sm"}
-                        bg={"transparent"}
-                      >
-                        Hubungi Penjual
-                      </Button>
-                    </Box>
-                  </Box> */}
-
                 <Divider w={'100%'} />
 
-                {/* bawah */}
                 <Box
                   display={'flex'}
                   justifyContent={'space-between'}
@@ -387,8 +334,6 @@ export default function StatusOrderDetail() {
                   </Box>
                 </Box>
               </Card>
-              {/* ))} */}
-              {/* </Box> */}
             </Box>
           </Box>
         </Box>
