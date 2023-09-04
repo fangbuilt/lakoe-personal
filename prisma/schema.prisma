@@ -11,8 +11,11 @@ datasource db {
 }
 
 // your beautiful schema goes below :
-model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+model Bank_list {
+  id        Int      @id @default(autoincrement())
+  bank_name    String   @db.VarChar(255)
+  bank_number    String   @db.VarChar(255)
+  name    String   @db.VarChar(255)
+
+@@map("banks")
 }
