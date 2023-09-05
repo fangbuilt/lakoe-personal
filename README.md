@@ -48,3 +48,11 @@ Open up [http://localhost:3000](http://localhost:3000) and you should be ready t
 - [Database Schema](https://drive.google.com/file/d/1zU6LPC0zrnuYIHocus10BB2jbE5XuBxV/view) : See the project database schema here
 - [Prisma Builder](https://www.prismabuilder.io/) : Make prisma database schema easily
 - [Task Distribution](https://docs.google.com/spreadsheets/d/13ysbxGGYTZyGAqPBGwyTDPn95F_0iHl4u2WRIMd0WfU/edit?usp=sharing) : See your task distribution here
+
+
+Schema Team :
+Adidiawan
+Chandra Rizaldy
+Erwin
+Fraya
+Rahmat Rizky Rifai
