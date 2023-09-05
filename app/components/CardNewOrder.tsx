@@ -16,6 +16,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 
 const data = [
@@ -31,23 +32,32 @@ const data = [
   },
 ];
 
-export default function CardProducts(props: any) {
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+export async function loader() {
+  return process.env.BITESHIP_API as string;
+}
 
+export default function Index(props: any) {
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const jancok = useLoaderData<typeof loader>();
+  console.log(jancok);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Fetch API
   const sendDataToAPI = async () => {
     try {
-      const formData = new FormData();
-      formData.append('status', selectedStatus || '');
+      // const formData = new FormData();
+      // formData.append("status", selectedStatus || "");
 
-      const res = await fetch('https://api.biteship.com/v1/rates/couriers', {
+      const data = JSON.stringify({
+        status: selectedStatus,
+      });
+
+      const res = await fetch('https://api.biteship.com/v1/orders', {
         method: 'POST',
         headers: {
-          authorization: process.env.BITESHIP_API as string,
+          authorization: jancok,
         },
-        body: formData,
+        body: data,
       });
 
       if (res.ok) {
@@ -128,7 +138,7 @@ export default function CardProducts(props: any) {
                         Selesai Packing
                       </Button>
                       <Button variant="ghost" onClick={onClose}>
-                        Siap dikirim
+                        Cancel
                       </Button>
                     </ModalFooter>
                   </ModalContent>
