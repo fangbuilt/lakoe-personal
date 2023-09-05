@@ -1,24 +1,13 @@
 import {
-  AccordionPanel,
-  Accordion,
-  AccordionItem,
   Box,
   Button,
   Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  ListItem,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   SimpleGrid,
-  Stack,
   Text,
-  UnorderedList,
-  AccordionButton,
-  AccordionIcon,
 } from '@chakra-ui/react';
 import NavbarDashboard from './navbar';
 import {
@@ -29,11 +18,9 @@ import {
 import { PiWarningCircleFill, PiWarningCircleBold } from 'react-icons/pi';
 import { MdArrowDropDownCircle, MdCreditScore } from 'react-icons/md';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { useState } from 'react';
-import Popup from '../../components/Popup';
+import DashboardPopup from '~/components/PopupDashboard';
 
 export default function Dashboard() {
-  const [buttonPopup, setButtonPopup] = useState(false);
   return (
     <>
       <NavbarDashboard />
@@ -57,14 +44,16 @@ export default function Dashboard() {
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#28a745'}>
                 Rp.0
               </Text>
-              <Button
-                onClick={() => setButtonPopup(true)}
-                bg={'#8dc63f'}
-                color={'white'}
-                _hover={{ bg: 'blue.500' }}
+              {/* <Button
+                // onClick={() => setButtonPopup(true)}
+                onClick={(onOpen) => BasicUsage()}
+                bg={"#8dc63f"}
+                color={"white"}
+                _hover={{ bg: "blue.500" }}
               >
                 Tarik Credit
-              </Button>
+              </Button> */}
+              <DashboardPopup />
             </Box>
             <Box
               display={'flex'}
@@ -495,7 +484,7 @@ export default function Dashboard() {
           </Box>
         </SimpleGrid>
 
-        <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+        {/* <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
           <Flex
             minH={'100vh'}
             align={'center'}
@@ -614,7 +603,7 @@ export default function Dashboard() {
               </Stack>
             </Stack>
           </Flex>
-        </Popup>
+        </Popup> */}
       </Box>
     </>
   );

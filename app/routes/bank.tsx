@@ -1,25 +1,10 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Image,
-  Stack,
-  Text,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionIcon,
-  AccordionPanel,
-} from '@chakra-ui/react';
-import type { ActionArgs} from '@remix-run/node';
+import { Box, Button, Flex, Input, Image, Text } from '@chakra-ui/react';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
-import { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
-import { PopupBank } from '~/components/Popup';
+
+import Ali from '~/components/PopupBank';
 import {
   deleteBankList,
   getBankList,
@@ -42,19 +27,24 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function Bank() {
-  const [buttonPopup, setButtonPopup] = useState(false);
   const dataBank = useLoaderData<typeof loader>();
+
   return (
     <>
       <Box m={'2%'} boxShadow={'lg'}>
-        <Box px={'15%'} bgColor={'blue.500'}>
+        <Box px={'15%'} bgColor={'#9ddce3'}>
           <Flex alignItems={'center'} p={3} justifyContent={'space-between'}>
-            <Text bg={'white'} p={2} fontSize="13px">
+            <Text
+              bg={'white'}
+              p={2}
+              fontSize="13px"
+              fontWeight={'700'}
+              padding={'5px 10px'}
+            >
               Akun Bank
             </Text>
-            <Button fontSize="13px" onClick={() => setButtonPopup(true)}>
-              Tambah Rekening
-            </Button>
+
+            <Ali />
           </Flex>
         </Box>
         {dataBank.map((data) => (
@@ -66,10 +56,19 @@ export default function Bank() {
               justifyContent={'space-between'}
               bg={'white'}
             >
-              <Box>
-                <Image></Image>
+              <Box display={'flex'}>
+                <Box display={'flex'} alignItems={'center'} mr={'5px'}>
+                  <Image
+                    src="https://1.bp.blogspot.com/-RBRQ4RehmHQ/Xy96Qc8ZNpI/AAAAAAAAPWo/tHLFo5RgR38iDKXFzaB9e7uEy4EdOyqTwCLcBGAsYHQ/s640/Bank%2BBCA%2BLogo%2B-%2BFree%2BVector%2BDownload%2BPNG.webp"
+                    height={'15px'}
+                  />
+                </Box>
+
                 <Text fontSize="13px">
-                  {data.bank_name}-{data.name}-{data.bank_number}
+                  <Text as={'span'} fontWeight={'700'}>
+                    {data.bank_name}
+                  </Text>
+                  -{data.name}-{data.bank_number}
                 </Text>
               </Box>
               <Form method="post">
@@ -87,20 +86,20 @@ export default function Bank() {
             </Flex>
           </Box>
         ))}
-        <PopupBank trigger={buttonPopup} setTrigger={setButtonPopup}>
+        {/* <Ali Alltrigger={buttonPopup} setTrigger={setButtonPopup}>
           <Flex
-            minH={'100vh'}
-            align={'center'}
-            justify={'center'}
-            bg={'white'}
+            minH={"100vh"}
+            align={"center"}
+            justify={"center"}
+            bg={"white"}
             mt={5}
           >
             <Stack
               spacing={4}
-              w={'full'}
-              maxW={'md'}
-              bg={'white'}
-              rounded={'xl'}
+              w={"full"}
+              maxW={"md"}
+              bg={"white"}
+              rounded={"xl"}
               p={0}
               my={12}
             >
@@ -117,22 +116,22 @@ export default function Bank() {
                       </AccordionButton>
                     </h2>
                     <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
+                      <Button colorScheme="none" color={"gray.600"}>
                         BRI
                       </Button>
                     </AccordionPanel>
                     <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
+                      <Button colorScheme="none" color={"gray.600"}>
                         BCA
                       </Button>
                     </AccordionPanel>
                     <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
+                      <Button colorScheme="none" color={"gray.600"}>
                         MANDIRI
                       </Button>
                     </AccordionPanel>
                     <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
+                      <Button colorScheme="none" color={"gray.600"}>
                         BNI
                       </Button>
                     </AccordionPanel>
@@ -143,7 +142,7 @@ export default function Bank() {
                 <FormLabel>Atas Nama</FormLabel>
                 <Input
                   placeholder="Nama Pemilik Rekening"
-                  _placeholder={{ color: 'gray.500' }}
+                  _placeholder={{ color: "gray.500" }}
                   type="text"
                 />
               </FormControl>
@@ -151,17 +150,17 @@ export default function Bank() {
                 <FormLabel>Nomor Rekening</FormLabel>
                 <Input
                   placeholder="123456789"
-                  _placeholder={{ color: 'gray.500' }}
+                  _placeholder={{ color: "gray.500" }}
                   type="number"
                 />
               </FormControl>
               <Stack spacing={6}>
-                <Flex justifyContent={'end'} gap={3}>
+                <Flex justifyContent={"end"} gap={3}>
                   <Button
-                    bg={'blue.400'}
-                    color={'white'}
+                    bg={"blue.400"}
+                    color={"white"}
                     _hover={{
-                      bg: 'blue.500',
+                      bg: "blue.500",
                     }}
                   >
                     Tambah Akun Bank
@@ -170,7 +169,7 @@ export default function Bank() {
               </Stack>
             </Stack>
           </Flex>
-        </PopupBank>
+        </Ali> */}
       </Box>
     </>
   );

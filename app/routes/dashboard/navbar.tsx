@@ -19,7 +19,7 @@ import {
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaTruck } from 'react-icons/fa';
-import { IoMdNotifications } from 'react-icons/Io';
+import { IoMdNotifications } from 'react-icons/io';
 
 interface Props {
   children: React.ReactNode;
