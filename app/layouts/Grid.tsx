@@ -1,4 +1,4 @@
-import { Box, Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { LeftNavigation } from '~/components/LeftNavigation';
 
@@ -17,6 +17,7 @@ export function ImplementGrid({ children }: LayoutProps) {
         borderBottom={'1px'}
         borderBottomColor={'gray.200'}
         backgroundColor={'white'}
+        zIndex={10}
       />
       <Flex justify={'center'} minHeight={'100vh'}>
         <Box
@@ -42,11 +43,11 @@ export function ImplementGrid({ children }: LayoutProps) {
           borderLeft={'1px'}
           borderLeftColor={'gray.200'}
         >
-          <Flex align={'center'} justify={'center'} px={5} h={'100vh'}>
+          {/* <Flex align={'center'} justify={'center'} px={5} h={'100vh'}>
             <Heading textAlign={'center'} mb={'7.5vh'}>
               Test Right Sidebar
             </Heading>
-          </Flex>
+          </Flex> */}
         </Box>
       </Flex>
     </Flex>
