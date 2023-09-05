@@ -19,20 +19,22 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
+import { Form, useParams } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
+import { BiEditAlt } from 'react-icons/bi';
 
-export default function Ali() {
+export default function UpdateBank() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+  const { id } = useParams();
 
   return (
     <>
       <Button onClick={onOpen} bg={'#03559c'} color={'#fff'} colorScheme="none">
-        + Tambah No. Rekening
+        <BiEditAlt />
       </Button>
 
       <Modal
@@ -44,9 +46,10 @@ export default function Ali() {
         <ModalOverlay />
         <ModalContent>
           <Form method="post">
-            <Input type="hidden" name="actionType" value="create" />
+            <Input type="hidden" name="actionType" value="update" />
+            <Input type="hidden" name="bankId" value={id} />
             <ModalHeader display={'flex'} alignItems={'center'}>
-              <BsBank /> <Text ml={'5px'}>Informasi Bank </Text>
+              <BsBank /> <Text ml={'5px'}>Update Informasi Bank </Text>
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
@@ -91,7 +94,7 @@ export default function Ali() {
                   type="text"
                   ref={initialRef}
                   placeholder="Nama Pemilik Rekening"
-                  name="bankName"
+                  name="updateBankName"
                 />
               </FormControl>
 
@@ -101,18 +104,27 @@ export default function Ali() {
                   type="text"
                   ref={initialRef}
                   placeholder="Nama Pemilik Rekening"
-                  name="name"
+                  name="updateName"
                 />
               </FormControl>
 
               <FormControl mt={4}>
                 <FormLabel>Nomor Rekening</FormLabel>
-                <Input type="text" placeholder="123456789" name="bankNumber" />
+                <Input
+                  type="text"
+                  placeholder="123456789"
+                  name="updateBankNumber"
+                />
               </FormControl>
             </ModalBody>
-
             <ModalFooter>
-              <Button type="submit" colorScheme="blue" mr={3} onClick={onClose}>
+              <Button
+                name="_action"
+                type="submit"
+                colorScheme="blue"
+                mr={3}
+                onClick={onClose}
+              >
                 Tambah Akun Bank
               </Button>
             </ModalFooter>

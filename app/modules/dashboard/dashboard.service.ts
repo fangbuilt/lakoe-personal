@@ -18,3 +18,33 @@ export async function getNameBank(bank_name: string) {
     },
   });
 }
+
+export async function createBank(data: any) {
+  const dataPost = await db.bank_list.create({
+    data: {
+      name: data.name,
+      bank_name: data.bank_name,
+      bank_number: data.bank_number,
+    },
+  });
+  return dataPost;
+}
+
+export async function updateBank(
+  Id: number,
+  updatedName: string,
+  updateBankName: string,
+  updateBankNumber: string
+) {
+  const updatedBank = await db.bank_list.update({
+    where: {
+      id: Id,
+    },
+    data: {
+      name: updatedName,
+      bank_name: updateBankName,
+      bank_number: updateBankNumber,
+    },
+  });
+  return updatedBank;
+}

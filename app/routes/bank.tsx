@@ -3,28 +3,74 @@ import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import { AiOutlineClose } from 'react-icons/ai';
-
 import Ali from '~/components/PopupBank';
+import UpdateBank from '~/components/PopupBankUpdate';
 import {
+  createBank,
   deleteBankList,
   getBankList,
+  updateBank,
 } from '~/modules/dashboard/dashboard.service';
 
 export async function loader() {
-  return getBankList();
+  return await getBankList();
 }
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
+  console.log('ini isi formData', formData);
 
   const bankId = formData.get('bankId');
   const actionType = formData.get('actionType');
+  const name = formData.get('name');
+  const bank_name = formData.get('bankName');
+  const bank_number = formData.get('bankNumber');
+  const updateName = formData.get('updateName');
+  const updateBankName = formData.get('updateBankName');
+  const updateBankNumber = formData.get('updateBankNumber');
 
   if (actionType === 'delete' && bankId) {
     await deleteBankList(parseInt(bankId as string));
     return redirect('/bank');
   }
+
+  if (actionType === 'create' && name && bank_name && bank_number) {
+    await createBank({
+      name: name,
+      bank_name: bank_name,
+      bank_number: bank_number,
+    });
+    return redirect('/bank');
+  }
+
+  if (
+    actionType === 'update' &&
+    bankId &&
+    updateName &&
+    updateBankName &&
+    updateBankNumber
+  ) {
+    const updated = await updateBank(
+      parseInt(bankId as string),
+      updateName as string,
+      updateBankName as string,
+      updateBankNumber as string
+    );
+    return console.log('data updated', updated);
+  }
+  return redirect('/bank');
 }
+// async function getBankNames() {
+//   try {
+//     const bankList = await prisma.bank_list.findMany(); // Retrieves all records
+
+//     // Extract bank_name values from the results
+//     const bankNames = bankList.map((bank) => bank.bank_name);
+//     // console.log("ini bankNames", bankNames);
+//   } catch (error) {
+//     console.error("Error fetching bank names:", error);
+//   }
+// }
 
 export default function Bank() {
   const dataBank = useLoaderData<typeof loader>();
@@ -71,18 +117,30 @@ export default function Bank() {
                   -{data.name}-{data.bank_number}
                 </Text>
               </Box>
-              <Form method="post">
-                <Input type="hidden" name="actionType" value="delete"></Input>
-                <Input type="hidden" name="bankId" value={data.id}></Input>
+              <Box display={'flex'}>
                 <Button
+                  gap={5}
                   type="submit"
                   bg={'white'}
                   colorScheme="none"
                   color={'black'}
                 >
-                  <AiOutlineClose />
+                  <UpdateBank />
                 </Button>
-              </Form>
+                <Form method="post">
+                  <Input type="hidden" name="actionType" value="delete"></Input>
+                  <Input type="hidden" name="bankId" value={data.id}></Input>
+                  <Button
+                    gap={5}
+                    type="submit"
+                    bg={'white'}
+                    colorScheme="none"
+                    color={'black'}
+                  >
+                    <AiOutlineClose />
+                  </Button>
+                </Form>
+              </Box>
             </Flex>
           </Box>
         ))}

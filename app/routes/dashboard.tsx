@@ -9,7 +9,6 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react';
-import NavbarDashboard from './navbar';
 import {
   BsCreditCard2FrontFill,
   BsFillCalendarDateFill,
@@ -19,8 +18,17 @@ import { PiWarningCircleFill, PiWarningCircleBold } from 'react-icons/pi';
 import { MdArrowDropDownCircle, MdCreditScore } from 'react-icons/md';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import DashboardPopup from '~/components/PopupDashboard';
+import { getBankList } from '~/modules/dashboard/dashboard.service';
+import { useLoaderData } from '@remix-run/react';
+import NavbarDashboard from './navbarDashboard';
+
+export async function loader() {
+  return await getBankList();
+}
 
 export default function Dashboard() {
+  const dataBank = useLoaderData<typeof loader>();
+
   return (
     <>
       <NavbarDashboard />
@@ -53,7 +61,7 @@ export default function Dashboard() {
               >
                 Tarik Credit
               </Button> */}
-              <DashboardPopup />
+              <DashboardPopup dataBank={dataBank} />
             </Box>
             <Box
               display={'flex'}

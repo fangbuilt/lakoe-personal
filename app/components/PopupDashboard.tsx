@@ -1,35 +1,34 @@
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
   FormControl,
   FormLabel,
   Input,
-  Button,
-  useDisclosure,
-  Text,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  Box,
-  AccordionIcon,
-  AccordionPanel,
-  UnorderedList,
   ListItem,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  UnorderedList,
+  useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
-// import { BsBank } from "react-icons/bs";
 
-export default function DashboardPopup() {
+export default function DashboardPopup({ dataBank }: any) {
+  console.log('databankku', dataBank);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-
   return (
     <>
       <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
@@ -45,7 +44,7 @@ export default function DashboardPopup() {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader display={'flex'} alignItems={'center'}>
-            <Text ml={'5px'}>Tarik Credit </Text>
+            <Text ml={'5px'}>Tarik Credit</Text>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
@@ -90,26 +89,15 @@ export default function DashboardPopup() {
                       <AccordionIcon />
                     </AccordionButton>
                   </h2>
-                  <AccordionPanel pb={0}>
-                    <Button colorScheme="none" color={'gray.600'}>
-                      BRI
-                    </Button>
-                  </AccordionPanel>
-                  <AccordionPanel pb={0}>
-                    <Button colorScheme="none" color={'gray.600'}>
-                      BCA
-                    </Button>
-                  </AccordionPanel>
-                  <AccordionPanel pb={0}>
-                    <Button colorScheme="none" color={'gray.600'}>
-                      MANDIRI
-                    </Button>
-                  </AccordionPanel>
-                  <AccordionPanel pb={0}>
-                    <Button colorScheme="none" color={'gray.600'}>
-                      BNI
-                    </Button>
-                  </AccordionPanel>
+                  {dataBank.map((data: any) => (
+                    <React.Fragment key={data.id}>
+                      <AccordionPanel pb={0}>
+                        <Button colorScheme="none" color={'gray.600'}>
+                          {data.bank_name}-{data.name}-{data.bank_number}
+                        </Button>
+                      </AccordionPanel>
+                    </React.Fragment>
+                  ))}
                 </AccordionItem>
               </Accordion>
             </FormControl>
@@ -121,13 +109,7 @@ export default function DashboardPopup() {
                 placeholder="Silakan masukkan kata sandi akun anda"
               />
             </FormControl>
-
-            <FormControl mt={4}>
-              <FormLabel>Nomor Rekening</FormLabel>
-              <Input placeholder="123456789k" />
-            </FormControl>
           </ModalBody>
-
           <ModalFooter>
             <Button
               colorScheme="none"

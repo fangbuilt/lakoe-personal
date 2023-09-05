@@ -16,6 +16,7 @@ model Bank_list {
   bank_name    String   @db.VarChar(255)
   bank_number    String   @db.VarChar(255)
   name    String   @db.VarChar(255)
+  // USER ID
 
 @@map("banks")
 }
