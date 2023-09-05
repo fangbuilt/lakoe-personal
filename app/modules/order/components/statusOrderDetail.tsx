@@ -44,7 +44,7 @@ export default function StatusOrderDetail() {
         padding={3}
         margin={3}
       >
-        <Flex>
+        <Flex mt={5}>
           <Text color={'#0EADD7'}>Daftar Pesanan</Text>{' '}
           <Text>
             <ChevronRightIcon /> CREWNECK BASIC-BLACK...
@@ -353,7 +353,7 @@ export default function StatusOrderDetail() {
               src={truck}
             />
           </Box>
-          <Box display={'flex'} flexDirection={'column'} gap={1}>
+          <Box display={'flex'} flexDirection={'column'} gap={3}>
             <Text fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'}>
               Detail Pengiriman
             </Text>
@@ -433,7 +433,7 @@ export default function StatusOrderDetail() {
               src={wallet}
             />
           </Box>
-          <Box display={'flex'} flexDirection={'column'} width={'100%'}>
+          <Box display={'flex'} flexDirection={'column'} width={'100%'} gap={3}>
             <Text fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'}>
               Rincian Pembayaran
             </Text>
