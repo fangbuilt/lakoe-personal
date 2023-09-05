@@ -350,6 +350,7 @@ export default function StatusOrderDetail() {
               src={truck}
             />
           </Box>
+
           <Box display={"flex"} flexDirection={"column"} gap={1}>
             <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
               Detail Pengiriman
@@ -430,6 +431,7 @@ export default function StatusOrderDetail() {
               src={wallet}
             />
           </Box>
+
           <Box display={"flex"} flexDirection={"column"} width={"100%"}>
             <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
               Rincian Pembayaran
