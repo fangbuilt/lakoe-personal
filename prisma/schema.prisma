@@ -17,7 +17,7 @@ model User {
   email       String      @unique
   phone       String      @unique
   password    String
-  role        Role?       @relation(fields: [roleId], references: [id])
+  role        Role[]
   profileId   Profile?
   roleId      String?
   usersStores UserStore[]
@@ -35,7 +35,8 @@ model User {
 model Role {
   id        String   @id @unique @default(uuid())
   name      String
-  users     User[]
+  users     User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -45,8 +46,8 @@ model Role {
 model Profile {
   id        String     @id @unique @default(uuid())
   locations String
-  user      User?      @relation(fields: [userId], references: [id])
-  userId    String?    @unique
+  users     User       @relation(fields: [userId], references: [id])
+  userId    String     @unique
   location  Location[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
@@ -287,6 +288,7 @@ model Invoice {
   receiverAddress    String
   receiverName       String
   invoiceNumber      String
+  waybill            String
   cart               Cart?
   payment            Payment?
   courier            Courier?
