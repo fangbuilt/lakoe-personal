@@ -19,7 +19,7 @@ import {
   Tr,
   useNumberInput,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 
 export const action = async ({ request }: ActionArgs) => {
@@ -56,7 +56,14 @@ export const action = async ({ request }: ActionArgs) => {
       buyway,
     };
     console.log(data);
+
+    if (data.buyway == 'transfer') {
+      return redirect(`/payment-page`);
+    } else if (data.buyway == 'cod') {
+      return redirect(`/`);
+    }
   }
+
   return null;
 };
 
@@ -277,7 +284,7 @@ export default function Checkout() {
               </Box>
             ))}
             <Box>
-              <Button w={'100%'} type="submit">
+              <Button bgColor={'GrayText'} w={'100%'} type="submit">
                 Beli Sekarang
               </Button>
             </Box>

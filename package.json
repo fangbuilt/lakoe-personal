@@ -22,6 +22,8 @@
     "@vercel/node": "^2.10.3",
     "framer-motion": "^6.5.1",
     "isbot": "^3.6.8",
+    "kill": "^0.0.2",
+    "port": "^0.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "source-map-support": "^0.5.21",
