@@ -19,12 +19,10 @@ model User {
   password    String
   roles       Role[]
   profile     Profile?
-  profileId   String
   usersStores UserStore[]
   carts       Cart[]
   cartItems   CartItem[]
-  invoices    Invoice?    @relation(fields: [invoiceId], references: [id])
-  invoiceId   String?     @unique
+  invoices    Invoice?
   payments    Payment[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now())
@@ -202,31 +200,31 @@ model VariantOption {
 }
 
 model VariantOptionValue {
-  id              String         @id @unique @default(uuid())
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  id              String                 @id @unique @default(uuid())
+  variantOption   VariantOption?         @relation(fields: [variantOptionId], references: [id])
   sku             String
   weight          Float
-  size            VariantOptionValueSize    @relation(fields: [sizeId], references: [id])
-  sizeId          String @unique
+  size            VariantOptionValueSize @relation(fields: [sizeId], references: [id])
+  sizeId          String                 @unique
   stock           Int
   price           Float
-  isActive        Boolean        @default(true)
+  isActive        Boolean                @default(true)
   variantOptionId String?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @default(now())
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @default(now())
 
   @@map("variant_option_values")
 }
 
 model VariantOptionValueSize {
-  id                 String              @id @unique @default(uuid())
-  length             Float
-  width              Float
-  height             Float
-  variantOptionValue VariantOptionValue?
-  variantOptionValueId String? 
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @default(now())
+  id                   String              @id @unique @default(uuid())
+  length               Float
+  width                Float
+  height               Float
+  variantOptionValue   VariantOptionValue?
+  variantOptionValueId String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now())
 
   @@map("product_sizes")
 }
@@ -264,8 +262,7 @@ model Cart {
   userId    String?
   storeId   String?
   cartItems CartItem[]
-  invoice   Invoice?   @relation(fields: [invoiceId], references: [id])
-  invoiceId String?    @unique
+  invoice   Invoice?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
@@ -303,14 +300,14 @@ model Invoice {
   receiverName       String
   invoiceNumber      String
   waybill            String
-  cart               Cart?
+  cart               Cart?            @relation(fields: [cartId], references: [id])
   payment            Payment?
   courier            Courier?
-  user               User?
-  cartId             String?          @unique(map: "invoice_cart_id_unique")
-  paymentId          String?          @unique(map: "invoice_payment_id_unique")
-  courierId          String?          @unique(map: "invoice_courier_id_unique")
-  userId             String?          @unique(map: "invoice_user_id_unique")
+  user               User?            @relation(fields: [userId], references: [id])
+  cartId             String?          @unique
+  paymentId          String?          @unique
+  courierId          String?          @unique
+  userId             String?          @unique
   invoiceHistories   InvoiceHistory[]
   mootaTransactionId String
   createdAt          DateTime         @default(now())
