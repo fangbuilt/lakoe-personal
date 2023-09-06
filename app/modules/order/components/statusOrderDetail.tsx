@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -15,6 +16,7 @@ import {
   StepTitle,
   Stepper,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import documentIcon from "~/assets/DetailOrderIcon/document.svg";
 import calender from "~/assets/DetailOrderIcon/calendar-2.svg";
@@ -32,21 +34,310 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from "@chakra-ui/icons";
+import { PrismaClient } from "@prisma/client";
+import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
+import { useState } from "react";
 
-export default function StatusOrderDetail() {
+const prisma = new PrismaClient();
+
+export function getStatusBadge(status: string) {
+  if (status === "Belum Bayar") {
+    return (
+      <Badge
+        display={"flex"}
+        height={"24px"}
+        padding={`var(--1, 4px) var(--2, 8px)`}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={`var(--1, 4px)`}
+        borderRadius={`var(--rounded, 4px)`}
+        background={`var(--yellow-400, #E8C600)`}
+        width={"150px"}
+      >
+        <Text
+          color={`var(--text-dark, #1D1D1D)`}
+          textAlign={"center"}
+          fontSize={"14px"}
+          fontWeight={"600"}
+        >
+          Belum Dibayar
+        </Text>
+      </Badge>
+    );
+  }
+  if (status === "Pesanan Baru") {
+    return (
+      <Badge
+        display={"flex"}
+        height={"24px"}
+        padding={`var(--1, 4px) var(--2, 8px)`}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={`var(--1, 4px)`}
+        borderRadius={`var(--rounded, 4px)`}
+        background={`var(--green-800, #008F5D)`}
+        width={"150px"}
+      >
+        <Text
+          color={`var(--text-light, #FFF)`}
+          textAlign={"center"}
+          fontSize={"14px"}
+          fontWeight={"600"}
+        >
+          Pesanan Baru
+        </Text>
+      </Badge>
+    );
+  }
+  if (status === "Siap Dikirim") {
+    return (
+      <Badge
+        display={"flex"}
+        height={"24px"}
+        padding={`var(--1, 4px) var(--2, 8px)`}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={`var(--1, 4px)`}
+        borderRadius={`var(--rounded, 4px)`}
+        background={`var(--blue-800, #147AF3)`}
+        width={"150px"}
+      >
+        <Text
+          color={`var(--text-light, #FFF)`}
+          textAlign={"center"}
+          fontSize={"14px"}
+          fontWeight={"600"}
+        >
+          Siap Dikirim
+        </Text>
+      </Badge>
+    );
+  }
+  if (status === "Dalam Pengiriman") {
+    return (
+      <Badge
+        display={"flex"}
+        height={"24px"}
+        padding={`var(--1, 4px) var(--2, 8px)`}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={`var(--1, 4px)`}
+        borderRadius={`var(--rounded, 4px)`}
+        background={`var(--orange-600, #F68511)`}
+        width={"150px"}
+      >
+        <Text
+          color={`var(--text-light, #FFF)`}
+          textAlign={"center"}
+          fontSize={"14px"}
+          fontWeight={"600"}
+        >
+          Dalam Pengiriman
+        </Text>
+      </Badge>
+    );
+  }
+  if (status === "Pesanan Selesai") {
+    return (
+      <Badge
+        display={"flex"}
+        height={"24px"}
+        padding={`var(--1, 4px) var(--2, 8px)`}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={`var(--1, 4px)`}
+        borderRadius={`var(--rounded, 4px)`}
+        background={`var(--gray-200, #E6E6E6)`}
+        width={"150px"}
+      >
+        <Text
+          color={`var(--text-dark, #1D1D1D)`}
+          textAlign={"center"}
+          fontSize={"14px"}
+          fontWeight={"600"}
+        >
+          Pesanan Selesai
+        </Text>
+      </Badge>
+    );
+  }
+  if (status === "Dibatalkan") {
+    return (
+      <Badge
+        display={"flex"}
+        height={"24px"}
+        padding={`var(--1, 4px) var(--2, 8px)`}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={`var(--1, 4px)`}
+        borderRadius={`var(--rounded, 4px)`}
+        background={`var(--red-800, #EA3829)`}
+        width={"150px"}
+      >
+        <Text
+          color={`var(--text-light, #FFF)`}
+          textAlign={"center"}
+          fontSize={"14px"}
+          fontWeight={"600"}
+        >
+          Dibatalkan
+        </Text>
+      </Badge>
+    );
+  }
+}
+
+export function PesananBaru(status: string) {
+  if (status === "Pesanan Baru") {
+    return (
+      <Flex
+        justifyContent={"space-between"}
+        padding={`var(--4, 16px) var(--5, 20px)`}
+        alignItems={"center"}
+        alignSelf={"stretch"}
+        borderRadius={`var(--rounded-lg, 12px)`}
+        background={`var(--gray-50, #FFF)`}
+      >
+        <Box>
+          <Button
+            display={"flex"}
+            height={"40px"}
+            padding={`var(--3, 12px) var(--4, 16px)`}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={`var(--1, 4px)`}
+            borderRadius={`var(--rounded-full, 9999px)`}
+            border={`1px solid var(--red-800, #EA3829)`}
+            background={`var(--gray-50, #FFF)`}
+          >
+            <Text
+              color={`var(--text-red, #EA3829)`}
+              fontSize={"14px"}
+              fontWeight={"600"}
+              lineHeight={"15.5px"}
+            >
+              Tolak Pesanan
+            </Text>
+          </Button>
+        </Box>
+        <Box>
+          <Button
+            display={"flex"}
+            height={"40px"}
+            padding={`var(--3, 12px) var(--4, 16px)`}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={`var(--1, 4px)`}
+            borderRadius={`var(--rounded-full, 9999px)`}
+            background={`var(--cyan-800, #0086B4)`}
+          >
+            <Text
+              color={`var(--text-light, #FFF)`}
+              fontSize={"14px"}
+              fontWeight={"600"}
+              lineHeight={"15.5px"}
+            >
+              Proses Pesanan
+            </Text>
+          </Button>
+        </Box>
+      </Flex>
+    );
+  }
+  if (status === "Dalam Pengiriman") {
+    return (
+      <Flex
+        justifyContent={"flex-end"}
+        padding={`var(--4, 16px) var(--5, 20px)`}
+        alignItems={"center"}
+        alignSelf={"stretch"}
+        borderRadius={`var(--rounded-lg, 12px)`}
+        background={`var(--gray-50, #FFF)`}
+      >
+        <Box>
+          <Button
+            display={"flex"}
+            height={"40px"}
+            padding={`var(--3, 12px) var(--4, 16px)`}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={`var(--1, 4px)`}
+            borderRadius={`var(--rounded-full, 9999px)`}
+            border={`1px solid var(--gray-300, #D5D5D5)`}
+            background={`var(--gray-50, #FFF)`}
+          >
+            <Text
+              color={`var(--text-dark, #1D1D1D)`}
+              fontSize={"14px"}
+              fontWeight={"600"}
+              lineHeight={"15.5px"}
+            >
+              Kabari Pembeli
+            </Text>
+          </Button>
+        </Box>
+      </Flex>
+    );
+  }
+}
+
+export async function getInvoiceById(id: any) {
+  const dataInvoice = await prisma.invoice.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      payment: true,
+      courier: true,
+      cart: {
+        include: {
+          store: {
+            include: {
+              products: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  console.log("ini data inv", dataInvoice);
+  return dataInvoice;
+}
+
+export default function StatusOrderDetail({
+  data,
+}: {
+  data: IOrderDetailInvoice;
+}) {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
+
+  const toast = useToast();
+  const [_, setCopied] = useState(false);
+
+  const handleCopyClick = () => {
+    const textToCopy = data.invoiceNumber;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopied(true);
+
+      toast({
+        title: "Teks telah disalin ke clipboard!",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+      });
+    });
+  };
+
   return (
     <>
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        gap={3}
-      >
+      <Box display={"flex"} flexDirection={"column"} gap={3}>
         <Flex>
           <Text color={"#0EADD7"}>Daftar Pesanan</Text>{" "}
           <Text>
-            <ChevronRightIcon /> CREWNECK BASIC-BLACK...
+            <ChevronRightIcon /> CREWNECK ...
           </Text>
         </Flex>
         <Box
@@ -64,32 +355,12 @@ export default function StatusOrderDetail() {
             src={documentIcon}
           />
           <Box display={"flex"} flexDirection={"column"} gap={3}>
-            <Box
-              background={"green.800"}
-              color={"white"}
-              display={"flex"}
-              height={"24px"}
-              padding={`var(--1, 4px) var(--2, 8px)`}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={`var(--1, 4px)`}
-              borderRadius={`var(--rounded, 4px)`}
-              width={"150px"}
-            >
-              <Text
-                textAlign={"center"}
-                fontSize={"14px"}
-                fontWeight={"600"}
-                lineHeight={"15.5px"}
-              >
-                Pesanan Baru
-              </Text>
-            </Box>
+            {getStatusBadge(data.status)}
             <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
               Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
               <Text as={"span"} fontWeight={"700"}>
                 {" "}
-                10 Agustus 2023 - 00:00 WIB
+                {data.updatedAt}
               </Text>
               . Silahkan tunggu sampai pembayaran terkonfirmasi sebelum
               mengirimkan barang.
@@ -165,7 +436,7 @@ export default function StatusOrderDetail() {
               </Text>
             </Box>
             <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
-              09 Agustus 2023 - 19:43 WIB
+              {data.createdAt}
             </Text>
           </Box>
           <Box display={"flex"} justifyContent={"space-between"}>
@@ -188,9 +459,11 @@ export default function StatusOrderDetail() {
                 justifyContent={"center"}
                 alignItems={"center"}
                 src={copy}
+                onClick={handleCopyClick}
+                style={{ cursor: "pointer" }}
               />
               <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
-                INV/120983298470123740325
+                {data.invoiceNumber}
               </Text>
             </Box>
           </Box>
@@ -233,7 +506,7 @@ export default function StatusOrderDetail() {
                 />
               </Box>
               <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
-                Tes Dulu Nggak sih
+                {data.receiverName}
               </Text>
             </Box>
           </Box>
@@ -365,7 +638,7 @@ export default function StatusOrderDetail() {
                 Kurir
               </Text>
               <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                J&T - Reguler
+                {data.courier.courierServiceName}
               </Text>
             </Box>
             <Box display={"flex"}>
@@ -378,8 +651,7 @@ export default function StatusOrderDetail() {
                 No. Resi
               </Text>
               <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                {" "}
-                -{" "}
+                {data.courier.courierCode}
               </Text>
             </Box>
             <Box display={"flex"}>
@@ -393,7 +665,7 @@ export default function StatusOrderDetail() {
               </Text>
               <Box display={"flex"} flexDirection={"column"}>
                 <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
-                  jln elang 4 sawah lama
+                  {data.receiverAddress}
                 </Text>
                 <Text
                   color={`var(--text-gray, #909090)`}
@@ -401,7 +673,7 @@ export default function StatusOrderDetail() {
                   fontWeight={"400"}
                   lineHeight={"20px"}
                 >
-                  08298123128974213
+                  {data.receiverPhone}
                 </Text>
                 <Text
                   color={`var(--text-gray, #909090)`}
@@ -409,7 +681,7 @@ export default function StatusOrderDetail() {
                   fontWeight={"400"}
                   lineHeight={"20px"}
                 >
-                  Tes Dulu Nggak sih
+                  {data.receiverName}
                 </Text>
               </Box>
             </Box>
@@ -456,7 +728,7 @@ export default function StatusOrderDetail() {
               </Box>
               <Box>
                 <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                  Rp10.000
+                  Rp{data.courier.price}
                 </Text>
               </Box>
             </Box>
@@ -468,7 +740,7 @@ export default function StatusOrderDetail() {
               </Box>
               <Box>
                 <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                  Rp0
+                  Rp{data.discount}
                 </Text>
               </Box>
             </Box>
@@ -493,64 +765,13 @@ export default function StatusOrderDetail() {
               </Box>
               <Box>
                 <Text fontSize={"18px"} fontWeight={"700"} lineHeight={"24px"}>
-                  Rp190.000
+                  Rp{data.prices}
                 </Text>
               </Box>
             </Box>
           </Box>
         </Box>
-        <Flex
-          justifyContent={"space-between"}
-          padding={`var(--4, 16px) var(--5, 20px)`}
-          alignItems={"center"}
-          alignSelf={"stretch"}
-          borderRadius={`var(--rounded-lg, 12px)`}
-          background={`var(--gray-50, #FFF)`}
-        >
-          <Box>
-            <Button
-              display={"flex"}
-              height={"40px"}
-              padding={`var(--3, 12px) var(--4, 16px)`}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={`var(--1, 4px)`}
-              borderRadius={`var(--rounded-full, 9999px)`}
-              border={`1px solid var(--red-800, #EA3829)`}
-              background={`var(--gray-50, #FFF)`}
-            >
-              <Text
-                color={`var(--text-red, #EA3829)`}
-                fontSize={"14px"}
-                fontWeight={"600"}
-                lineHeight={"15.5px"}
-              >
-                Tolak Pesanan
-              </Text>
-            </Button>
-          </Box>
-          <Box>
-            <Button
-              display={"flex"}
-              height={"40px"}
-              padding={`var(--3, 12px) var(--4, 16px)`}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={`var(--1, 4px)`}
-              borderRadius={`var(--rounded-full, 9999px)`}
-              background={`var(--cyan-800, #0086B4)`}
-            >
-              <Text
-                color={`var(--text-light, #FFF)`}
-                fontSize={"14px"}
-                fontWeight={"600"}
-                lineHeight={"15.5px"}
-              >
-                Proses Pesanan
-              </Text>
-            </Button>
-          </Box>
-        </Flex>
+        {PesananBaru(data.status)}
       </Box>
     </>
   );
