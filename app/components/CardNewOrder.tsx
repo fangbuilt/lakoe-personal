@@ -16,8 +16,10 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
+import MailerLite from '@mailerlite/mailerlite-nodejs';
 
 const data = [
   {
@@ -36,10 +38,10 @@ const loader = () => {
   const biteShipAPI = process.env.BITESHIP_API as string;
   const mailerLiteAPI = process.env.MAILERLITE_API as string;
 
-  return {
+  return json({
     biteShipAPI,
     mailerLiteAPI,
-  };
+  });
 };
 
 export default function CardNewOrder(props: any) {
@@ -48,32 +50,52 @@ export default function CardNewOrder(props: any) {
 
   const loaderData = useLoaderData<typeof loader>();
 
+  const mailerlite = new MailerLite({
+    api_key: loaderData.mailerLiteAPI,
+  });
+
+  interface CreateOrUpdateParams {
+    email: string;
+    fields?: object;
+    groups?: Array<string>;
+    status?: 'active' | 'unsubscribed' | 'unconfirmed' | 'bounced' | 'junk';
+    subscribed_at?: string;
+    ip_address?: string;
+    opted_in_at?: string;
+    optin_ip?: string;
+    unsubscribed_at?: string;
+  }
+
   const sendEmailNotification = async () => {
     try {
       if (loaderData && loaderData.mailerLiteAPI) {
-        const dataToSend = {
-          to: 'admin@lakoe.com',
-          cc: 'aderino@baxdigital.my.id',
-          subject: 'Notifikasi Saldo Tidak Cukup',
-          message: 'Saldo Anda tidak mencukupi untuk mengirim pesanan.',
+        const params: CreateOrUpdateParams = {
+          email: 'dummy@example.com',
+          fields: {
+            name: 'Dummy',
+            last_name: 'Testerson',
+            company: 'MailerLite',
+            country: 'Best country',
+            city: 'Best city',
+            phone: '37060677606',
+            state: 'Best state',
+            z_i_p: '99999',
+          },
+          groups: ['4243829086487936'],
+          status: 'active', // possible statuses: active, unsubscribed, unconfirmed, bounced or junk.
+          subscribed_at: '2021-08-31 14:22:08',
         };
 
-        const res = await fetch('https://api.mailersend.com/v1/', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${loaderData.mailerLiteAPI}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataToSend),
-        });
-
-        if (res.ok) {
-          alert('Notifikasi ke Email berhasil dikirim');
-        } else {
-          alert('Gagal mengirim notifikasi ke Email');
-        }
+        mailerlite.subscribers
+          .createOrUpdate(params)
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            if (error.response) console.log(error.response.data);
+          });
       } else {
-        alert('Data loader belum tersedia');
+        alert(Response);
       }
     } catch (error) {
       alert(error);
@@ -109,7 +131,7 @@ export default function CardNewOrder(props: any) {
           sendEmailNotification();
         }
       } else {
-        alert('Data loader BiteShip belum tersedia');
+        alert(Response);
       }
     } catch (error) {
       alert(error);
