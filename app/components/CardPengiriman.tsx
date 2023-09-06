@@ -6,12 +6,20 @@ import {
   Divider,
   Heading,
   Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
 // import { fetch } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { any } from "zod";
 
 const dataDummy = [
   {
@@ -31,7 +39,7 @@ export const loader = async () => {
   return process.env.API_BITESHIP;
 };
 
-const sendIndex = async (props: any) => {
+export default function Index(props: any) {
   const [selectStatus, setSelectStatus] = useState<string | null>(null);
   const loaderData = useLoaderData<typeof loader>();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -111,9 +119,9 @@ const sendIndex = async (props: any) => {
                   border={"1px solid #D5D5D5"}
                   size={"sm"}
                   bg={"transparent"}
-                >
-                  {card.cta}
-                </Button>
+                  
+                > Kabari Pembeli</Button>
+                
               </Box>
             </Box>
 
@@ -186,6 +194,6 @@ const sendIndex = async (props: any) => {
       </Box>
     </>
   );
-};
+}
 
-export default sendIndex;
+// export default sendIndex;
