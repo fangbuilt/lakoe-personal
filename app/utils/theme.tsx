@@ -1,9 +1,12 @@
-import { extendTheme, theme as defaultTheme } from '@chakra-ui/react';
+import { extendTheme } from '@chakra-ui/react';
 
 const theme = extendTheme({
-  ...defaultTheme,
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+  },
   colors: {
-    ...defaultTheme.colors,
+    lakoeCyan: '#0086B4',
   },
   fonts: {
     heading: "'Plus Jakarta Sans', sans-serif;",
@@ -11,4 +14,4 @@ const theme = extendTheme({
   },
 });
 
-export default theme;
+export default extendTheme(theme);
