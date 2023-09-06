@@ -1,9 +1,9 @@
-import { Box, Card, Container, Text } from '@chakra-ui/react';
+import { Box, Card, Text } from '@chakra-ui/react';
 
 export default function PayCod() {
   return (
     <>
-      <Container>
+      <Box marginInline={'20%'}>
         <Card boxShadow={'dark-lg'} m={5}>
           <Box
             p={9}
@@ -26,7 +26,7 @@ export default function PayCod() {
           </Box>
           <Box bg={'#6acbd4'} borderBottomRadius={'6px'} p={3}></Box>
         </Card>
-      </Container>
+      </Box>
       <Box
         textAlign={'center'}
         display={'flex'}
@@ -34,10 +34,15 @@ export default function PayCod() {
         m={'50px'}
         justifyContent={'center'}
       >
-        <Text justifyContent={'center'} display={'flex'}>
-          <Text fontStyle={'italic'}>Powered by </Text>Lakoe.id
+        <Text gap={3} justifyContent={'center'} display={'flex'}>
+          <Text fontWeight={'bold'} fontStyle={'italic'}>
+            Powered by
+          </Text>
+          Lakoe.id
         </Text>
-        <Text>copyright @ 2023</Text>
+        <Text fontWeight={'normal'} fontStyle={'normal'}>
+          copyright @ 2023
+        </Text>
       </Box>
     </>
   );
