@@ -22,7 +22,7 @@ import { useState } from 'react';
 const data = [
   {
     id: '1',
-    title: 'CREWNECK BASIC-BLACK | sweeter polos hodie polos crewneck - S',
+    title: 'CREWNECK BASIC-BLACK | sweater polos hoodie polos crewneck - S',
     quantity: '2',
     price: '190.000',
     invoice: 'INV/20230809/MPL/00003432',
@@ -32,38 +32,84 @@ const data = [
   },
 ];
 
-export async function loader() {
-  return process.env.BITESHIP_API as string;
-}
+const loader = () => {
+  const biteShipAPI = process.env.BITESHIP_API as string;
+  const mailerLiteAPI = process.env.MAILERLITE_API as string;
+
+  return {
+    biteShipAPI,
+    mailerLiteAPI,
+  };
+};
 
 export default function CardNewOrder(props: any) {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const BITESHIP_API = useLoaderData<typeof loader>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Fetch API
-  const sendDataToAPI = async () => {
+  const loaderData = useLoaderData<typeof loader>();
+
+  const sendEmailNotification = async () => {
     try {
-      // const formData = new FormData();
-      // formData.append("status", selectedStatus || "");
+      if (loaderData && loaderData.mailerLiteAPI) {
+        const dataToSend = {
+          to: 'admin@lakoe.com',
+          cc: 'aderino@baxdigital.my.id',
+          subject: 'Notifikasi Saldo Tidak Cukup',
+          message: 'Saldo Anda tidak mencukupi untuk mengirim pesanan.',
+        };
 
-      const data = JSON.stringify({
-        status: selectedStatus,
-      });
+        const res = await fetch('https://api.mailersend.com/v1/', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${loaderData.mailerLiteAPI}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToSend),
+        });
 
-      const res = await fetch('https://api.biteship.com/v1/orders', {
-        method: 'POST',
-        headers: {
-          authorization: BITESHIP_API,
-        },
-        body: data,
-      });
-
-      if (res.ok) {
-        alert('Data berhasil dikirim');
+        if (res.ok) {
+          alert('Notifikasi ke Email berhasil dikirim');
+        } else {
+          alert('Gagal mengirim notifikasi ke Email');
+        }
       } else {
-        //
-        alert('Gagal mengirim data');
+        alert('Data loader belum tersedia');
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const sendDataToBiteShipAPI = async () => {
+    try {
+      if (loaderData && loaderData.biteShipAPI) {
+        const saldoCukup =
+          selectedStatus === 'Pesanan Baru' && Number(data[0].price) >= 20000;
+
+        if (saldoCukup) {
+          const dataToSend = {
+            status: selectedStatus,
+          };
+
+          const res = await fetch('https://api.biteship.com/v1/orders', {
+            method: 'POST',
+            headers: {
+              Authorization: loaderData.biteShipAPI,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend),
+          });
+
+          if (res.ok) {
+            alert('Data berhasil dikirim ke BiteShip API');
+          } else {
+            alert('Gagal mengirim data ke BiteShip API');
+          }
+        } else {
+          sendEmailNotification();
+        }
+      } else {
+        alert('Data loader BiteShip belum tersedia');
       }
     } catch (error) {
       alert(error);
@@ -82,7 +128,6 @@ export default function CardNewOrder(props: any) {
             justifyContent="space-between"
             margin="50px 5% 10px"
           >
-            {/* Atas */}
             <Box display="flex" justifyContent="space-between" padding="15px">
               <Box>
                 <Button
@@ -133,7 +178,11 @@ export default function CardNewOrder(props: any) {
                       <Text>Pilih proses selanjutnya :</Text>
                     </ModalBody>
                     <ModalFooter>
-                      <Button colorScheme="blue" mr={3} onClick={sendDataToAPI}>
+                      <Button
+                        colorScheme="blue"
+                        mr={3}
+                        onClick={sendDataToBiteShipAPI}
+                      >
                         Selesai Packing
                       </Button>
                       <Button variant="ghost" onClick={onClose}>
@@ -145,7 +194,6 @@ export default function CardNewOrder(props: any) {
               </Box>
             </Box>
             <Divider w="100%" />
-            {/* Bawah */}
             <Box display="flex" justifyContent="space-between" padding="15px">
               <Box display="flex">
                 <Box
