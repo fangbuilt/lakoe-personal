@@ -38,8 +38,7 @@ export async function loader() {
 
 export default function Index(props: any) {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const jancok = useLoaderData<typeof loader>();
-  console.log(jancok);
+  const BITESHIP_API = useLoaderData<typeof loader>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Fetch API
@@ -55,7 +54,7 @@ export default function Index(props: any) {
       const res = await fetch('https://api.biteship.com/v1/orders', {
         method: 'POST',
         headers: {
-          authorization: jancok,
+          authorization: BITESHIP_API,
         },
         body: data,
       });
