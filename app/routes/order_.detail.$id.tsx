@@ -7,7 +7,7 @@ export default function OrderDetailId() {
     <>
       <ImplementGrid>
         <Stack mt={"7.5vh"} spacing={4}>
-          <StatusOrderDetail />
+          <StatusOrderDetail/>
         </Stack>
       </ImplementGrid>
     </>

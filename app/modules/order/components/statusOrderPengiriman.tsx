@@ -7,6 +7,13 @@ import {
   Flex,
   Heading,
   Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Step,
   StepDescription,
   StepIndicator,
@@ -15,6 +22,7 @@ import {
   StepTitle,
   Stepper,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import documentIcon from "~/assets/DetailOrderIcon/document.svg";
 import calender from "~/assets/DetailOrderIcon/calendar-2.svg";
@@ -32,10 +40,14 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from "@chakra-ui/icons";
+import useDetailPengiriman from "../hooks/useDetailPengiriman";
 
 export default function StatusOrderPengiriman() {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { step } = useDetailPengiriman();
   return (
     <>
       <Box display={"flex"} flexDirection={"column"} gap={3}>
@@ -348,21 +360,212 @@ export default function StatusOrderPengiriman() {
           </Box>
 
           <Box display={"flex"} flexDirection={"column"} gap={1}>
-            <Box display={"flex"} justifyContent={"space-between"}
-            >
-                <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"} w="490px">
-                  Detail Pengiriman
-                </Text>
-                <Text
-                  fontSize={"14px"}
-                  fontWeight={"700"}
-                  lineHeight={"20px"}
-                  color={"#0086B4"}
-                  w="120px"
-                >
-              
-                  Lacak Pengiriman
-                </Text>
+            <Box display={"flex"} justifyContent={"space-between"}>
+              <Text
+                fontSize={"16px"}
+                fontWeight={"700"}
+                lineHeight={"24px"}
+                w="490px"
+              >
+                Detail Pengiriman
+              </Text>
+              <Button
+                fontSize={"14px"}
+                fontWeight={"700"}
+                lineHeight={"20px"}
+                color={"#0086B4"}
+                background={"#FFFFFF)"}
+                colorScheme="#FFFFFF)"
+                w="120px"
+                onClick={() => {
+                  onOpen();
+                }}
+              >
+                Lacak Pengiriman
+              </Button>
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent minWidth="fit-content" height="fit-content">
+                  <ModalHeader>Lacak Pengiriman</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Box>
+                      <Box
+                        width={"606px"}
+                        height={"176px"}
+                        padding={"10px"}
+                        gap={"10px"}
+                        display={"flex"}
+                      >
+                        <Box
+                          display={"flex"}
+                          flexDirection={"column"}
+                          width={"288px"}
+                          height={"156px"}
+                          gap={3}
+                        >
+                          <Box width={"288px"} height={"44px"} gap={1}>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"400"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              Kurir
+                            </Text>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"700"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              J&T - Reguler
+                            </Text>
+                          </Box>
+                          <Box width={"288px"} height={"44px"} gap={1}>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"400"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              No. Resi
+                            </Text>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"700"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              JT6268865922
+                            </Text>
+                          </Box>
+                          <Box width={"288px"} height={"44px"} gap={1}>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"400"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              Pengirim
+                            </Text>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"700"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              Bakulan Store
+                            </Text>
+                          </Box>
+                        </Box>
+                        <Box
+                          display={"flex"}
+                          flexDirection={"column"}
+                          width={"288px"}
+                          height={"86px"}
+                          gap={4}
+                        >
+                          <Box width={"288px"} height={"44px"} gap={"4px"}>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"400"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              Penerima
+                            </Text>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"700"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              Annur Syawila Hasibuan
+                            </Text>
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight={"400"}
+                              lineHeight={"20px"}
+                              color={"#1D1D1D"}
+                            >
+                              Jl. Elang IV, Sawah Lama, Kec. Ciputat, Kota
+                              Tangerang Selatan, Banten 15413
+                            </Text>
+                          </Box>
+                        </Box>
+                      </Box>
+                      <Box
+                        width={"606px"}
+                        height={"20px"}
+                        padding={"10px"}
+                        gap={"2px"}
+                        display={"flex"}
+                      >
+                        <Box width={"55px"} height={"20px"}>
+                          <Text
+                            fontSize={"16px"}
+                            fontWeight={"500"}
+                            lineHeight={"20px"}
+                            color={"#1D1D1D"}
+                          >
+                            Status:
+                          </Text>
+                        </Box>
+                        <Box width={"196px"} height={"20px"}>
+                          <Text
+                            fontSize={"16px"}
+                            fontWeight={"700"}
+                            lineHeight={"20px"}
+                            color={"#1D1D1D"}
+                          >
+                            Dalam Proses Pengiriman
+                          </Text>
+                        </Box>
+                      </Box>
+                      <Box
+                        width={"606px"}
+                        height={"300px"}
+                        padding={" 20px 16px 0px 16px"}
+                      >
+                        <Stepper
+                          size={"sm"}
+                          border={"1px solid #E6E6E6"}
+                          borderRadius={"12px"}
+                          index={activeStep}
+                          orientation="vertical"
+                          height="110%"
+                          width={"100%"}
+                          gap="5"
+                          p={"16px"}
+                        >
+                          {step.map((step) => (
+                            <Step key={step.id}>
+                              <StepIndicator fontSize={"11px"}>
+                                <StepStatus
+                                  complete={<BsCircleFill />}
+                                  incomplete={<BsCircleFill color="gray" />}
+                                  active={<BsCircleFill color="gray" />}
+                                />
+                              </StepIndicator>
+
+                              <Box flexShrink="0">
+                                <StepTitle>{step.title}</StepTitle>
+                                <StepDescription>
+                                  {step.description}
+                                </StepDescription>
+                              </Box>
+
+                              <StepSeparator />
+                            </Step>
+                          ))}
+                        </Stepper>
+                      </Box>
+                    </Box>
+                  </ModalBody>
+                  <ModalFooter />
+                </ModalContent>
+              </Modal>
               {/* </Box> */}
             </Box>
             <Box display={"flex"}>
@@ -517,7 +720,6 @@ export default function StatusOrderPengiriman() {
           borderRadius={`var(--rounded-lg, 12px)`}
           background={`var(--gray-50, #FFF)`}
         >
-         
           <Box>
             <Button
               display={"flex"}

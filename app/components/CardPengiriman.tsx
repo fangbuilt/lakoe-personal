@@ -6,20 +6,12 @@ import {
   Divider,
   Heading,
   Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-// import { fetch } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { any } from "zod";
+import { Link } from "react-router-dom";
 
 const dataDummy = [
   {
@@ -28,10 +20,10 @@ const dataDummy = [
     quantity: "2",
     price: "190.000",
     invoice: "INV/20230809/MPL/00003432",
-    status: "Belum dibayar",
+    status: "Dalam Pengiriman",
     picture:
       "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2xvdGhlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60",
-    cta: "Hubungi Penjual",
+    cta: "Kabari Pembeli",
   },
 ];
 
@@ -90,13 +82,18 @@ export default function Index(props: any) {
                 <Button
                   padding={"4px 8px"}
                   borderRadius={"4px"}
-                  backgroundColor={"#E8C600"}
-                  fontSize={"14px"}
-                  fontWeight={"600"}
+                  backgroundColor={"#F68511"}
                   size={"sm"}
                   mb={2}
                 >
-                  {card.status}
+                  <Text
+                    color={"#FFFFFF"}
+                    fontSize={"14px"}
+                    fontWeight={"600"}
+                    textAlign={"center"}
+                  >
+                    {card.status}
+                  </Text>
                 </Button>
 
                 <Text
@@ -113,15 +110,20 @@ export default function Index(props: any) {
                 justifyContent={"center"}
                 flexDirection={"column"}
               >
-                <Button
-                  borderRadius={"15px"}
-                  padding={"4px 12px"}
-                  border={"1px solid #D5D5D5"}
-                  size={"sm"}
-                  bg={"transparent"}
-                  
-                > Kabari Pembeli</Button>
-                
+                <Link to="http://wa.me/6288...">
+                  <Button
+                    borderRadius={"15px"}
+                    padding={"4px 12px"}
+                    border={"1px solid #D5D5D5"}
+                    size={"sm"}
+                    bg={"transparent"}
+                    onClick={() => {
+                      onOpen();
+                    }}
+                  >
+                    {card.cta}
+                  </Button>
+                </Link>
               </Box>
             </Box>
 
@@ -143,7 +145,7 @@ export default function Index(props: any) {
                     objectFit="cover"
                     width={"52px"}
                     height={"52px"}
-                    src=" {card.picture}"
+                    src={card.picture}
                     alt="brown clothes"
                     borderRadius={"8px"}
                   />
@@ -195,5 +197,3 @@ export default function Index(props: any) {
     </>
   );
 }
-
-// export default sendIndex;
