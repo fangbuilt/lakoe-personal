@@ -17,6 +17,7 @@ export function ImplementGrid({ children }: LayoutProps) {
         borderBottom={'1px'}
         borderBottomColor={'gray.200'}
         backgroundColor={'white'}
+        zIndex={'100'}
       />
       <Flex justify={'center'} minHeight={'100vh'}>
         <Box
