@@ -21,14 +21,30 @@ import {
   Tr,
   Text,
   Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  useDisclosure,
+  Select,
 } from '@chakra-ui/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import GalleryAdd from '../assets/icon-pack/gallery-add.svg';
 import Location from '../assets/icon-pack/location.svg';
 import Edit from '../assets/icon-pack/edit.svg';
 import Trash from '../assets/icon-pack/trash.svg';
+import LocationSlash from '../assets/icon-pack/location-slash.svg';
+import CloseCircle from '../assets/icon-pack/close-circle.svg';
+import React from 'react';
 
 export default function StoreConfiguration() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
+
   return (
     <ImplementGrid>
       <Flex h={'100vh'} mt={5}>
@@ -174,16 +190,23 @@ export default function StoreConfiguration() {
 
                 <Button
                   borderRadius={'20px'}
-                  borderColor={'grey'}
-                  border={'1px'}
+                  border={'1px solid #aeaeae'}
                   bg={'white'}
                   fontSize={'12px'}
+                  size={'sm'}
+                  onClick={onOpen}
                 >
                   Tambah Lokasi
                 </Button>
               </Box>
-              <TableContainer>
-                <Table variant="none" fontSize={'12px'} mt={'20px'}>
+              <TableContainer
+                border={'1px'}
+                borderColor={'#eee'}
+                borderRadius={'15px'}
+                p={'10px'}
+                mt={'10px'}
+              >
+                <Table variant="none" fontSize={'12px'}>
                   <Tbody>
                     <Tr>
                       <Td p={'0px'}>Nama Lokasi</Td>
@@ -202,24 +225,25 @@ export default function StoreConfiguration() {
                         </span>
                       </Td>
                       <Td p={'0px'}>
-                        <Box>
-                          <Button
-                            borderRadius={'full'}
-                            borderColor={'grey'}
-                            bg={'transparent'}
-                            border={'1px'}
-                          >
-                            <Image src={Trash} />
-                          </Button>
-                          <Button
-                            borderRadius={'full'}
-                            borderColor={'grey'}
-                            bg={'transparent'}
-                            border={'1px'}
-                          >
-                            <Image src={Edit} />
-                          </Button>
-                        </Box>
+                        <Button
+                          borderRadius={'full'}
+                          bg={'white'}
+                          border={'1px solid #aeaeae'}
+                          p={'0px'}
+                          me={'7px'}
+                          size={'sm'}
+                        >
+                          <Image w={'15px'} src={Trash} />
+                        </Button>
+                        <Button
+                          borderRadius={'full'}
+                          bg={'white'}
+                          border={'1px solid #aeaeae'}
+                          p={'0px'}
+                          size={'sm'}
+                        >
+                          <Image w={'15px'} src={Edit} />
+                        </Button>
                       </Td>
                     </Tr>
                     <Tr>
@@ -256,6 +280,149 @@ export default function StoreConfiguration() {
                   </Tbody>
                 </Table>
               </TableContainer>
+              <TableContainer
+                border={'1px'}
+                borderColor={'#eee'}
+                borderRadius={'15px'}
+                p={'10px'}
+                mt={'10px'}
+              >
+                <Table variant="none" fontSize={'12px'}>
+                  <Tbody>
+                    <Tr>
+                      <Td p={'0px'}>Nama Lokasi</Td>
+                      <Td p={'0px'}>Fesyen Store 2</Td>
+                      <Td p={'0px'}>
+                        <Button
+                          borderRadius={'full'}
+                          bg={'white'}
+                          border={'1px solid #aeaeae'}
+                          p={'0px'}
+                          me={'7px'}
+                          size={'sm'}
+                        >
+                          <Image w={'15px'} src={Trash} />
+                        </Button>
+                        <Button
+                          borderRadius={'full'}
+                          bg={'white'}
+                          border={'1px solid #aeaeae'}
+                          p={'0px'}
+                          size={'sm'}
+                        >
+                          <Image w={'15px'} src={Edit} />
+                        </Button>
+                      </Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Alamat</Td>
+                      <Td p={'0px'}>
+                        Jl.Elang, No. 4, Sawah lama, Ciputat, Tangerang Selatan
+                      </Td>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Kota/Kecamatan</Td>
+                      <Td p={'0px'}>Kota Tangerang Selatan, Kec. Ciputat</Td>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Kode Pos</Td>
+                      <Td p={'0px'}>15413</Td>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Pinpoint</Td>
+                      <Td p={'0px'}>
+                        <Box
+                          color={'#aeaeae'}
+                          display={'flex'}
+                          flexDirection={'row'}
+                        >
+                          <Image src={LocationSlash} />
+                          <Text>Belum Endpoint</Text>
+                        </Box>
+                      </Td>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </TableContainer>
+              <Modal
+                initialFocusRef={initialRef}
+                finalFocusRef={finalRef}
+                isOpen={isOpen}
+                onClose={onClose}
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader
+                    display={'flex'}
+                    flexDirection={'row'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                  >
+                    <Text>Tambah Lokasi Baru</Text>
+                    <Button
+                      onClick={onClose}
+                      p={'0px'}
+                      colorScheme="none"
+                      display={'flex'}
+                      flexDirection={'row'}
+                      justifyContent={'end'}
+                      alignItems={'center'}
+                    >
+                      <Image w={'30px'} src={CloseCircle} />
+                    </Button>
+                  </ModalHeader>
+                  {/* <ModalCloseButton /> */}
+                  <ModalBody>
+                    <FormControl>
+                      <FormLabel>Nama Lokasi</FormLabel>
+                      <Input
+                        ref={initialRef}
+                        placeholder="Cth. Toko Alamanda"
+                      />
+                    </FormControl>
+
+                    <FormControl mt={4}>
+                      <FormLabel>Kota/Kecamatan</FormLabel>
+                      <Select>
+                        <option value="" hidden>
+                          Cari kota / Kecamatan
+                        </option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                      </Select>
+                    </FormControl>
+
+                    <FormControl mt={4}>
+                      <FormLabel>Kode Pos</FormLabel>
+                      <Select>
+                        <option value="" hidden color="red">
+                          Masukan 5 digit kode pos
+                        </option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                      </Select>
+                    </FormControl>
+
+                    <FormControl mt={4}>
+                      <FormLabel>Alamat Lengkap</FormLabel>
+                      <Textarea placeholder="Tuliskan Alamat lengkap Toko" />
+                    </FormControl>
+                  </ModalBody>
+
+                  <ModalFooter>
+                    <Button mr={2} onClick={onClose} borderRadius={'20px'}>
+                      Batalkan
+                    </Button>
+                    <Button colorScheme="blue" borderRadius={'20px'}>
+                      Simpan
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </TabPanel>
 
             <TabPanel>
