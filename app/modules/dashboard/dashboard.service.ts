@@ -36,15 +36,20 @@ export async function updateBank(
   updateBankName: string,
   updateBankNumber: string
 ) {
-  const updatedBank = await db.bank_list.update({
-    where: {
-      id: Id,
-    },
-    data: {
-      name: updatedName,
-      bank_name: updateBankName,
-      bank_number: updateBankNumber,
-    },
-  });
-  return updatedBank;
+  try {
+    const updatedBank = await db.bank_list.update({
+      where: {
+        id: Id,
+      },
+      data: {
+        name: updatedName,
+        bank_name: updateBankName,
+        bank_number: updateBankNumber,
+      },
+    });
+    return updatedBank;
+  } catch (error) {
+    console.error('error updating', error);
+    throw error;
+  }
 }

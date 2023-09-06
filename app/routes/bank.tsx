@@ -3,7 +3,7 @@ import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import { AiOutlineClose } from 'react-icons/ai';
-import Ali from '~/components/PopupBank';
+import PopupBank from '~/components/PopupBank';
 import UpdateBank from '~/components/PopupBankUpdate';
 import {
   createBank,
@@ -56,7 +56,10 @@ export async function action({ request }: ActionArgs) {
       updateBankName as string,
       updateBankNumber as string
     );
-    return console.log('data updated', updated);
+    // return console.log("data updated", updated);
+    return {
+      updated,
+    };
   }
   return redirect('/bank');
 }
@@ -90,7 +93,7 @@ export default function Bank() {
               Akun Bank
             </Text>
 
-            <Ali />
+            <PopupBank />
           </Flex>
         </Box>
         {dataBank.map((data) => (
@@ -100,14 +103,42 @@ export default function Bank() {
               alignItems={'center'}
               p={2}
               justifyContent={'space-between'}
+              key={data.id}
               bg={'white'}
             >
               <Box display={'flex'}>
-                <Box display={'flex'} alignItems={'center'} mr={'5px'}>
-                  <Image
-                    src="https://1.bp.blogspot.com/-RBRQ4RehmHQ/Xy96Qc8ZNpI/AAAAAAAAPWo/tHLFo5RgR38iDKXFzaB9e7uEy4EdOyqTwCLcBGAsYHQ/s640/Bank%2BBCA%2BLogo%2B-%2BFree%2BVector%2BDownload%2BPNG.webp"
-                    height={'15px'}
-                  />
+                <Box display={'flex'} alignItems={'center'} mr={'8px'}>
+                  {data.bank_name === 'BNI' && (
+                    <Image
+                      src="https://ik.imagekit.io/lcfefbv0i/BNI.png?updatedAt=1693928593197"
+                      height={'14px'}
+                      width={'37px'}
+                    />
+                  )}
+
+                  {data.bank_name === 'BCA' && (
+                    <Image
+                      src="https://ik.imagekit.io/lcfefbv0i/bca.png?updatedAt=1693841171817"
+                      height={'14px'}
+                      width={'39px'}
+                    />
+                  )}
+
+                  {data.bank_name === 'MANDIRI' && (
+                    <Image
+                      src="https://ik.imagekit.io/lcfefbv0i/MANDIRI.png?updatedAt=1693928593263"
+                      height={'14px'}
+                      width={'40px'}
+                    />
+                  )}
+
+                  {data.bank_name === 'BRI' && (
+                    <Image
+                      src="https://i0.wp.com/febi.uinsaid.ac.id/wp-content/uploads/2020/11/Logo-BRI-Bank-Rakyat-Indonesia-PNG-Terbaru.png?ssl=1"
+                      height={'28px'}
+                      width={'35px'}
+                    />
+                  )}
                 </Box>
 
                 <Text fontSize="13px">
@@ -120,10 +151,11 @@ export default function Bank() {
               <Box display={'flex'}>
                 <Button
                   gap={5}
-                  type="submit"
                   bg={'white'}
                   colorScheme="none"
                   color={'black'}
+                  value={data.id}
+                  name="bankId"
                 >
                   <UpdateBank />
                 </Button>

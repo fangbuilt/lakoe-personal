@@ -19,7 +19,7 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from '@chakra-ui/react';
-import { Form, useParams } from '@remix-run/react';
+import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
 import { BiEditAlt } from 'react-icons/bi';
@@ -29,11 +29,15 @@ export default function UpdateBank() {
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  const { id } = useParams();
 
   return (
     <>
-      <Button onClick={onOpen} bg={'#03559c'} color={'#fff'} colorScheme="none">
+      <Button
+        onClick={onOpen}
+        color={'gray.700'}
+        bg={'white'}
+        fontSize={'18px'}
+      >
         <BiEditAlt />
       </Button>
 
@@ -44,10 +48,11 @@ export default function UpdateBank() {
         onClose={onClose}
       >
         <ModalOverlay />
+
         <ModalContent>
           <Form method="post">
             <Input type="hidden" name="actionType" value="update" />
-            <Input type="hidden" name="bankId" value={id} />
+            <Input type="hidden" name="bankId" />
             <ModalHeader display={'flex'} alignItems={'center'}>
               <BsBank /> <Text ml={'5px'}>Update Informasi Bank </Text>
             </ModalHeader>

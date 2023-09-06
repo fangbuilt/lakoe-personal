@@ -23,7 +23,7 @@ import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
 
-export default function Ali() {
+export default function PopupBank() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
