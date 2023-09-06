@@ -36,7 +36,7 @@ export async function loader() {
   return process.env.BITESHIP_API as string;
 }
 
-export default function Index(props: any) {
+export default function CardNewOrder(props: any) {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const BITESHIP_API = useLoaderData<typeof loader>();
   const { isOpen, onOpen, onClose } = useDisclosure();
