@@ -56,24 +56,12 @@ export async function action({ request }: ActionArgs) {
       updateBankName as string,
       updateBankNumber as string
     );
-    // return console.log("data updated", updated);
     return {
       updated,
     };
   }
   return redirect('/bank');
 }
-// async function getBankNames() {
-//   try {
-//     const bankList = await prisma.bank_list.findMany(); // Retrieves all records
-
-//     // Extract bank_name values from the results
-//     const bankNames = bankList.map((bank) => bank.bank_name);
-//     // console.log("ini bankNames", bankNames);
-//   } catch (error) {
-//     console.error("Error fetching bank names:", error);
-//   }
-// }
 
 export default function Bank() {
   const dataBank = useLoaderData<typeof loader>();

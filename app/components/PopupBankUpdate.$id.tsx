@@ -12,18 +12,13 @@ import {
   Button,
   useDisclosure,
   Text,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  Box,
-  AccordionIcon,
-  AccordionPanel,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
 import { BiEditAlt } from 'react-icons/bi';
 import { getBankList } from '~/modules/dashboard/dashboard.service';
+import { SelectBankOptionUpdate } from './selectBankOptionUpdate';
 
 export async function loader() {
   return await getBankList();
@@ -57,7 +52,6 @@ export default function UpdateBank(props: any) {
         <ModalOverlay />
 
         <ModalContent>
-          {/* {dataBank.map((data) => ( */}
           <Form method="post">
             <Input type="hidden" name="actionType" value="update" />
             <Input type="hidden" name="bankId" value={id} />
@@ -68,59 +62,17 @@ export default function UpdateBank(props: any) {
             <ModalBody pb={6}>
               <FormControl>
                 <FormLabel>Bank</FormLabel>
-                <Accordion allowToggle>
-                  <AccordionItem borderRadius={'10px'} width={'100%'}>
-                    <h2>
-                      <AccordionButton>
-                        <Box as="span" flex="1" textAlign="left">
-                          Pilih Rekening Bank untuk menerima penarikan
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BRI
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BCA
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        MANDIRI
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BNI
-                      </Button>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
+                <SelectBankOptionUpdate />
+                <FormControl mt={4}>
+                  <FormLabel>Atas Nama</FormLabel>
+                  <Input
+                    type="text"
+                    ref={initialRef}
+                    placeholder="Nama Pemilik Rekening"
+                    name="updateName"
+                  />
+                </FormControl>
               </FormControl>
-              <FormControl mt={4}>
-                <FormLabel>Nama Bank</FormLabel>
-                <Input
-                  type="text"
-                  ref={initialRef}
-                  placeholder="Nama Pemilik Rekening"
-                  name="updateBankName"
-                />
-              </FormControl>
-
-              <FormControl mt={4}>
-                <FormLabel>Atas Nama</FormLabel>
-                <Input
-                  type="text"
-                  ref={initialRef}
-                  placeholder="Nama Pemilik Rekening"
-                  name="updateName"
-                />
-              </FormControl>
-
               <FormControl mt={4}>
                 <FormLabel>Nomor Rekening</FormLabel>
                 <Input
@@ -142,7 +94,6 @@ export default function UpdateBank(props: any) {
               </Button>
             </ModalFooter>
           </Form>
-          {/* ))} */}
         </ModalContent>
       </Modal>
     </>
