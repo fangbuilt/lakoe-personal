@@ -4,7 +4,7 @@ import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import { AiOutlineClose } from 'react-icons/ai';
 import PopupBank from '~/components/PopupBank';
-import UpdateBank from '~/components/PopupBankUpdate';
+import UpdateBank from '~/components/PopupBankUpdate.$id';
 import {
   createBank,
   deleteBankList,
@@ -77,7 +77,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function Bank() {
   const dataBank = useLoaderData<typeof loader>();
-
+  console.log('data bank', dataBank);
   return (
     <>
       <Box m={'2%'} boxShadow={'lg'}>
@@ -149,19 +149,21 @@ export default function Bank() {
                 </Text>
               </Box>
               <Box display={'flex'}>
-                <Button
-                  gap={5}
-                  bg={'white'}
-                  colorScheme="none"
-                  color={'black'}
-                  value={data.id}
-                  name="bankId"
-                >
-                  <UpdateBank />
-                </Button>
                 <Form method="post">
-                  <Input type="hidden" name="actionType" value="delete"></Input>
-                  <Input type="hidden" name="bankId" value={data.id}></Input>
+                  <Input type="hidden" name="actionType" value="update" />
+                  <Input type="hidden" name="bankId" value={data.id} />
+                  <Button
+                    gap={5}
+                    bg={'white'}
+                    colorScheme="none"
+                    color={'black'}
+                  >
+                    <UpdateBank id={data.id} />
+                  </Button>
+                </Form>
+                <Form method="post">
+                  <Input type="hidden" name="actionType" value="delete" />
+                  <Input type="hidden" name="bankId" value={data.id} />
                   <Button
                     gap={5}
                     type="submit"

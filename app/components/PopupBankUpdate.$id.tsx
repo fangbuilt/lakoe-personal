@@ -23,8 +23,15 @@ import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
 import { BiEditAlt } from 'react-icons/bi';
+import { getBankList } from '~/modules/dashboard/dashboard.service';
 
-export default function UpdateBank() {
+export async function loader() {
+  return await getBankList();
+}
+
+export default function UpdateBank(props: any) {
+  const { id } = props;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -50,9 +57,10 @@ export default function UpdateBank() {
         <ModalOverlay />
 
         <ModalContent>
+          {/* {dataBank.map((data) => ( */}
           <Form method="post">
             <Input type="hidden" name="actionType" value="update" />
-            <Input type="hidden" name="bankId" />
+            <Input type="hidden" name="bankId" value={id} />
             <ModalHeader display={'flex'} alignItems={'center'}>
               <BsBank /> <Text ml={'5px'}>Update Informasi Bank </Text>
             </ModalHeader>
@@ -86,7 +94,7 @@ export default function UpdateBank() {
                       </Button>
                     </AccordionPanel>
                     <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'} name="BNI">
+                      <Button colorScheme="none" color={'gray.600'}>
                         BNI
                       </Button>
                     </AccordionPanel>
@@ -116,7 +124,7 @@ export default function UpdateBank() {
               <FormControl mt={4}>
                 <FormLabel>Nomor Rekening</FormLabel>
                 <Input
-                  type="text"
+                  type="number"
                   placeholder="123456789"
                   name="updateBankNumber"
                 />
@@ -134,6 +142,7 @@ export default function UpdateBank() {
               </Button>
             </ModalFooter>
           </Form>
+          {/* ))} */}
         </ModalContent>
       </Modal>
     </>

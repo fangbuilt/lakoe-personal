@@ -12,16 +12,11 @@ import {
   Button,
   useDisclosure,
   Text,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  Box,
-  AccordionIcon,
-  AccordionPanel,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
+import { SelectBankOption } from './selectBankOption';
 
 export default function PopupBank() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,50 +45,8 @@ export default function PopupBank() {
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <FormControl>
-                <FormLabel>Bank</FormLabel>
-                <Accordion allowToggle>
-                  <AccordionItem borderRadius={'10px'} width={'100%'}>
-                    <h2>
-                      <AccordionButton>
-                        <Box as="span" flex="1" textAlign="left">
-                          Pilih Rekening Bank untuk menerima penarikan
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BRI
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BCA
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        MANDIRI
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'} name="BNI">
-                        BNI
-                      </Button>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </FormControl>
-              <FormControl mt={4}>
-                <FormLabel>Nama Bank</FormLabel>
-                <Input
-                  type="text"
-                  ref={initialRef}
-                  placeholder="Nama Pemilik Rekening"
-                  name="bankName"
-                />
-              </FormControl>
+              <FormLabel>Bank</FormLabel>
+              <SelectBankOption />
 
               <FormControl mt={4}>
                 <FormLabel>Atas Nama</FormLabel>
