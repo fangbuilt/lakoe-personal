@@ -1,52 +1,14 @@
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  Modal,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalOverlay,
-  Text,
-  useClipboard,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
-import React from 'react';
-import data from '../tests/utils/dummy.json';
-
-export default function BackdropExample() {
-  const OverlayOne = () => (
-    <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
-  );
+import { Box, Button, Card, Center, Heading, Text, useClipboard } from "@chakra-ui/react";
+import data from "../tests/utils/dummy.json"
+import { Link } from "@remix-run/react";
+export default function PaymentPage (){
   const price = data.map((item) => item.price);
   const tagPrice = data.map((item) => item.tagPrice);
   const { onCopy, hasCopied } = useClipboard(`${price} ${tagPrice}`);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [overlay, setOverlay] = React.useState(<OverlayOne />);
-
-  return (
+  return(
     <>
-      <Center mt={'20px'}>
-        <Button
-          onClick={() => {
-            setOverlay(<OverlayOne />);
-            onOpen();
-          }}
-        >
-          Konfirmasi Pembayaran
-        </Button>
-      </Center>
-
-      <Modal size={'4xl'} isCentered isOpen={isOpen} onClose={onClose}>
-        {overlay}
-        <ModalContent>
-          <Center>
+    <Card>
+    <Center>
             {data.map((item, id) => (
               <Box boxSize={'3xl'} key={id}>
                 <Heading fontSize={'2xl'} mt={'16'} textAlign={'center'}>
@@ -96,21 +58,7 @@ export default function BackdropExample() {
               </Box>
             ))}
           </Center>
-
-          <ModalCloseButton bg={'gray.100'} fontWeight={'bold'} />
-
-          <ModalFooter display={'block'}>
-            <Center>
-              <Text display={'flex'}>
-                Powered By
-                {/* <Shopping /> */}
-                Lakoe. <Text color={'cyan.400'}> id</Text>
-              </Text>
-            </Center>
-            <Box w={'100%'} h={'30px'} bg={'cyan.400'}></Box>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+    </Card>
     </>
-  );
+  )
 }

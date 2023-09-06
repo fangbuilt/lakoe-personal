@@ -20,7 +20,7 @@ import {
   useNumberInput,
 } from '@chakra-ui/react';
 import { redirect, type ActionArgs } from '@remix-run/node';
-import { Form } from '@remix-run/react';
+import { Form, Link } from '@remix-run/react';
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
@@ -284,6 +284,7 @@ export default function Checkout() {
               </Box>
             ))}
             <Box>
+              <Link to={'/payment-page'}></Link>
               <Button bgColor={'GrayText'} w={'100%'} type="submit">
                 Beli Sekarang
               </Button>
