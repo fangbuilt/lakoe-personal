@@ -17,15 +17,13 @@ model User {
   email       String      @unique
   phone       String      @unique
   password    String
-  role        Role?       @relation(fields: [roleId], references: [id])
-  profileId   Profile?
-  roleId      String?
+  roles       Role[]
+  profile     Profile?
   usersStores UserStore[]
-  cart        Cart[]
+  carts       Cart[]
   cartItems   CartItem[]
-  invoice     Invoice?    @relation(fields: [invoiceId], references: [id])
-  invoiceId   String?     @unique
-  payment     Payment[]
+  invoices    Invoice?
+  payments    Payment[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now())
 
@@ -35,7 +33,8 @@ model User {
 model Role {
   id        String   @id @unique @default(uuid())
   name      String
-  users     User[]
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -44,10 +43,9 @@ model Role {
 
 model Profile {
   id        String     @id @unique @default(uuid())
-  locations String
-  user      User?      @relation(fields: [userId], references: [id])
-  userId    String?    @unique
-  location  Location[]
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @unique
+  locations Location[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
@@ -63,17 +61,17 @@ model Store {
   logoAttachment    String?
   bannerAttachment  String?
   usersStores       UserStore[]
-  storesdecorations StoreDecoration[]
-  operationhours    OperationHour[]
-  messagetemplates  MessageTemplate[]
+  storesDecorations StoreDecoration[]
+  operationHours    OperationHour[]
+  messageTemplates  MessageTemplate[]
   locations         Location[]
   products          Product[]
   categories        Category[]
   carts             Cart[]
   cartItems         CartItem[]
+  bankAccount       BankAccount[]
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @default(now())
-  BankAcount        BankAcount[]
 
   @@map("stores")
 }
@@ -84,7 +82,8 @@ model UserStore {
   store     Store?   @relation(fields: [storeId], references: [id])
   userId    String?
   storeId   String?
-  createdAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("users_stores")
 }
@@ -92,7 +91,7 @@ model UserStore {
 model Decoration {
   id                String            @id @unique @default(uuid())
   type              String
-  storesdecorations StoreDecoration[]
+  storesDecorations StoreDecoration[]
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @default(now())
 
@@ -160,14 +159,13 @@ model Product {
   id                 String            @id @unique @default(uuid())
   name               String
   description        String
-  attachments        String
+  attachments        String[]
   isActive           Boolean           @default(true)
-  variants           String
-  size               String[]
   minumumOrder       Int
   store              Store?            @relation(fields: [storeId], references: [id])
   storeId            String?
-  variant            Variant[]
+  slug               String
+  variants           Variant[]
   productsCategories ProductCategory[]
   cartItems          CartItem[]
   createdAt          DateTime          @default(now())
@@ -202,18 +200,33 @@ model VariantOption {
 }
 
 model VariantOptionValue {
-  id               String         @id @unique @default(uuid())
-  variantOption    VariantOption? @relation(fields: [variantOptionsId], references: [id])
-  sku              String
-  weight           Float
-  stock            Int
-  price            Float
-  isActive         Boolean        @default(true)
-  variantOptionsId String?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @default(now())
+  id              String                 @id @unique @default(uuid())
+  variantOption   VariantOption?         @relation(fields: [variantOptionId], references: [id])
+  sku             String
+  weight          Float
+  size            VariantOptionValueSize @relation(fields: [sizeId], references: [id])
+  sizeId          String                 @unique
+  stock           Int
+  price           Float
+  isActive        Boolean                @default(true)
+  variantOptionId String?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @default(now())
 
   @@map("variant_option_values")
+}
+
+model VariantOptionValueSize {
+  id                   String              @id @unique @default(uuid())
+  length               Float
+  width                Float
+  height               Float
+  variantOptionValue   VariantOptionValue?
+  variantOptionValueId String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now())
+
+  @@map("product_sizes")
 }
 
 model Category {
@@ -231,7 +244,7 @@ model Category {
 model ProductCategory {
   id         String    @id @unique @default(uuid())
   product    Product?  @relation(fields: [productId], references: [id])
-  categories Category? @relation(fields: [categoryId], references: [id])
+  category   Category? @relation(fields: [categoryId], references: [id])
   productId  String?
   categoryId String?
   createdAt  DateTime  @default(now())
@@ -242,15 +255,14 @@ model ProductCategory {
 
 model Cart {
   id        String     @id @unique @default(uuid())
-  prices    Float
+  price     Float
   discount  Float
-  user      User?      @relation(fields: [usersId], references: [id])
+  user      User?      @relation(fields: [userId], references: [id])
   store     Store?     @relation(fields: [storeId], references: [id])
-  usersId   String?
+  userId    String?
   storeId   String?
   cartItems CartItem[]
-  invoice   Invoice?   @relation(fields: [invoiceId], references: [id])
-  invoiceId String?    @unique
+  invoice   Invoice?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
@@ -277,26 +289,27 @@ model CartItem {
 
 model Invoice {
   id                 String           @id @unique @default(uuid())
-  prices             Float
+  price              Float
   discount           Float
   status             String
-  receiverLongtitude String
+  receiverLongitude  String
   receiverLatitude   String
   receiverDistrict   String
   receiverPhone      String
   receiverAddress    String
   receiverName       String
   invoiceNumber      String
-  cart               Cart?
+  waybill            String
+  cart               Cart?            @relation(fields: [cartId], references: [id])
   payment            Payment?
   courier            Courier?
-  user               User?
-  cartId             String?          @unique(map: "invoice_cart_id_unique")
-  paymentId          String?          @unique(map: "invoice_payment_id_unique")
-  courierId          String?          @unique(map: "invoice_courier_id_unique")
-  userId             String?          @unique(map: "invoice_user_id_unique")
-  invoiceHistory     InvoiceHistory[]
-  mooteTransactionId String
+  user               User?            @relation(fields: [userId], references: [id])
+  cartId             String?          @unique
+  paymentId          String?          @unique
+  courierId          String?          @unique
+  userId             String?          @unique
+  invoiceHistories   InvoiceHistory[]
+  mootaTransactionId String
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @default(now())
 
@@ -310,8 +323,8 @@ model Payment {
   status    String
   invoice   Invoice? @relation(fields: [invoiceId], references: [id])
   invoiceId String?  @unique
-  user      User?    @relation(fields: [usersId], references: [id])
-  usersId   String?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -344,12 +357,12 @@ model InvoiceHistory {
   @@map("invoice_histories")
 }
 
-model BankAcount {
-  id        String  @id @unique @default(uuid())
-  bank      String
-  accNumber Int
-  store     Store?  @relation(fields: [storeId], references: [id])
-  storeId   String?
+model BankAccount {
+  id            String  @id @unique @default(uuid())
+  bank          String
+  accountNumber Int
+  store         Store?  @relation(fields: [storeId], references: [id])
+  storeId       String?
 
   @@map("bank_accounts")
 }
