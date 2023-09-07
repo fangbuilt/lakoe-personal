@@ -2,25 +2,43 @@ import { Box, Checkbox, Image, Switch, Text } from '@chakra-ui/react';
 import { FaCircle } from 'react-icons/fa';
 import ProductModal from './ProductModal';
 
-export default function ProductCard() {
+export interface IProduct {
+  id: string;
+  title: string;
+  image: string;
+  price: string;
+  stock: string;
+  sku: string;
+  varians: string;
+  isActive: boolean;
+}
+
+export default function ProductCard(props: IProduct) {
   return (
     <>
-      <Box mt={3} p={3} borderWidth="2px" borderRadius={'10px'}>
+      <Box mt={3} p={3} borderWidth="2px" borderRadius={'10px'} key={props.id}>
         <Box display={'flex'} gap={3}>
           <Box display={'flex'} gap={3}>
             <Image
-              src="https://bit.ly/dan-abramov"
-              alt="Dan Abramov"
+              src={props.image}
               w={'100px'}
               h={'100px'}
               borderRadius={'8px'}
+              objectFit={'cover'}
             />
             <Box>
-              <Text fontSize={'18px'} fontWeight={'bold'}>
-                KAOS BASIC COTTON KENARI
+              <Text
+                fontSize={'18px'}
+                color={'#1D1D1D'}
+                w={'375px'}
+                whiteSpace={'nowrap'}
+                overflow={'hidden'}
+                textOverflow={'ellipsis'}
+              >
+                {props.title}
               </Text>
               <Box display={'flex'} alignItems={'center'} gap={2} mb={2}>
-                <Text fontSize={'16px'}>Rp 55.000</Text>
+                <Text fontSize={'16px'}>Rp {props.price}</Text>
                 <Box
                   display={'flex'}
                   alignItems={'center'}
@@ -28,7 +46,7 @@ export default function ProductCard() {
                   color={'gray'}
                 >
                   <FaCircle size="5px" />
-                  <Text fontSize={'16px'}>Stok: 20</Text>
+                  <Text fontSize={'16px'}>Stok: {props.stock}</Text>
                 </Box>
                 <Box
                   display={'flex'}
@@ -37,7 +55,7 @@ export default function ProductCard() {
                   color={'gray'}
                 >
                   <FaCircle size="5px" />
-                  <Text fontSize={'16px'}>SKU: 0219AKD192</Text>
+                  <Text fontSize={'16px'}>SKU: {props.sku}</Text>
                 </Box>
               </Box>
               <ProductModal />

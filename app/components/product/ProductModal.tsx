@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Image,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -9,20 +10,19 @@ import {
   MenuItem,
   MenuList,
   Modal,
-  ModalBody,
-  ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 
-import { BsThreeDots } from 'react-icons/bs';
-import { FaRegEdit } from 'react-icons/fa';
-import { HiOutlineDuplicate } from 'react-icons/hi';
-import { MdOutlineDelete } from 'react-icons/md';
+import CloseCircle from '~/assets/icon-pack/close-circle.svg';
+import Copy from '~/assets/icon-pack/copy.svg';
+import Edit from '~/assets/icon-pack/edit.svg';
+import More from '~/assets/icon-pack/more.svg';
+import Trash from '~/assets/icon-pack/trash.svg';
+import Link2 from '~/assets/icon-pack/link-2.svg';
 
 export default function ProductModal() {
   const {
@@ -34,6 +34,11 @@ export default function ProductModal() {
     isOpen: isEditStockOpen,
     onOpen: onEditStockOpen,
     onClose: onEditStockClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
   } = useDisclosure();
   return (
     <>
@@ -62,30 +67,30 @@ export default function ProductModal() {
           variant="outline"
           fontSize={'14px'}
         >
+          <Image src={Link2} />
           Lihat Halaman
         </Button>
         <Menu>
           <MenuButton
             as={Button}
-            // rightIcon={<ChevronDownIcon />}
             borderRadius={'50px'}
             size="sm"
             variant="outline"
             gap={1}
           >
-            <BsThreeDots />
+            <Image src={More} />
           </MenuButton>
           <MenuList>
-            <MenuItem gap={1}>
-              <FaRegEdit />
+            <MenuItem gap={2}>
+              <Image src={Edit} />
               Edit Produk
             </MenuItem>
-            <MenuItem gap={1}>
-              <HiOutlineDuplicate />
+            <MenuItem gap={2}>
+              <Image src={Copy} />
               Duplikat Produk
             </MenuItem>
-            <MenuItem gap={1}>
-              <MdOutlineDelete />
+            <MenuItem gap={2} onClick={onDeleteOpen}>
+              <Image src={Trash} />
               Hapus Produk
             </MenuItem>
           </MenuList>
@@ -95,55 +100,145 @@ export default function ProductModal() {
       {/* Change Price */}
       <Modal isOpen={isEditPriceOpen} onClose={onEditPriceClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader fontSize={'18px'}>Ubah Harga</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+        <ModalContent p={5}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignContent={'center'}
+          >
+            <Text fontSize={'18px'} color={'#1D1D1D'}>
+              Ubah Harga
+            </Text>
+            <Button onClick={onEditPriceClose} variant="link">
+              <Image src={CloseCircle} />
+            </Button>
+          </Box>
+          <Box py={3}>
             <Text fontSize={'14px'}>
               Ubah harga untuk produk KAOS BASIC COTTON KENARI - DUSTY ROSE [
               COTTON COMBED 30S ]
             </Text>
-            <InputGroup mt={2}>
-              <InputLeftAddon children="Rp" />
-              <Input placeholder="ubah harga" />
-            </InputGroup>
-          </ModalBody>
+            <Form method="POST">
+              <InputGroup mt={3} marginBottom={1}>
+                <InputLeftAddon children="Rp" />
+                <Input placeholder="ubah harga" w={'350px'} />
+              </InputGroup>
+            </Form>
+          </Box>
 
-          <ModalFooter>
-            <Button onClick={onEditPriceClose} borderRadius={'50px'}>
+          <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
+            <Button
+              onClick={onEditPriceClose}
+              borderRadius={'50px'}
+              variant={'outline'}
+            >
               Batal
             </Button>
-            <Button colorScheme="blue" mr={3} borderRadius={'50px'}>
+            <Button
+              colorScheme="#0086B4"
+              bgColor={'#0086B4'}
+              color={'white'}
+              borderRadius={'50px'}
+            >
               Simpan
             </Button>
-          </ModalFooter>
+          </Box>
         </ModalContent>
       </Modal>
 
       {/* Change Stock */}
       <Modal isOpen={isEditStockOpen} onClose={onEditStockClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader fontSize={'18px'}>Ubah Stok</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+        <ModalContent p={5}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignContent={'center'}
+          >
+            <Text fontSize={'18px'} color={'#1D1D1D'}>
+              Ubah Harga
+            </Text>
+            <Button onClick={onEditStockClose} variant="link">
+              <Image src={CloseCircle} />
+            </Button>
+          </Box>
+          <Box py={3}>
             <Text fontSize={'14px'}>
               Ubah stok untuk produk KAOS BASIC COTTON KENARI - DUSTY ROSE [
               COTTON COMBED 30S ]
             </Text>
-            <InputGroup mt={2}>
-              <Input placeholder="ubah stok" />
-            </InputGroup>
-          </ModalBody>
+            <Form method="POST">
+              <InputGroup mt={3} marginBottom={1}>
+                {/* <InputLeftAddon children="Rp" /> */}
+                <Input placeholder="ubah stok" w={'400px'} />
+              </InputGroup>
+            </Form>
+          </Box>
 
-          <ModalFooter>
-            <Button onClick={onEditStockClose} borderRadius={'50px'}>
+          <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
+            <Button
+              onClick={onEditStockClose}
+              borderRadius={'50px'}
+              variant={'outline'}
+            >
               Batal
             </Button>
-            <Button colorScheme="blue" mr={3} borderRadius={'50px'}>
+            <Button
+              colorScheme="#0086B4"
+              bgColor={'#0086B4'}
+              color={'white'}
+              borderRadius={'50px'}
+            >
               Simpan
             </Button>
-          </ModalFooter>
+          </Box>
+        </ModalContent>
+      </Modal>
+
+      {/* Delete */}
+      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+        <ModalOverlay />
+        <ModalContent p={5}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignContent={'center'}
+          >
+            <Text fontSize={'18px'} color={'#1D1D1D'}>
+              Hapus Produk?
+            </Text>
+            <Button onClick={onDeleteClose} variant="link">
+              <Image src={CloseCircle} />
+            </Button>
+          </Box>
+          <Box py={3}>
+            <Text fontSize={'14px'}>
+              Produk KAOS BASIC COTTON KENARI - DUSTY ROSE [ COTTON COMBED 30S ]
+              akan dihapus
+            </Text>
+            <Text fontSize={'14px'} mt={3}>
+              Produk yang dihapus tidak akan bisa dibatalkan. Pastikan produk
+              yang kamu pilih itu sudah benar.
+            </Text>
+          </Box>
+
+          <Box display={'flex'} justifyContent={'flex-end'} gap={2} mt={4}>
+            <Button
+              onClick={onDeleteClose}
+              borderRadius={'50px'}
+              variant={'outline'}
+            >
+              Batalkan
+            </Button>
+            <Button
+              colorScheme="#0086B4"
+              bgColor={'#0086B4'}
+              color={'white'}
+              borderRadius={'50px'}
+            >
+              Ya, Hapus
+            </Button>
+          </Box>
         </ModalContent>
       </Modal>
     </>
