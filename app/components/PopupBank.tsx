@@ -55,15 +55,15 @@ export default function PopupBank() {
               <FormLabel>Bank</FormLabel>
               <SelectBankOption />
 
-              {/* <FormControl mt={4}>
+              <FormControl mt={4}>
                 <FormLabel>Atas Nama</FormLabel>
                 <Input
                   type="text"
                   ref={initialRef}
                   placeholder="Nama Pemilik Rekening"
-                  name="name"
+                  name="accountName"
                 />
-              </FormControl> */}
+              </FormControl>
 
               <FormControl mt={4}>
                 <FormLabel>Nomor Rekening</FormLabel>

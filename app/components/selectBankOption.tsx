@@ -30,24 +30,23 @@ export function SelectBankOptionUpdate() {
 }
 
 export function SelectRekening({ dataBank }: any) {
-  if (!dataBank || dataBank.length === 0) {
-    return 'ga dapet bank';
-  }
+  // const { bank, accountNumber } = dataBank;
+  // console.log("ini isi Bank", dataBank);
 
   return (
-    <>
+    <div>
       {dataBank.map((data: any) => (
         <CreatableSelect
           key={data.id}
           placeholder="Pilih Rekening Anda"
           options={[
             {
-              label: `${data.bank} - ${data.accountNumber}`,
-              value: `${data.bank} - ${data.accountNumber}`,
+              label: `${data.bank} - ${data.accountName} - ${data.accountNumber}`,
+              value: `${data.bank} - ${data.accountName} - ${data.accountNumber}`,
             },
           ]}
         />
       ))}
-    </>
+    </div>
   );
 }

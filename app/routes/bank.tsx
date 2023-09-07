@@ -22,9 +22,10 @@ export async function action({ request }: ActionArgs) {
 
   const bankId = formData.get('bankId');
   const actionType = formData.get('actionType');
-  // const name = formData.get("name");
+  const accountName = formData.get('accountName');
   const bank = formData.get('bank');
   const accountNumber = formData.get('accountNumber');
+  const updateAccountName = formData.get('updateAccountName');
   const updateBankName = formData.get('updateBankName');
   const updateAccountNumber = formData.get('updateAccountNumber');
 
@@ -35,7 +36,7 @@ export async function action({ request }: ActionArgs) {
 
   if (actionType === 'create' && bank && accountNumber) {
     await createBank({
-      // name: name,
+      accountName: accountName,
       bank: bank,
       accountNumber: accountNumber,
     });
@@ -45,13 +46,15 @@ export async function action({ request }: ActionArgs) {
   if (
     actionType === 'update' &&
     bankId &&
+    updateAccountName &&
     updateBankName &&
     updateAccountNumber
   ) {
     const updated = await updateBank(
       bankId as string,
+      updateAccountName as string,
       updateBankName as string,
-      parseInt(updateAccountNumber as string)
+      updateAccountNumber as string
     );
     return {
       updated,
@@ -130,7 +133,7 @@ export default function Bank() {
                   <Text as={'span'} fontWeight={'700'}>
                     {data.bank}
                   </Text>
-                  {/* -{data.name}- */}-{data.accountNumber}
+                  -{data.accountName}-{data.accountNumber}
                 </Text>
               </Box>
               <Box display={'flex'}>

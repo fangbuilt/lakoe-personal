@@ -22,9 +22,9 @@ export async function getNameBank(bank: string) {
 export async function createBank(data: any) {
   const dataPost = await db.bankAccount.create({
     data: {
-      // store: data.store,
+      accountName: data.accountName,
       bank: data.bank,
-      accountNumber: parseInt(data.accountNumber),
+      accountNumber: data.accountNumber,
     },
   });
   return dataPost;
@@ -32,8 +32,9 @@ export async function createBank(data: any) {
 
 export async function updateBank(
   Id: string,
+  updateAccountName: string,
   updateBankName: string,
-  updateAccountNumber: number
+  updateAccountNumber: string
 ) {
   try {
     const updatedBank = await db.bankAccount.update({
@@ -41,6 +42,7 @@ export async function updateBank(
         id: Id,
       },
       data: {
+        accountName: updateAccountName,
         bank: updateBankName,
         accountNumber: updateAccountNumber,
       },
