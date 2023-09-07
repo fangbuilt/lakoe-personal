@@ -37,6 +37,7 @@ import {
 import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import { useState } from "react";
 import { db } from "~/libs/prisma/db.server";
+import ModalPengiriman from "~/components/ModalPengiriman";
 
 export function getStatusBadge(status: string) {
   if (status.toUpperCase() === "UNPAID") {
@@ -280,19 +281,32 @@ export function getStatusLacakButton(status: string) {
 }
 
 export function getStatusLacakPengiriman(status: string) {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
   if (status.toUpperCase() === "IN_TRANSIT") {
     return (
-      <Button
-        fontSize={"14px"}
-        fontWeight={"700"}
-        lineHeight={"20px"}
-        color={"#0086B4"}
-        background={"#FFFFFF)"}
-        colorScheme="#FFFFFF)"
-        w={"120px"}
-      >
-        Lacak Pengiriman
-      </Button>
+      <>
+        <Button
+          fontSize={"14px"}
+          fontWeight={"700"}
+          lineHeight={"20px"}
+          color={"#0086B4"}
+          background={"#FFFFFF)"}
+          colorScheme="#FFFFFF)"
+          w={"120px"}
+          onClick={openModal}
+        >
+          Lacak Pengiriman
+        </Button>
+        <ModalPengiriman isOpen={modalIsOpen} onClose={closeModal} />
+      </>
     );
   }
 
