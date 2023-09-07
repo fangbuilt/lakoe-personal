@@ -9,8 +9,6 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useLoaderData } from "@remix-run/react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const dataDummy = [
@@ -31,34 +29,9 @@ export const loader = async () => {
   return process.env.API_BITESHIP;
 };
 
-export default function Index(props: any) {
-  const [selectStatus, setSelectStatus] = useState<string | null>(null);
-  const loaderData = useLoaderData<typeof loader>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+export default function Index() {
+  const {onOpen,} = useDisclosure();
 
-  const sendDataApi = async () => {
-    try {
-      const data = JSON.stringify({
-        status: selectStatus,
-      });
-
-      const response = await fetch(`https://api.biteship.com/v1/tracking/:id`, {
-        method: "GET",
-        headers: {
-          authorization: loaderData,
-        },
-        body: data,
-      });
-
-      if (response.ok) {
-        alert("Get data Success");
-      } else {
-        alert("Get data failed");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>
@@ -72,7 +45,6 @@ export default function Index(props: any) {
             justifyContent={"space-between"}
             margin={"50px 5% 10px"}
           >
-            {/* atas */}
             <Box
               display={"flex"}
               justifyContent={"space-between"}
@@ -129,7 +101,6 @@ export default function Index(props: any) {
 
             <Divider w={"100%"} />
 
-            {/* bawah */}
             <Box
               display={"flex"}
               justifyContent={"space-between"}
