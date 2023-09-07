@@ -1,5 +1,5 @@
 import { Flex} from '@chakra-ui/react';
-import NavOrder from '~/components/NavOrder';
+import NavOrder from '~/layouts/NavOrder';
 import { ImplementGrid } from '~/layouts/Grid';
 
 export default function Order() {

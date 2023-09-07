@@ -1,18 +1,19 @@
 import { Box } from "@chakra-ui/react";
-import type { ReactNode } from 'react';
-
+import type { ReactNode } from "react";
 
 interface LayoutProps {
-    children: ReactNode;
-  }
+  children: ReactNode;
+}
 
-export default function ScrollBox ({ children }: LayoutProps){
-    return(
-        <>
-         <Box style={{ overflowY: "scroll",maxHeight: "700px", }}
-            sx={{"::-webkit-scrollbar": {display: "none", }}}>
-                {children}
-        </Box>
-        </>
-    )
+export default function ScrollBox({ children }: LayoutProps) {
+  return (
+    <>
+      <Box
+        style={{ overflowY: "auto", maxHeight: "400px" }}
+        sx={{ "::-webkit-scrollbar": { display: "none" } }}
+      >
+        {children}
+      </Box>
+    </>
+  );
 }
