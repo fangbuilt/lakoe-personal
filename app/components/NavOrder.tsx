@@ -302,7 +302,7 @@ export default function NavOrder() {
 
             <Box my={5} paddingBottom={"100px"} background={"white"}>
               <TabPanels>
-                {/* YOUR CARD START IN HERE */}
+                {/* YOUR CARD START IN HERE ! */}
 
                 <ScrollBox>
                   <TabPanel>TIM BAGIAN CARD SEMUA</TabPanel>
