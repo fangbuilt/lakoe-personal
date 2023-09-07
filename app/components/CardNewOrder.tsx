@@ -84,7 +84,7 @@ export default function CardNewOrder(props: any) {
             z_i_p: '99999',
           },
           groups: ['4243829086487936'],
-          status: 'active', // possible statuses: active, unsubscribed, unconfirmed, bounced or junk.
+          status: 'active',
           subscribed_at: '2021-08-31 14:22:08',
         };
 
