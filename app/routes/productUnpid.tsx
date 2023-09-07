@@ -1,9 +1,11 @@
 import { Box, Text } from '@chakra-ui/react';
 import React from 'react';
+
 import datetimeDifference from 'datetime-difference';
 import MailerLite from '@mailerlite/mailerlite-nodejs';
 import { PrismaClient } from '@prisma/client';
 import { useLoaderData } from '@remix-run/react';
+
 interface CreateOrUpdateParams {
   email: string;
   fields?: object;
@@ -16,21 +18,28 @@ interface CreateOrUpdateParams {
   unsubscribed_at?: string;
 }
 
+const apikey = process.env.API_KEY as string;
+console.log('mailerlite iniiiiii', apikey);
+
 const mailerlite = new MailerLite({
-  api_key:
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZTNhM2I0ZjQyM2I1ZjMzNGFmZjYwMTI1M2NiOWNiYjkzMmJlYmRhNjM2MjA4Mjc1NjY4Zjc2MzBiMDNlZTdmNzNlZTYwNzAzYmNkNTdmMWQiLCJpYXQiOjE2OTM5MzExMjUuNDQ3MDg5LCJuYmYiOjE2OTM5MzExMjUuNDQ3MDkyLCJleHAiOjQ4NDk2MDQ3MjUuNDQyOTIsInN1YiI6IjYxMTE1NyIsInNjb3BlcyI6W119.ulMjk2-7itYmldu0zKRZutb37X5Ys8GeUe8hHN9X0y_dJmaBjZFB9xzfupK-6oIgO9aFWkXhMfj623BKE64sK75rJo99WtCqvgOuuG4XS2xeqvKlXY_2e45dSmE8-N-IKthQoYNqX02hBu-7fMUjByQ5ViQjq2jl1to3f7nOg_zNmy8pbQoPdCemFGtbvwBtJ0ACbog-mLztu6vNDEto7WbMYfWXWpMmY_6s4qPmKR30EhX4UyzK9UQ2pkxGpXCNERra8Bm0EMsJc35vgW12nFtnZP3g4Puz_DI5tiDWjQ8b6VIWLCJUrpiWZ9MeemBABl5azOHOFmkf-WH0xtRE4NbW9QWQN3sEIqEMBkSrlFbUdj7U10R5U2l-w3NY8EavxR47fcwQL08ef6JySz45NwbbNdQ_ymhK05AnEXrd5deZBhmU2MUr-sqeSwtTdivD8g8W3uuq6lraArs5bE5UypPyk-reT4exdvAnSCxmtn7q0FYJlqz3mTDZNpudJL98EAhCY4tqntbg7KqDpirDLhzHVhqzASgpapFM5E1WMK1nBK2diQjZpR7F5qovvcvOIjCu4vKMIrCbvtFi6rF7bnJLRjr9BdRxrQmCrdyEN7xlV1pEeIgl1K0mfbdD-zhTrNHoAa7lCbtVYsH397BXawtUNLExcJnB5z8bFhCULic',
+  api_key: apikey,
 });
+
 const prisma = new PrismaClient();
 
 export async function loader() {
-  const datash = await prisma.payment.findMany();
+  const datash = await prisma.payment.findMany({
+    include: {
+      user: true,
+    },
+  });
 
   for (const data of datash) {
     const waktuTerakhirPembayaran = data.updatedAt;
-    console.log('waktuTerakhirPembayaran', waktuTerakhirPembayaran);
+    // console.log('waktuTerakhirPembayaran', waktuTerakhirPembayaran);
     const selisihWaktu = hitungSelisihWaktu(waktuTerakhirPembayaran);
-
-    if (selisihWaktu > 3 && data.status !== 'paid') {
+    console.log('selisihWaktu', selisihWaktu.minutes);
+    if (selisihWaktu.hours > 12 && data.status !== 'paid') {
       const pengguna = await prisma.user.findFirst({
         where: { id: data.usersId as string },
         select: { email: true },
@@ -106,6 +115,11 @@ const MailerLiteComponent = () => {
               <Text>{data.usersId}</Text>
               <Text>{data.createdAt}</Text>
               <Text>{data.updatedAt}</Text>
+
+              <Text>{data.user?.id}</Text>
+              <Text>{data.user?.name}</Text>
+              <Text>{data.user?.phone}</Text>
+              <Text>{data.user?.email}</Text>
             </Box>
           ))}
       </Box>
