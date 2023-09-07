@@ -12,20 +12,22 @@ datasource db {
 
 // your beautiful schema goes below :
 model User {
-  id          String      @id @unique @default(uuid())
-  name        String
-  email       String      @unique
-  phone       String      @unique
-  password    String
-  roles       Role[]
-  profile     Profile?
-  usersStores UserStore[]
-  carts       Cart[]
-  cartItems   CartItem[]
-  invoices    Invoice?
-  payments    Payment[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @default(now())
+  id        String     @id @unique @default(uuid())
+  name      String
+  email     String     @unique
+  phone     String     @unique
+  password  String
+  profile   Profile?
+  store     Store?     @relation(fields: [storeId], references: [id])
+  carts     Cart[]
+  cartItems CartItem[]
+  invoices  Invoice[]
+  payments  Payment[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  role      Role       @relation(fields: [roleId], references: [id])
+  roleId    String
+  storeId   String?
 
   @@map("users")
 }
@@ -33,8 +35,7 @@ model User {
 model Role {
   id        String   @id @unique @default(uuid())
   name      String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @unique
+  users     User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -55,18 +56,18 @@ model Profile {
 model Store {
   id                String            @id @unique @default(uuid())
   name              String
+  credit            Int               @default(0)
   slogan            String?
   description       String
   domain            String
   logoAttachment    String?
   bannerAttachment  String?
-  usersStores       UserStore[]
+  users             User[]
   storesDecorations StoreDecoration[]
   operationHours    OperationHour[]
   messageTemplates  MessageTemplate[]
   locations         Location[]
   products          Product[]
-  categories        Category[]
   carts             Cart[]
   cartItems         CartItem[]
   bankAccount       BankAccount[]
@@ -74,18 +75,6 @@ model Store {
   updatedAt         DateTime          @default(now())
 
   @@map("stores")
-}
-
-model UserStore {
-  id        String   @id @unique @default(uuid())
-  user      User?    @relation(fields: [userId], references: [id])
-  store     Store?   @relation(fields: [storeId], references: [id])
-  userId    String?
-  storeId   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  @@map("users_stores")
 }
 
 model Decoration {
@@ -156,20 +145,21 @@ model Location {
 }
 
 model Product {
-  id                 String            @id @unique @default(uuid())
-  name               String
-  description        String
-  attachments        String[]
-  isActive           Boolean           @default(true)
-  minumumOrder       Int
-  store              Store?            @relation(fields: [storeId], references: [id])
-  storeId            String?
-  slug               String
-  variants           Variant[]
-  productsCategories ProductCategory[]
-  cartItems          CartItem[]
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @default(now())
+  id           String     @id @unique @default(uuid())
+  name         String
+  description  String
+  attachments  String[]
+  isActive     Boolean    @default(true)
+  minumumOrder Int
+  store        Store?     @relation(fields: [storeId], references: [id])
+  storeId      String
+  category     Category   @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  slug         String
+  variants     Variant[]
+  cartItems    CartItem[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
 
   @@map("products")
 }
@@ -200,18 +190,17 @@ model VariantOption {
 }
 
 model VariantOptionValue {
-  id              String                 @id @unique @default(uuid())
-  variantOption   VariantOption?         @relation(fields: [variantOptionId], references: [id])
+  id              String                  @id @unique @default(uuid())
+  variantOption   VariantOption?          @relation(fields: [variantOptionId], references: [id])
   sku             String
   weight          Float
-  size            VariantOptionValueSize @relation(fields: [sizeId], references: [id])
-  sizeId          String                 @unique
+  size            VariantOptionValueSize?
   stock           Int
   price           Float
-  isActive        Boolean                @default(true)
+  isActive        Boolean                 @default(true)
   variantOptionId String?
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @default(now())
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @default(now())
 
   @@map("variant_option_values")
 }
@@ -221,8 +210,8 @@ model VariantOptionValueSize {
   length               Float
   width                Float
   height               Float
-  variantOptionValue   VariantOptionValue?
-  variantOptionValueId String?
+  variantOptionValue   VariantOptionValue? @relation(fields: [variantOptionValueId], references: [id])
+  variantOptionValueId String?             @unique
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @default(now())
 
@@ -230,27 +219,13 @@ model VariantOptionValueSize {
 }
 
 model Category {
-  id                 String            @id @unique @default(uuid())
-  name               String
-  store              Store?            @relation(fields: [storeId], references: [id])
-  storeId            String?
-  productsCategories ProductCategory[]
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @default(now())
+  id        String    @id @unique @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  Product   Product[]
 
   @@map("categories")
-}
-
-model ProductCategory {
-  id         String    @id @unique @default(uuid())
-  product    Product?  @relation(fields: [productId], references: [id])
-  category   Category? @relation(fields: [categoryId], references: [id])
-  productId  String?
-  categoryId String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-
-  @@map("products_categories")
 }
 
 model Cart {
@@ -262,7 +237,7 @@ model Cart {
   userId    String?
   storeId   String?
   cartItems CartItem[]
-  invoice   Invoice?
+  invoice   Invoice[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
@@ -301,30 +276,29 @@ model Invoice {
   invoiceNumber      String
   waybill            String
   cart               Cart?            @relation(fields: [cartId], references: [id])
-  payment            Payment?
-  courier            Courier?
+  payment            Payment?         @relation(fields: [paymentId], references: [id])
+  courier            Courier?         @relation(fields: [courierId], references: [id])
   user               User?            @relation(fields: [userId], references: [id])
-  cartId             String?          @unique
-  paymentId          String?          @unique
-  courierId          String?          @unique
-  userId             String?          @unique
+  cartId             String?
+  courierId          String?
+  userId             String?
   invoiceHistories   InvoiceHistory[]
   mootaTransactionId String
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @default(now())
+  paymentId          String?
 
   @@map("invoices")
 }
 
 model Payment {
-  id        String   @id @unique @default(uuid())
-  bank      String
-  amount    Float
-  status    String
-  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId String?  @unique
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    String?
+  id      String    @id @unique @default(uuid())
+  bank    String
+  amount  Float
+  status  String
+  invoice Invoice[]
+  user    User?     @relation(fields: [userId], references: [id])
+  userId  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -333,15 +307,24 @@ model Payment {
 }
 
 model Courier {
-  id                 String   @id @unique @default(uuid())
-  courierCode        String
-  courierServiceName String
-  courierServiceCode String
-  price              Float
-  invoice            Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId          String?  @unique
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @default(now())
+  id                           String    @id @unique @default(uuid())
+  availableForCashOnDelivery   Boolean
+  availableForProofOfDelivery  Boolean
+  availableForInstantWaybillId Boolean
+  courierName                  String
+  courierCode                  String
+  courierServiceName           String
+  courierServiceCode           String
+  tier                         String
+  description                  String
+  serviceType                  String
+  shippingType                 String
+  shipmentDurationRange        String
+  shipmentDurationUnit         String
+  price                        Float
+  invoice                      Invoice[]
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @default(now())
 
   @@map("couriers")
 }
@@ -360,10 +343,10 @@ model InvoiceHistory {
 model BankAccount {
   id            String  @id @unique @default(uuid())
   bank          String
-  accountNumber Int
+  accountName   String
+  accountNumber String
   store         Store?  @relation(fields: [storeId], references: [id])
   storeId       String?
 
   @@map("bank_accounts")
-
 }
