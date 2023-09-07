@@ -2,12 +2,6 @@ import {
   Box,
   Button,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Grid,
-  GridItem,
-  Input,
   Tab,
   TabList,
   TabPanel,
@@ -17,33 +11,41 @@ import {
   Tabs,
   Tbody,
   Td,
-  Textarea,
   Tr,
   Text,
   Image,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  useDisclosure,
-  Select,
 } from '@chakra-ui/react';
 import { ImplementGrid } from '~/layouts/Grid';
-import GalleryAdd from '../assets/icon-pack/gallery-add.svg';
 import Location from '../assets/icon-pack/location.svg';
 import Edit from '../assets/icon-pack/edit.svg';
 import Trash from '../assets/icon-pack/trash.svg';
 import LocationSlash from '../assets/icon-pack/location-slash.svg';
-import CloseCircle from '../assets/icon-pack/close-circle.svg';
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  ModalCreateLocation,
+  ModalDelete,
+} from '../components/configuration/location/Modals';
 
 export default function StoreConfiguration() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // ini logic modal
+  const [isOpenModal1, setIsOpenModal1] = useState(false);
+  const [isOpenModal2, setIsOpenModal2] = useState(false);
 
-  const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
+  const openModal1 = () => {
+    setIsOpenModal1(true);
+  };
+
+  const closeModal1 = () => {
+    setIsOpenModal1(false);
+  };
+
+  const openModal2 = () => {
+    setIsOpenModal2(true);
+  };
+
+  const closeModal2 = () => {
+    setIsOpenModal2(false);
+  };
 
   return (
     <ImplementGrid>
@@ -61,112 +63,9 @@ export default function StoreConfiguration() {
           </TabList>
 
           <TabPanels>
+            {/* INI BAGIAN rifki */}
             <TabPanel>
-              <Text fontWeight={'semibold'} fontSize={'16px'} mb={3}>
-                Informasi Toko
-              </Text>
-
-              <FormControl>
-                <Grid
-                  h="150px"
-                  templateRows="repeat(2, 1fr)"
-                  templateColumns="repeat(2, 1fr)"
-                  gap={4}
-                >
-                  <GridItem colSpan={1}>
-                    <FormLabel color={'blackAlpha.700'}>Slogan</FormLabel>
-                    <Input
-                      fontSize={'15px'}
-                      placeholder="Buat Slogan Untuk Toko"
-                      type="text"
-                      py={-5}
-                    />
-                    <FormHelperText
-                      display={'flex'}
-                      justifyContent={'end'}
-                      mt={1}
-                      fontSize={'13px'}
-                      color="blackAlpha.500"
-                    >
-                      0/48
-                    </FormHelperText>
-                  </GridItem>
-                  <GridItem rowSpan={2}>
-                    <FormLabel color={'blackAlpha.700'}>Deskripsi</FormLabel>
-
-                    <Textarea
-                      fontSize={'15px'}
-                      h={'150px'}
-                      resize={'none'}
-                      placeholder="Tuliskan deskripsi toko disini"
-                    />
-
-                    <FormHelperText
-                      display={'flex'}
-                      justifyContent={'end'}
-                      mt={1}
-                      fontSize={'13px'}
-                      color="blackAlpha.500"
-                    >
-                      0/200
-                    </FormHelperText>
-                  </GridItem>
-                  <GridItem colSpan={1}>
-                    <FormLabel color={'blackAlpha.700'}>Nama Toko</FormLabel>
-                    <Input
-                      fontSize={'15px'}
-                      placeholder="Buat Nama Toko"
-                      type="text"
-                    />
-                  </GridItem>
-                </Grid>
-              </FormControl>
-              <Flex alignItems={'end'} justifyContent={'end'}>
-                <Button
-                  size={'sm'}
-                  px={5}
-                  mt={'70px'}
-                  mb={'3'}
-                  color={'white'}
-                  borderRadius={'full'}
-                  bg={'#0086B4'}
-                >
-                  Simpan
-                </Button>
-              </Flex>
-              <hr />
-              <Text fontWeight={'semibold'} fontSize={'16px'} mt={3}>
-                Logo Toko
-              </Text>
-              <FormLabel w={'100px'} my={3}>
-                <Box
-                  border={'dashed'}
-                  borderWidth={'2px'}
-                  display={'flex'}
-                  justifyContent={'center'}
-                  flexDirection={'column'}
-                  alignItems={'center'}
-                  borderRadius={'10px'}
-                  borderColor={'blackAlpha.300'}
-                  w={'100px'}
-                  h={'100px'}
-                >
-                  <Image
-                    justifyContent={'center'}
-                    w={'30px'}
-                    h={'30px'}
-                    src={GalleryAdd}
-                  />
-                  <Text fontSize={'11px'} color={'blackAlpha.700'}>
-                    Unggah Photo
-                  </Text>
-                  <Input hidden type="file"></Input>
-                </Box>
-              </FormLabel>
-              <Text fontSize={'13px'} w={'70%'} h={'1000px'}>
-                Ukuran optimal 300 x 300 piksel dengan Besar file: Maksimum 10
-                Megabytes. Ekstensi file yang diperbolehkan: JPG, JPEG, PNG
-              </Text>
+              <p>information</p>
             </TabPanel>
 
             {/* INI BAGIAN BAGZA */}
@@ -194,7 +93,7 @@ export default function StoreConfiguration() {
                   bg={'white'}
                   fontSize={'12px'}
                   size={'sm'}
-                  onClick={onOpen}
+                  onClick={openModal1}
                 >
                   Tambah Lokasi
                 </Button>
@@ -232,6 +131,7 @@ export default function StoreConfiguration() {
                           p={'0px'}
                           me={'7px'}
                           size={'sm'}
+                          onClick={openModal2}
                         >
                           <Image w={'15px'} src={Trash} />
                         </Button>
@@ -348,83 +248,14 @@ export default function StoreConfiguration() {
                   </Tbody>
                 </Table>
               </TableContainer>
-              <Modal
-                initialFocusRef={initialRef}
-                finalFocusRef={finalRef}
-                isOpen={isOpen}
-                onClose={onClose}
-              >
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader
-                    display={'flex'}
-                    flexDirection={'row'}
-                    justifyContent={'space-between'}
-                    alignItems={'center'}
-                  >
-                    <Text>Tambah Lokasi Baru</Text>
-                    <Button
-                      onClick={onClose}
-                      p={'0px'}
-                      colorScheme="none"
-                      display={'flex'}
-                      flexDirection={'row'}
-                      justifyContent={'end'}
-                      alignItems={'center'}
-                    >
-                      <Image w={'30px'} src={CloseCircle} />
-                    </Button>
-                  </ModalHeader>
-                  {/* <ModalCloseButton /> */}
-                  <ModalBody>
-                    <FormControl>
-                      <FormLabel>Nama Lokasi</FormLabel>
-                      <Input
-                        ref={initialRef}
-                        placeholder="Cth. Toko Alamanda"
-                      />
-                    </FormControl>
-
-                    <FormControl mt={4}>
-                      <FormLabel>Kota/Kecamatan</FormLabel>
-                      <Select>
-                        <option value="" hidden>
-                          Cari kota / Kecamatan
-                        </option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                      </Select>
-                    </FormControl>
-
-                    <FormControl mt={4}>
-                      <FormLabel>Kode Pos</FormLabel>
-                      <Select>
-                        <option value="" hidden color="red">
-                          Masukan 5 digit kode pos
-                        </option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                      </Select>
-                    </FormControl>
-
-                    <FormControl mt={4}>
-                      <FormLabel>Alamat Lengkap</FormLabel>
-                      <Textarea placeholder="Tuliskan Alamat lengkap Toko" />
-                    </FormControl>
-                  </ModalBody>
-
-                  <ModalFooter>
-                    <Button mr={2} onClick={onClose} borderRadius={'20px'}>
-                      Batalkan
-                    </Button>
-                    <Button colorScheme="blue" borderRadius={'20px'}>
-                      Simpan
-                    </Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
+              <ModalCreateLocation
+                isOpen={isOpenModal1}
+                onClose={closeModal1}
+              />
+              <ModalDelete isOpen={isOpenModal2} onClose={closeModal2} />
             </TabPanel>
 
+            {/* INI BAGIAN bani */}
             <TabPanel>
               <p>Template Pesan</p>
             </TabPanel>
