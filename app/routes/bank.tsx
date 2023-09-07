@@ -62,7 +62,7 @@ export async function action({ request }: ActionArgs) {
 }
 // async function getBankNames() {
 //   try {
-//     const bankList = await prisma.bank_list.findMany(); // Retrieves all records
+//     const bankList = await prisma.BankAccount.findMany(); // Retrieves all records
 
 //     // Extract bank_name values from the results
 //     const bankNames = bankList.map((bank) => bank.bank_name);
