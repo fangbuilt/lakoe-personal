@@ -30,9 +30,14 @@ const useDetailPengiriman = () => {
       description: "Sab, 10 Agu 2023 - 20:00 WIB",
     },
   ];
+  const { activeStep } = useSteps({
+    index: 1,
+    count: step.length,
+  });
 
   return {
     step,
+    activeStep
   };
 };
 
