@@ -27,7 +27,7 @@ import ReceiptSearch from "../assets/icon-pack/receipt-search.svg";
 import ScrollBox from "../components/ScrollBox";
 import { UseSearch } from "../hooks/useSearchOrder";
 import { useFilterCourier } from "../hooks/useFilterCourier";
-import { useState} from "react";
+import { useState } from "react";
 import CardUnpaid from "../components/CardUnpaid";
 import CardReadyToShip from "../components/CardReadyToShip";
 import CardNewOrder from "../components/CardNewOrder";
@@ -58,8 +58,7 @@ export default function NavOrder() {
             height: "100%",
             borderRadius: "10px",
           }}
-
-          >
+        >
           <Tabs>
             <Box my={4} mx={5}>
               <Text fontWeight={"bold"} fontSize={"20px"}>
@@ -78,15 +77,11 @@ export default function NavOrder() {
                 }}
               >
                 <TabList mx={5}>
-                  <Tab
-                  >
-                    Semua
-                  </Tab>
+                  <Tab>Semua</Tab>
 
                   <Box textAlign={"center"}>
                     <Box display={"flex"}>
-                      <Tab
-                      >
+                      <Tab>
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
@@ -179,7 +174,7 @@ export default function NavOrder() {
                   <Box textAlign={"center"}>
                     <Box display={"flex"}>
                       <Tab>
-                        <Flex gap={1.5} my={4} >
+                        <Flex gap={1.5} my={4}>
                           <Text>Pesanan </Text> <Text> Selesai</Text>
                         </Flex>
                       </Tab>
@@ -350,28 +345,13 @@ export default function NavOrder() {
                           <Box>
                             <Flex>
                               <Radio value="2">Paling Lama</Radio>
-                              {selectedSortOption === "2" && (
-                                <Box ml={2} fontSize="14px" color="cyan.400">
-                                  •
-                                </Box>
-                              )}
                             </Flex>
                           </Box>
                           <Box>
                             <Radio value="3">Respon Tercepat</Radio>
-                            {selectedSortOption === "3" && (
-                              <Box ml={2} fontSize="14px" color="cyan.400">
-                                •
-                              </Box>
-                            )}
                           </Box>
                           <Box>
                             <Radio value="4">Respon Terlama</Radio>
-                            {selectedSortOption === "4" && (
-                              <Box ml={2} fontSize="14px" color="cyan.400">
-                                •
-                              </Box>
-                            )}
                           </Box>
                         </RadioGroup>
                       </MenuItem>
@@ -572,7 +552,6 @@ export default function NavOrder() {
             </Box>
           </Tabs>
         </Box>
-
       </Box>
     </>
   );
