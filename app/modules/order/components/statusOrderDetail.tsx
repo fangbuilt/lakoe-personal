@@ -34,14 +34,12 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from "@chakra-ui/icons";
-import { PrismaClient } from "@prisma/client";
 import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import { useState } from "react";
-
-const prisma = new PrismaClient();
+import { db } from "~/libs/prisma/db.server";
 
 export function getStatusBadge(status: string) {
-  if (status === "Belum Bayar") {
+  if (status.toUpperCase() === "UNPAID") {
     return (
       <Badge
         display={"flex"}
@@ -65,7 +63,7 @@ export function getStatusBadge(status: string) {
       </Badge>
     );
   }
-  if (status === "Pesanan Baru") {
+  if (status.toUpperCase() === "NEW_ORDER") {
     return (
       <Badge
         display={"flex"}
@@ -89,7 +87,7 @@ export function getStatusBadge(status: string) {
       </Badge>
     );
   }
-  if (status === "Siap Dikirim") {
+  if (status.toUpperCase() === "READY_TO_SHIP") {
     return (
       <Badge
         display={"flex"}
@@ -113,7 +111,7 @@ export function getStatusBadge(status: string) {
       </Badge>
     );
   }
-  if (status === "Dalam Pengiriman") {
+  if (status.toUpperCase() === "IN_TRANSIT") {
     return (
       <Badge
         display={"flex"}
@@ -137,7 +135,7 @@ export function getStatusBadge(status: string) {
       </Badge>
     );
   }
-  if (status === "Pesanan Selesai") {
+  if (status.toUpperCase() === "ORDER_COMPLETED") {
     return (
       <Badge
         display={"flex"}
@@ -161,7 +159,7 @@ export function getStatusBadge(status: string) {
       </Badge>
     );
   }
-  if (status === "Dibatalkan") {
+  if (status.toUpperCase() === "ORDER_CANCELLED") {
     return (
       <Badge
         display={"flex"}
@@ -187,8 +185,8 @@ export function getStatusBadge(status: string) {
   }
 }
 
-export function PesananBaru(status: string) {
-  if (status === "Pesanan Baru") {
+export function getStatusLacakButton(status: string) {
+  if (status.toUpperCase() === "NEW_ORDER") {
     return (
       <Flex
         justifyContent={"space-between"}
@@ -244,7 +242,7 @@ export function PesananBaru(status: string) {
       </Flex>
     );
   }
-  if (status === "Dalam Pengiriman") {
+  if (status.toUpperCase() === "IN_TRANSIT") {
     return (
       <Flex
         justifyContent={"flex-end"}
@@ -281,8 +279,43 @@ export function PesananBaru(status: string) {
   }
 }
 
+export function getStatusLacakPengiriman(status: string) {
+  if (status.toUpperCase() === "IN_TRANSIT") {
+    return (
+      <Button
+        fontSize={"14px"}
+        fontWeight={"700"}
+        lineHeight={"20px"}
+        color={"#0086B4"}
+        background={"#FFFFFF)"}
+        colorScheme="#FFFFFF)"
+        w={"120px"}
+      >
+        Lacak Pengiriman
+      </Button>
+    );
+  }
+
+  if (status.toUpperCase() === "ORDER_COMPLETED") {
+    return (
+      <Button
+        fontSize={"14px"}
+        fontWeight={"700"}
+        lineHeight={"20px"}
+        color={"#0086B4"}
+        background={"#FFFFFF)"}
+        colorScheme="#FFFFFF)"
+        w={"120px"}
+      >
+        Lacak Pengiriman
+      </Button>
+    );
+  }
+  return null;
+}
+
 export async function getInvoiceById(id: any) {
-  const dataInvoice = await prisma.invoice.findFirst({
+  const dataInvoice = await db.invoice.findFirst({
     where: {
       id,
     },
@@ -454,13 +487,14 @@ export default function StatusOrderDetail({
             </Box>
             <Box display={"flex"} gap={3}>
               <Image
-                height={"24px"}
-                width={"24px"}
+                height={"18px"}
+                width={"18px"}
                 justifyContent={"center"}
                 alignItems={"center"}
                 src={copy}
                 onClick={handleCopyClick}
                 style={{ cursor: "pointer" }}
+                color={"gray.900"}
               />
               <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
                 {data.invoiceNumber}
@@ -569,6 +603,8 @@ export default function StatusOrderDetail({
                           fontSize={"16px"}
                           lineHeight={"20px"}
                           fontWeight={"700"}
+                          overflow={"hidden"}
+                          textOverflow={"ellipsis"}
                         >
                           CREWNECK BASIC-BLACK | sweeter polos hodie polos
                           crewneck - S
@@ -595,10 +631,16 @@ export default function StatusOrderDetail({
                       fontWeight={"500"}
                       color={"#909090"}
                       lineHeight={"16px"}
+                      textAlign={"right"}
                     >
                       Total Belanja
                     </Text>
-                    <Text fontSize={"14px"} fontWeight={"700"}>
+                    <Text
+                      fontSize={"14px"}
+                      fontWeight={"700"}
+                      lineHeight={"16px"}
+                      textAlign={"right"}
+                    >
                       190.000
                     </Text>
                   </Box>
@@ -625,64 +667,114 @@ export default function StatusOrderDetail({
           </Box>
 
           <Box display={"flex"} flexDirection={"column"} gap={1}>
-            <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
-              Detail Pengiriman
-            </Text>
-            <Box display={"flex"}>
-              <Text
-                fontSize={"14px"}
-                fontWeight={"400"}
-                lineHeight={"20px"}
-                width={"192px"}
-              >
-                Kurir
+            <Box
+              display={"flex"}
+              justifyContent={"space-between"}
+              width={"100%"}
+            >
+              <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
+                Detail Pengiriman
               </Text>
-              <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                {data.courier.courierServiceName}
-              </Text>
+              {getStatusLacakPengiriman(data.status)}
             </Box>
             <Box display={"flex"}>
-              <Text
-                fontSize={"14px"}
-                fontWeight={"400"}
-                lineHeight={"20px"}
-                width={"192px"}
-              >
-                No. Resi
-              </Text>
-              <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                {data.courier.courierCode}
-              </Text>
-            </Box>
-            <Box display={"flex"}>
-              <Text
-                fontSize={"14px"}
-                fontWeight={"400"}
-                lineHeight={"20px"}
-                width={"192px"}
-              >
-                Alamat
-              </Text>
+              <Box display={"flex"} flexDirection={"column"} width={"192px"}>
+                <Text
+                  color={`var(--text-dark, #1D1D1D)`}
+                  fontSize={"14px"}
+                  fontWeight={"400"}
+                  lineHeight={"20px"}
+                  fontStyle={"normal"}
+                >
+                  Kurir
+                </Text>
+                <Box display={"flex"} gap={1}>
+                  <Text
+                    color={`var(--text-dark, #1D1D1D)`}
+                    fontSize={"14px"}
+                    fontWeight={"400"}
+                    lineHeight={"20px"}
+                    fontStyle={"normal"}
+                  >
+                    No. Resi
+                  </Text>
+                  <Image
+                    height={"18px"}
+                    width={"18px"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    src={copy}
+                    style={{ cursor: "pointer" }}
+                    color={"gray.900"}
+                  />
+                </Box>
+                <Box display={"flex"} gap={1}>
+                  <Text
+                    color={`var(--text-dark, #1D1D1D)`}
+                    fontSize={"14px"}
+                    fontWeight={"400"}
+                    lineHeight={"20px"}
+                    fontStyle={"normal"}
+                  >
+                    Alamat
+                  </Text>
+                  <Image
+                    height={"18px"}
+                    width={"18px"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    src={copy}
+                    style={{ cursor: "pointer" }}
+                    color={"gray.900"}
+                  />
+                </Box>
+              </Box>
               <Box display={"flex"} flexDirection={"column"}>
-                <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
-                  {data.receiverAddress}
-                </Text>
                 <Text
-                  color={`var(--text-gray, #909090)`}
+                  color={`var(--text-dark, #1D1D1D)`}
                   fontSize={"14px"}
-                  fontWeight={"400"}
+                  fontWeight={"700"}
                   lineHeight={"20px"}
                 >
-                  {data.receiverPhone}
+                  {data.courier.courierCode}
                 </Text>
                 <Text
-                  color={`var(--text-gray, #909090)`}
+                  color={`var(--text-dark, #1D1D1D)`}
                   fontSize={"14px"}
-                  fontWeight={"400"}
+                  fontWeight={"700"}
                   lineHeight={"20px"}
                 >
-                  {data.receiverName}
+                  {data.courier.courierServiceCode}
                 </Text>
+                <Box display={"flex"} flexDirection={"column"}>
+                  <Text
+                    color={`var(--text-dark, #1D1D1D)`}
+                    fontSize={"14px"}
+                    fontWeight={"400"}
+                    lineHeight={"20px"}
+                    fontStyle={"normal"}
+                  >
+                    {data.receiverAddress}
+                  </Text>
+                  <Text
+                    color={`var(--text-gray, #909090)`}
+                    fontSize={"14px"}
+                    fontWeight={"400"}
+                    lineHeight={"20px"}
+                    fontStyle={"normal"}
+                  >
+                    {data.receiverPhone}
+                  </Text>
+                  <Text
+                    color={`var(--text-gray, #909090)`}
+                    fontSize={"14px"}
+                    fontWeight={"400"}
+                    lineHeight={"20px"}
+                    fontStyle={"normal"}
+                  >
+                    {data.receiverName}
+                  </Text>
+                </Box>
               </Box>
             </Box>
           </Box>
@@ -716,7 +808,7 @@ export default function StatusOrderDetail({
               </Box>
               <Box>
                 <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                  Rp180.000
+                  Rp{data.cart.price}
                 </Text>
               </Box>
             </Box>
@@ -765,13 +857,13 @@ export default function StatusOrderDetail({
               </Box>
               <Box>
                 <Text fontSize={"18px"} fontWeight={"700"} lineHeight={"24px"}>
-                  Rp{data.prices}
+                  Rp{data.price}
                 </Text>
               </Box>
             </Box>
           </Box>
         </Box>
-        {PesananBaru(data.status)}
+        {getStatusLacakButton(data.status)}
       </Box>
     </>
   );
