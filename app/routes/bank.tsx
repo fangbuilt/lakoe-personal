@@ -22,23 +22,22 @@ export async function action({ request }: ActionArgs) {
 
   const bankId = formData.get('bankId');
   const actionType = formData.get('actionType');
-  const name = formData.get('name');
-  const bank_name = formData.get('bankName');
-  const bank_number = formData.get('bankNumber');
-  const updateName = formData.get('updateName');
+  // const name = formData.get("name");
+  const bank = formData.get('bank');
+  const accountNumber = formData.get('accountNumber');
   const updateBankName = formData.get('updateBankName');
-  const updateBankNumber = formData.get('updateBankNumber');
+  const updateAccountNumber = formData.get('updateAccountNumber');
 
   if (actionType === 'delete' && bankId) {
-    await deleteBankList(parseInt(bankId as string));
+    await deleteBankList(bankId as string);
     return redirect('/bank');
   }
 
-  if (actionType === 'create' && name && bank_name && bank_number) {
+  if (actionType === 'create' && bank && accountNumber) {
     await createBank({
-      name: name,
-      bank_name: bank_name,
-      bank_number: bank_number,
+      // name: name,
+      bank: bank,
+      accountNumber: accountNumber,
     });
     return redirect('/bank');
   }
@@ -46,15 +45,13 @@ export async function action({ request }: ActionArgs) {
   if (
     actionType === 'update' &&
     bankId &&
-    updateName &&
     updateBankName &&
-    updateBankNumber
+    updateAccountNumber
   ) {
     const updated = await updateBank(
-      parseInt(bankId as string),
-      updateName as string,
+      bankId as string,
       updateBankName as string,
-      updateBankNumber as string
+      parseInt(updateAccountNumber as string)
     );
     return {
       updated,
@@ -96,7 +93,7 @@ export default function Bank() {
             >
               <Box display={'flex'}>
                 <Box display={'flex'} alignItems={'center'} mr={'8px'}>
-                  {data.bank_name === 'BNI' && (
+                  {data.bank === 'BNI' && (
                     <Image
                       src="https://ik.imagekit.io/lcfefbv0i/BNI.png?updatedAt=1693928593197"
                       height={'14px'}
@@ -104,7 +101,7 @@ export default function Bank() {
                     />
                   )}
 
-                  {data.bank_name === 'BCA' && (
+                  {data.bank === 'BCA' && (
                     <Image
                       src="https://ik.imagekit.io/lcfefbv0i/bca.png?updatedAt=1693841171817"
                       height={'14px'}
@@ -112,7 +109,7 @@ export default function Bank() {
                     />
                   )}
 
-                  {data.bank_name === 'MANDIRI' && (
+                  {data.bank === 'MANDIRI' && (
                     <Image
                       src="https://ik.imagekit.io/lcfefbv0i/MANDIRI.png?updatedAt=1693928593263"
                       height={'14px'}
@@ -120,7 +117,7 @@ export default function Bank() {
                     />
                   )}
 
-                  {data.bank_name === 'BRI' && (
+                  {data.bank === 'BRI' && (
                     <Image
                       src="https://i0.wp.com/febi.uinsaid.ac.id/wp-content/uploads/2020/11/Logo-BRI-Bank-Rakyat-Indonesia-PNG-Terbaru.png?ssl=1"
                       height={'28px'}
@@ -131,9 +128,9 @@ export default function Bank() {
 
                 <Text fontSize="13px">
                   <Text as={'span'} fontWeight={'700'}>
-                    {data.bank_name}
+                    {data.bank}
                   </Text>
-                  -{data.name}-{data.bank_number}
+                  {/* -{data.name}- */}-{data.accountNumber}
                 </Text>
               </Box>
               <Box display={'flex'}>

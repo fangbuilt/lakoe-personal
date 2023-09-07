@@ -10,7 +10,7 @@ const options = [
 export function SelectBankOption() {
   return (
     <CreatableSelect
-      name="bankName"
+      name="bank"
       placeholder="Jenis Bank"
       isClearable
       options={options}

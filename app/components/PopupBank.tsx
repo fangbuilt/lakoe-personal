@@ -26,7 +26,14 @@ export default function PopupBank() {
 
   return (
     <>
-      <Button onClick={onOpen} bg={'#03559c'} color={'#fff'} colorScheme="none">
+      <Button
+        onClick={onOpen}
+        bg={'#03559c'}
+        color={'#fff'}
+        colorScheme="none"
+        fontSize={'13px'}
+        letterSpacing={1}
+      >
         + Tambah No. Rekening
       </Button>
 
@@ -48,7 +55,7 @@ export default function PopupBank() {
               <FormLabel>Bank</FormLabel>
               <SelectBankOption />
 
-              <FormControl mt={4}>
+              {/* <FormControl mt={4}>
                 <FormLabel>Atas Nama</FormLabel>
                 <Input
                   type="text"
@@ -56,11 +63,15 @@ export default function PopupBank() {
                   placeholder="Nama Pemilik Rekening"
                   name="name"
                 />
-              </FormControl>
+              </FormControl> */}
 
               <FormControl mt={4}>
                 <FormLabel>Nomor Rekening</FormLabel>
-                <Input type="text" placeholder="123456789" name="bankNumber" />
+                <Input
+                  type="number"
+                  placeholder="123456789"
+                  name="accountNumber"
+                />
               </FormControl>
             </ModalBody>
 

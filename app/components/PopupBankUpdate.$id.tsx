@@ -58,7 +58,7 @@ export default function UpdateBank(props: any) {
               <FormControl>
                 <FormLabel>Bank</FormLabel>
                 <SelectBankOptionUpdate />
-                <FormControl mt={4}>
+                {/* <FormControl mt={4}>
                   <FormLabel>Atas Nama</FormLabel>
                   <Input
                     type="text"
@@ -66,14 +66,14 @@ export default function UpdateBank(props: any) {
                     placeholder="Nama Pemilik Rekening"
                     name="updateName"
                   />
-                </FormControl>
+                </FormControl> */}
               </FormControl>
               <FormControl mt={4}>
                 <FormLabel>Nomor Rekening</FormLabel>
                 <Input
                   type="number"
                   placeholder="123456789"
-                  name="updateBankNumber"
+                  name="updateAccountNumber"
                 />
               </FormControl>
             </ModalBody>
