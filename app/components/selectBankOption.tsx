@@ -42,8 +42,8 @@ export function SelectRekening({ dataBank }: any) {
           placeholder="Pilih Rekening Anda"
           options={[
             {
-              label: `${data.bank_name} - ${data.name} - ${data.bank_number}`,
-              value: `${data.bank_name}-${data.name}-${data.bank_number}`,
+              label: `${data.bank} - ${data.accountNumber}`,
+              value: `${data.bank} - ${data.accountNumber}`,
             },
           ]}
         />

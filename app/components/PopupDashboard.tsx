@@ -16,15 +16,22 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { SelectRekening } from './selectBankOption';
+import TarikKredit from './PopupTarikKredit';
 
 export default function DashboardPopup({ dataBank }: any) {
   // console.log("databankku", dataBank);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showTarikKredit, setShowTarikKredit] = useState(false);
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+
+  const toggleTarikKredit = () => {
+    setShowTarikKredit(!showTarikKredit);
+  };
+
   return (
     <>
       <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
@@ -65,11 +72,11 @@ export default function DashboardPopup({ dataBank }: any) {
 
             <FormControl mt={4}>
               <FormLabel>Berapa banyak yang ingin anda tarik?</FormLabel>
-              <Input ref={initialRef} placeholder="jumlah penarikan" />
-              <Text fontStyle={'italic'} color={'blue.500'}>
+              <Input ref={initialRef} placeholder="Jumlah penarikan" />
+              <Text fontStyle={'italic'} color={'blue.500'} fontSize={'13px'}>
                 Jumlah Maksimal:{' '}
                 <Text as="span" fontWeight={700}>
-                  50
+                  Rp.50.000
                 </Text>
               </Text>
             </FormControl>
@@ -109,9 +116,13 @@ export default function DashboardPopup({ dataBank }: any) {
             >
               Batal
             </Button>
-            <Button colorScheme="green" mr={3}>
-              Tarik Credit
-            </Button>
+            <div>
+              <Button colorScheme="green" mr={3} onClick={toggleTarikKredit}>
+                Tarik Kredit
+              </Button>
+              {showTarikKredit && <TarikKredit />}{' '}
+              {/* Conditionally render TarikKredit */}
+            </div>
           </ModalFooter>
         </ModalContent>
       </Modal>
