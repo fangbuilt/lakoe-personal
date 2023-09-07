@@ -22,7 +22,6 @@ export default function NewOrder() {
   const { filteredOrders } = UseSearch();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Fungsi untuk mengirim pesanan ke BiteShip menggunakan fetch
   const handleOrderCourier = async () => {
     try {
       const baseUrl = 'https://api.biteship.com';
@@ -88,19 +87,15 @@ export default function NewOrder() {
         body: JSON.stringify(orderData),
       };
 
-      // Kirim permintaan POST ke BiteShip menggunakan fetch
       const response = await fetch(`${baseUrl}${endpoint}`, requestOptions);
       const responseData = await response.json();
 
-      // Tambahkan penanganan respons sesuai kebutuhan Anda
       console.log('Respon dari BiteShip:', responseData);
     } catch (error) {
-      // Tangani kesalahan jika ada
       console.error('Kesalahan saat mengirim pesanan ke BiteShip:', error);
     }
   };
 
-  // State untuk mengelola teks modal
   const [modalText, setModalText] = useState('');
 
   return (
