@@ -1,7 +1,11 @@
+import { Flex, Heading } from '@chakra-ui/react';
+import { ImplementGrid } from '~/layouts/Grid';
 export default function Preview() {
   return (
-    <div>
-      <h1>Preview</h1>
-    </div>
+    <ImplementGrid>
+      <Flex align={'center'} justify={'center'} px={5} h={'100vh'}>
+        <Heading textAlign={'center'}>This is Preview's Route</Heading>
+      </Flex>
+    </ImplementGrid>
   );
 }
