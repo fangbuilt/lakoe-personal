@@ -1,10 +1,11 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import datetimeDifference from 'datetime-difference';
 import MailerLite from '@mailerlite/mailerlite-nodejs';
 import { PrismaClient } from '@prisma/client';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
+import CardProducts from '~/components/CardProduction';
 
 interface CreateOrUpdateParams {
   email: string;
@@ -41,11 +42,15 @@ export async function loader() {
     console.log('selisihWaktu', selisihWaktu.minutes);
     if (selisihWaktu.hours > 12 && data.status !== 'paid') {
       const pengguna = await prisma.user.findFirst({
-        where: { id: data.usersId as string },
-        select: { email: true },
+        where: { id: data.userId as string },
+        select: { name: true, phone: true, email: true },
       });
       if (pengguna) {
-        await kirimNotifikasiEmail(pengguna.email);
+        await kirimNotifikasiEmail(
+          pengguna.email,
+          pengguna.name,
+          pengguna.phone
+        );
         await perbaruiStatusPembayaran(data.id, 'unpaid');
       }
     }
@@ -61,17 +66,20 @@ function hitungSelisihWaktu(waktu: Date) {
   return result;
 }
 
-async function kirimNotifikasiEmail(email: string) {
+async function kirimNotifikasiEmail(
+  email: string,
+  name: string,
+  phone: string
+) {
   console.log('ini emali', email);
   const params: CreateOrUpdateParams = {
     email: email,
     fields: {
-      name: 'badriana',
-      last_name: 'badriana',
-      company: 'MailerLite',
-      country: 'Best country',
-      city: 'Best city',
-      phone: '37060677606',
+      name: name,
+      company: null,
+      country: null,
+      city: null,
+      phone: phone,
       state: 'Best state',
       z_i_p: '99999',
     },
@@ -109,10 +117,9 @@ const MailerLiteComponent = () => {
             <Box key={data.id}>
               <Text>{data.id}</Text>
               <Text>{data.bank}</Text>
-              <Text>{data.vaNumber}</Text>
               <Text>{data.amount}</Text>
               <Text>{data.status}</Text>
-              <Text>{data.usersId}</Text>
+              <Text>{data.userId}</Text>
               <Text>{data.createdAt}</Text>
               <Text>{data.updatedAt}</Text>
 
@@ -120,8 +127,13 @@ const MailerLiteComponent = () => {
               <Text>{data.user?.name}</Text>
               <Text>{data.user?.phone}</Text>
               <Text>{data.user?.email}</Text>
+              <Link to={`https://wa.me/${data.user?.phone}`} target="_blank">
+                <Button>Hubungi via WhatsApp</Button>
+              </Link>
             </Box>
           ))}
+
+        <CardProducts />
       </Box>
     </>
   );
