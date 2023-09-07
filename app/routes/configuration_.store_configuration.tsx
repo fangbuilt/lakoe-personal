@@ -29,6 +29,8 @@ import {
   ModalBody,
   useDisclosure,
   Select,
+  Stack,
+  Card,
 } from '@chakra-ui/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import GalleryAdd from '../assets/icon-pack/gallery-add.svg';
@@ -38,6 +40,8 @@ import Trash from '../assets/icon-pack/trash.svg';
 import LocationSlash from '../assets/icon-pack/location-slash.svg';
 import CloseCircle from '../assets/icon-pack/close-circle.svg';
 import React from 'react';
+import { DeleteButton, UpdateButton, AddButon } from '~/components/CrudModal';
+import data from '../utils/fakeDataTM.json';
 
 export default function StoreConfiguration() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,20 +51,39 @@ export default function StoreConfiguration() {
 
   return (
     <ImplementGrid>
-      <Flex h={'100vh'} mt={5}>
+      <Flex h={'105vh'} mt={5}>
         <Tabs bg={'white'} mt={5} w={'100%'} borderRadius={5}>
-          <Text fontWeight={'semibold'} fontSize={'16px'} my={4} ms={4}>
+          <Text fontWeight={'bold'} fontSize={'16px'} my={4} ms={4}>
             Fesyen Store
           </Text>
           <TabList>
-            <Tab textDecoration={'none'}>Informasi</Tab>
+            <Tab
+              fontWeight={'semibold'}
+              fontSize={'sm'}
+              textDecoration={'none'}
+            >
+              Informasi
+            </Tab>
 
-            <Tab textDecoration={'none'}>Lokasi</Tab>
+            <Tab
+              fontWeight={'semibold'}
+              fontSize={'sm'}
+              textDecoration={'none'}
+            >
+              Lokasi
+            </Tab>
 
-            <Tab textDecoration={'none'}>Template Pesan</Tab>
+            <Tab
+              fontWeight={'semibold'}
+              fontSize={'sm'}
+              textDecoration={'none'}
+            >
+              Template Pesan
+            </Tab>
           </TabList>
 
           <TabPanels>
+            {/* INI BAGIAN rifki */}
             <TabPanel>
               <Text fontWeight={'semibold'} fontSize={'16px'} mb={3}>
                 Informasi Toko
@@ -163,7 +186,7 @@ export default function StoreConfiguration() {
                   <Input hidden type="file"></Input>
                 </Box>
               </FormLabel>
-              <Text fontSize={'13px'} w={'70%'} h={'1000px'}>
+              <Text fontSize={'13px'} w={'70%'}>
                 Ukuran optimal 300 x 300 piksel dengan Besar file: Maksimum 10
                 Megabytes. Ekstensi file yang diperbolehkan: JPG, JPEG, PNG
               </Text>
@@ -425,8 +448,69 @@ export default function StoreConfiguration() {
               </Modal>
             </TabPanel>
 
+            {/* INI BAGIAN MIKHAEL */}
             <TabPanel>
-              <p>Template Pesan</p>
+              <Flex
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                mb={'16px'}
+              >
+                <Text fontWeight={'bold'} fontSize={'16px'}>
+                  Daftar Template Pesan
+                </Text>
+                <AddButon />
+              </Flex>
+              <Stack spacing="2">
+                {data.map((data, id) => (
+                  <Card
+                    key={id}
+                    borderRadius={'lg'}
+                    p={3}
+                    pb={2}
+                    variant={'outline'}
+                  >
+                    <Flex
+                      justifyContent={'space-between'}
+                      alignItems={'center'}
+                      mb={2}
+                    >
+                      <Text fontWeight={'bold'} fontSize={'14px'}>
+                        {data.name}
+                      </Text>
+                      <Flex gap={3}>
+                        <UpdateButton
+                          id={data.id}
+                          name={data.name}
+                          content={data.content}
+                        />
+                        <DeleteButton
+                          id={data.id}
+                          name={data.name}
+                          content={data.content}
+                        />
+                      </Flex>
+                    </Flex>
+                    <Text fontSize={'13px'}>{data.content}</Text>
+                  </Card>
+                ))}
+                {/* <Card borderRadius={'lg'} p={3} pb={2} variant={'outline'}>
+                    <Flex justifyContent={'space-between'} alignItems={'center'} mb={2}>
+                      <Text fontWeight={'bold'} fontSize={'14px'}>Pesan Konfirmasi Pesanan</Text>
+                      <Flex gap={3}>
+                        <UpdateButton />
+                        <DeleteButton />
+                      </Flex>
+                    </Flex>
+                    <Text fontSize={'13px'}>Halo! Terima kasih telah berbelanja di Fesyen Store. Berikut rincian pesanan Anda:</Text>
+                    <Box>
+                      <UnorderedList fontSize={'13px'} ml={'26px'}>
+                        <ListItem>Nama Produk: 5 [Nama Produk]</ListItem>
+                        <ListItem>Jumlah: [Jumlah]</ListItem>
+                        <ListItem>Total Harga: [Total Harga] Mohon konfirmasi pesanan Anda. Terima kasih!</ListItem>
+                      </UnorderedList>
+                    </Box>
+                </Card> */}
+              </Stack>
             </TabPanel>
           </TabPanels>
         </Tabs>
