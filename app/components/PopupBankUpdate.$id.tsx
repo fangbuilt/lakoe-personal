@@ -16,9 +16,12 @@ import {
 import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
-import { SelectBankOption } from './selectBankOption';
+import { BiEditAlt } from 'react-icons/bi';
+import { SelectBankOptionUpdate } from './selectBankOption';
 
-export default function PopupBank() {
+export default function UpdateBank(props: any) {
+  const { id } = props;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -28,13 +31,11 @@ export default function PopupBank() {
     <>
       <Button
         onClick={onOpen}
-        bg={'#03559c'}
-        color={'#fff'}
-        colorScheme="none"
-        fontSize={'13px'}
-        letterSpacing={1}
+        color={'gray.700'}
+        bg={'white'}
+        fontSize={'18px'}
       >
-        + Tambah No. Rekening
+        <BiEditAlt />
       </Button>
 
       <Modal
@@ -44,39 +45,46 @@ export default function PopupBank() {
         onClose={onClose}
       >
         <ModalOverlay />
+
         <ModalContent>
           <Form method="post">
-            <Input type="hidden" name="actionType" value="create" />
+            <Input type="hidden" name="actionType" value="update" />
+            <Input type="hidden" name="bankId" value={id} />
             <ModalHeader display={'flex'} alignItems={'center'}>
-              <BsBank /> <Text ml={'5px'}>Informasi Bank </Text>
+              <BsBank /> <Text ml={'5px'}>Update Informasi Bank </Text>
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <FormLabel>Bank</FormLabel>
-              <SelectBankOption />
-
-              {/* <FormControl mt={4}>
-                <FormLabel>Atas Nama</FormLabel>
-                <Input
-                  type="text"
-                  ref={initialRef}
-                  placeholder="Nama Pemilik Rekening"
-                  name="name"
-                />
-              </FormControl> */}
-
+              <FormControl>
+                <FormLabel>Bank</FormLabel>
+                <SelectBankOptionUpdate />
+                {/* <FormControl mt={4}>
+                  <FormLabel>Atas Nama</FormLabel>
+                  <Input
+                    type="text"
+                    ref={initialRef}
+                    placeholder="Nama Pemilik Rekening"
+                    name="updateName"
+                  />
+                </FormControl> */}
+              </FormControl>
               <FormControl mt={4}>
                 <FormLabel>Nomor Rekening</FormLabel>
                 <Input
                   type="number"
                   placeholder="123456789"
-                  name="accountNumber"
+                  name="updateAccountNumber"
                 />
               </FormControl>
             </ModalBody>
-
             <ModalFooter>
-              <Button type="submit" colorScheme="blue" mr={3} onClick={onClose}>
+              <Button
+                name="_action"
+                type="submit"
+                colorScheme="blue"
+                mr={3}
+                onClick={onClose}
+              >
                 Tambah Akun Bank
               </Button>
             </ModalFooter>

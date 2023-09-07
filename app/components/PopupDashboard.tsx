@@ -1,9 +1,4 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   FormControl,
@@ -22,9 +17,10 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
+import { SelectRekening } from './selectBankOption';
 
 export default function DashboardPopup({ dataBank }: any) {
-  console.log('databankku', dataBank);
+  // console.log("databankku", dataBank);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -53,6 +49,7 @@ export default function DashboardPopup({ dataBank }: any) {
               borderColor={'blue.700'}
               bg={'blue.100'}
               padding={'10px'}
+              fontSize={'13px'}
             >
               <UnorderedList>
                 <ListItem>Withdraw hanya dapat dilakukan 1x per hari</ListItem>
@@ -79,27 +76,18 @@ export default function DashboardPopup({ dataBank }: any) {
 
             <FormControl mt={4}>
               <FormLabel>Tarik Ke:</FormLabel>
-              <Accordion allowToggle>
-                <AccordionItem borderRadius={'10px'} width={'100%'}>
-                  <h2>
-                    <AccordionButton>
-                      <Box as="span" flex="1" textAlign="left">
-                        Pilih Rekening Bank untuk menerima penarikan
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  {dataBank.map((data: any) => (
+              {/* {dataBank.map((data: any) => (
                     <React.Fragment key={data.id}>
                       <AccordionPanel pb={0}>
-                        <Button colorScheme="none" color={'gray.600'}>
+                        <Button colorScheme="none" color={"gray.600"}>
                           {data.bank_name}-{data.name}-{data.bank_number}
                         </Button>
                       </AccordionPanel>
                     </React.Fragment>
-                  ))}
-                </AccordionItem>
-              </Accordion>
+                  ))} */}
+              {/* {dataBank.map((data: any) => ( */}
+              <SelectRekening dataBank={dataBank} />
+              {/* ))} */}
             </FormControl>
 
             <FormControl mt={4}>
