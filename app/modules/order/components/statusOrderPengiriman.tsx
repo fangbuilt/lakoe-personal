@@ -7,13 +7,6 @@ import {
   Flex,
   Heading,
   Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Step,
   StepDescription,
   StepIndicator,
@@ -22,7 +15,6 @@ import {
   StepTitle,
   Stepper,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import documentIcon from "~/assets/DetailOrderIcon/document.svg";
 import calender from "~/assets/DetailOrderIcon/calendar-2.svg";
@@ -40,7 +32,6 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from "@chakra-ui/icons";
-import useDetailPengiriman from "../hooks/useDetailPengiriman";
 import ModalPengiriman from "~/components/ModalPengiriman";
 import { useState } from "react";
 
