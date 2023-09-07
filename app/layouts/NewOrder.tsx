@@ -2,7 +2,7 @@ import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import UseSearch from '../hooks/useSearchOrder';
 
-export default function CardOrder() {
+export default function NewOrder() {
   const { filteredOrders } = UseSearch();
 
   return (
@@ -15,9 +15,9 @@ export default function CardOrder() {
               <Box>
                 <Flex justifyContent={'space-between'} px={2}>
                   <Button
-                    bg={'gray.500'}
+                    bg={'#008F5D'}
                     color={'white'}
-                    fontWeight={'bold'}
+                    fontWeight={'normal'}
                     colorScheme="gray.600"
                     size={'sm'}
                     pointerEvents={'none'}
@@ -32,7 +32,7 @@ export default function CardOrder() {
                       borderRadius={'full'}
                       fontSize={'14px'}
                     >
-                      Hubungi Pembeli
+                      Proses Pesanan
                     </Button>
                   </Link>
                 </Flex>

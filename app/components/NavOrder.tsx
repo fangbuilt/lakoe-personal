@@ -313,6 +313,7 @@ export default function NavOrder() {
                 </ScrollBox>
 
                 <ScrollBox>
+                  <TabPanel>TIM BAGIAN CARD PESANAN BARU</TabPanel>
                   <NewOrder />
                 </ScrollBox>
 
