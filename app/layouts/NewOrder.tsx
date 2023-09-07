@@ -27,7 +27,7 @@ export default function NewOrder() {
       const baseUrl = 'https://api.biteship.com';
       const endpoint = '/v1/orders';
       const apiKey =
-        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYml0ZXNoaXBMYWtvZSIsInVzZXJJZCI6IjY0ZjU4ZjdiZWJlNjI2M2RiOWY5MWYxMCIsImlhdCI6MTY5NDA3MjA0N30.t-4Rg4MSvhx6Uq9bKhVlo2DFPvb3L9jmObDCwFzSuuk';
+        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYml0ZXNoaXBMYWtvZSIsInVzZXJJZCI6IjY0ZjU4ZjdiZWJlNjI2M2RiOWY5MWYxMCIsImlhdCI6MTY5NDA3MjA0N30.t-4Rg4MSvhx6Uq9bKhVlo2DFPvb3L9jmObDCwFzSuuk'; //Rino - Puja
 
       const orderData = {
         shipper_contact_name: 'Amir',
