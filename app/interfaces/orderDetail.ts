@@ -9,6 +9,7 @@ export interface IOrderDetailInvoice {
   invoiceNumber: string;
   updatedAt: string;
   createdAt: string;
+  waybill: string;
   courier: IOrderDetailCourier;
   cart: IOrderDetailCart;
 }

@@ -1,5 +1,6 @@
 import {
   Box,
+  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,16 +16,35 @@ import {
   StepTitle,
   Stepper,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { BsCircleFill } from "react-icons/bs";
+import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import useDetailPengiriman from "~/modules/order/hooks/useDetailPengiriman";
+import copy from "~/assets/DetailOrderIcon/copy.svg";
+import { useState } from "react";
 
-interface sendProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-export default function ModalPengiriman(props: sendProps) {
+
+
+export default function ModalPengiriman(props: { isOpen: boolean; onClose: () => void; data:  IOrderDetailInvoice }) {
   const { step, activeStep } = useDetailPengiriman();
+  const toast = useToast();
+  const [_, setCopied] = useState(false);
+
+  const handleCopyClick = () => {
+    const textToCopy = props.data.invoiceNumber;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopied(true);
+
+      toast({
+        title: "Teks telah disalin ke clipboard!",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+      });
+    });
+  };
 
   return (
     <>
@@ -68,6 +88,9 @@ export default function ModalPengiriman(props: sendProps) {
                     </Text>
                   </Box>
                   <Box width={"288px"} height={"44px"} gap={1}>
+                    <Box display={"flex"} gap={1}> 
+
+                  
                     <Text
                       fontSize={"14px"}
                       fontWeight={"400"}
@@ -76,13 +99,24 @@ export default function ModalPengiriman(props: sendProps) {
                     >
                       No. Resi
                     </Text>
+                    <Image
+                    height={"18px"}
+                    width={"18px"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    src={copy}
+                    onClick={handleCopyClick}
+                    style={{ cursor: "pointer" }}
+                    color={"gray.900"}
+                  />
+                    </Box>
                     <Text
                       fontSize={"14px"}
                       fontWeight={"700"}
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      JT6268865922
+                      {props.data.waybill}
                     </Text>
                   </Box>
                   <Box width={"288px"} height={"44px"} gap={1}>
@@ -126,7 +160,7 @@ export default function ModalPengiriman(props: sendProps) {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      Annur Syawila Hasibuan
+                      {props.data.receiverName}
                     </Text>
                     <Text
                       fontSize={"14px"}
@@ -134,8 +168,7 @@ export default function ModalPengiriman(props: sendProps) {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      Jl. Elang IV, Sawah Lama, Kec. Ciputat, Kota Tangerang
-                      Selatan, Banten 15413
+                      {props.data.receiverAddress}
                     </Text>
                   </Box>
                 </Box>
@@ -164,7 +197,7 @@ export default function ModalPengiriman(props: sendProps) {
                     lineHeight={"20px"}
                     color={"#1D1D1D"}
                   >
-                    Dalam Proses Pengiriman
+                    {props.data.status}
                   </Text>
                 </Box>
               </Box>
@@ -213,4 +246,3 @@ export default function ModalPengiriman(props: sendProps) {
   );
 }
 
-// export default ModalPengiriman;

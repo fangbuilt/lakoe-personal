@@ -9,7 +9,11 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
+import { PrismaClient } from "@prisma/client";
+import ModalPengiriman from "~/components/ModalPengiriman";
 
 const dataDummy = [
   {
@@ -21,24 +25,67 @@ const dataDummy = [
     status: "Dalam Pengiriman",
     picture:
       "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2xvdGhlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60",
-    cta: "Kabari Pembeli",
+    cta: "Lihat Rincian Pengiriman",
   },
 ];
 
-export const loader = async () => {
-  return process.env.API_BITESHIP;
-};
+const prisma = new PrismaClient()
+
+export async function getInvoiceById(id: any) {
+  try {
+    const dataInvoice = await prisma.invoice.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        payment: true,
+        courier: true,
+        cart: {
+          include: {
+            store: {
+              include: {
+                products: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!dataInvoice) {
+      throw new Error("Faktur tidak ditemukan")
+    }
+
+    return dataInvoice;
+  } catch (error) {
+    console.error("Error while fetching invoice:", error)
+  }
+}
 
 export default function Index() {
-  const {onOpen,} = useDisclosure();
+  const { onOpen } = useDisclosure()
+  const [invoiceData, setInvoiceData] = useState<IOrderDetailInvoice | null>(
+    null
+  );
 
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+
+  const openModal = () => {
+    setModalIsOpen(true)
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false)
+  };
+
+  
 
   return (
     <>
       <Box>
-        {dataDummy.map((card) => (
+        {invoiceData && (
           <Card
-            key={card.id}
+            key={invoiceData.id}
             overflow="hidden"
             variant="outline"
             display={"flex"}
@@ -64,7 +111,7 @@ export default function Index() {
                     fontWeight={"600"}
                     textAlign={"center"}
                   >
-                    {card.status}
+                    {invoiceData.status}
                   </Text>
                 </Button>
 
@@ -74,7 +121,7 @@ export default function Index() {
                   lineHeight={"16px"}
                   color={"#909090"}
                 >
-                  {card.invoice}
+                  {invoiceData.invoiceNumber}
                 </Text>
               </Box>
               <Box
@@ -82,20 +129,21 @@ export default function Index() {
                 justifyContent={"center"}
                 flexDirection={"column"}
               >
-                <Link to="http://wa.me/6288...">
-                  <Button
-                    borderRadius={"15px"}
-                    padding={"4px 12px"}
-                    border={"1px solid #D5D5D5"}
-                    size={"sm"}
-                    bg={"transparent"}
-                    onClick={() => {
-                      onOpen();
-                    }}
-                  >
-                    {card.cta}
-                  </Button>
-                </Link>
+                <Button
+                  borderRadius={"15px"}
+                  padding={"4px 12px"}
+                  border={"1px solid #D5D5D5"}
+                  size={"sm"}
+                  bg={"transparent"}
+                  onClick={openModal}
+                >
+                  Lihat Rincian Pengiriman
+                </Button>
+                <ModalPengiriman
+                  isOpen={modalIsOpen}
+                  onClose={closeModal}
+                  data={invoiceData}
+                />
               </Box>
             </Box>
 
@@ -116,7 +164,7 @@ export default function Index() {
                     objectFit="cover"
                     width={"52px"}
                     height={"52px"}
-                    src={card.picture}
+                    // src={invoiceData.picture}
                     alt="brown clothes"
                     borderRadius={"8px"}
                   />
@@ -130,7 +178,8 @@ export default function Index() {
                       lineHeight={"20px"}
                       fontWeight={"700"}
                     >
-                      {card.title}
+                      CREWNECK BASIC-BLACK | sweeter polos hodie polos crewneck
+                      - S
                     </Heading>
                     <Text
                       py="2"
@@ -138,7 +187,7 @@ export default function Index() {
                       color={"#909090"}
                       lineHeight={"16px"}
                     >
-                      {card.quantity} Barang
+                      12 Barang
                     </Text>
                   </CardBody>
                 </Box>
@@ -158,12 +207,12 @@ export default function Index() {
                   Total Belanja
                 </Text>
                 <Text fontSize={"14px"} fontWeight={"700"}>
-                  {card.price}
+                  {invoiceData.price}
                 </Text>
               </Box>
             </Box>
           </Card>
-        ))}
+        )}
       </Box>
     </>
   );

@@ -243,44 +243,12 @@ export function getStatusLacakButton(status: string) {
       </Flex>
     );
   }
-  if (status.toUpperCase() === "IN_TRANSIT") {
-    return (
-      <Flex
-        justifyContent={"flex-end"}
-        padding={`var(--4, 16px) var(--5, 20px)`}
-        alignItems={"center"}
-        alignSelf={"stretch"}
-        borderRadius={`var(--rounded-lg, 12px)`}
-        background={`var(--gray-50, #FFF)`}
-      >
-        <Box>
-          <Button
-            display={"flex"}
-            height={"40px"}
-            padding={`var(--3, 12px) var(--4, 16px)`}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={`var(--1, 4px)`}
-            borderRadius={`var(--rounded-full, 9999px)`}
-            border={`1px solid var(--gray-300, #D5D5D5)`}
-            background={`var(--gray-50, #FFF)`}
-          >
-            <Text
-              color={`var(--text-dark, #1D1D1D)`}
-              fontSize={"14px"}
-              fontWeight={"600"}
-              lineHeight={"15.5px"}
-            >
-              Kabari Pembeli
-            </Text>
-          </Button>
-        </Box>
-      </Flex>
-    );
-  }
 }
 
-export function getStatusLacakPengiriman(status: string) {
+export function getStatusLacakPengiriman(
+  status: string,
+  data: IOrderDetailInvoice
+) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const openModal = () => {
@@ -305,7 +273,11 @@ export function getStatusLacakPengiriman(status: string) {
         >
           Lacak Pengiriman
         </Button>
-        <ModalPengiriman isOpen={modalIsOpen} onClose={closeModal} />
+        <ModalPengiriman
+          isOpen={modalIsOpen}
+          onClose={closeModal}
+          data={data}
+        />
       </>
     );
   }
@@ -689,7 +661,7 @@ export default function StatusOrderDetail({
               <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
                 Detail Pengiriman
               </Text>
-              {getStatusLacakPengiriman(data.status)}
+              {getStatusLacakPengiriman(data.status, data)}
             </Box>
             <Box display={"flex"}>
               <Box display={"flex"} flexDirection={"column"} width={"192px"}>
