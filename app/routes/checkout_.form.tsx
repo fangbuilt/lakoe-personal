@@ -1,9 +1,10 @@
 import {
   Box,
   Button,
+  Checkbox,
   Grid,
   GridItem,
-  HStack,
+  Image,
   Input,
   Radio,
   RadioGroup,
@@ -17,49 +18,75 @@ import {
   Th,
   Thead,
   Tr,
-  useNumberInput,
 } from '@chakra-ui/react';
 import { redirect, type ActionArgs } from '@remix-run/node';
-import { Form } from '@remix-run/react';
+import { Form, useLoaderData } from '@remix-run/react';
+import { db } from '~/libs/prisma/db.server';
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
     const formData = await request.formData();
 
-    const amount1 = formData.get('amount1');
-    const amount2 = formData.get('amount2');
-    const name = formData.get('username');
-    const telp = formData.get('no-telp');
-    const email = formData.get('email');
-    const address = formData.get('address');
-    const provinsi = formData.get('provinsi');
-    const district = formData.get('district');
-    const village = formData.get('village');
-    const description = formData.get('description');
-    const kurir = formData.get('kurir');
-    const paket = formData.get('paket');
-    const buyway = formData.get('buyway');
+    // const amount1 = +(formData.get("amount1") as string);
+    // const amount2 = +(formData.get("amount2") as string);
+    const name = formData.get('username') as string;
+    const telp = formData.get('no-telp') as string;
+    const email = formData.get('email') as string;
+    const address = formData.get('address') as string;
+    const provinsi = formData.get('provinsi') as string;
+    const district = formData.get('district') as string;
+    const village = formData.get('village') as string;
+    const description = formData.get('description') as string;
+    const kurir = formData.get('kurir') as string;
+    const paket = formData.get('paket') as string;
+    const buyway = formData.get('buyway') as string;
+    const voucher = formData.get('voucher') as string;
 
-    const data = {
-      amount1,
-      amount2,
-      name,
-      telp,
-      email,
-      address,
-      provinsi,
-      district,
-      village,
-      description,
-      kurir,
-      paket,
-      buyway,
+    // const data = {
+    //   price: 0,
+    //   discount: 0,
+    //   status: "",
+    //   receiverLongitude: "",
+    //   receiverLatitude: "",
+    //   receiverDistrict: district,
+    //   receiverPhone: telp,
+    //   receiverAddress: address,
+    //   receiverName: name,
+    //   invoiceNumber: "",
+    //   waybill: "",
+    //   cart: 0,
+    //   payment: 0,
+    //   courier: 0,
+    //   user: 0,
+    //   invoiveHistories: "",
+    //   mootaTransactionId: "",
+    // };
+
+    const post = {
+      // "Jumlah Barang 1": amount1,
+      // "Jumlah Barang 2": amount2,
+      'Nama Pembeli': name,
+      'No Telp': telp,
+      'Email ': email,
+      'Alamat ': address,
+      'Daerah ': address + ' ' + provinsi + ' ' + district,
+      'Provinsi ': provinsi,
+      'Kota/Kabupaten': district,
+      'Kecamatan ': village,
+      'Deskripsi ': description,
+      'Voucher ': voucher,
+      'Kurir ': kurir,
+      'Paket ': paket,
+      'Metode Pembayaran': buyway,
     };
-    console.log(data);
 
-    if (data.buyway == 'transfer') {
+    console.log(post);
+
+    // await createPost(data);
+
+    if (buyway == 'transfer') {
       return redirect(`/checkout/transfer`);
-    } else if (data.buyway == 'cod') {
+    } else if (buyway == 'cod') {
       return redirect(`/checkout/cod`);
     }
   }
@@ -67,61 +94,30 @@ export const action = async ({ request }: ActionArgs) => {
   return null;
 };
 
-function Spinner1() {
-  const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
-    useNumberInput({
-      step: 1,
-      defaultValue: 0,
-      min: 0,
-    });
-
-  const inc = getIncrementButtonProps();
-  const dec = getDecrementButtonProps();
-  const input = getInputProps();
-  return (
-    <HStack maxW="150px">
-      <Button {...dec}>-</Button>
-      <Input
-        minW={'40px'}
-        bgColor={'#fcfcfc'}
-        {...input}
-        value={input.value}
-        name="amount1"
-      />
-      <Button {...inc}>+</Button>
-    </HStack>
-  );
-}
-
-function Spinner2() {
-  const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
-    useNumberInput({
-      step: 1,
-      defaultValue: 0,
-      min: 0,
-    });
-
-  const inc = getIncrementButtonProps();
-  const dec = getDecrementButtonProps();
-  const input = getInputProps();
-  return (
-    <HStack maxW="150px">
-      <Button {...dec}>-</Button>
-      <Input
-        minW={'40px'}
-        bgColor={'#fcfcfc'}
-        {...input}
-        value={input.value}
-        name="amount2"
-      />
-      <Button {...inc}>+</Button>
-    </HStack>
-  );
+export async function createPost(data: any) {
+  return await db.invoice.create({ data: data });
 }
 
 const data = [{ name: 'Natural Hair Powder', code: 'Rp140', total: 'Rp140' }];
 
+export async function loader() {
+  return await db.product.findUnique({
+    where: {
+      id: '1',
+    },
+    include: {
+      store: true,
+      variants: {
+        include: {
+          variantOptions: true,
+        },
+      },
+    },
+  });
+}
+
 export default function Checkout() {
+  const item = useLoaderData<typeof loader>();
   return (
     <>
       <Box paddingInline={'10%'}>
@@ -136,25 +132,28 @@ export default function Checkout() {
           <Form method="post">
             <Box>
               <TableContainer>
+                <Box>
+                  <Text>Produk Dipesan</Text>
+                </Box>
                 <Table variant="simple">
                   <Thead>
                     <Tr fontWeight={'bold'}>
                       <Th width={'80%'}>Pilihan Variasi</Th>
-                      <Th>Jumlah</Th>
+                      <Th>Harga</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     <Tr>
-                      <Td>1 pcs Natural Hair Powder</Td>
-                      <Td>
-                        <Spinner1 />
+                      <Td display={'flex'} gap={3} alignItems={'center'}>
+                        <Image
+                          boxSize={'10'}
+                          borderRadius={'10%'}
+                          src={item?.attachments[0]}
+                          alt=""
+                        />
+                        <Text>{item?.name}</Text>
                       </Td>
-                    </Tr>
-                    <Tr>
-                      <Td>2 pcs Natural Hair Powder</Td>
-                      <Td>
-                        <Spinner2 />
-                      </Td>
+                      <Td>{item?.variants[0].name}</Td>
                     </Tr>
                   </Tbody>
                 </Table>
@@ -171,54 +170,47 @@ export default function Checkout() {
                     type="text"
                     placeholder="Nama Anda"
                     name="username"
-                    required
                   />
                   <Input
                     bgColor={'#fcfcfc'}
                     type="number"
                     placeholder="No. WhatsApp Anda"
                     name="no-telp"
-                    required
                   />
                   <Input
                     bgColor={'#fcfcfc'}
                     type="email"
                     placeholder="Email Anda"
                     name="email"
-                    required
                   />
                   <Input
                     bgColor={'#fcfcfc'}
                     type="text"
                     placeholder="Alamat Lengkap Anda"
                     name="address"
-                    required
                   />
                   <Input
                     bgColor={'#fcfcfc'}
                     type="text"
                     placeholder="Pilih Provinsi"
                     name="provinsi"
-                    required
                   />
                   <Input
                     bgColor={'#fcfcfc'}
                     type="text"
                     placeholder="Pilih Kota/Kabupaten"
                     name="district"
-                    required
                   />
                   <Input
                     bgColor={'#fcfcfc'}
                     type="text"
                     placeholder="Pilih Kecamatan"
                     name="village"
-                    required
                   />
                   <Input
                     bgColor={'#fcfcfc'}
                     type="text"
-                    placeholder="Masukkan Cacatan Pemesanan"
+                    placeholder="Masukkan Catatan Pemesanan"
                     name="description"
                   />
                 </Box>
@@ -227,7 +219,7 @@ export default function Checkout() {
                 <Text fontWeight={'bold'}>Pengiriman</Text>
                 <Grid templateColumns={'repeat(4, 1fr)'} gap={4}>
                   <GridItem colSpan={2}>
-                    <Select name="kurir" bgColor={'#fcfcfc'} required>
+                    <Select name="kurir" bgColor={'#fcfcfc'}>
                       <option value="" hidden>
                         Pilih Kurir
                       </option>
@@ -237,7 +229,7 @@ export default function Checkout() {
                     </Select>
                   </GridItem>
                   <GridItem colSpan={2}>
-                    <Select name="paket" bgColor={'#fcfcfc'} required>
+                    <Select name="paket" bgColor={'#fcfcfc'}>
                       <option value="" hidden>
                         Pilih Paket
                       </option>
@@ -247,6 +239,35 @@ export default function Checkout() {
                     </Select>
                   </GridItem>
                 </Grid>
+              </Box>
+              <Box>
+                <Text fontWeight={'bold'}>Voucher</Text>
+                <Box bgColor={'#fcfcfc'} p={3}>
+                  <Box>
+                    <TableContainer>
+                      <Table variant="simple">
+                        <Thead>
+                          <Tr fontWeight={'bold'}>
+                            <Th width={'80%'}>Nama Voucher</Th>
+                            <Th>Pilih Voucher</Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          <Tr>
+                            <Td display={'flex'} gap={3} alignItems={'center'}>
+                              <Text>Koin dapat Voucher</Text>
+                            </Td>
+                            <Td>
+                              <Checkbox value={'100.000'} name="voucher">
+                                Rp10.000
+                              </Checkbox>
+                            </Td>
+                          </Tr>
+                        </Tbody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                </Box>
               </Box>
               <Box>
                 <Text fontWeight={'bold'}>Metode Pembayaran</Text>

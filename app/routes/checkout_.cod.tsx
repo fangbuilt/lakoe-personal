@@ -2,7 +2,7 @@ import { Box, Card, Text } from '@chakra-ui/react';
 
 export default function PayCod() {
   return (
-    <>
+    <Box>
       <Box marginInline={'20%'}>
         <Card boxShadow={'dark-lg'} m={5}>
           <Box
@@ -34,16 +34,14 @@ export default function PayCod() {
         m={'50px'}
         justifyContent={'center'}
       >
-        <Text gap={3} justifyContent={'center'} display={'flex'}>
+        <Box gap={3} justifyContent={'center'} display={'flex'}>
           <Text fontWeight={'bold'} fontStyle={'italic'}>
             Powered by
           </Text>
-          Lakoe.id
-        </Text>
-        <Text fontWeight={'normal'} fontStyle={'normal'}>
-          copyright @ 2023
-        </Text>
+          <Text>Lakoe.id</Text>
+        </Box>
+        <Text>copyright @ 2023</Text>
       </Box>
-    </>
+    </Box>
   );
 }

@@ -46,21 +46,21 @@ export default function PayTransfer() {
                     <Heading color={'orange.400'}>{item.tagPrice}</Heading>
                   </Center>
                   <Center mt={3}>
-                    <Text
+                    <Box
                       display={'flex'}
+                      alignItems={'center'}
                       bg={'yellow.400'}
-                      fontWeight={'bold'}
+                      borderRadius={5}
                       gap={2}
                       p={'8px'}
-                      borderRadius={5}
                     >
-                      Penting!
-                      <Text fontWeight={'normal'}>
+                      <Text fontWeight={'bold'}>Penting!</Text>
+                      <Text>
                         Mohon Trtansfer sesuai sampai dengan 3 digit karakter
                       </Text>
-                    </Text>
+                    </Box>
                   </Center>
-                  <Text textAlign={'center'} mt={5}>
+                  <Box textAlign={'center'} mt={5}>
                     <Button border={'1px'} onClick={onCopy}>
                       {hasCopied ? 'Berhasil Disalin !' : 'Salin Jumlah'}
                     </Button>
@@ -70,15 +70,15 @@ export default function PayTransfer() {
                       <Text>{item.noPayment}</Text>
                       <Text>A.n {item.accountName}</Text>
                     </Box>
-                    <Text mt={'20px'}>
-                      Konfirmasikan Pembayaran Anda di:
-                      <Link to={'/'}>
+                    <Box mt={'20px'}>
+                      <Text>Konfirmasikan Pembayaran Anda di:</Text>
+                      <Link to={`/checkout/payment`}>
                         <Text display={'inline'} color={'blue'} ms={1}>
                           Konfirmasi Pembayaran
                         </Text>
                       </Link>
-                    </Text>
-                  </Text>
+                    </Box>
+                  </Box>
                 </Box>
               ))}
             </Center>
@@ -93,15 +93,13 @@ export default function PayTransfer() {
         m={'50px'}
         justifyContent={'center'}
       >
-        <Text gap={3} justifyContent={'center'} display={'flex'}>
+        <Box gap={3} justifyContent={'center'} display={'flex'}>
           <Text fontWeight={'bold'} fontStyle={'italic'}>
             Powered by
           </Text>
-          Lakoe.id
-        </Text>
-        <Text fontWeight={'normal'} fontStyle={'normal'}>
-          copyright @ 2023
-        </Text>
+          <Text>Lakoe.id</Text>
+        </Box>
+        <Text>copyt @ 2023</Text>righ
       </Box>
     </>
   );
