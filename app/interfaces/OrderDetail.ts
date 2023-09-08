@@ -7,6 +7,7 @@ export interface IOrderDetailInvoice {
   discount: number;
   status: string;
   invoiceNumber: string;
+  waybill: string;
   updatedAt: string;
   createdAt: string;
   courier: IOrderDetailCourier;
