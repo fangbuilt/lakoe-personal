@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -21,6 +22,26 @@ import React, { useState } from 'react';
 export default function NewOrder() {
   const { filteredOrders } = UseSearch();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleBalanceNotif = async () => {
+    try {
+      const mailerBaseUrl = 'https://connect.mailerlite.com';
+      const mailerEndPoint = '/api/subscribers';
+      const mailerApiKey =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZTNhM2I0ZjQyM2I1ZjMzNGFmZjYwMTI1M2NiOWNiYjkzMmJlYmRhNjM2MjA4Mjc1NjY4Zjc2MzBiMDNlZTdmNzNlZTYwNzAzYmNkNTdmMWQiLCJpYXQiOjE2OTM5MzExMjUuNDQ3MDg5LCJuYmYiOjE2OTM5MzExMjUuNDQ3MDkyLCJleHAiOjQ4NDk2MDQ3MjUuNDQyOTIsInN1YiI6IjYxMTE1NyIsInNjb3BlcyI6W119.ulMjk2-7itYmldu0zKRZutb37X5Ys8GeUe8hHN9X0y_dJmaBjZFB9xzfupK-6oIgO9aFWkXhMfj623BKE64sK75rJo99WtCqvgOuuG4XS2xeqvKlXY_2e45dSmE8-N-IKthQoYNqX02hBu-7fMUjByQ5ViQjq2jl1to3f7nOg_zNmy8pbQoPdCemFGtbvwBtJ0ACbog-mLztu6vNDEto7WbMYfWXWpMmY_6s4qPmKR30EhX4UyzK9UQ2pkxGpXCNERra8Bm0EMsJc35vgW12nFtnZP3g4Puz_DI5tiDWjQ8b6VIWLCJUrpiWZ9MeemBABl5azOHOFmkf-WH0xtRE4NbW9QWQN3sEIqEMBkSrlFbUdj7U10R5U2l-w3NY8EavxR47fcwQL08ef6JySz45NwbbNdQ_ymhK05AnEXrd5deZBhmU2MUr-sqeSwtTdivD8g8W3uuq6lraArs5bE5UypPyk-reT4exdvAnSCxmtn7q0FYJlqz3mTDZNpudJL98EAhCY4tqntbg7KqDpirDLhzHVhqzASgpapFM5E1WMK1nBK2diQjZpR7F5qovvcvOIjCu4vKMIrCbvtFi6rF7bnJLRjr9BdRxrQmCrdyEN7xlV1pEeIgl1K0mfbdD-zhTrNHoAa7lCbtVYsH397BXawtUNLExcJnB5z8bFhCULic'; //Badriana
+
+      const mailerData = {
+        email: 'aderino@puja.com',
+        fields: {
+          company: 'ADD MORE BALANCE', //company berperan sebagai "title"
+          preferences:
+            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do",
+        },
+      };
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const handleOrderCourier = async () => {
     try {
@@ -114,7 +135,7 @@ export default function NewOrder() {
                     size={'sm'}
                     pointerEvents={'none'}
                   >
-                    Pesanan Selesai
+                    Pesanan Baru
                   </Button>
                   <Button
                     bg={'transparent'}
@@ -161,7 +182,14 @@ export default function NewOrder() {
                         >
                           Cancel
                         </Button>
-                        <Button variant="ghost" onClick={handleOrderCourier}>
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            handleOrderCourier();
+                            setModalText('');
+                            onClose();
+                          }}
+                        >
                           Selesai di Packing
                         </Button>
                       </ModalFooter>
