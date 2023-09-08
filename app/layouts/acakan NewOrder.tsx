@@ -43,6 +43,16 @@ export default function NewOrder() {
     }
   };
 
+  const systembalance = 30000; //saldo LAKOE
+
+  const afterpacking = () => {
+    if (systembalance > 50000) {
+      handleOrderCourier();
+    } else {
+      handleBalanceNotif();
+    }
+  };
+
   const handleOrderCourier = async () => {
     try {
       const baseUrl = 'https://api.biteship.com';
@@ -143,7 +153,6 @@ export default function NewOrder() {
                     borderRadius={'full'}
                     fontSize={'14px'}
                     onClick={() => {
-                      // Munculkan modal dan atur teks modal sesuai kebutuhan
                       setModalText(
                         'You can scroll the content behind the modal'
                       );
@@ -175,14 +184,13 @@ export default function NewOrder() {
                           colorScheme="blue"
                           mr={3}
                           onClick={() => {
-                            // Tutup modal dan atur ulang teks modal
                             setModalText('');
                             onClose();
                           }}
                         >
                           Cancel
                         </Button>
-                        <Button variant="ghost" onClick={handleOrderCourier}>
+                        <Button variant="ghost" onClick={afterpacking}>
                           Selesai di Packing
                         </Button>
                       </ModalFooter>
