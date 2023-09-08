@@ -161,14 +161,7 @@ export default function NewOrder() {
                         >
                           Cancel
                         </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => {
-                            handleOrderCourier();
-                            setModalText('');
-                            onClose();
-                          }}
-                        >
+                        <Button variant="ghost" onClick={handleOrderCourier}>
                           Selesai di Packing
                         </Button>
                       </ModalFooter>
