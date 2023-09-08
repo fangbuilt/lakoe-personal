@@ -28,18 +28,43 @@ export default function NewOrder() {
       const mailerBaseUrl = 'https://connect.mailerlite.com';
       const mailerEndPoint = '/api/subscribers';
       const mailerApiKey =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZTNhM2I0ZjQyM2I1ZjMzNGFmZjYwMTI1M2NiOWNiYjkzMmJlYmRhNjM2MjA4Mjc1NjY4Zjc2MzBiMDNlZTdmNzNlZTYwNzAzYmNkNTdmMWQiLCJpYXQiOjE2OTM5MzExMjUuNDQ3MDg5LCJuYmYiOjE2OTM5MzExMjUuNDQ3MDkyLCJleHAiOjQ4NDk2MDQ3MjUuNDQyOTIsInN1YiI6IjYxMTE1NyIsInNjb3BlcyI6W119.ulMjk2-7itYmldu0zKRZutb37X5Ys8GeUe8hHN9X0y_dJmaBjZFB9xzfupK-6oIgO9aFWkXhMfj623BKE64sK75rJo99WtCqvgOuuG4XS2xeqvKlXY_2e45dSmE8-N-IKthQoYNqX02hBu-7fMUjByQ5ViQjq2jl1to3f7nOg_zNmy8pbQoPdCemFGtbvwBtJ0ACbog-mLztu6vNDEto7WbMYfWXWpMmY_6s4qPmKR30EhX4UyzK9UQ2pkxGpXCNERra8Bm0EMsJc35vgW12nFtnZP3g4Puz_DI5tiDWjQ8b6VIWLCJUrpiWZ9MeemBABl5azOHOFmkf-WH0xtRE4NbW9QWQN3sEIqEMBkSrlFbUdj7U10R5U2l-w3NY8EavxR47fcwQL08ef6JySz45NwbbNdQ_ymhK05AnEXrd5deZBhmU2MUr-sqeSwtTdivD8g8W3uuq6lraArs5bE5UypPyk-reT4exdvAnSCxmtn7q0FYJlqz3mTDZNpudJL98EAhCY4tqntbg7KqDpirDLhzHVhqzASgpapFM5E1WMK1nBK2diQjZpR7F5qovvcvOIjCu4vKMIrCbvtFi6rF7bnJLRjr9BdRxrQmCrdyEN7xlV1pEeIgl1K0mfbdD-zhTrNHoAa7lCbtVYsH397BXawtUNLExcJnB5z8bFhCULic'; //Badriana
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //Rino - Puja (desi123321123321@gmail.com)
 
       const mailerData = {
-        email: 'aderino@puja.com',
+        email: 'miswaripujaayu+2@gmail.com',
         fields: {
           company: 'ADD MORE BALANCE', //company berperan sebagai "title"
-          preferences:
-            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do",
+          last_name:
+            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message")
         },
       };
+
+      const mailerRequest = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${mailerApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(mailerData),
+      };
+
+      const response = await fetch(
+        `${mailerBaseUrl}${mailerEndPoint}`,
+        mailerRequest
+      );
+      const responseData = await response.json();
     } catch (error) {
       alert(error);
+    }
+  };
+
+  const systembalance = 30000; //saldo LAKOE
+
+  const afterpacking = () => {
+    if (systembalance > 50000) {
+      handleOrderCourier();
+    } else {
+      handleBalanceNotif();
     }
   };
 
@@ -51,11 +76,11 @@ export default function NewOrder() {
         'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYml0ZXNoaXBMYWtvZSIsInVzZXJJZCI6IjY0ZjU4ZjdiZWJlNjI2M2RiOWY5MWYxMCIsImlhdCI6MTY5NDA3MjA0N30.t-4Rg4MSvhx6Uq9bKhVlo2DFPvb3L9jmObDCwFzSuuk'; //Rino - Puja
 
       const orderData = {
-        shipper_contact_name: 'Amir',
+        shipper_contact_name: 'megakuningan',
         shipper_contact_phone: '081277882932',
         shipper_contact_email: 'biteship@test.com',
         shipper_organization: 'Biteship Org Test',
-        origin_contact_name: 'Amir',
+        origin_contact_name: 'megakuningan',
         origin_contact_phone: '081740781720',
         origin_address: 'Plaza Senayan, Jalan Asia Afrika...',
         origin_note: 'Deket pintu masuk STC',
@@ -64,7 +89,7 @@ export default function NewOrder() {
           longitude: 106.7993735,
         },
         origin_postal_code: 12440,
-        destination_contact_name: 'John Doe',
+        destination_contact_name: 'stevanus miswari',
         destination_contact_phone: '08170032123',
         destination_contact_email: 'jon@test.com',
         destination_address: 'Lebak Bulus MRT...',
@@ -143,7 +168,6 @@ export default function NewOrder() {
                     borderRadius={'full'}
                     fontSize={'14px'}
                     onClick={() => {
-                      // Munculkan modal dan atur teks modal sesuai kebutuhan
                       setModalText(
                         'You can scroll the content behind the modal'
                       );
@@ -175,7 +199,6 @@ export default function NewOrder() {
                           colorScheme="blue"
                           mr={3}
                           onClick={() => {
-                            // Tutup modal dan atur ulang teks modal
                             setModalText('');
                             onClose();
                           }}
@@ -185,8 +208,7 @@ export default function NewOrder() {
                         <Button
                           variant="ghost"
                           onClick={() => {
-                            handleOrderCourier();
-                            setModalText('');
+                            afterpacking();
                             onClose();
                           }}
                         >
