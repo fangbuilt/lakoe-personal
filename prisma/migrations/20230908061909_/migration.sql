@@ -5,11 +5,26 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "roleId" TEXT,
+    "roleId" TEXT NOT NULL,
+    "storeId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "withdraws" (
+    "id" TEXT NOT NULL,
+    "storeId" TEXT NOT NULL,
+    "bankId" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "status" TEXT NOT NULL,
+    "approvedById" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "withdraws_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -25,8 +40,7 @@ CREATE TABLE "roles" (
 -- CreateTable
 CREATE TABLE "profiles" (
     "id" TEXT NOT NULL,
-    "locations" TEXT NOT NULL,
-    "userId" TEXT,
+    "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -37,6 +51,7 @@ CREATE TABLE "profiles" (
 CREATE TABLE "stores" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "credit" INTEGER NOT NULL DEFAULT 0,
     "slogan" TEXT,
     "description" TEXT NOT NULL,
     "domain" TEXT NOT NULL,
@@ -46,16 +61,6 @@ CREATE TABLE "stores" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "stores_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "users_stores" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT,
-    "storeId" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "users_stores_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -128,12 +133,12 @@ CREATE TABLE "products" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "attachments" TEXT NOT NULL,
+    "attachments" TEXT[],
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "variants" TEXT NOT NULL,
-    "size" TEXT[],
     "minumumOrder" INTEGER NOT NULL,
-    "storeId" TEXT,
+    "storeId" TEXT NOT NULL,
+    "categoryId" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -171,7 +176,7 @@ CREATE TABLE "variant_option_values" (
     "stock" INTEGER NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "variantOptionsId" TEXT,
+    "variantOptionId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -179,10 +184,22 @@ CREATE TABLE "variant_option_values" (
 );
 
 -- CreateTable
+CREATE TABLE "product_sizes" (
+    "id" TEXT NOT NULL,
+    "length" DOUBLE PRECISION NOT NULL,
+    "width" DOUBLE PRECISION NOT NULL,
+    "height" DOUBLE PRECISION NOT NULL,
+    "variantOptionValueId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "product_sizes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "categories" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "storeId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -190,22 +207,11 @@ CREATE TABLE "categories" (
 );
 
 -- CreateTable
-CREATE TABLE "products_categories" (
-    "id" TEXT NOT NULL,
-    "productId" TEXT,
-    "categoryId" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "products_categories_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "carts" (
     "id" TEXT NOT NULL,
-    "prices" DOUBLE PRECISION NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
     "discount" DOUBLE PRECISION NOT NULL,
-    "usersId" TEXT,
+    "userId" TEXT,
     "storeId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -231,22 +237,24 @@ CREATE TABLE "cart_items" (
 -- CreateTable
 CREATE TABLE "invoices" (
     "id" TEXT NOT NULL,
-    "prices" DOUBLE PRECISION NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
     "discount" DOUBLE PRECISION NOT NULL,
     "status" TEXT NOT NULL,
-    "receiverLongtitude" TEXT NOT NULL,
+    "receiverLongitude" TEXT NOT NULL,
     "receiverLatitude" TEXT NOT NULL,
     "receiverDistrict" TEXT NOT NULL,
     "receiverPhone" TEXT NOT NULL,
     "receiverAddress" TEXT NOT NULL,
     "receiverName" TEXT NOT NULL,
     "invoiceNumber" TEXT NOT NULL,
+    "waybill" TEXT NOT NULL,
     "cartId" TEXT,
-    "paymentId" TEXT,
     "courierId" TEXT,
     "userId" TEXT,
+    "mootaTransactionId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "paymentId" TEXT,
 
     CONSTRAINT "invoices_pkey" PRIMARY KEY ("id")
 );
@@ -255,10 +263,9 @@ CREATE TABLE "invoices" (
 CREATE TABLE "payments" (
     "id" TEXT NOT NULL,
     "bank" TEXT NOT NULL,
-    "vaNumber" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
     "status" TEXT NOT NULL,
-    "usersId" TEXT,
+    "userId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -268,9 +275,19 @@ CREATE TABLE "payments" (
 -- CreateTable
 CREATE TABLE "couriers" (
     "id" TEXT NOT NULL,
+    "availableForCashOnDelivery" BOOLEAN NOT NULL,
+    "availableForProofOfDelivery" BOOLEAN NOT NULL,
+    "availableForInstantWaybillId" BOOLEAN NOT NULL,
+    "courierName" TEXT NOT NULL,
     "courierCode" TEXT NOT NULL,
     "courierServiceName" TEXT NOT NULL,
     "courierServiceCode" TEXT NOT NULL,
+    "tier" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "serviceType" TEXT NOT NULL,
+    "shippingType" TEXT NOT NULL,
+    "shipmentDurationRange" TEXT NOT NULL,
+    "shipmentDurationUnit" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -289,6 +306,17 @@ CREATE TABLE "invoice_histories" (
     CONSTRAINT "invoice_histories_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "bank_accounts" (
+    "id" TEXT NOT NULL,
+    "bank" TEXT NOT NULL,
+    "accountName" TEXT NOT NULL,
+    "accountNumber" TEXT NOT NULL,
+    "storeId" TEXT,
+
+    CONSTRAINT "bank_accounts_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_id_key" ON "users"("id");
 
@@ -297,6 +325,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "withdraws_id_key" ON "withdraws"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "roles_id_key" ON "roles"("id");
@@ -309,9 +340,6 @@ CREATE UNIQUE INDEX "profiles_userId_key" ON "profiles"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "stores_id_key" ON "stores"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_stores_id_key" ON "users_stores"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "decorations_id_key" ON "decorations"("id");
@@ -341,10 +369,13 @@ CREATE UNIQUE INDEX "variant_options_id_key" ON "variant_options"("id");
 CREATE UNIQUE INDEX "variant_option_values_id_key" ON "variant_option_values"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "categories_id_key" ON "categories"("id");
+CREATE UNIQUE INDEX "product_sizes_id_key" ON "product_sizes"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "products_categories_id_key" ON "products_categories"("id");
+CREATE UNIQUE INDEX "product_sizes_variantOptionValueId_key" ON "product_sizes"("variantOptionValueId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "categories_id_key" ON "categories"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "carts_id_key" ON "carts"("id");
@@ -356,18 +387,6 @@ CREATE UNIQUE INDEX "cart_items_id_key" ON "cart_items"("id");
 CREATE UNIQUE INDEX "invoices_id_key" ON "invoices"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "invoice_cart_id_unique" ON "invoices"("cartId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "invoice_payment_id_unique" ON "invoices"("paymentId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "invoice_courier_id_unique" ON "invoices"("courierId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "invoice_user_id_unique" ON "invoices"("userId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "payments_id_key" ON "payments"("id");
 
 -- CreateIndex
@@ -376,17 +395,26 @@ CREATE UNIQUE INDEX "couriers_id_key" ON "couriers"("id");
 -- CreateIndex
 CREATE UNIQUE INDEX "invoice_histories_id_key" ON "invoice_histories"("id");
 
--- AddForeignKey
-ALTER TABLE "users" ADD CONSTRAINT "users_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "bank_accounts_id_key" ON "bank_accounts"("id");
 
 -- AddForeignKey
-ALTER TABLE "profiles" ADD CONSTRAINT "profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "users_stores" ADD CONSTRAINT "users_stores_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "users_stores" ADD CONSTRAINT "users_stores_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "withdraws" ADD CONSTRAINT "withdraws_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "withdraws" ADD CONSTRAINT "withdraws_bankId_fkey" FOREIGN KEY ("bankId") REFERENCES "bank_accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "withdraws" ADD CONSTRAINT "withdraws_approvedById_fkey" FOREIGN KEY ("approvedById") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "profiles" ADD CONSTRAINT "profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "stores_decorations" ADD CONSTRAINT "stores_decorations_decorationId_fkey" FOREIGN KEY ("decorationId") REFERENCES "decorations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -407,7 +435,10 @@ ALTER TABLE "locations" ADD CONSTRAINT "locations_storeId_fkey" FOREIGN KEY ("st
 ALTER TABLE "locations" ADD CONSTRAINT "locations_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "products" ADD CONSTRAINT "products_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "variants" ADD CONSTRAINT "variants_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -416,19 +447,13 @@ ALTER TABLE "variants" ADD CONSTRAINT "variants_productId_fkey" FOREIGN KEY ("pr
 ALTER TABLE "variant_options" ADD CONSTRAINT "variant_options_variantId_fkey" FOREIGN KEY ("variantId") REFERENCES "variants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "variant_option_values" ADD CONSTRAINT "variant_option_values_variantOptionsId_fkey" FOREIGN KEY ("variantOptionsId") REFERENCES "variant_options"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "variant_option_values" ADD CONSTRAINT "variant_option_values_variantOptionId_fkey" FOREIGN KEY ("variantOptionId") REFERENCES "variant_options"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "categories" ADD CONSTRAINT "categories_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "product_sizes" ADD CONSTRAINT "product_sizes_variantOptionValueId_fkey" FOREIGN KEY ("variantOptionValueId") REFERENCES "variant_option_values"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "products_categories" ADD CONSTRAINT "products_categories_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "products_categories" ADD CONSTRAINT "products_categories_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "carts" ADD CONSTRAINT "carts_usersId_fkey" FOREIGN KEY ("usersId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "carts" ADD CONSTRAINT "carts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "carts" ADD CONSTRAINT "carts_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -446,19 +471,22 @@ ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_userId_fkey" FOREIGN KEY ("u
 ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_cart_fk" FOREIGN KEY ("cartId") REFERENCES "carts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "invoices" ADD CONSTRAINT "invoices_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "carts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_payment_fk" FOREIGN KEY ("paymentId") REFERENCES "payments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "invoices" ADD CONSTRAINT "invoices_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "payments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_courier_fk" FOREIGN KEY ("courierId") REFERENCES "couriers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "invoices" ADD CONSTRAINT "invoices_courierId_fkey" FOREIGN KEY ("courierId") REFERENCES "couriers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_user_fk" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "invoices" ADD CONSTRAINT "invoices_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "payments" ADD CONSTRAINT "payments_usersId_fkey" FOREIGN KEY ("usersId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "payments" ADD CONSTRAINT "payments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "invoice_histories" ADD CONSTRAINT "invoice_histories_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "invoices"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bank_accounts" ADD CONSTRAINT "bank_accounts_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
