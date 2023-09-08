@@ -1,17 +1,7 @@
 import { Box, Checkbox, Image, Switch, Text } from '@chakra-ui/react';
 import { FaCircle } from 'react-icons/fa';
 import ProductModal from './ProductModal';
-
-export interface IProduct {
-  id: string;
-  title: string;
-  image: string;
-  price: string;
-  stock: string;
-  sku: string;
-  varians: string;
-  isActive: boolean;
-}
+import type { IProduct } from '~/interfaces/product/product';
 
 export default function ProductCard(props: IProduct) {
   return (
