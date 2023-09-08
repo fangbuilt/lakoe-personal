@@ -2,14 +2,17 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function getPosts() {
-  return await prisma.user.findMany({
+export async function getTemplate() {
+  const data = await prisma.messageTemplate.findMany({
     orderBy: {
       id: 'desc',
     },
   });
+
+  console.log('ini semua data dari backend', data);
+  return data;
 }
 
-// export async function createPost(data: z.infer<typeof createConfiguration>) {
-//   return await prisma.user.create({  });
+// export async function createTemplate(data: z.infer<typeof createTamplate>) {
+//   return await prisma.messageTemplate.create({});
 // }
