@@ -402,18 +402,24 @@ async function main() {
   }
 
   // withdraw
-  // for (let x = 1; x <= seedDataPerTable; x++) {
-  //   await prisma.withdraw.create({
-  //     data: {
-  //       id: x.toString(),
-  //       storeId: faker.helpers.arrayElement(relationsId),
-  //       bankId: faker.helpers.arrayElement(relationsId),
-  //       amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
-  //       status: faker.helpers.arrayElement(["PENDING", "", ""]),
-  //       approvedBy: faker.helpers.arrayElement(relationsId),
-  //     },
-  //   });
-  // }
+  for (let x = 1; x <= seedDataPerTable; x++) {
+    await prisma.withdraw.create({
+      data: {
+        id: x.toString(),
+        storeId: faker.helpers.arrayElement(relationsId),
+        bankId: faker.helpers.arrayElement(relationsId),
+        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        status: faker.helpers.arrayElement([
+          'REQUEST',
+          'APPROVED',
+          'PROGRESSING',
+          'SUCCESS',
+          'DECLINED',
+        ]),
+        approvedById: faker.helpers.arrayElement(relationsId),
+      },
+    });
+  }
 
   // invoice history
   for (let x = 1; x <= seedDataPerTable; x++) {

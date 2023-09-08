@@ -5,12 +5,26 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "roleId" TEXT NOT NULL,
     "storeId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "withdraws" (
+    "id" TEXT NOT NULL,
+    "storeId" TEXT NOT NULL,
+    "bankId" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "status" TEXT NOT NULL,
+    "approvedById" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "withdraws_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -313,6 +327,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "withdraws_id_key" ON "withdraws"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "roles_id_key" ON "roles"("id");
 
 -- CreateIndex
@@ -386,6 +403,15 @@ ALTER TABLE "users" ADD CONSTRAINT "users_storeId_fkey" FOREIGN KEY ("storeId") 
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "withdraws" ADD CONSTRAINT "withdraws_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "withdraws" ADD CONSTRAINT "withdraws_bankId_fkey" FOREIGN KEY ("bankId") REFERENCES "bank_accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "withdraws" ADD CONSTRAINT "withdraws_approvedById_fkey" FOREIGN KEY ("approvedById") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

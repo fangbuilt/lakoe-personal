@@ -40,7 +40,7 @@ model Withdraw {
   bankAccount  BankAccount? @relation(fields: [bankId], references: [id])
   bankId       String
   amount       Float
-  status       Boolean
+  status       String
   approvedBy   User?        @relation(fields: [approvedById], references: [id])
   approvedById String
   createdAt    DateTime     @default(now())
