@@ -23,13 +23,30 @@ model User {
   cartItems CartItem[]
   invoices  Invoice[]
   payments  Payment[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now())
   role      Role       @relation(fields: [roleId], references: [id])
   roleId    String
   storeId   String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  withdraw  Withdraw[]
 
   @@map("users")
+}
+
+model Withdraw {
+  id           String       @id @unique @default(uuid())
+  store        Store?       @relation(fields: [storeId], references: [id])
+  storeId      String
+  bankAccount  BankAccount? @relation(fields: [bankId], references: [id])
+  bankId       String
+  amount       Float
+  status       Boolean
+  approvedBy   User?        @relation(fields: [approvedById], references: [id])
+  approvedById String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
+
+  @@map("withdraws")
 }
 
 model Role {
@@ -73,6 +90,7 @@ model Store {
   bankAccount       BankAccount[]
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @default(now())
+  withdraw          Withdraw[]
 
   @@map("stores")
 }
@@ -341,12 +359,13 @@ model InvoiceHistory {
 }
 
 model BankAccount {
-  id            String  @id @unique @default(uuid())
+  id            String     @id @unique @default(uuid())
   bank          String
   accountName   String
   accountNumber String
-  store         Store?  @relation(fields: [storeId], references: [id])
+  store         Store?     @relation(fields: [storeId], references: [id])
   storeId       String?
+  withdraw      Withdraw[]
 
   @@map("bank_accounts")
 }
