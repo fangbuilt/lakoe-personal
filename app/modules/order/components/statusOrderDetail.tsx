@@ -36,7 +36,9 @@ import {
 } from "@chakra-ui/icons";
 import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import { useState } from "react";
-import { db } from "~/libs/prisma/db.server";
+import useCopyToClipboard from "../hooks/useCopyToClipboard";
+import circle from "~/assets/DetailOrderIcon/info-circle.svg";
+
 
 export function getStatusBadge(status: string) {
   if (status.toUpperCase() === "UNPAID") {
@@ -311,31 +313,6 @@ export function getStatusLacakPengiriman(status: string) {
       </Button>
     );
   }
-  return null;
-}
-
-export async function getInvoiceById(id: any) {
-  const dataInvoice = await db.invoice.findFirst({
-    where: {
-      id,
-    },
-    include: {
-      payment: true,
-      courier: true,
-      cart: {
-        include: {
-          store: {
-            include: {
-              products: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  console.log("ini data inv", dataInvoice);
-  return dataInvoice;
 }
 
 export default function StatusOrderDetail({
@@ -346,32 +323,64 @@ export default function StatusOrderDetail({
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
 
-  const toast = useToast();
-  const [_, setCopied] = useState(false);
+    const { toastStyle } = useCopyToClipboard();
+    const { isCopied: isCopied1, handleCopyClick: handleCopyClick1 } =
+      useCopyToClipboard();
+    const { isCopied: isCopied2, handleCopyClick: handleCopyClick2 } =
+      useCopyToClipboard();
+    const { isCopied: isCopied3, handleCopyClick: handleCopyClick3 } =
+      useCopyToClipboard();
+    const handleCopyInvoiceClick = () => {
+      handleCopyClick1(data.invoiceNumber);
+    };
+    const handleCopyResiClick = () => {
+      handleCopyClick2(data.courier.courierServiceCode);
+    };
+    const handleCopyAddressClick = () => {
+      handleCopyClick3(data.receiverAddress);
+    };
 
-  const handleCopyClick = () => {
-    const textToCopy = data.invoiceNumber;
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopied(true);
 
-      toast({
-        title: "Teks telah disalin ke clipboard!",
-        status: "success",
-        duration: 1000,
-        isClosable: true,
-        position: "top",
-      });
-    });
-  };
 
+  const products = data.cart.cartItems.map((cartItem) => {
+    return { ...cartItem, cartItem };
+  });
   return (
     <>
       <Box display={"flex"} flexDirection={"column"} gap={3}>
         <Flex>
           <Text color={"#0EADD7"}>Daftar Pesanan</Text>{" "}
           <Text>
-            <ChevronRightIcon /> CREWNECK ...
+          <ChevronRightIcon /> CREWNECK ...
           </Text>
+        {isCopied1 && (
+          <Box {...toastStyle}>
+            <Box display={"flex"} gap={3}>
+              <Image src={circle} />
+              <Text>Nomor Invoice berhasil disalin</Text>
+            </Box>
+            <Text>OK</Text>
+          </Box>
+        )}
+
+        {isCopied2 && (
+          <Box {...toastStyle}>
+            <Box display={"flex"} gap={3}>
+              <Image src={circle} />
+              <Text>Nomor Resi berhasil disalin</Text>
+            </Box>
+            <Text>OK</Text>
+          </Box>
+        )}
+        {isCopied3 && (
+          <Box {...toastStyle}>
+            <Box display={"flex"} gap={3}>
+              <Image src={circle} />
+              <Text>Alamat berhasil disalin</Text>
+            </Box>
+            <Text>OK</Text>
+          </Box>
+        )}
         </Flex>
         <Box
           display={"flex"}
@@ -492,7 +501,7 @@ export default function StatusOrderDetail({
                 justifyContent={"center"}
                 alignItems={"center"}
                 src={copy}
-                onClick={handleCopyClick}
+                onClick={handleCopyInvoiceClick}
                 style={{ cursor: "pointer" }}
                 color={"gray.900"}
               />
@@ -560,92 +569,94 @@ export default function StatusOrderDetail({
             src={box}
           />
 
-          <Box display={"flex"} flexDirection={"column"} gap={1}>
+          <Box display={"flex"} flexDirection={"column"} gap={1} width={"100%"}>
             <Box>
               <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
                 Detail Produk
               </Text>
             </Box>
             <Box>
-              <Card
-                overflow="hidden"
-                variant="outline"
-                display={"flex"}
-                justifyContent={"space-between"}
-              >
-                <Divider w={"100%"} />
-
-                <Box
+              {products.map((item) => (
+                <Card
+                  overflow="hidden"
+                  variant="outline"
                   display={"flex"}
                   justifyContent={"space-between"}
-                  padding={"15px"}
+                  key={item.id}
                 >
-                  <Box display={"flex"}>
-                    <Box
-                      display={"flex"}
-                      justifyContent={"center"}
-                      flexDirection={"column"}
-                    >
-                      <Image
-                        objectFit="cover"
-                        width={"52px"}
-                        height={"52px"}
-                        src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2xvdGhlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"
-                        alt="brown clothes"
-                        borderRadius={"8px"}
-                      />
+                  <Divider w={"100%"} />
+                  <Box
+                    display={"flex"}
+                    justifyContent={"space-between"}
+                    padding={"15px"}
+                  >
+                    <Box display={"flex"}>
+                      <Box
+                        display={"flex"}
+                        justifyContent={"center"}
+                        flexDirection={"column"}
+                      >
+                        <Image
+                          objectFit="cover"
+                          width={"52px"}
+                          height={"52px"}
+                          src={item.product.attachments[0]}
+                          alt="brown clothes"
+                          borderRadius={"8px"}
+                        />
+                      </Box>
+                      <Box>
+                        <CardBody>
+                          <Heading
+                            size="md"
+                            fontSize={"16px"}
+                            lineHeight={"20px"}
+                            fontWeight={"700"}
+                            overflow={"hidden"}
+                            textOverflow={"ellipsis"}
+                          >
+                            {item.product.name}
+                          </Heading>
+                          <Text
+                            py="2"
+                            fontSize={"14px"}
+                            color={"#1D1D1D"}
+                            lineHeight={"16px"}
+                            fontWeight={"500"}
+                          >
+                            {item.cartItem.qty} x Rp{item.cartItem.price}
+                          </Text>
+                        </CardBody>
+                      </Box>
                     </Box>
 
-                    <Box>
-                      <CardBody>
-                        <Heading
-                          size="md"
-                          fontSize={"16px"}
-                          lineHeight={"20px"}
-                          fontWeight={"700"}
-                          overflow={"hidden"}
-                          textOverflow={"ellipsis"}
-                        >
-                          CREWNECK BASIC-BLACK | sweeter polos hodie polos
-                          crewneck - S
-                        </Heading>
-                        <Text
-                          py="2"
-                          fontSize={"14px"}
-                          color={"#909090"}
-                          lineHeight={"16px"}
-                        >
-                          2 Barang
-                        </Text>
-                      </CardBody>
+                    <Box
+                      justifyContent={"center"}
+                      display={"flex"}
+                      flexDirection={"column"}
+                      flex={"end"}
+                    >
+                      <Text
+                        fontSize={"14px"}
+                        fontWeight={"500"}
+                        color={"#909090"}
+                        lineHeight={"16px"}
+                        textAlign={"right"}
+                      >
+                        Total Belanja
+                      </Text>
+                      <Text
+                        fontSize={"14px"}
+                        fontWeight={"700"}
+                        lineHeight={"16px"}
+                        textAlign={"right"}
+                      >
+                        Rp{data.cart.price}
+                      </Text>
                     </Box>
                   </Box>
-                  <Box
-                    justifyContent={"center"}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    flex={"end"}
-                  >
-                    <Text
-                      fontSize={"14px"}
-                      fontWeight={"500"}
-                      color={"#909090"}
-                      lineHeight={"16px"}
-                      textAlign={"right"}
-                    >
-                      Total Belanja
-                    </Text>
-                    <Text
-                      fontSize={"14px"}
-                      fontWeight={"700"}
-                      lineHeight={"16px"}
-                      textAlign={"right"}
-                    >
-                      190.000
-                    </Text>
-                  </Box>
-                </Box>
-              </Card>
+                </Card>
+              ))}
             </Box>
           </Box>
         </Box>
@@ -666,12 +677,8 @@ export default function StatusOrderDetail({
             />
           </Box>
 
-          <Box display={"flex"} flexDirection={"column"} gap={1}>
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              width={"100%"}
-            >
+          <Box display={"flex"} flexDirection={"column"} gap={1} width={"100%"}>
+            <Box display={"flex"} justifyContent={"space-between"}>
               <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
                 Detail Pengiriman
               </Text>
@@ -704,6 +711,7 @@ export default function StatusOrderDetail({
                     justifyContent={"center"}
                     alignItems={"center"}
                     src={copy}
+                    onClick={handleCopyResiClick}
                     style={{ cursor: "pointer" }}
                     color={"gray.900"}
                   />
@@ -724,6 +732,7 @@ export default function StatusOrderDetail({
                     justifyContent={"center"}
                     alignItems={"center"}
                     src={copy}
+                    onClick={handleCopyAddressClick}
                     style={{ cursor: "pointer" }}
                     color={"gray.900"}
                   />
@@ -736,7 +745,7 @@ export default function StatusOrderDetail({
                   fontWeight={"700"}
                   lineHeight={"20px"}
                 >
-                  {data.courier.courierCode}
+                  {data.courier.courierCode} - {data.courier.courierServiceCode}
                 </Text>
                 <Text
                   color={`var(--text-dark, #1D1D1D)`}
@@ -744,7 +753,7 @@ export default function StatusOrderDetail({
                   fontWeight={"700"}
                   lineHeight={"20px"}
                 >
-                  {data.courier.courierServiceCode}
+                  {data.waybill}
                 </Text>
                 <Box display={"flex"} flexDirection={"column"}>
                   <Text
