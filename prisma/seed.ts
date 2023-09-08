@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 async function main() {
-  const seedDataPerTable = 100;
+  const seedDataPerTable = 20;
 
   let relationsId = [];
   for (let x = 1; x <= seedDataPerTable; x++) {
@@ -400,6 +400,20 @@ async function main() {
       },
     });
   }
+
+  // withdraw
+  // for (let x = 1; x <= seedDataPerTable; x++) {
+  //   await prisma.withdraw.create({
+  //     data: {
+  //       id: x.toString(),
+  //       storeId: faker.helpers.arrayElement(relationsId),
+  //       bankId: faker.helpers.arrayElement(relationsId),
+  //       amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+  //       status: faker.helpers.arrayElement(["PENDING", "", ""]),
+  //       approvedBy: faker.helpers.arrayElement(relationsId),
+  //     },
+  //   });
+  // }
 
   // invoice history
   for (let x = 1; x <= seedDataPerTable; x++) {

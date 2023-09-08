@@ -28,23 +28,23 @@ model User {
   storeId   String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
-  Withdraw  Withdraw[]
+  withdraw  Withdraw[]
 
   @@map("users")
 }
 
 model Withdraw {
-  id          String       @id @unique @default(uuid())
-  store       Store?       @relation(fields: [storeId], references: [id])
-  storeId     String
-  bankAccount BankAccount? @relation(fields: [bankId], references: [id])
-  bankId      String
-  amount      Float
-  status      Boolean
-  user        User?        @relation(fields: [approvedBy], references: [id])
-  approvedBy String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now())
+  id           String       @id @unique @default(uuid())
+  store        Store?       @relation(fields: [storeId], references: [id])
+  storeId      String
+  bankAccount  BankAccount? @relation(fields: [bankId], references: [id])
+  bankId       String
+  amount       Float
+  status       Boolean
+  approvedBy   User?        @relation(fields: [approvedById], references: [id])
+  approvedById String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
 
   @@map("withdraws")
 }
@@ -90,7 +90,7 @@ model Store {
   bankAccount       BankAccount[]
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @default(now())
-  Withdraw          Withdraw[]
+  withdraw          Withdraw[]
 
   @@map("stores")
 }
@@ -365,7 +365,7 @@ model BankAccount {
   accountNumber String
   store         Store?     @relation(fields: [storeId], references: [id])
   storeId       String?
-  Withdraw      Withdraw[]
+  withdraw      Withdraw[]
 
   @@map("bank_accounts")
 }
