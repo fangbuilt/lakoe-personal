@@ -1,11 +1,10 @@
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import React from 'react';
 
 import datetimeDifference from 'datetime-difference';
 import MailerLite from '@mailerlite/mailerlite-nodejs';
-import { PrismaClient } from '@prisma/client';
-import { Link, useLoaderData } from '@remix-run/react';
-import CardProducts from '~/components/CardProduction';
+import { db } from '~/libs/prisma/db.server';
+import { useLoaderData } from '@remix-run/react';
 
 interface CreateOrUpdateParams {
   email: string;
@@ -20,16 +19,14 @@ interface CreateOrUpdateParams {
 }
 
 const apikey = process.env.API_KEY as string;
-console.log('mailerlite iniiiiii', apikey);
+// console.log('mailerlite iniiiiii', apikey);
 
 const mailerlite = new MailerLite({
   api_key: apikey,
 });
 
-const prisma = new PrismaClient();
-
 export async function loader() {
-  const datash = await prisma.payment.findMany({
+  const datash = await db.payment.findMany({
     include: {
       user: true,
     },
@@ -37,11 +34,10 @@ export async function loader() {
 
   for (const data of datash) {
     const waktuTerakhirPembayaran = data.updatedAt;
-    // console.log('waktuTerakhirPembayaran', waktuTerakhirPembayaran);
     const selisihWaktu = hitungSelisihWaktu(waktuTerakhirPembayaran);
     console.log('selisihWaktu', selisihWaktu.minutes);
     if (selisihWaktu.hours > 12 && data.status !== 'paid') {
-      const pengguna = await prisma.user.findFirst({
+      const pengguna = await db.user.findFirst({
         where: { id: data.userId as string },
         select: { name: true, phone: true, email: true },
       });
@@ -97,7 +93,7 @@ async function kirimNotifikasiEmail(
 
 async function perbaruiStatusPembayaran(paymentId: any, status: any) {
   try {
-    await prisma.payment.update({
+    await db.payment.update({
       where: { id: paymentId },
       data: { status: status },
     });
@@ -108,33 +104,10 @@ async function perbaruiStatusPembayaran(paymentId: any, status: any) {
 
 const MailerLiteComponent = () => {
   const datas = useLoaderData<typeof loader>();
+  console.log('datasdatasdatasdatasdatas', datas);
   return (
     <>
-      <div>{/* <Button onClick={kirimNotifikasiEmail}>Kirim</Button> */}</div>
-      <Box marginTop={'20px'}>
-        {datas &&
-          datas.map((data) => (
-            <Box key={data.id}>
-              <Text>{data.id}</Text>
-              <Text>{data.bank}</Text>
-              <Text>{data.amount}</Text>
-              <Text>{data.status}</Text>
-              <Text>{data.userId}</Text>
-              <Text>{data.createdAt}</Text>
-              <Text>{data.updatedAt}</Text>
-
-              <Text>{data.user?.id}</Text>
-              <Text>{data.user?.name}</Text>
-              <Text>{data.user?.phone}</Text>
-              <Text>{data.user?.email}</Text>
-              <Link to={`https://wa.me/${data.user?.phone}`} target="_blank">
-                <Button>Hubungi via WhatsApp</Button>
-              </Link>
-            </Box>
-          ))}
-
-        <CardProducts />
-      </Box>
+      <Box marginTop={'20px'}>{/* <CardProducts /> */}</Box>
     </>
   );
 };

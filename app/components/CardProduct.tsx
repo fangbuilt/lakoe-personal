@@ -19,7 +19,7 @@ const data = [
     status: 'Belum dibayar',
     picture:
       'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2xvdGhlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60',
-    cta: 'Hubungi Pembeli',
+    cta: 'Hubungi Penjual',
   },
 ];
 export default function CardProducts(props: any) {
@@ -113,7 +113,7 @@ export default function CardProducts(props: any) {
                       lineHeight={'20px'}
                       fontWeight={'700'}
                     >
-                      {card.title}
+                      <Text isTruncated>{card.title}</Text>
                     </Heading>
                     <Text
                       py="2"
