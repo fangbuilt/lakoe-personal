@@ -10,8 +10,10 @@ import {
   InputRightAddon,
   Stack,
 } from '@chakra-ui/react';
+import useAddProduct from '../hooks/useAddProduct';
 
 export function Price() {
+  const { handleChange } = useAddProduct();
   return (
     <Card>
       <CardBody>
@@ -24,7 +26,8 @@ export function Price() {
               <Input
                 type="text"
                 placeholder="Masukan harga satuan barang"
-                name="product-price"
+                name="price"
+                onChange={handleChange}
               />
             </InputGroup>
           </FormControl>
@@ -32,7 +35,12 @@ export function Price() {
           <FormControl>
             <FormLabel>Minimal Pembelian</FormLabel>
             <InputGroup>
-              <Input type="number" placeholder="1" name="product-min-order" />
+              <Input
+                type="number"
+                placeholder="1"
+                name="min_order"
+                onChange={handleChange}
+              />
               <InputRightAddon children="Produk" />
             </InputGroup>
           </FormControl>

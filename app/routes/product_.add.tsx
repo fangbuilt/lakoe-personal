@@ -21,8 +21,8 @@ export async function action({ request }: ActionArgs) {
 export default function AddProduct() {
   return (
     <ImplementGrid>
-      <Stack mt={'7.5vh'} spacing={4}>
-        <Form method="post">
+      <Form method="post" encType="multipart/form-data">
+        <Stack mt={'7.5vh'} spacing={4}>
           <ProductInformation />
           <ProductDetail />
           <ProductVariant />
@@ -30,8 +30,8 @@ export default function AddProduct() {
           <ProductManagement />
           <WeightAndShipment />
           <Action />
-        </Form>
-      </Stack>
+        </Stack>
+      </Form>
     </ImplementGrid>
   );
 }
