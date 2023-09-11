@@ -8,10 +8,10 @@ export async function loader() {
 }
 
 export default function Order() {
-  const datas = useLoaderData<typeof loader>();
+  const datas = useLoaderData<typeof loader>() as unknown as any;
   return (
     <ImplementGrid>
-      {datas.map((item) => (
+      {datas.map((item: any) => (
         <CardProducts key={item.id} {...item} />
       ))}
     </ImplementGrid>

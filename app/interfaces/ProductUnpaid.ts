@@ -2,7 +2,7 @@ export interface Cart {
   id: string;
   price: number;
   discount: number;
-  user?: User;
+  user: User | undefined;
   store?: Store;
   userId?: string;
   storeId?: string;

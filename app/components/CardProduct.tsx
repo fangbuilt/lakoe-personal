@@ -96,7 +96,8 @@ export default function CardProducts(props: Cart) {
                   objectFit="cover"
                   width={'52px'}
                   height={'52px'}
-                  src=" {card.picture}"
+                  src={'#'}
+                  // src={`${props.cartItems.map((item) => item.product?.attachments[0])}`}
                   alt="brown clothes"
                   borderRadius={'8px'}
                 />

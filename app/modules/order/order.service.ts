@@ -1,20 +1,5 @@
 import { db } from '~/libs/prisma/db.server';
 
-// export async function getProductUnpid() {
-//   const cartItem = await db.cart.findMany({
-//     include: {
-//       user: true,
-//       store: true,
-//       invoice: {
-//         include: {
-//           payment: true,
-//         }
-//       }
-//     },
-//   });
-//   return cartItem;
-// }
-
 export async function getProductUnpid() {
   const payments = await db.cart.findMany({
     include: {
