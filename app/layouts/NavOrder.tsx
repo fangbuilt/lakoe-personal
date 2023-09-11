@@ -14,8 +14,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Radio,
-  RadioGroup,
   Image,
   Checkbox,
   Button,
@@ -27,20 +25,28 @@ import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import ScrollBox from '../components/ScrollBox';
 import { UseSearch } from '../hooks/useSearchOrder';
 import { useFilterCourier } from '../hooks/useFilterCourier';
-import { useState } from 'react';
 import CardUnpaid from '../components/CardUnpaid';
 import CardReadyToShip from '../components/CardReadyToShip';
 import CardNewOrder from '../components/CardNewOrder';
 import CardSuccessOrder from '../components/CardSuccesOrder';
 import CardInShipping from '../components/CardInShipping';
 import CardCanceled from '../components/CardCanceled';
+import { useSortFilter } from '~/hooks/useSortFilter';
+import Empty from '../assets/icon-pack/empty-dot.svg';
 
 export default function NavOrder() {
   const { filteredOrders, setSearchQuery } = UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortFilter();
 
-  const [selectedSortOption, setSelectedSortOption] = useState('0');
+  const filteredOrdersByCourier = filteredOrders.filter((order) => {
+    if (selectedCouriers.length === 0) {
+      return true;
+    }
+    return selectedCouriers.includes(order.courier);
+  });
 
   return (
     <>
@@ -120,7 +126,7 @@ export default function NavOrder() {
                         {/* END NOTIFICATION ORDER */}
 
                         <Flex gap={1.5}>
-                          <Text>Pesanan </Text> <Text>Baru</Text>
+                          <Text>Pesanan</Text> <Text>Baru</Text>
                         </Flex>
                       </Tab>
                     </Box>
@@ -129,7 +135,7 @@ export default function NavOrder() {
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
                       <Tab>
-                        {/* NOTIFICATION ORDER */}
+                        {/* NOTIFICATION ORDER  !*/}
                         <Text
                           my={4}
                           color={'white'}
@@ -297,31 +303,14 @@ export default function NavOrder() {
                       </MenuItem>
                     </MenuList>
                   </Menu>
-
                   <Menu closeOnSelect={false}>
                     <MenuButton
                       as={Button}
+                      w={'70%'}
                       variant="outline"
                       bgColor={'white'}
-                      fontSize={'14px'}
-                      width={'70%'}
-                      color={selectedSortOption > '0' ? 'black' : '#909090'}
-                      fontWeight={'normal'}
-                      ms={3}
+                      me={2}
                     >
-                      <Text textAlign={'left'}>
-                        {selectedSortOption === '0'
-                          ? 'Semua'
-                          : selectedSortOption === '1'
-                          ? 'Paling Baru'
-                          : selectedSortOption === '2'
-                          ? 'Paling Lama'
-                          : selectedSortOption === '3'
-                          ? 'Respon Tercepat'
-                          : selectedSortOption === '4'
-                          ? 'Respon Terlama'
-                          : ''}
-                      </Text>
                       <Image
                         src={ChevronDownIcon}
                         position={'absolute'}
@@ -329,31 +318,108 @@ export default function NavOrder() {
                         right={2}
                         top={3}
                       />
+                      <Text
+                        fontSize={'14px'}
+                        textAlign={'left'}
+                        fontWeight={'normal'}
+                        color={'black'}
+                      >
+                        {getSelectedSortOption() ? (
+                          getSelectedSortOption()
+                        ) : (
+                          <Text color={'#909090'}>Urutkan</Text>
+                        )}
+                      </Text>
                     </MenuButton>
                     <MenuList>
-                      <MenuItem>
-                        <RadioGroup
-                          value={selectedSortOption}
-                          onChange={(value) => setSelectedSortOption(value)}
-                        >
-                          <Box>
-                            <Radio value="0">Semua</Radio>
-                          </Box>
-                          <Box>
-                            <Radio value="1">Paling Baru </Radio>
-                          </Box>
-                          <Box>
-                            <Flex>
-                              <Radio value="2">Paling Lama</Radio>
-                            </Flex>
-                          </Box>
-                          <Box>
-                            <Radio value="3">Respon Tercepat</Radio>
-                          </Box>
-                          <Box>
-                            <Radio value="4">Respon Terlama</Radio>
-                          </Box>
-                        </RadioGroup>
+                      <MenuItem
+                        onClick={() => setSortOption('Semua')}
+                        className={
+                          selectedSortOption === 'Semua' ? 'active' : ''
+                        }
+                      >
+                        Semua
+                        <Image
+                          src={Empty}
+                          ml={'auto'}
+                          display={
+                            selectedSortOption === 'Semua'
+                              ? 'inline-block'
+                              : 'none'
+                          }
+                        />
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => setSortOption('Paling Baru')}
+                        className={
+                          selectedSortOption === 'Paling Baru' ? 'active' : ''
+                        }
+                      >
+                        Paling Baru
+                        <Image
+                          src={Empty}
+                          ml={'auto'}
+                          display={
+                            selectedSortOption === 'Paling Baru'
+                              ? 'inline-block'
+                              : 'none'
+                          }
+                        />
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => setSortOption('Paling Lama')}
+                        className={
+                          selectedSortOption === 'Paling Lama' ? 'active' : ''
+                        }
+                      >
+                        Paling Lama
+                        <Image
+                          src={Empty}
+                          ml={'auto'}
+                          display={
+                            selectedSortOption === 'Paling Lama'
+                              ? 'inline-block'
+                              : 'none'
+                          }
+                        />
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => setSortOption('Respon Tercepat')}
+                        className={
+                          selectedSortOption === 'Respon Tercepat'
+                            ? 'active'
+                            : ''
+                        }
+                      >
+                        Respon Tercepat
+                        <Image
+                          src={Empty}
+                          ml={'auto'}
+                          display={
+                            selectedSortOption === 'Respon Tercepat'
+                              ? 'inline-block'
+                              : 'none'
+                          }
+                        />
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => setSortOption('Respon Terlama')}
+                        className={
+                          selectedSortOption === 'Respon Terlama'
+                            ? 'active'
+                            : ''
+                        }
+                      >
+                        Respon Terlama
+                        <Image
+                          src={Empty}
+                          ml={'auto'}
+                          display={
+                            selectedSortOption === 'Respon Terlama'
+                              ? 'inline-block'
+                              : 'none'
+                          }
+                        />
                       </MenuItem>
                     </MenuList>
                   </Menu>
@@ -365,7 +431,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardUnpaid
                         key={index}
                         id={data.id}
@@ -376,7 +442,7 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardNewOrder
                         key={index}
                         id={data.id}
@@ -387,7 +453,7 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardReadyToShip
                         key={index}
                         id={data.id}
@@ -398,7 +464,7 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardInShipping
                         key={index}
                         id={data.id}
@@ -409,7 +475,7 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardSuccessOrder
                         key={index}
                         id={data.id}
@@ -420,7 +486,7 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardCanceled
                         key={index}
                         id={data.id}
@@ -436,7 +502,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardUnpaid
                         key={index}
                         id={data.id}
@@ -452,7 +518,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardNewOrder
                         key={index}
                         id={data.id}
@@ -468,7 +534,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardReadyToShip
                         key={index}
                         id={data.id}
@@ -484,7 +550,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardInShipping
                         key={index}
                         id={data.id}
@@ -500,7 +566,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data, index) => (
                       <CardSuccessOrder
                         key={index}
                         id={data.id}
@@ -516,7 +582,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrders.map((data, index) => (
+                    {filteredOrdersByCourier.map((data: any, index: any) => (
                       <CardCanceled
                         key={index}
                         id={data.id}

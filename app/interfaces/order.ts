@@ -1,4 +1,4 @@
-export interface iOrderList {
+export interface IOrderList {
   id: number;
   title: string;
   telephone: string;
