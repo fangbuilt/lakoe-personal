@@ -137,9 +137,9 @@ export default function NewOrder() {
       const response = await fetch(`${baseUrl}${endpoint}`, requestOptions);
       const responseData = await response.json();
 
-      console.log('Respon dari BiteShip:', responseData);
+      alert(responseData);
     } catch (error) {
-      console.error('Kesalahan saat mengirim pesanan ke BiteShip:', error);
+      alert(error);
     }
   };
 
