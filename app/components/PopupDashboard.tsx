@@ -17,11 +17,9 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { SelectRekening } from './selectBankOption';
 import TarikKredit from './PopupTarikKredit';
 
 export default function DashboardPopup({ dataBank }: any) {
-  // console.log("databankku", dataBank);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
 
@@ -72,29 +70,27 @@ export default function DashboardPopup({ dataBank }: any) {
 
             <FormControl mt={4}>
               <FormLabel>Berapa banyak yang ingin anda tarik?</FormLabel>
-              <Input ref={initialRef} placeholder="Jumlah penarikan" />
+              <Input ref={initialRef} placeholder="amount" name="amount" />
               <Text fontStyle={'italic'} color={'blue.500'} fontSize={'13px'}>
                 Jumlah Maksimal:{' '}
                 <Text as="span" fontWeight={700}>
-                  Rp.50.000
+                  Rp.2.500.000
                 </Text>
               </Text>
             </FormControl>
 
             <FormControl mt={4}>
               <FormLabel>Tarik Ke:</FormLabel>
-              {/* {dataBank.map((data: any) => (
-                    <React.Fragment key={data.id}>
-                      <AccordionPanel pb={0}>
-                        <Button colorScheme="none" color={"gray.600"}>
-                          {data.bank_name}-{data.name}-{data.bank_number}
-                        </Button>
-                      </AccordionPanel>
-                    </React.Fragment>
-                  ))} */}
-              {/* {dataBank.map((data: any) => ( */}
-              <SelectRekening dataBank={dataBank} />
-              {/* ))} */}
+              <select>
+                {dataBank.map((data: any) => (
+                  <option
+                    value={`${data.bank} - ${data.accountName} - ${data.accountNumber}`}
+                    key={data.id}
+                  >
+                    {data.bank} - {data.accountName} - {data.accountNumber}
+                  </option>
+                ))}
+              </select>
             </FormControl>
 
             <FormControl mt={4}>
@@ -102,6 +98,7 @@ export default function DashboardPopup({ dataBank }: any) {
               <Input
                 ref={initialRef}
                 placeholder="Silakan masukkan kata sandi akun anda"
+                type="password"
               />
             </FormControl>
           </ModalBody>
@@ -118,10 +115,9 @@ export default function DashboardPopup({ dataBank }: any) {
             </Button>
             <div>
               <Button colorScheme="green" mr={3} onClick={toggleTarikKredit}>
-                Tarik Kredit
+                Next
               </Button>
-              {showTarikKredit && <TarikKredit />}{' '}
-              {/* Conditionally render TarikKredit */}
+              {showTarikKredit && <TarikKredit />}
             </div>
           </ModalFooter>
         </ModalContent>

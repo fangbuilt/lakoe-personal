@@ -11,9 +11,40 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+
 import React from 'react';
 
+// export async function loader({ request }: LoaderArgs) {
+//   const userId = await getuserId(request);
+//   const username = await getUser(request);
+//   const apikey = process.env.MAILERLITE_API_KEY as string;
+// }
+
+// if (userId) {
+//   return json({ username, apikey });
+// } else {
+//   throw (new Response("Unauthorized", { status: 401 }), redirect("/dasboard"));
+// }
+
 export default function TarikKredit({ dataBank }: any) {
+  // const data = useRouteLoaderData<typeof loader>();
+  // const dataApi = data.apikey;
+  // const mailerlite = new MailerLite({
+  //   api_key: dataApi,
+  // });
+
+  // interface CreateOrUpdateParams {
+  //   email: string;
+  //   fields?: object;
+  //   groups?: Array<string>;
+  //   status?: "active" | "unsubsribed" | "unconfirmed" | "bounced" | " junk";
+  //   subscribed_at?: string;
+  //   ip_address: string;
+  //   opted_in_at?: string;
+  //   optin_ip?: string;
+  //   unsubscribed_at?: string;
+  // }
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -64,7 +95,7 @@ export default function TarikKredit({ dataBank }: any) {
               Batal
             </Button>
             <Button colorScheme="green" mr={3}>
-              Oke
+              Withdraw
             </Button>
           </ModalFooter>
         </ModalContent>
