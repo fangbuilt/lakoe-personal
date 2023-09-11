@@ -1,7 +1,7 @@
 import data from '../tests/utils/dummy.json';
 import { useState, useEffect } from 'react';
 
-export default function UseSearch() {
+export function UseSearch() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredOrders, setFilteredOrders] = useState(data);
   useEffect(() => {
