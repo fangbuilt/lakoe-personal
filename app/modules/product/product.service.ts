@@ -1,7 +1,7 @@
 // import { z } from "zod";
 import { db } from '~/libs/prisma/db.server';
 
-export async function createProduct(data: any, storeId: any, categoryId: any) {
+export async function createProduct(data: any, storeId: any) {
   try {
     const newProduct = await db.product.create({
       data: {
@@ -11,10 +11,13 @@ export async function createProduct(data: any, storeId: any, categoryId: any) {
         attachments: data.attachments,
         minumumOrder: data.minumumOrder,
         store: {
-          connect: { id: storeId }, // Menghubungkan dengan toko yang sesuai
+          connect: { id: storeId },
         },
         category: {
-          connect: { id: categoryId }, // Hubungkan dengan kategori yang sesuai
+          // connect: { id: categoryId },
+          create: {
+            name: data.category,
+          },
         },
         variants: {
           create: [

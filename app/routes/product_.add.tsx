@@ -33,7 +33,7 @@ export async function action({ request }: ActionArgs) {
   const formData = await parseMultipartFormData(request, uploadHandler);
 
   const imageUrl = formData.get('product-image') as string;
-
+  const categori = formData.get('product-category') as string;
   console.log('imag', imageUrl);
 
   if (request.method.toLowerCase() === 'post') {
@@ -46,12 +46,14 @@ export async function action({ request }: ActionArgs) {
       stock: parseInt(formData.get('product-stock') as string),
       sku: formData.get('product-sku'),
       slug: formData.get('product-url'),
+      category: categori,
       weight: parseInt(formData.get('product-weight') as string),
       length: parseFloat(formData.get('product-length') as string),
       width: parseFloat(formData.get('product-width') as string),
       height: parseFloat(formData.get('product-height') as string),
     };
-    const newProduct = await createProduct(data, '1', '2');
+    const newProduct = await createProduct(data, '1');
+
     return newProduct;
   }
   return null;
