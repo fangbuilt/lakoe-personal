@@ -24,4 +24,24 @@ export interface IOrderDetailCourier {
 export interface IOrderDetailCart {
   id: string;
   price: number;
+  user: IOrderDetailUser;
+  cartItems: IOrderDetailCartItem[];
+}
+
+export interface IOrderDetailCartItem {
+  id: string;
+  price: number;
+  qty: number;
+  product: IOrderDetailProduct;
+}
+
+export interface IOrderDetailProduct {
+  id: string;
+  name: string;
+  attachments: string[];
+  cartItems: IOrderDetailCartItem[];
+}
+
+export interface IOrderDetailUser {
+  id: string;
 }

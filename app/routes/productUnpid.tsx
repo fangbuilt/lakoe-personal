@@ -5,6 +5,7 @@ import datetimeDifference from 'datetime-difference';
 import MailerLite from '@mailerlite/mailerlite-nodejs';
 import { db } from '~/libs/prisma/db.server';
 import { useLoaderData } from '@remix-run/react';
+import { GetUnpid } from '~/modules/unpid/unpid.service';
 
 interface CreateOrUpdateParams {
   email: string;
@@ -19,18 +20,13 @@ interface CreateOrUpdateParams {
 }
 
 const apikey = process.env.API_KEY as string;
-// console.log('mailerlite iniiiiii', apikey);
 
 const mailerlite = new MailerLite({
   api_key: apikey,
 });
 
 export async function loader() {
-  const datash = await db.payment.findMany({
-    include: {
-      user: true,
-    },
-  });
+  const datash = await GetUnpid();
 
   for (const data of datash) {
     const waktuTerakhirPembayaran = data.updatedAt;

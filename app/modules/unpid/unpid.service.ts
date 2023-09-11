@@ -1,12 +1,14 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { db } from '~/libs/prisma/db.server';
 
 export async function GetUnpid() {
-  const unpid = await prisma.payment.findMany();
-  return unpid;
+  const datash = await db.payment.findMany({
+    include: {
+      user: true,
+    },
+  });
+  return datash;
 }
 export async function GetUnpidUsers() {
-  const unpid = await prisma.user.findMany();
+  const unpid = await db.user.findMany();
   return unpid;
 }
