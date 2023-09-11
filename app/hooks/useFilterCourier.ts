@@ -1,5 +1,6 @@
 import { useState} from "react";
 
+
 export function useFilterCourier(){
     const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
     const toggleCourier = (courier: string) => {
@@ -15,6 +16,6 @@ export function useFilterCourier(){
       return selectedCouriers.length;
     };
 
-return{selectedCouriers, toggleCourier, getSelectedCourier}
-
+  return{selectedCouriers, toggleCourier, getSelectedCourier}
 }
+
