@@ -23,9 +23,9 @@ import {
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
 import CardOrder from '../layouts/CardOrder';
-import NewOrder from '../layouts/NewOrder';
 import ScrollBox from '../components/ScrollBox';
-import UseSearch from '../hooks/useSearchOrder';
+import { UseSearch } from '../hooks/useSearchOrder';
+import NewOrder from '~/layouts/NewOrder';
 
 export default function NavOrder() {
   const { setSearchQuery } = UseSearch();

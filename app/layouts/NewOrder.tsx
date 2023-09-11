@@ -16,8 +16,8 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { UseSearch } from '../hooks/useSearchOrder';
-
 import React, { useState } from 'react';
+import { IOrderData } from '../interfaces/order';
 
 export default function NewOrder() {
   const { filteredOrders } = UseSearch();
