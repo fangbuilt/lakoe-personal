@@ -30,7 +30,7 @@ export default function ReadyToShipCard(props: IOrderList) {
                     borderRadius={'full'}
                     fontSize={'14px'}
                   >
-                    Hubungi Pembeli
+                    Tracking Pengiriman
                   </Button>
                 </Link>
                 {/*  */}

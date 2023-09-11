@@ -6,3 +6,8 @@ export interface IOrderList {
   totalAmount: number;
   imageProduct: string;
 }
+
+export interface IMessageTemplates {
+  id: number;
+  message: string;
+}

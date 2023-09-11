@@ -1,8 +1,34 @@
-import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Img,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import type { IOrderList } from '~/interfaces/order';
+import type { IMessageTemplates, IOrderList } from '~/interfaces/order';
+import {
+  createWhatsAppTemplateMessageLink1,
+  phoneNumber,
+} from './TemplateMessage';
+import dummyMessage from '../tests/utils/templateMessage.json';
 
 export default function CardSuccessOrder(props: IOrderList) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
@@ -25,16 +51,53 @@ export default function CardSuccessOrder(props: IOrderList) {
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-                <Link to={`http://wa.me/${props.telephone}`}>
-                  <Button
-                    bg={'transparent'}
-                    border={'1px solid #D5D5D5'}
-                    borderRadius={'full'}
-                    fontSize={'14px'}
-                  >
-                    Hubungi Pembeli
-                  </Button>
-                </Link>
+
+                <Button
+                  bg={'transparent'}
+                  border={'1px solid #D5D5D5'}
+                  borderRadius={'full'}
+                  fontSize={'14px'}
+                  onClick={onOpen}
+                >
+                  Hubungi Pembeli
+                </Button>
+                <Modal onClose={onClose} isOpen={isOpen} isCentered>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Send Message</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Accordion allowToggle>
+                        {dummyMessage.map((item: IMessageTemplates, index) => (
+                          <AccordionItem key={index}>
+                            <Text>
+                              <AccordionButton>
+                                <Box as="span" flex="1" textAlign="left">
+                                  Pesan {item.id}
+                                </Box>
+                                <AccordionIcon />
+                              </AccordionButton>
+                            </Text>
+                            <AccordionPanel pb={4}>
+                              {item.message}
+                              <Button colorScheme={'whatsapp'} float={'right'}>
+                                <Link
+                                  to={createWhatsAppTemplateMessageLink1(
+                                    phoneNumber,
+                                    item.message
+                                  )}
+                                >
+                                  Kirim
+                                </Link>
+                              </Button>
+                            </AccordionPanel>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </ModalBody>
+                    <ModalFooter></ModalFooter>
+                  </ModalContent>
+                </Modal>
                 {/*  */}
               </Flex>
               <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>

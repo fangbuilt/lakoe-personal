@@ -32,7 +32,7 @@ export default function CardInShipping(props: IOrderList) {
                     borderRadius={'full'}
                     fontSize={'14px'}
                   >
-                    Hubungi Pembeli
+                    Lihat Rincian Pengiriman
                   </Button>
                 </Link>
                 {/*  */}
