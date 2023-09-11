@@ -13,7 +13,8 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-export default function TarikKredit({ dataBank }: any) {
+export default function TarikKredit(props: any) {
+  const { amount, bankAccount } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -38,18 +39,20 @@ export default function TarikKredit({ dataBank }: any) {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Box bg={'yellow.300'} padding={'10px'} fontSize={'13px'}>
+              {/* {dataWithdraw.map((item: any) => ( */}
               <Box textAlign={'center'}>
                 <Text>Anda melakukan penarikan sebesar</Text>
                 <Text fontSize={'20px'} fontWeight={'bold'} color={'gray.700'}>
-                  Rp.500.000
+                  Rp.{amount}
                 </Text>
                 <Text>Ke Nomor Rekening :</Text>
                 <Text fontSize={'20px'} fontWeight={'bold'} color={'gray.700'}>
-                  BCA-67842874385
+                  {bankAccount}
                 </Text>
                 <Text>Mohon tunggu beberapa saat..</Text>
                 <Text>Terima Kasih!</Text>
               </Box>
+              {/* ))} */}
             </Box>
           </ModalBody>
           <ModalFooter>

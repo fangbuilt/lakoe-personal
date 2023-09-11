@@ -12,8 +12,8 @@ import {
   updateBank,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader() {
-  return await getBankList();
+export async function loader(storeId: string) {
+  return await getBankList(storeId);
 }
 
 export async function action({ request }: ActionArgs) {

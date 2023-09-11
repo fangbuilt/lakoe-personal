@@ -18,12 +18,51 @@ import { PiWarningCircleFill, PiWarningCircleBold } from 'react-icons/pi';
 import { MdArrowDropDownCircle, MdCreditScore } from 'react-icons/md';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import DashboardPopup from '~/components/PopupDashboard';
-import { getBankList } from '~/modules/dashboard/dashboard.service';
+import {
+  createWithdraw,
+  getBankList,
+} from '~/modules/dashboard/dashboard.service';
 import { useLoaderData } from '@remix-run/react';
 import NavbarDashboard from './navbarDashboard';
+import type { ActionArgs} from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 
-export async function loader() {
-  return await getBankList();
+export async function loader(storeId: string) {
+  return await getBankList(storeId);
+}
+
+export async function action({ request }: ActionArgs) {
+  const formData = await request.formData();
+
+  const actionType = formData.get('actionType');
+  const amount = formData.get('amount');
+  const bankAccount = formData.get('bankAccount');
+  const approvedById = formData.get('approvedById');
+  const storeId = formData.get('storeId');
+  const bankId = formData.get('bankId');
+  console.log('woii ini guaa');
+
+  if (actionType === 'create' && amount && bankAccount) {
+    const createdWithdraw = await createWithdraw(
+      {
+        store: {
+          connect: { id: storeId },
+        },
+        amount: amount.toString(),
+        status: 'unpaid',
+        bankAccount: {
+          connect: { id: bankId },
+        },
+      },
+      bankId as string,
+      storeId as string,
+      approvedById as string
+    );
+
+    console.log('Withdraw created:', createdWithdraw);
+    return redirect('/dashboard');
+  }
+  return redirect('/dashboard');
 }
 
 export default function Dashboard() {
