@@ -28,12 +28,11 @@ export default function useAddProduct() {
     >
   ) {
     const { name, value } = event.target;
-    // console.log("1", name, value)
+
     if (event.target.type === 'file') {
-      // console.log("2", event.target.type)
       const eventFile = event.target as HTMLInputElement;
       const files = eventFile.value as Object;
-      // console.log("3", files)
+
       if (!files) return;
 
       setForm({
