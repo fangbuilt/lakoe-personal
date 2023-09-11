@@ -30,7 +30,7 @@ export function ProductDetail() {
 
           <FormControl isRequired>
             <FormLabel>Foto Produk</FormLabel>
-            <Input type="file" name="product-image" />
+            <Input type="file" name="product-image" accept="image/*" />
             {/* how to make the drop zones and the corresponding styles? */}
           </FormControl>
         </Stack>
