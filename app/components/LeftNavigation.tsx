@@ -146,26 +146,26 @@ export function LeftNavigation() {
                   justifyContent={'left'}
                   leftIcon={
                     location.pathname ===
-                    '/configuration/store_configuration' ? (
+                    '/configuration/storeConfiguration' ? (
                       <Image src={ActiveDot} />
                     ) : (
                       <Image src={InactiveDot} />
                     )
                   }
                   variant={
-                    location.pathname === '/configuration/store_configuration'
+                    location.pathname === '/configuration/storeConfiguration'
                       ? 'solid'
                       : 'ghost'
                   }
                   py={5}
-                  onClick={() => navigate('/configuration/store_configuration')}
+                  onClick={() => navigate('/configuration/storeConfiguration')}
                   textColor={
-                    location.pathname === '/configuration/store_configuration'
+                    location.pathname === '/configuration/storeConfiguration'
                       ? '#0086B4'
                       : 'unset'
                   }
                   fontWeight={
-                    location.pathname === '/configuration/store_configuration'
+                    location.pathname === '/configuration/storeConfiguration'
                       ? 'medium'
                       : 'normal'
                   }
@@ -204,26 +204,26 @@ export function LeftNavigation() {
                 <Button
                   justifyContent={'left'}
                   leftIcon={
-                    location.pathname === '/configuration/payment_method' ? (
+                    location.pathname === '/configuration/paymentMethod' ? (
                       <Image src={ActiveDot} />
                     ) : (
                       <Image src={InactiveDot} />
                     )
                   }
                   variant={
-                    location.pathname === '/configuration/payment_method'
+                    location.pathname === '/configuration/paymentMethod'
                       ? 'solid'
                       : 'ghost'
                   }
                   py={5}
-                  onClick={() => navigate('/configuration/payment_method')}
+                  onClick={() => navigate('/configuration/paymentMethod')}
                   textColor={
-                    location.pathname === '/configuration/payment_method'
+                    location.pathname === '/configuration/paymentMethod'
                       ? '#0086B4'
                       : 'unset'
                   }
                   fontWeight={
-                    location.pathname === '/configuration/payment_method'
+                    location.pathname === '/configuration/paymentMethod'
                       ? 'medium'
                       : 'normal'
                   }
