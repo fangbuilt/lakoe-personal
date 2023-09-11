@@ -8,20 +8,20 @@ import {
   Flex,
   Image,
   Stack,
-} from '@chakra-ui/react';
-import { useLocation, useNavigate } from '@remix-run/react';
-import BagFilled from '~/assets/icon-pack/bag-filled.svg';
-import BagOutline from '~/assets/icon-pack/bag-outline.svg';
-import BoxFilled from '~/assets/icon-pack/box-filled.svg';
-import BoxOutline from '~/assets/icon-pack/box-outline.svg';
-import HomeFilled from '~/assets/icon-pack/home-filled.svg';
-import HomeOutline from '~/assets/icon-pack/home-outline.svg';
-import SettingFilled from '~/assets/icon-pack/setting-filled.svg';
-import SettingOutline from '~/assets/icon-pack/setting-outline.svg';
-import ActiveDot from '~/assets/icon-pack/active-dot.svg';
-import InactiveDot from '~/assets/icon-pack/inactive-dot.svg';
-import ProfileFilled from '~/assets/icon-pack/profile-filled.svg';
-import ProfileOutline from '~/assets/icon-pack/profile-outline.svg';
+} from "@chakra-ui/react";
+import { useLocation, useNavigate } from "@remix-run/react";
+import BagFilled from "~/assets/icon-pack/bag-filled.svg";
+import BagOutline from "~/assets/icon-pack/bag-outline.svg";
+import BoxFilled from "~/assets/icon-pack/box-filled.svg";
+import BoxOutline from "~/assets/icon-pack/box-outline.svg";
+import HomeFilled from "~/assets/icon-pack/home-filled.svg";
+import HomeOutline from "~/assets/icon-pack/home-outline.svg";
+import SettingFilled from "~/assets/icon-pack/setting-filled.svg";
+import SettingOutline from "~/assets/icon-pack/setting-outline.svg";
+import ActiveDot from "~/assets/icon-pack/active-dot.svg";
+import InactiveDot from "~/assets/icon-pack/inactive-dot.svg";
+import ProfileFilled from "~/assets/icon-pack/profile-filled.svg";
+import ProfileOutline from "~/assets/icon-pack/profile-outline.svg";
 
 export function LeftNavigation() {
   const navigate = useNavigate();
@@ -29,16 +29,16 @@ export function LeftNavigation() {
 
   return (
     <Flex
-      direction={'column'}
-      h={'100vh'}
+      direction={"column"}
+      h={"100vh"}
       py={4}
-      justifyContent={'space-between'}
+      justifyContent={"space-between"}
     >
       <Stack px={4}>
         <Button
-          justifyContent={'left'}
+          justifyContent={"left"}
           leftIcon={
-            location.pathname === '/dashboard' ? (
+            location.pathname === "/dashboard" ? (
               <Image src={HomeFilled} />
             ) : (
               <Image src={HomeOutline} />
@@ -54,9 +54,9 @@ export function LeftNavigation() {
         </Button>
 
         <Button
-          justifyContent={'left'}
+          justifyContent={"left"}
           leftIcon={
-            location.pathname === '/product' ? (
+            location.pathname === "/product" ? (
               <Image src={BoxFilled} />
             ) : (
               <Image src={BoxOutline} />
@@ -92,15 +92,15 @@ export function LeftNavigation() {
         <Accordion
           allowToggle
           defaultIndex={
-            location.pathname.startsWith('/configuration') ? [0] : []
+            location.pathname.startsWith("/configuration") ? [0] : []
           }
         >
-          <AccordionItem border={'none'}>
+          <AccordionItem border={"none"}>
             <AccordionButton
               as={Button}
-              justifyContent={'left'}
+              justifyContent={"left"}
               leftIcon={
-                location.pathname.startsWith('/configuration') ? (
+                location.pathname.startsWith("/configuration") ? (
                   <Image src={SettingFilled} />
                 ) : (
                   <Image src={SettingOutline} />
@@ -168,50 +168,50 @@ export function LeftNavigation() {
                     )
                   }
                   variant={
-                    location.pathname === '/configuration/shipment'
-                      ? 'solid'
-                      : 'ghost'
+                    location.pathname === "/configuration/shipment"
+                      ? "solid"
+                      : "ghost"
                   }
                   py={5}
-                  onClick={() => navigate('/configuration/shipment')}
+                  onClick={() => navigate("/configuration/shipment")}
                   textColor={
-                    location.pathname === '/configuration/shipment'
-                      ? '#0086B4'
-                      : 'unset'
+                    location.pathname === "/configuration/shipment"
+                      ? "#0086B4"
+                      : "unset"
                   }
                   fontWeight={
-                    location.pathname === '/configuration/shipment'
-                      ? 'medium'
-                      : 'normal'
+                    location.pathname === "/configuration/shipment"
+                      ? "medium"
+                      : "normal"
                   }
                 >
                   Pengiriman
                 </Button>
                 <Button
-                  justifyContent={'left'}
+                  justifyContent={"left"}
                   leftIcon={
-                    location.pathname === '/configuration/payment_method' ? (
+                    location.pathname === "/configuration/payment_method" ? (
                       <Image src={ActiveDot} />
                     ) : (
                       <Image src={InactiveDot} />
                     )
                   }
                   variant={
-                    location.pathname === '/configuration/payment_method'
-                      ? 'solid'
-                      : 'ghost'
+                    location.pathname === "/configuration/payment_method"
+                      ? "solid"
+                      : "ghost"
                   }
                   py={5}
-                  onClick={() => navigate('/configuration/payment_method')}
+                  onClick={() => navigate("/configuration/payment_method")}
                   textColor={
-                    location.pathname === '/configuration/payment_method'
-                      ? '#0086B4'
-                      : 'unset'
+                    location.pathname === "/configuration/payment_method"
+                      ? "#0086B4"
+                      : "unset"
                   }
                   fontWeight={
-                    location.pathname === '/configuration/payment_method'
-                      ? 'medium'
-                      : 'normal'
+                    location.pathname === "/configuration/payment_method"
+                      ? "medium"
+                      : "normal"
                   }
                 >
                   Metode Pembayaran
@@ -222,11 +222,11 @@ export function LeftNavigation() {
         </Accordion>
       </Stack>
 
-      <Stack px={4} pb={'7.5vh'}>
+      <Stack px={4} pb={"7.5vh"}>
         <Button
-          justifyContent={'left'}
+          justifyContent={"left"}
           leftIcon={
-            location.pathname === '/profile' ? (
+            location.pathname === "/profile" ? (
               <Image src={ProfileFilled} />
             ) : (
               <Image src={ProfileOutline} />

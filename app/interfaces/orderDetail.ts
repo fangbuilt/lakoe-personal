@@ -12,6 +12,7 @@ export interface IOrderDetailInvoice {
   waybill: string;
   courier: IOrderDetailCourier;
   cart: IOrderDetailCart;
+  
 }
 
 export interface IOrderDetailCourier {
@@ -24,4 +25,10 @@ export interface IOrderDetailCourier {
 export interface IOrderDetailCart {
   id: string;
   price: number;
+  store: IOrderDetailStore;
+}
+
+export interface IOrderDetailStore{
+  id: string;
+  name: string;
 }

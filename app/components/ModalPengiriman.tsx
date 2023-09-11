@@ -84,7 +84,7 @@ export default function ModalPengiriman(props: { isOpen: boolean; onClose: () =>
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      J&T - Reguler
+                      {props.data.courier.courierCode}
                     </Text>
                   </Box>
                   <Box width={"288px"} height={"44px"} gap={1}>
@@ -134,7 +134,8 @@ export default function ModalPengiriman(props: { isOpen: boolean; onClose: () =>
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      Bakulan Store
+                      {props.data.cart.store.name}
+                      
                     </Text>
                   </Box>
                 </Box>
@@ -205,6 +206,7 @@ export default function ModalPengiriman(props: { isOpen: boolean; onClose: () =>
                 width={"606px"}
                 height={"300px"}
                 padding={" 20px 16px 0px 16px"}
+                
               >
                 <Stepper
                   size={"sm"}
