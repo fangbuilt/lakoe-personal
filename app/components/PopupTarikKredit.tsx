@@ -26,24 +26,27 @@ import React from 'react';
 //   throw (new Response("Unauthorized", { status: 401 }), redirect("/dasboard"));
 // }
 
-export default function TarikKredit({ dataBank }: any) {
-  // const data = useRouteLoaderData<typeof loader>();
-  // const dataApi = data.apikey;
-  // const mailerlite = new MailerLite({
-  //   api_key: dataApi,
-  // });
+// export default function TarikKredit({ dataBank }: any) {
+// const data = useRouteLoaderData<typeof loader>();
+// const dataApi = data.apikey;
+// const mailerlite = new MailerLite({
+//   api_key: dataApi,
+// });
 
-  // interface CreateOrUpdateParams {
-  //   email: string;
-  //   fields?: object;
-  //   groups?: Array<string>;
-  //   status?: "active" | "unsubsribed" | "unconfirmed" | "bounced" | " junk";
-  //   subscribed_at?: string;
-  //   ip_address: string;
-  //   opted_in_at?: string;
-  //   optin_ip?: string;
-  //   unsubscribed_at?: string;
-  // }
+// interface CreateOrUpdateParams {
+//   email: string;
+//   fields?: object;
+//   groups?: Array<string>;
+//   status?: "active" | "unsubsribed" | "unconfirmed" | "bounced" | " junk";
+//   subscribed_at?: string;
+//   ip_address: string;
+//   opted_in_at?: string;
+//   optin_ip?: string;
+//   unsubscribed_at?: string;
+// }
+
+export default function TarikKredit(props: any) {
+  const { amount, bankAccount } = props;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -69,18 +72,20 @@ export default function TarikKredit({ dataBank }: any) {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Box bg={'yellow.300'} padding={'10px'} fontSize={'13px'}>
+              {/* {dataWithdraw.map((item: any) => ( */}
               <Box textAlign={'center'}>
                 <Text>Anda melakukan penarikan sebesar</Text>
                 <Text fontSize={'20px'} fontWeight={'bold'} color={'gray.700'}>
-                  Rp.500.000
+                  Rp.{amount}
                 </Text>
                 <Text>Ke Nomor Rekening :</Text>
                 <Text fontSize={'20px'} fontWeight={'bold'} color={'gray.700'}>
-                  BCA-67842874385
+                  {bankAccount}
                 </Text>
                 <Text>Mohon tunggu beberapa saat..</Text>
                 <Text>Terima Kasih!</Text>
               </Box>
+              {/* ))} */}
             </Box>
           </ModalBody>
           <ModalFooter>
