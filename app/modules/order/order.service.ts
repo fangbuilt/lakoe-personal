@@ -22,24 +22,44 @@ export async function getProductUnpid() {
   return payments;
 }
 
+export async function getProductUnpid1() {
+  const payments = await db.payment.findMany();
+  console.log('getProductUnpid1getProductUnpid1', payments);
+  return payments;
+}
 export async function getProductUnpid2() {
   try {
-    const payments = await db.cart.findMany({
+    const payments = await db.invoice.findMany({
       include: {
-        store: true,
-        user: true,
-        cartItems: {
+        user: {
           include: {
-            product: true,
+            payments: true,
+          },
+        },
+        cart: {
+          include: {
             user: {
               include: {
-                invoices: true,
-                payments: true,
+                cartItems: true,
+                store: true,
               },
             },
           },
         },
-        invoice: true,
+      },
+    });
+
+    return console.log('getProductUnpid2getProductUnpid2', payments);
+  } catch (error) {
+    throw new Error(`Failed to get unpaid products: ${error}`);
+  }
+}
+
+export async function getProductUnpid3() {
+  try {
+    const payments = await db.product.findMany({
+      select: {
+        name: true,
       },
     });
 

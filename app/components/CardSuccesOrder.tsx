@@ -1,23 +1,27 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import type { iOrderList } from '~/interfaces/order/iOrderList';
-export default function CardNewOrder(props: iOrderList) {
+
+export default function CardSuccessOrder(props: iOrderList) {
   return (
     <>
+      {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
+
+      {/* CARD START HERE */}
       <Card mb={5} boxShadow={'xs'}>
         <Box>
           <Box mt={5}>
             <Box>
               <Flex justifyContent={'space-between'} px={2}>
                 <Button
-                  bg={'#008F5D'}
-                  color={'white'}
+                  bg={'#E6E6E6'}
+                  color={'1d1d1d'}
                   fontWeight={'bold'}
-                  colorScheme="red.500"
+                  colorScheme="#E6E6E6"
                   size={'sm'}
                   pointerEvents={'none'}
                 >
-                  Pesanan Baru
+                  Pesanan Selesai
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
@@ -79,6 +83,8 @@ export default function CardNewOrder(props: iOrderList) {
           </Box>
         </Box>
       </Card>
+
+      {/* END CARD */}
     </>
   );
 }

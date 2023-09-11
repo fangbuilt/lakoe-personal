@@ -1,23 +1,25 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import type { iOrderList } from '~/interfaces/order/iOrderList';
-export default function CardNewOrder(props: iOrderList) {
+
+export default function ReadyToShipCard(props: iOrderList) {
   return (
     <>
+      {/* CARD START HERE */}
       <Card mb={5} boxShadow={'xs'}>
         <Box>
           <Box mt={5}>
             <Box>
               <Flex justifyContent={'space-between'} px={2}>
                 <Button
-                  bg={'#008F5D'}
+                  bg={'#147AF3'}
                   color={'white'}
                   fontWeight={'bold'}
-                  colorScheme="red.500"
+                  colorScheme="gray.600"
                   size={'sm'}
                   pointerEvents={'none'}
                 >
-                  Pesanan Baru
+                  Dibatalkan
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
@@ -79,6 +81,8 @@ export default function CardNewOrder(props: iOrderList) {
           </Box>
         </Box>
       </Card>
+
+      {/* END CARD */}
     </>
   );
 }
