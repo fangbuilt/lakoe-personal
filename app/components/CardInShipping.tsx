@@ -8,16 +8,16 @@ export default function CardInShipping(props: iOrderList) {
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
 
       {/* CARD START HERE */}
-      <Card mb={5}>
+      <Card mb={5}boxShadow={"xs"}>
         <Box>
-          <Box mt={5} borderTop={"1px"} borderColor={"gray.100"} py={"4"}>
+          <Box mt={5} >
             <Box>
               <Flex justifyContent={"space-between"} px={2}>
                 <Button
                   bg={"#F68511"}
                   color={"white"}
                   fontWeight={"bold"}
-                  colorScheme="orange.600"
+                  colorScheme="F68511"
                   size={"sm"}
                   pointerEvents={"none"}
                 >
@@ -32,31 +32,32 @@ export default function CardInShipping(props: iOrderList) {
                     borderRadius={"full"}
                     fontSize={"14px"}
                   >
-                    Lihat Rincian Pengiriman
+                    Hubungi Pembeli
                   </Button>
                 </Link>
-                {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
+                {/*  */}
               </Flex>
               <Text my={1} fontSize={"14px"} color={"gray.400"} px={2}>
                 {props.invoice}
               </Text>
               <hr />
               <Flex justifyContent={"space-between"}>
-                <Box display={"flex"}>
+                <Box display={"flex"}w={"80%"} >
                   <Img
-                    w={"62px"}
-                    h={"62px"}
+                    w={"52px"}
+                    h={"52px"}
                     display={"inline"}
                     src={props.imageProduct}
+                    mt={3}
                   />
-                  <Text mt={4} id="fm500" fontWeight={"bold"}>
+                  <Text mt={4} id="fm500" fontSize={"16px"} textOverflow={"ellipsis"} overflow={"hidden"} whiteSpace={"nowrap"} fontWeight={"700"}>
                     {props.title}
-                    <Text color={"gray.400"} fontWeight={"normal"}>
+                    <Text color={"gray.400"} pb={3} fontWeight={"normal"}>
                       1 Barang
                     </Text>
                   </Text>
                 </Box>
-                <Box me={5} mt={4}>
+                <Box mt={4} w={"15%"} >
                   <Flex gap={1}>
                     <Text color={"#909090"} fontSize={"14px"}>
                       Total
@@ -74,6 +75,7 @@ export default function CardInShipping(props: iOrderList) {
           </Box>
         </Box>
       </Card>
+
 
       {/* END CARD */}
     </>

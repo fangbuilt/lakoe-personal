@@ -26,7 +26,6 @@
     "port": "^0.8.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
-    "react-select": "^5.7.4",
     "source-map-support": "^0.5.21",
     "zod": "^3.22.2"
   },
