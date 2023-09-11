@@ -1,8 +1,5 @@
 import { useSteps } from "@chakra-ui/react";
-import { PrismaClient } from "@prisma/client";
 import { useState } from "react";
-
-const prisma = new PrismaClient();
 
 export function useOrderDetalil() {
   const [isOrderHistoryVisible, setIsOrderHistoryVisible] = useState(false);

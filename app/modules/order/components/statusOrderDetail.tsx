@@ -8,6 +8,13 @@ import {
   Flex,
   Heading,
   Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Step,
   StepDescription,
   StepIndicator,
@@ -16,7 +23,6 @@ import {
   StepTitle,
   Stepper,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import documentIcon from "~/assets/DetailOrderIcon/document.svg";
 import calender from "~/assets/DetailOrderIcon/calendar-2.svg";
@@ -35,12 +41,24 @@ import {
   ChevronUpIcon,
 } from "@chakra-ui/icons";
 import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
-import { useState } from "react";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import circle from "~/assets/DetailOrderIcon/info-circle.svg";
+import { useState } from "react";
 
+const tanggalDariDatabase = "2023-09-10T09:14:46.940Z";
 
-export function getStatusBadge(status: string) {
+function dateConvertion(createdAt: string): string {
+  const dateObj = new Date(createdAt);
+  const year = dateObj.getUTCFullYear();
+  const month = String(dateObj.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(dateObj.getUTCDate()).padStart(2, "0");
+  const hour = String(dateObj.getUTCHours()).padStart(2, "0");
+  const minute = String(dateObj.getUTCMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hour}:${minute}`;
+}
+
+function getStatusBadge(status: string) {
   if (status.toUpperCase() === "UNPAID") {
     return (
       <Badge
@@ -187,134 +205,6 @@ export function getStatusBadge(status: string) {
   }
 }
 
-export function getStatusLacakButton(status: string) {
-  if (status.toUpperCase() === "NEW_ORDER") {
-    return (
-      <Flex
-        justifyContent={"space-between"}
-        padding={`var(--4, 16px) var(--5, 20px)`}
-        alignItems={"center"}
-        alignSelf={"stretch"}
-        borderRadius={`var(--rounded-lg, 12px)`}
-        background={`var(--gray-50, #FFF)`}
-      >
-        <Box>
-          <Button
-            display={"flex"}
-            height={"40px"}
-            padding={`var(--3, 12px) var(--4, 16px)`}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={`var(--1, 4px)`}
-            borderRadius={`var(--rounded-full, 9999px)`}
-            border={`1px solid var(--red-800, #EA3829)`}
-            background={`var(--gray-50, #FFF)`}
-          >
-            <Text
-              color={`var(--text-red, #EA3829)`}
-              fontSize={"14px"}
-              fontWeight={"600"}
-              lineHeight={"15.5px"}
-            >
-              Tolak Pesanan
-            </Text>
-          </Button>
-        </Box>
-        <Box>
-          <Button
-            display={"flex"}
-            height={"40px"}
-            padding={`var(--3, 12px) var(--4, 16px)`}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={`var(--1, 4px)`}
-            borderRadius={`var(--rounded-full, 9999px)`}
-            background={`var(--cyan-800, #0086B4)`}
-          >
-            <Text
-              color={`var(--text-light, #FFF)`}
-              fontSize={"14px"}
-              fontWeight={"600"}
-              lineHeight={"15.5px"}
-            >
-              Proses Pesanan
-            </Text>
-          </Button>
-        </Box>
-      </Flex>
-    );
-  }
-  if (status.toUpperCase() === "IN_TRANSIT") {
-    return (
-      <Flex
-        justifyContent={"flex-end"}
-        padding={`var(--4, 16px) var(--5, 20px)`}
-        alignItems={"center"}
-        alignSelf={"stretch"}
-        borderRadius={`var(--rounded-lg, 12px)`}
-        background={`var(--gray-50, #FFF)`}
-      >
-        <Box>
-          <Button
-            display={"flex"}
-            height={"40px"}
-            padding={`var(--3, 12px) var(--4, 16px)`}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={`var(--1, 4px)`}
-            borderRadius={`var(--rounded-full, 9999px)`}
-            border={`1px solid var(--gray-300, #D5D5D5)`}
-            background={`var(--gray-50, #FFF)`}
-          >
-            <Text
-              color={`var(--text-dark, #1D1D1D)`}
-              fontSize={"14px"}
-              fontWeight={"600"}
-              lineHeight={"15.5px"}
-            >
-              Kabari Pembeli
-            </Text>
-          </Button>
-        </Box>
-      </Flex>
-    );
-  }
-}
-
-export function getStatusLacakPengiriman(status: string) {
-  if (status.toUpperCase() === "IN_TRANSIT") {
-    return (
-      <Button
-        fontSize={"14px"}
-        fontWeight={"700"}
-        lineHeight={"20px"}
-        color={"#0086B4"}
-        background={"#FFFFFF)"}
-        colorScheme="#FFFFFF)"
-        w={"120px"}
-      >
-        Lacak Pengiriman
-      </Button>
-    );
-  }
-
-  if (status.toUpperCase() === "ORDER_COMPLETED") {
-    return (
-      <Button
-        fontSize={"14px"}
-        fontWeight={"700"}
-        lineHeight={"20px"}
-        color={"#0086B4"}
-        background={"#FFFFFF)"}
-        colorScheme="#FFFFFF)"
-        w={"120px"}
-      >
-        Lacak Pengiriman
-      </Button>
-    );
-  }
-}
-
 export default function StatusOrderDetail({
   data,
 }: {
@@ -323,64 +213,240 @@ export default function StatusOrderDetail({
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
 
-    const { toastStyle } = useCopyToClipboard();
-    const { isCopied: isCopied1, handleCopyClick: handleCopyClick1 } =
-      useCopyToClipboard();
-    const { isCopied: isCopied2, handleCopyClick: handleCopyClick2 } =
-      useCopyToClipboard();
-    const { isCopied: isCopied3, handleCopyClick: handleCopyClick3 } =
-      useCopyToClipboard();
-    const handleCopyInvoiceClick = () => {
-      handleCopyClick1(data.invoiceNumber);
-    };
-    const handleCopyResiClick = () => {
-      handleCopyClick2(data.courier.courierServiceCode);
-    };
-    const handleCopyAddressClick = () => {
-      handleCopyClick3(data.receiverAddress);
-    };
-
-
+  const { toastStyle } = useCopyToClipboard();
+  const { isCopied: isCopied1, handleCopyClick: handleCopyClick1 } =
+    useCopyToClipboard();
+  const { isCopied: isCopied2, handleCopyClick: handleCopyClick2 } =
+    useCopyToClipboard();
+  const { isCopied: isCopied3, handleCopyClick: handleCopyClick3 } =
+    useCopyToClipboard();
+  const handleCopyInvoiceClick = () => {
+    handleCopyClick1(data.invoiceNumber);
+  };
+  const handleCopyResiClick = () => {
+    handleCopyClick2(data.courier.courierServiceCode);
+  };
+  const handleCopyAddressClick = () => {
+    handleCopyClick3(data.receiverAddress);
+  };
 
   const products = data.cart.cartItems.map((cartItem) => {
     return { ...cartItem, cartItem };
   });
+
+  function getStatusText(status: string) {
+    if (status.toUpperCase() === "UNPAID") {
+      return (
+        <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
+          Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
+          <Text as={"span"} fontWeight={"700"}>
+            {" "}
+            {dateConvertion(data.updatedAt)} WIB
+          </Text>
+          . Silahkan tunggu sampai pembayaran terkonfirmasi sebelum mengirimkan
+          barang.
+        </Text>
+      );
+    }
+    if (status.toUpperCase() === "NEW_ORDER") {
+      return (
+        <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
+          Segera proses pesanan yang masuk. Jangan membuat pembeli menunggu
+          terlalu lama.
+        </Text>
+      );
+    }
+    if (status.toUpperCase() === "READY_TO_SHIP") {
+      return (
+        <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
+          Pesanan telah di-pickup oleh Kurir dan siap untuk dikirim.
+        </Text>
+      );
+    }
+    if (status.toUpperCase() === "IN_TRANSIT") {
+      return (
+        <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
+          Pesanan sudah dalam proses pengiriman. Silakan tunggu penerimaan
+          barang oleh pembeli.
+        </Text>
+      );
+    }
+    if (status.toUpperCase() === "ORDER_COMPLETED") {
+      return (
+        <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
+          Produk telah diterima oleh pembeli dan pesanan ini diselesaikan.
+        </Text>
+      );
+    }
+    if (status.toUpperCase() === "ORDER_CANCELLED") {
+      return (
+        <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
+          Pesanan dibatalkan karena pembeli tidak melakukan pembayaran tepat
+          waktu.
+        </Text>
+      );
+    }
+  }
+
+  function getStatusLacakPengiriman(status: string) {
+    if (status.toUpperCase() === "IN_TRANSIT") {
+      return (
+        <Button
+          fontSize={"14px"}
+          fontWeight={"700"}
+          lineHeight={"20px"}
+          color={"#0086B4"}
+          background={"#FFFFFF)"}
+          colorScheme="#FFFFFF)"
+          w={"120px"}
+        >
+          Lacak Pengiriman
+        </Button>
+      );
+    }
+
+    if (status.toUpperCase() === "ORDER_COMPLETED") {
+      return (
+        <Button
+          fontSize={"14px"}
+          fontWeight={"700"}
+          lineHeight={"20px"}
+          color={"#0086B4"}
+          background={"#FFFFFF)"}
+          colorScheme="#FFFFFF)"
+          w={"120px"}
+        >
+          Lacak Pengiriman
+        </Button>
+      );
+    }
+  }
+
+  function getStatusLacakButton(status: string) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
+    if (status.toUpperCase() === "NEW_ORDER") {
+      return (
+        <Flex
+          justifyContent={"space-between"}
+          padding={`var(--4, 16px) var(--5, 20px)`}
+          alignItems={"center"}
+          alignSelf={"stretch"}
+          borderRadius={`var(--rounded-lg, 12px)`}
+          background={`var(--gray-50, #FFF)`}
+        >
+          <Box>
+            <Button
+              display={"flex"}
+              height={"40px"}
+              padding={`var(--3, 12px) var(--4, 16px)`}
+              justifyContent={"center"}
+              alignItems={"center"}
+              gap={`var(--1, 4px)`}
+              borderRadius={`var(--rounded-full, 9999px)`}
+              border={`1px solid var(--red-800, #EA3829)`}
+              background={`var(--gray-50, #FFF)`}
+            >
+              <Text
+                color={`var(--text-red, #EA3829)`}
+                fontSize={"14px"}
+                fontWeight={"600"}
+                lineHeight={"15.5px"}
+              >
+                Tolak Pesanan
+              </Text>
+            </Button>
+          </Box>
+          <Box>
+            <Button
+              display={"flex"}
+              height={"40px"}
+              padding={`var(--3, 12px) var(--4, 16px)`}
+              justifyContent={"center"}
+              alignItems={"center"}
+              gap={`var(--1, 4px)`}
+              borderRadius={`var(--rounded-full, 9999px)`}
+              background={`var(--cyan-800, #0086B4)`}
+              onClick={openModal}
+            >
+              <Text
+                color={`var(--text-light, #FFF)`}
+                fontSize={"14px"}
+                fontWeight={"600"}
+                lineHeight={"15.5px"}
+              >
+                Proses Pesanan
+              </Text>
+            </Button>
+          </Box>
+          {isModalOpen && (
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Proses Pesanan</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Text>Apakah ada ingin melanjutkan proses ini?</Text>
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button colorScheme="blue" mr={3} onClick={closeModal} width={'100px'}>
+                    Ya
+                  </Button>
+                  <Button variant="ghost" onClick={closeModal} width={'100px'}>
+                    Tidak
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          )}
+        </Flex>
+      );
+    }
+  }
+
   return (
     <>
       <Box display={"flex"} flexDirection={"column"} gap={3}>
         <Flex>
           <Text color={"#0EADD7"}>Daftar Pesanan</Text>{" "}
           <Text>
-          <ChevronRightIcon /> CREWNECK ...
+            <ChevronRightIcon /> CREWNECK ...
           </Text>
-        {isCopied1 && (
-          <Box {...toastStyle}>
-            <Box display={"flex"} gap={3}>
-              <Image src={circle} />
-              <Text>Nomor Invoice berhasil disalin</Text>
+          {isCopied1 && (
+            <Box {...toastStyle}>
+              <Box display={"flex"} gap={3}>
+                <Image src={circle} />
+                <Text>Nomor Invoice berhasil disalin</Text>
+              </Box>
+              <Text>OK</Text>
             </Box>
-            <Text>OK</Text>
-          </Box>
-        )}
-
-        {isCopied2 && (
-          <Box {...toastStyle}>
-            <Box display={"flex"} gap={3}>
-              <Image src={circle} />
-              <Text>Nomor Resi berhasil disalin</Text>
+          )}
+          {isCopied2 && (
+            <Box {...toastStyle}>
+              <Box display={"flex"} gap={3}>
+                <Image src={circle} />
+                <Text>Nomor Resi berhasil disalin</Text>
+              </Box>
+              <Text>OK</Text>
             </Box>
-            <Text>OK</Text>
-          </Box>
-        )}
-        {isCopied3 && (
-          <Box {...toastStyle}>
-            <Box display={"flex"} gap={3}>
-              <Image src={circle} />
-              <Text>Alamat berhasil disalin</Text>
+          )}
+          {isCopied3 && (
+            <Box {...toastStyle}>
+              <Box display={"flex"} gap={3}>
+                <Image src={circle} />
+                <Text>Alamat berhasil disalin</Text>
+              </Box>
+              <Text>OK</Text>
             </Box>
-            <Text>OK</Text>
-          </Box>
-        )}
+          )}
         </Flex>
         <Box
           display={"flex"}
@@ -398,15 +464,7 @@ export default function StatusOrderDetail({
           />
           <Box display={"flex"} flexDirection={"column"} gap={3}>
             {getStatusBadge(data.status)}
-            <Text fontWeight={"400"} fontSize={"14px"} lineHeight={"20px"}>
-              Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
-              <Text as={"span"} fontWeight={"700"}>
-                {" "}
-                {data.updatedAt}
-              </Text>
-              . Silahkan tunggu sampai pembayaran terkonfirmasi sebelum
-              mengirimkan barang.
-            </Text>
+            {getStatusText(data.status)}
             <Text
               color={"#0086B4"}
               cursor={"pointer"}
@@ -478,7 +536,7 @@ export default function StatusOrderDetail({
               </Text>
             </Box>
             <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
-              {data.createdAt}
+              {dateConvertion(data.createdAt)} WIB
             </Text>
           </Box>
           <Box display={"flex"} justifyContent={"space-between"}>
