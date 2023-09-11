@@ -10,6 +10,7 @@ export function ImplementGrid({ children }: LayoutProps) {
   return (
     <Flex justify={'center'} minHeight={'100vh'} direction={'column'}>
       <Box
+        zIndex={10}
         width={'100%'}
         height={'7.5vh'}
         position={'fixed'}
@@ -17,7 +18,6 @@ export function ImplementGrid({ children }: LayoutProps) {
         borderBottom={'1px'}
         borderBottomColor={'gray.200'}
         backgroundColor={'white'}
-        zIndex={'100'}
       />
       <Flex justify={'center'} minHeight={'100vh'}>
         <Box
