@@ -1,7 +1,7 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import type { IOrderList } from '~/interfaces/order';
-export default function CardNewOrder(props: IOrderList) {
+export default function CardCenceled(props: IOrderList) {
   return (
     <>
       <Card mb={5} boxShadow={'xs'}>
@@ -10,14 +10,14 @@ export default function CardNewOrder(props: IOrderList) {
             <Box>
               <Flex justifyContent={'space-between'} px={2}>
                 <Button
-                  bg={'#008F5D'}
+                  bg={'#EA3829'}
                   color={'white'}
                   fontWeight={'bold'}
                   colorScheme="red.500"
                   size={'sm'}
                   pointerEvents={'none'}
                 >
-                  Pesanan Baru
+                  Dibatalkan
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}

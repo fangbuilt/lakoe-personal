@@ -15,7 +15,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import UseSearch from '../hooks/useSearchOrder';
+import { UseSearch } from '../hooks/useSearchOrder';
 
 import React, { useState } from 'react';
 
@@ -31,11 +31,11 @@ export default function NewOrder() {
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //Rino - Puja (desi123321123321@gmail.com)
 
       const mailerData = {
-        email: 'miswaripujaayu+657trry@gmail.com',
+        email: 'miswaripujaayu+007unch@gmail.com',
         fields: {
-          company: 'ADD MORE BALANCE', //company berperan sebagai "title"
+          company: 'ADD MORE BALANCE', //company berperan sebagai "title" dalam mailerlite
           last_name:
-            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message")
+            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message") dalam mailerlite
         },
         groups: ['98713000939095999'],
       };
@@ -54,12 +54,13 @@ export default function NewOrder() {
         mailerRequest
       );
       const responseData = await response.json();
+      console.log('Data Email :', responseData);
     } catch (error) {
       alert(error);
     }
   };
 
-  const systembalance = 10000; //saldo LAKOE
+  const systembalance = 1000; //saldo LAKOE
 
   const afterpacking = () => {
     if (systembalance > 50000) {
@@ -137,9 +138,9 @@ export default function NewOrder() {
       const response = await fetch(`${baseUrl}${endpoint}`, requestOptions);
       const responseData = await response.json();
 
-      console.log('Respon dari BiteShip:', responseData);
+      alert(responseData);
     } catch (error) {
-      console.error('Kesalahan saat mengirim pesanan ke BiteShip:', error);
+      alert(error);
     }
   };
 

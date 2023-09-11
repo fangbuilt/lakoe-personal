@@ -1,23 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import type { IOrderList } from '~/interfaces/order';
-export default function CardNewOrder(props: IOrderList) {
+
+export default function CardInShipping(props: IOrderList) {
   return (
     <>
+      {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
+
+      {/* CARD START HERE */}
       <Card mb={5} boxShadow={'xs'}>
         <Box>
-          <Box mt={5}>
+          <Box mt={5} borderTop={'1px'} borderColor={'gray.100'} py={'4'}>
             <Box>
               <Flex justifyContent={'space-between'} px={2}>
                 <Button
-                  bg={'#008F5D'}
+                  bg={'#F68511'}
                   color={'white'}
                   fontWeight={'bold'}
-                  colorScheme="red.500"
+                  colorScheme="orange.600"
                   size={'sm'}
                   pointerEvents={'none'}
                 >
-                  Pesanan Baru
+                  Dalam Pengiriman
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
@@ -38,25 +43,17 @@ export default function CardNewOrder(props: IOrderList) {
               </Text>
               <hr />
               <Flex justifyContent={'space-between'}>
-                <Box display={'flex'} w={'80%'}>
+                <Box display={'flex'}>
                   <Img
-                    w={'52px'}
-                    h={'52px'}
+                    w={'62px'}
+                    h={'62px'}
                     display={'inline'}
                     src={props.imageProduct}
                     mt={3}
                   />
-                  <Text
-                    mt={4}
-                    id="fm500"
-                    fontSize={'16px'}
-                    textOverflow={'ellipsis'}
-                    overflow={'hidden'}
-                    whiteSpace={'nowrap'}
-                    fontWeight={'700'}
-                  >
+                  <Text mt={4} id="fm500" fontWeight={'bold'}>
                     {props.title}
-                    <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                    <Text color={'gray.400'} fontWeight={'normal'}>
                       1 Barang
                     </Text>
                   </Text>
@@ -79,6 +76,8 @@ export default function CardNewOrder(props: IOrderList) {
           </Box>
         </Box>
       </Card>
+
+      {/* END CARD */}
     </>
   );
 }
