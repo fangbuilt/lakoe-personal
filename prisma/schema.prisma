@@ -163,21 +163,22 @@ model Location {
 }
 
 model Product {
-  id           String     @id @unique @default(uuid())
+  id           String       @id @unique @default(uuid())
   name         String
   description  String
-  attachments  String[]
-  isActive     Boolean    @default(true)
+  attachment   Attachments? @relation(fields: [attachmentId], references: [id])
+  attachmentId String?
+  isActive     Boolean      @default(true)
   minumumOrder Int
-  store        Store?     @relation(fields: [storeId], references: [id])
+  store        Store?       @relation(fields: [storeId], references: [id])
   storeId      String
-  category     Category   @relation(fields: [categoryId], references: [id])
+  category     Category     @relation(fields: [categoryId], references: [id])
   categoryId   String
   slug         String
   variants     Variant[]
   cartItems    CartItem[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
 
   @@map("products")
 }
@@ -368,4 +369,14 @@ model BankAccount {
   withdraw      Withdraw[]
 
   @@map("bank_accounts")
+}
+
+model Attachments {
+  id         String    @id @unique @default(uuid())
+  attachment String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  Product    Product[]
+
+  @@map("attachments")
 }
