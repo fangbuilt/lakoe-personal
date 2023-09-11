@@ -18,21 +18,22 @@ import {
   Checkbox,
   Button,
   Center,
-} from "@chakra-ui/react";
-import ChevronDownIcon from "../assets/icon-pack/arrow-dropdown.svg";
-import SearchProduct from "../assets/icon-pack/search-product.svg";
-import ReceiptSearch from "../assets/icon-pack/receipt-search.svg";
-import ScrollBox from "../components/ScrollBox";
-import { UseSearch } from "../hooks/useSearchOrder";
-import { useFilterCourier } from "../hooks/useFilterCourier";
-import CardUnpaid from "../components/CardUnpaid";
-import CardReadyToShip from "../components/CardReadyToShip";
-import CardNewOrder from "../components/CardNewOrder";
-import CardSuccessOrder from "../components/CardSuccesOrder";
-import CardInShipping from "../components/CardInShipping";
-import CardCanceled from "../components/CardCanceled";
-import { useSortFilter } from "~/hooks/useSortFilter";
-import Empty from "../assets/icon-pack/empty-dot.svg";
+} from '@chakra-ui/react';
+import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
+import SearchProduct from '../assets/icon-pack/search-product.svg';
+import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+import ScrollBox from '../components/ScrollBox';
+import { UseSearch } from '../hooks/useSearchOrder';
+import { useFilterCourier } from '../hooks/useFilterCourier';
+import CardUnpaid from '../components/CardUnpaid';
+import CardReadyToShip from '../components/CardReadyToShip';
+import CardNewOrder from '../components/CardNewOrder';
+import CardSuccessOrder from '../components/CardSuccesOrder';
+import CardInShipping from '../components/CardInShipping';
+import CardCanceled from '../components/CardCanceled';
+import { useSortFilter } from '~/hooks/useSortFilter';
+import Empty from '../assets/icon-pack/empty-dot.svg';
+
 export default function NavOrder() {
   const { filteredOrders, setSearchQuery } = UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
@@ -50,50 +51,50 @@ export default function NavOrder() {
   return (
     <>
       <Box
-        background={"whitesmoke"}
-        style={{ width: "100%", marginLeft: "-5px", marginRight: "50%" }}
+        background={'whitesmoke'}
+        style={{ width: '100%', marginLeft: '-5px', marginRight: '50%' }}
       >
         <Box
-          background={"white"}
-          position={"fixed"}
-          top={"50"}
+          background={'white'}
+          position={'fixed'}
+          top={'50'}
           style={{
-            marginTop: "1.3%",
-            width: "47.5%",
-            height: "100%",
-            borderRadius: "10px",
+            marginTop: '1.3%',
+            width: '47.5%',
+            height: '100%',
+            borderRadius: '10px',
           }}
         >
           <Tabs>
             <Box my={4} mx={5}>
-              <Text fontWeight={"bold"} fontSize={"20px"}>
+              <Text fontWeight={'bold'} fontSize={'20px'}>
                 Daftar Pesanan
               </Text>
             </Box>
 
             <Box>
               <Box
-                display={"flex"}
-                overflow={"scroll"}
+                display={'flex'}
+                overflow={'scroll'}
                 sx={{
-                  "::-webkit-scrollbar": {
-                    display: "none",
+                  '::-webkit-scrollbar': {
+                    display: 'none',
                   },
                 }}
               >
                 <TabList mx={5}>
                   <Tab>Semua</Tab>
 
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab>
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"cyan.400"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'cyan.400'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
@@ -107,16 +108,16 @@ export default function NavOrder() {
                     </Box>
                   </Box>
 
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab>
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"cyan.400"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'cyan.400'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
@@ -125,22 +126,22 @@ export default function NavOrder() {
                         {/* END NOTIFICATION ORDER */}
 
                         <Flex gap={1.5}>
-                          <Text>Pesanan </Text> <Text>Baru</Text>
+                          <Text>Pesanan</Text> <Text>Baru</Text>
                         </Flex>
                       </Tab>
                     </Box>
                   </Box>
 
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab>
                         {/* NOTIFICATION ORDER  !*/}
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"cyan.400"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'cyan.400'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
@@ -154,16 +155,16 @@ export default function NavOrder() {
                       </Tab>
                     </Box>
                   </Box>
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab>
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"cyan.400"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'cyan.400'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
@@ -176,8 +177,8 @@ export default function NavOrder() {
                       </Tab>
                     </Box>
                   </Box>
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab>
                         <Flex gap={1.5} my={4}>
                           <Text>Pesanan </Text> <Text> Selesai</Text>
@@ -191,9 +192,9 @@ export default function NavOrder() {
               {/* </Tabs> */}
             </Box>
 
-            <Box my={5} paddingBottom={"100px"} background={"white"}>
-              <Box mr={5} my={3} width={"100%"}>
-                <Box display={"flex"} mx={2} justifyContent={"space-between"}>
+            <Box my={5} paddingBottom={'100px'} background={'white'}>
+              <Box mr={5} my={3} width={'100%'}>
+                <Box display={'flex'} mx={2} justifyContent={'space-between'}>
                   <InputGroup mx={3}>
                     <InputLeftElement pointerEvents="none">
                       <Image src={SearchProduct} />
@@ -204,8 +205,8 @@ export default function NavOrder() {
                       placeholder="Cari Pesanan"
                       _placeholder={{
                         opacity: 1,
-                        color: "#909090",
-                        fontSize: "14px",
+                        color: '#909090',
+                        fontSize: '14px',
                       }}
                     />
                   </InputGroup>
@@ -214,22 +215,22 @@ export default function NavOrder() {
                     <MenuButton
                       as={Button}
                       variant="outline"
-                      bgColor={"white"}
-                      fontSize={"14px"}
-                      width={"70%"}
-                      color={getSelectedCourier() > 0 ? "black" : "#909090"}
-                      fontWeight={"normal"}
+                      bgColor={'white'}
+                      fontSize={'14px'}
+                      width={'70%'}
+                      color={getSelectedCourier() > 0 ? 'black' : '#909090'}
+                      fontWeight={'normal'}
                       me={2}
                     >
                       <Text fontSize="14px" textAlign="left">
                         {getSelectedCourier() > 0
                           ? `${getSelectedCourier()} Kurir terpilih`
-                          : "Semua Kurir"}
+                          : 'Semua Kurir'}
                       </Text>
                       <Image
                         src={ChevronDownIcon}
-                        position={"absolute"}
-                        fontSize={"2px"}
+                        position={'absolute'}
+                        fontSize={'2px'}
                         right={2}
                         top={3}
                       />
@@ -238,64 +239,64 @@ export default function NavOrder() {
                     <MenuList>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("GoSend")}
-                          isChecked={selectedCouriers.includes("GoSend")}
+                          onChange={() => toggleCourier('GoSend')}
+                          isChecked={selectedCouriers.includes('GoSend')}
                         >
                           GoSend
                         </Checkbox>
                       </MenuItem>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("GrabExpress")}
-                          isChecked={selectedCouriers.includes("GrabExpress")}
+                          onChange={() => toggleCourier('GrabExpress')}
+                          isChecked={selectedCouriers.includes('GrabExpress')}
                         >
                           GrabExpress
                         </Checkbox>
                       </MenuItem>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("AnterAja")}
-                          isChecked={selectedCouriers.includes("AnterAja")}
+                          onChange={() => toggleCourier('AnterAja')}
+                          isChecked={selectedCouriers.includes('AnterAja')}
                         >
                           AnterAja
                         </Checkbox>
                       </MenuItem>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("JNE")}
-                          isChecked={selectedCouriers.includes("JNE")}
+                          onChange={() => toggleCourier('JNE')}
+                          isChecked={selectedCouriers.includes('JNE')}
                         >
                           JNE
                         </Checkbox>
                       </MenuItem>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("J&T")}
-                          isChecked={selectedCouriers.includes("J&T")}
+                          onChange={() => toggleCourier('J&T')}
+                          isChecked={selectedCouriers.includes('J&T')}
                         >
                           J&T
                         </Checkbox>
                       </MenuItem>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("Lion Parcel")}
-                          isChecked={selectedCouriers.includes("Lion Parcel")}
+                          onChange={() => toggleCourier('Lion Parcel')}
+                          isChecked={selectedCouriers.includes('Lion Parcel')}
                         >
                           Lion Parcel
                         </Checkbox>
                       </MenuItem>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("Ninja Xpress")}
-                          isChecked={selectedCouriers.includes("Ninja Xpress")}
+                          onChange={() => toggleCourier('Ninja Xpress')}
+                          isChecked={selectedCouriers.includes('Ninja Xpress')}
                         >
                           Ninja Xpress
                         </Checkbox>
                       </MenuItem>
                       <MenuItem>
                         <Checkbox
-                          onChange={() => toggleCourier("Pos Indonesia")}
-                          isChecked={selectedCouriers.includes("Pos Indonesia")}
+                          onChange={() => toggleCourier('Pos Indonesia')}
+                          isChecked={selectedCouriers.includes('Pos Indonesia')}
                         >
                           Pos Indonesia
                         </Checkbox>
@@ -305,118 +306,118 @@ export default function NavOrder() {
                   <Menu closeOnSelect={false}>
                     <MenuButton
                       as={Button}
-                      w={"70%"}
+                      w={'70%'}
                       variant="outline"
-                      bgColor={"white"}
+                      bgColor={'white'}
                       me={2}
                     >
                       <Image
                         src={ChevronDownIcon}
-                        position={"absolute"}
-                        fontSize={"2px"}
+                        position={'absolute'}
+                        fontSize={'2px'}
                         right={2}
                         top={3}
                       />
                       <Text
-                        fontSize={"14px"}
-                        textAlign={"left"}
-                        fontWeight={"normal"}
-                        color={"black"}
+                        fontSize={'14px'}
+                        textAlign={'left'}
+                        fontWeight={'normal'}
+                        color={'black'}
                       >
                         {getSelectedSortOption() ? (
                           getSelectedSortOption()
                         ) : (
-                          <Text color={"#909090"}>Urutkan</Text>
+                          <Text color={'#909090'}>Urutkan</Text>
                         )}
                       </Text>
                     </MenuButton>
                     <MenuList>
                       <MenuItem
-                        onClick={() => setSortOption("Semua")}
+                        onClick={() => setSortOption('Semua')}
                         className={
-                          selectedSortOption === "Semua" ? "active" : ""
+                          selectedSortOption === 'Semua' ? 'active' : ''
                         }
                       >
                         Semua
                         <Image
                           src={Empty}
-                          ml={"auto"}
+                          ml={'auto'}
                           display={
-                            selectedSortOption === "Semua"
-                              ? "inline-block"
-                              : "none"
+                            selectedSortOption === 'Semua'
+                              ? 'inline-block'
+                              : 'none'
                           }
                         />
                       </MenuItem>
                       <MenuItem
-                        onClick={() => setSortOption("Paling Baru")}
+                        onClick={() => setSortOption('Paling Baru')}
                         className={
-                          selectedSortOption === "Paling Baru" ? "active" : ""
+                          selectedSortOption === 'Paling Baru' ? 'active' : ''
                         }
                       >
                         Paling Baru
                         <Image
                           src={Empty}
-                          ml={"auto"}
+                          ml={'auto'}
                           display={
-                            selectedSortOption === "Paling Baru"
-                              ? "inline-block"
-                              : "none"
+                            selectedSortOption === 'Paling Baru'
+                              ? 'inline-block'
+                              : 'none'
                           }
                         />
                       </MenuItem>
                       <MenuItem
-                        onClick={() => setSortOption("Paling Lama")}
+                        onClick={() => setSortOption('Paling Lama')}
                         className={
-                          selectedSortOption === "Paling Lama" ? "active" : ""
+                          selectedSortOption === 'Paling Lama' ? 'active' : ''
                         }
                       >
                         Paling Lama
                         <Image
                           src={Empty}
-                          ml={"auto"}
+                          ml={'auto'}
                           display={
-                            selectedSortOption === "Paling Lama"
-                              ? "inline-block"
-                              : "none"
+                            selectedSortOption === 'Paling Lama'
+                              ? 'inline-block'
+                              : 'none'
                           }
                         />
                       </MenuItem>
                       <MenuItem
-                        onClick={() => setSortOption("Respon Tercepat")}
+                        onClick={() => setSortOption('Respon Tercepat')}
                         className={
-                          selectedSortOption === "Respon Tercepat"
-                            ? "active"
-                            : ""
+                          selectedSortOption === 'Respon Tercepat'
+                            ? 'active'
+                            : ''
                         }
                       >
                         Respon Tercepat
                         <Image
                           src={Empty}
-                          ml={"auto"}
+                          ml={'auto'}
                           display={
-                            selectedSortOption === "Respon Tercepat"
-                              ? "inline-block"
-                              : "none"
+                            selectedSortOption === 'Respon Tercepat'
+                              ? 'inline-block'
+                              : 'none'
                           }
                         />
                       </MenuItem>
                       <MenuItem
-                        onClick={() => setSortOption("Respon Terlama")}
+                        onClick={() => setSortOption('Respon Terlama')}
                         className={
-                          selectedSortOption === "Respon Terlama"
-                            ? "active"
-                            : ""
+                          selectedSortOption === 'Respon Terlama'
+                            ? 'active'
+                            : ''
                         }
                       >
                         Respon Terlama
                         <Image
                           src={Empty}
-                          ml={"auto"}
+                          ml={'auto'}
                           display={
-                            selectedSortOption === "Respon Terlama"
-                              ? "inline-block"
-                              : "none"
+                            selectedSortOption === 'Respon Terlama'
+                              ? 'inline-block'
+                              : 'none'
                           }
                         />
                       </MenuItem>
@@ -596,14 +597,14 @@ export default function NavOrder() {
                 </ScrollBox>
                 {filteredOrders.length === 0 && (
                   <Center>
-                    <Box textAlign="center" mt={5} display={"flex"}>
+                    <Box textAlign="center" mt={5} display={'flex'}>
                       <Image src={ReceiptSearch} />
                       <Text fontSize="16px" mt={1}>
                         Oops, pesanan yang kamu cari tidak ditemukan.
                         <Text
-                          fontSize={"12px"}
-                          color={"#909090"}
-                          textAlign={"left"}
+                          fontSize={'12px'}
+                          color={'#909090'}
+                          textAlign={'left'}
                         >
                           Coba bisa cari dengan kata kunci lain
                         </Text>
