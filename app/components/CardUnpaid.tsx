@@ -24,8 +24,8 @@ import type { IMessageTemplates, IOrderList } from '~/interfaces/order';
 import {
   createWhatsAppTemplateMessageLink1,
   phoneNumber,
-} from './TemplateMessage';
-import dummyMessage from '../tests/utils/templateMessage.json';
+} from '../utils/TemplateMessage';
+import dummyMessage from '../utils/templateMessage.json';
 
 export default function UnpaidCard(props: IOrderList) {
   const { isOpen, onOpen, onClose } = useDisclosure();
