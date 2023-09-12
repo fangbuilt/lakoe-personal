@@ -5,7 +5,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '1',
+        storeId: '',
       },
     })
   );

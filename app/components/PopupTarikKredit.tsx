@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 
 import React from 'react';
+import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMailerlite';
 
 // export async function loader({ request }: LoaderArgs) {
 //   const userId = await getuserId(request);
@@ -99,7 +100,7 @@ export default function TarikKredit(props: any) {
             >
               Batal
             </Button>
-            <Button colorScheme="green" mr={3}>
+            <Button colorScheme="green" mr={3} onClick={WithdrawNotification}>
               Withdraw
             </Button>
           </ModalFooter>

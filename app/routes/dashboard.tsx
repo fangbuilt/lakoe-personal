@@ -35,12 +35,20 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
 
   const actionType = formData.get('actionType');
-  const amount = formData.get('amount');
+  const amount = +(formData.get('amount') as string);
   const bankAccount = formData.get('bankAccount');
   const approvedById = formData.get('approvedById');
   const storeId = formData.get('storeId');
   const bankId = formData.get('bankId');
   console.log('woii ini guaa');
+
+  // if (amount < 0) {
+  //   return window.alert("jdhfjdhfjdj");
+  // }
+
+  // if (amount > 500) {
+  //   return window.alert("fdf");
+  // }
 
   if (actionType === 'create' && amount && bankAccount) {
     const createdWithdraw = await createWithdraw(
