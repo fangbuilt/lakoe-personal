@@ -1,7 +1,7 @@
 import { Box, Button, Card, Flex, Img, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import type { IOrderList } from "~/interfaces/order";
-import ModalTracking from "./orderTrackingModal";
+import ModalTracking from "./OrderTrackingModal";
 
 export default function ReadyToShipCard(props: IOrderList) {
   const [modalIsOpen, setModalIsOpen] = useState(false);

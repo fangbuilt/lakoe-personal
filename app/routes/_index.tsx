@@ -17,7 +17,6 @@ export const meta: V2_MetaFunction = () => {
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
-
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <>server: {data}</>
