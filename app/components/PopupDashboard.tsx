@@ -1,8 +1,6 @@
 import {
-  Alert,
   Box,
   Button,
-  Center,
   FormControl,
   FormLabel,
   Input,
@@ -18,8 +16,6 @@ import {
   Text,
   UnorderedList,
   useDisclosure,
-  Image,
-  AlertTitle,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import TarikKredit from './PopupTarikKredit';
@@ -213,7 +209,7 @@ export default function DashboardPopup({ dataBank }: any) {
                   //   handleChange(event);
                   //   handlePasswordChange(event);
                   // }}
-                  onChange={handlePasswordChange}
+                  // onChange={handlePasswordChange}
                   type="password"
                   ref={initialRef}
                   placeholder="Silakan masukkan kata sandi akun anda"
@@ -237,7 +233,7 @@ export default function DashboardPopup({ dataBank }: any) {
                   mr={3}
                   onClick={() => {
                     toggleTarikKredit();
-                    handleSaveClick();
+                    // handleSaveClick();
                   }}
                   type="submit"
                 >
@@ -255,7 +251,7 @@ export default function DashboardPopup({ dataBank }: any) {
           </Form>
         </ModalContent>
       </Modal>
-      {showAlert && (
+      {/* {showAlert && (
         <Center>
           <Alert
             justifyContent={'space-between'}
@@ -295,7 +291,7 @@ export default function DashboardPopup({ dataBank }: any) {
             </Button>
           </Alert>
         </Center>
-      )}
+      )} */}
     </>
   );
 }
