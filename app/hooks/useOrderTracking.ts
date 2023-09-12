@@ -9,11 +9,8 @@ export async function loader() {
 
 export default function getBiteshipTracking() {
   const useData = useLoaderData<typeof loader>();
-  const [orderTrackingsData, setOrderTrackingsData] =
-    useState<IBiteshipTracking>();
-  const [orderMultiTrackingsData, setOrderMultiTrackingsData] = useState<
-    IBiteshipTracking[]
-  >([]);
+  const [orderTrackingsData, setOrderTrackingsData] = useState<IBiteshipTracking>();
+  const [orderMultiTrackingsData, setOrderMultiTrackingsData] = useState<IBiteshipTracking[]>([]);
 
   const fetchData = async () => {
     try {

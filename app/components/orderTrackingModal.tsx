@@ -19,7 +19,6 @@ import {
 } from "@chakra-ui/react";
 import { BsCircleFill } from "react-icons/bs";
 import getBiteshipTracking from "~/hooks/useOrderTracking";
-import { IBiteshipTracking } from "~/interfaces/orderTracking";
 
 interface SendProps {
   isOpen: boolean;
@@ -33,7 +32,6 @@ export default function ModalTracking(props: SendProps) {
     index: 1,
     count: step.length,
   });
-  console.log("isi step", step);
 
   return (
     <>
@@ -203,9 +201,9 @@ export default function ModalTracking(props: SendProps) {
                       </StepIndicator>
 
                       <Box flexShrink="0">
-                        <StepTitle>{data.history.note}</StepTitle>
+                        {/* <StepTitle>{data.history.note}</StepTitle>
                         <StepDescription>{data.history.updated_at}</StepDescription>
-                        <StepDescription>{data.history.status}</StepDescription>
+                        <StepDescription>{data.history.status}</StepDescription> */}
                       </Box>
 
                       <StepSeparator />
