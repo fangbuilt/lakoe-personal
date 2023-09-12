@@ -28,7 +28,7 @@ export default function CardNewOrder(props: IOrderList) {
                     borderRadius={'full'}
                     fontSize={'14px'}
                   >
-                    Hubungi Pembeli
+                    Proses Pesanan
                   </Button>
                 </Link>
                 {/*  */}
