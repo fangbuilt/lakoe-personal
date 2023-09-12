@@ -466,13 +466,13 @@ export default function NavOrder() {
                     ))}
                     {filteredOrdersByCourier.map((data, index) => (
                       <CardInShipping
-                        key={index}
-                        id={data.id}
-                        // name={data.name}
-                        // telephone={data.telephone}
-                        invoiceNumber={data.invoiceNumber}
-                        price={data.price}
-                        // imageProduct={data.imageProduct}
+                      key={index}
+                      id={data.id}
+                      title={data.titleProduct}
+                      telephone={data.telephone}
+                      invoice={data.invoice}
+                      totalAmount={data.totalAmount}
+                      imageProduct={data.imageProduct}
                       />
                     ))}
                     {filteredOrdersByCourier.map((data, index) => (

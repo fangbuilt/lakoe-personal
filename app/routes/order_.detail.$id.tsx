@@ -5,7 +5,7 @@ import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import { ImplementGrid } from "~/layouts/Grid";
 import StatusOrderDetail, {
   getInvoiceById,
-} from "~/modules/order/components/statusOrderDetail";
+} from "~/modules/order/components/StatusOrderDetail";
 
 export async function loader({ params }: LoaderArgs) {
   const { id } = params;

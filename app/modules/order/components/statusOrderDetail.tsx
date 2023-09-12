@@ -38,6 +38,7 @@ import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import { useState } from "react";
 import { db } from "~/libs/prisma/db.server";
 import ModalPengiriman from "~/components/ModalPengiriman";
+import ModalInShipping, { ITracking } from "~/components/ModalInShipping";
 
 export function getStatusBadge(status: string) {
   if (status.toUpperCase() === "UNPAID") {
@@ -247,7 +248,8 @@ export function getStatusLacakButton(status: string) {
 
 export function getStatusLacakPengiriman(
   status: string,
-  data: IOrderDetailInvoice
+  data: IOrderDetailInvoice,
+  data2: ITracking
 ) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -273,10 +275,10 @@ export function getStatusLacakPengiriman(
         >
           Lacak Pengiriman
         </Button>
-        <ModalPengiriman
+        <ModalInShipping
           isOpen={modalIsOpen}
           onClose={closeModal}
-          data={data}
+          data={data2}
         />
       </>
     );
@@ -326,8 +328,10 @@ export async function getInvoiceById(id: any) {
 
 export default function StatusOrderDetail({
   data,
+  data2,
 }: {
   data: IOrderDetailInvoice;
+  data2: ITracking;
 }) {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
@@ -652,16 +656,12 @@ export default function StatusOrderDetail({
             />
           </Box>
 
-          <Box display={"flex"} flexDirection={"column"} gap={1}>
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              width={"100%"}
-            >
+          <Box display={"flex"} flexDirection={"column"} gap={1} width={"100%"}>
+            <Box display={"flex"} justifyContent={"space-between"}>
               <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
                 Detail Pengiriman
               </Text>
-              {getStatusLacakPengiriman(data.status, data)}
+              {getStatusLacakPengiriman(data.status, data, data2)}
             </Box>
             <Box display={"flex"}>
               <Box display={"flex"} flexDirection={"column"} width={"192px"}>
