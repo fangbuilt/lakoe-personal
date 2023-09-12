@@ -23,6 +23,7 @@ import {
   StepTitle,
   Stepper,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import documentIcon from "~/assets/DetailOrderIcon/document.svg";
 import calender from "~/assets/DetailOrderIcon/calendar-2.svg";
@@ -47,15 +48,31 @@ import { useState } from "react";
 
 const tanggalDariDatabase = "2023-09-10T09:14:46.940Z";
 
-function dateConvertion(createdAt: string): string {
+function dateConversion(createdAt: string): string {
   const dateObj = new Date(createdAt);
   const year = dateObj.getUTCFullYear();
-  const month = String(dateObj.getUTCMonth() + 1).padStart(2, "0");
   const day = String(dateObj.getUTCDate()).padStart(2, "0");
   const hour = String(dateObj.getUTCHours()).padStart(2, "0");
   const minute = String(dateObj.getUTCMinutes()).padStart(2, "0");
 
-  return `${year}-${month}-${day} ${hour}:${minute}`;
+  const namaBulan = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
+
+  const namaBulanTeks = namaBulan[dateObj.getUTCMonth()];
+
+  return `${day} ${namaBulanTeks} ${year} ${hour}:${minute}`;
 }
 
 function getStatusBadge(status: string) {
@@ -210,8 +227,12 @@ export default function StatusOrderDetail({
 }: {
   data: IOrderDetailInvoice;
 }) {
-  const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
-    useOrderDetalil();
+  const {
+    isOrderHistoryVisible,
+    toggleOrderHistory,
+    activeStep,
+    filterStepsByStatus,
+  } = useOrderDetalil();
 
   const { toastStyle } = useCopyToClipboard();
   const { isCopied: isCopied1, handleCopyClick: handleCopyClick1 } =
@@ -230,6 +251,134 @@ export default function StatusOrderDetail({
     handleCopyClick3(data.receiverAddress);
   };
 
+  // INI MODAL
+  const [modalText, setModalText] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const systembalance = 1000; //saldo LAKOE
+
+  const afterpacking = () => {
+    if (systembalance > 50000) {
+      handleOrderCourier();
+    } else {
+      handleBalanceNotif();
+    }
+  };
+
+  const handleBalanceNotif = async () => {
+    try {
+      const mailerBaseUrl = "https://connect.mailerlite.com";
+      const mailerEndPoint = "/api/subscribers";
+      const mailerApiKey =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY"; //Rino - Puja (desi123321123321@gmail.com)
+
+      const mailerData = {
+        email: "angga.ardiansyah955+012unch@gmail.com",
+        fields: {
+          company: "ADD MORE BALANCE", //company berperan sebagai "title" dalam mailerlite
+          last_name:
+            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message") dalam mailerlite
+        },
+        groups: ["98713000939095999"],
+      };
+
+      const mailerRequest = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${mailerApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(mailerData),
+      };
+
+      const response = await fetch(
+        `${mailerBaseUrl}${mailerEndPoint}`,
+        mailerRequest
+      );
+      const responseData = await response.json();
+      console.log("Data Email :", responseData);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const handleOrderCourier = async () => {
+    try {
+      const baseUrl = "https://api.biteship.com";
+      const endpoint = "/v1/orders";
+      const apiKey =
+        "biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYml0ZXNoaXBMYWtvZSIsInVzZXJJZCI6IjY0ZjU4ZjdiZWJlNjI2M2RiOWY5MWYxMCIsImlhdCI6MTY5NDA3MjA0N30.t-4Rg4MSvhx6Uq9bKhVlo2DFPvb3L9jmObDCwFzSuuk"; //Rino - Puja
+
+      const orderData = {
+        shipper_contact_name: "megakuningan",
+        shipper_contact_phone: "081277882932",
+        shipper_contact_email: "biteship@test.com",
+        shipper_organization: "Biteship Org Test",
+        origin_contact_name: "megakuningan",
+        origin_contact_phone: "081740781720",
+        origin_address: "Plaza Senayan, Jalan Asia Afrika...",
+        origin_note: "Deket pintu masuk STC",
+        origin_coordinate: {
+          latitude: -6.2253114,
+          longitude: 106.7993735,
+        },
+        origin_postal_code: 12440,
+        destination_contact_name: "stevanus miswari",
+        destination_contact_phone: "08170032123",
+        destination_contact_email: "jon@test.com",
+        destination_address: "Lebak Bulus MRT...",
+        destination_postal_code: 12950,
+        destination_note: "Near the gas station",
+        destination_cash_proof_of_delivery: true,
+        destination_coordinate: {
+          latitude: -6.28927,
+          longitude: 106.77492000000007,
+        },
+        courier_company: "grab",
+        courier_type: "instant",
+        courier_insurance: 500000,
+        delivery_type: "later",
+        delivery_date: "2024-09-24",
+        delivery_time: "12:00",
+        order_note: "Please be careful",
+        metadata: {},
+        items: [
+          {
+            id: "5db7ee67382e185bd6a14608",
+            name: "Black L",
+            image: "",
+            description: "White Shirt",
+            value: 165000,
+            quantity: 1,
+            height: 10,
+            length: 10,
+            weight: 200,
+            width: 10,
+          },
+        ],
+      };
+
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      };
+
+      const response = await fetch(`${baseUrl}${endpoint}`, requestOptions);
+      const responseData = await response.json();
+
+      alert(responseData);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const stepCount = filterStepsByStatus(data.status).length;
+  const stepHeight = 65;
+
   const products = data.cart.cartItems.map((cartItem) => {
     return { ...cartItem, cartItem };
   });
@@ -241,7 +390,7 @@ export default function StatusOrderDetail({
           Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
           <Text as={"span"} fontWeight={"700"}>
             {" "}
-            {dateConvertion(data.updatedAt)} WIB
+            {dateConversion(data.updatedAt)} WIB
           </Text>
           . Silahkan tunggu sampai pembayaran terkonfirmasi sebelum mengirimkan
           barang.
@@ -322,96 +471,6 @@ export default function StatusOrderDetail({
     }
   }
 
-  function getStatusLacakButton(status: string) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => {
-      setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-      setIsModalOpen(false);
-    };
-    if (status.toUpperCase() === "NEW_ORDER") {
-      return (
-        <Flex
-          justifyContent={"space-between"}
-          padding={`var(--4, 16px) var(--5, 20px)`}
-          alignItems={"center"}
-          alignSelf={"stretch"}
-          borderRadius={`var(--rounded-lg, 12px)`}
-          background={`var(--gray-50, #FFF)`}
-        >
-          <Box>
-            <Button
-              display={"flex"}
-              height={"40px"}
-              padding={`var(--3, 12px) var(--4, 16px)`}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={`var(--1, 4px)`}
-              borderRadius={`var(--rounded-full, 9999px)`}
-              border={`1px solid var(--red-800, #EA3829)`}
-              background={`var(--gray-50, #FFF)`}
-            >
-              <Text
-                color={`var(--text-red, #EA3829)`}
-                fontSize={"14px"}
-                fontWeight={"600"}
-                lineHeight={"15.5px"}
-              >
-                Tolak Pesanan
-              </Text>
-            </Button>
-          </Box>
-          <Box>
-            <Button
-              display={"flex"}
-              height={"40px"}
-              padding={`var(--3, 12px) var(--4, 16px)`}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={`var(--1, 4px)`}
-              borderRadius={`var(--rounded-full, 9999px)`}
-              background={`var(--cyan-800, #0086B4)`}
-              onClick={openModal}
-            >
-              <Text
-                color={`var(--text-light, #FFF)`}
-                fontSize={"14px"}
-                fontWeight={"600"}
-                lineHeight={"15.5px"}
-              >
-                Proses Pesanan
-              </Text>
-            </Button>
-          </Box>
-          {isModalOpen && (
-            <Modal isOpen={isModalOpen} onClose={closeModal}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Proses Pesanan</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Text>Apakah ada ingin melanjutkan proses ini?</Text>
-                </ModalBody>
-
-                <ModalFooter>
-                  <Button colorScheme="blue" mr={3} onClick={closeModal} width={'100px'}>
-                    Ya
-                  </Button>
-                  <Button variant="ghost" onClick={closeModal} width={'100px'}>
-                    Tidak
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          )}
-        </Flex>
-      );
-    }
-  }
-
   return (
     <>
       <Box display={"flex"} flexDirection={"column"} gap={3}>
@@ -483,31 +542,73 @@ export default function StatusOrderDetail({
             {isOrderHistoryVisible && (
               <Stepper
                 size={"sm"}
-                border={"1px solid #E6E6E6"}
-                borderRadius={"12px"}
                 index={activeStep}
                 orientation="vertical"
-                height="100%"
-                width={"50%"}
-                gap="5"
-                p={"16px"}
+                width={"400px"}
+                height={`${stepCount * stepHeight}px`}
+                gap="0"
+                border={"1px solid #E6E6E6"}
+                padding={"var(--4, 16px)"}
+                borderRadius={"var(--rounded-lg, 12px)"}
               >
-                {steps.map((step) => (
+                {filterStepsByStatus(data.status).map((step, index) => (
                   <Step key={step.id}>
-                    <StepIndicator fontSize={"11px"}>
+                    <StepIndicator>
                       <StepStatus
-                        complete={<BsCircleFill />}
-                        incomplete={<BsCircleFill color="gray" />}
-                        active={<BsCircleFill color="gray" />}
+                        complete={
+                          <div
+                            style={{
+                              background:
+                                index === 0 ? "#C5F8FF" : "transparent",
+                              borderRadius: "50%",
+                              padding: "7px",
+                              display: "inline-block",
+                            }}
+                          >
+                            <BsCircleFill size={"12px"} color="#0086B4" />
+                          </div>
+                        }
+                        incomplete={
+                          <div
+                            style={{
+                              background: "#F8F8F8",
+                              borderRadius: "50%",
+                              padding: "7px",
+                              display: "inline-block",
+                            }}
+                          >
+                            <BsCircleFill size={"12px"} color="#D5D5D5" />
+                          </div>
+                        }
+                        active={
+                          <div
+                            style={{
+                              background: "#F8F8F8",
+                              borderRadius: "50%",
+                              padding: "7px",
+                              display: "inline-block",
+                            }}
+                          >
+                            <BsCircleFill size={"12px"} color="#D5D5D5" />
+                          </div>
+                        }
                       />
                     </StepIndicator>
 
                     <Box flexShrink="0">
-                      <StepTitle>{step.title}</StepTitle>
-                      <StepDescription>{step.description}</StepDescription>
+                      <StepTitle
+                        style={{ fontWeight: "700", fontSize: "14px" }}
+                      >
+                        {step.title}
+                      </StepTitle>
+                      <StepDescription
+                        style={{ fontWeight: "500", fontSize: "12px" }}
+                      >
+                        {step.description}
+                      </StepDescription>
                     </Box>
 
-                    <StepSeparator />
+                    <StepSeparator style={{ background: "#E6E6E6" }} />
                   </Step>
                 ))}
               </Stepper>
@@ -536,7 +637,7 @@ export default function StatusOrderDetail({
               </Text>
             </Box>
             <Text fontSize={"14px"} fontWeight={"400"} lineHeight={"20px"}>
-              {dateConvertion(data.createdAt)} WIB
+              {dateConversion(data.createdAt)} WIB
             </Text>
           </Box>
           <Box display={"flex"} justifyContent={"space-between"}>
@@ -930,7 +1031,105 @@ export default function StatusOrderDetail({
             </Box>
           </Box>
         </Box>
-        {getStatusLacakButton(data.status)}
+        {/* {getStatusLacakButton(data.status)} */}
+        {data.status === "NEW_ORDER" && (
+          <Flex
+            justifyContent={"space-between"}
+            padding={`var(--4, 16px) var(--5, 20px)`}
+            alignItems={"center"}
+            alignSelf={"stretch"}
+            borderRadius={`var(--rounded-lg, 12px)`}
+            background={`var(--gray-50, #FFF)`}
+          >
+            <Box>
+              <Button
+                display={"flex"}
+                height={"40px"}
+                padding={`var(--3, 12px) var(--4, 16px)`}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={`var(--1, 4px)`}
+                borderRadius={`var(--rounded-full, 9999px)`}
+                border={`1px solid var(--red-800, #EA3829)`}
+                background={`var(--gray-50, #FFF)`}
+              >
+                <Text
+                  color={`var(--text-red, #EA3829)`}
+                  fontSize={"14px"}
+                  fontWeight={"600"}
+                  lineHeight={"15.5px"}
+                >
+                  Tolak Pesanan
+                </Text>
+              </Button>
+            </Box>
+            <Box>
+              <Button
+                display={"flex"}
+                height={"40px"}
+                padding={`var(--3, 12px) var(--4, 16px)`}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={`var(--1, 4px)`}
+                borderRadius={`var(--rounded-full, 9999px)`}
+                background={`var(--cyan-800, #0086B4)`}
+                onClick={() => {
+                  setModalText("You can scroll the content behind the modal");
+                  onOpen();
+                }}
+              >
+                <Text
+                  color={`var(--text-light, #FFF)`}
+                  fontSize={"14px"}
+                  fontWeight={"600"}
+                  lineHeight={"15.5px"}
+                >
+                  Proses Pesanan
+                </Text>
+              </Button>
+            </Box>
+            <Modal
+              blockScrollOnMount={false}
+              isOpen={isOpen}
+              onClose={() => {
+                setModalText("");
+                onClose();
+              }}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Proses Pesanan</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Text fontWeight="bold" mb="1rem">
+                    {modalText}
+                  </Text>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="blue"
+                    mr={3}
+                    onClick={() => {
+                      setModalText("");
+                      onClose();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      afterpacking();
+                      onClose();
+                    }}
+                  >
+                    Selesai di Packing
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </Flex>
+        )}
       </Box>
     </>
   );
