@@ -19,7 +19,7 @@ export default function ReadyToShipCard(props: IOrderList) {
                   size={'sm'}
                   pointerEvents={'none'}
                 >
-                  Dibatalkan
+                  Siap Dikirim
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
