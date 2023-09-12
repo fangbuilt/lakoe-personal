@@ -18,7 +18,6 @@
     "@fontsource-variable/plus-jakarta-sans": "^5.0.9",
     "@fontsource/open-sans": "^5.0.11",
     "@fontsource/raleway": "^5.0.8",
-    "@mailerlite/mailerlite-nodejs": "^1.1.0",
     "@prisma/client": "^5.2.0",
     "@remix-run/css-bundle": "^1.19.3",
     "@remix-run/node": "^1.19.3",
@@ -27,7 +26,9 @@
     "@vercel/node": "^2.10.3",
     "datetime-difference": "^1.0.2",
     "framer-motion": "^6.5.1",
+    "i": "^0.3.7",
     "isbot": "^3.6.8",
+    "npm": "^10.0.0",
     "react": "^18.2.0",
     "kill": "^0.0.2",
     "port": "^0.8.1",
@@ -43,14 +44,20 @@
     "@remix-run/dev": "^1.19.3",
     "@remix-run/eslint-config": "^1.19.3",
     "@remix-run/serve": "^1.19.3",
+    "@types/node": "^20.5.9",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
     "@types/source-map-support": "^0.5.6",
+    "@faker-js/faker": "^8.0.2",
     "eslint": "^8.38.0",
     "husky": "^8.0.0",
     "lint-staged": "^14.0.1",
     "prisma": "^5.2.0",
-    "typescript": "^5.0.4"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "engines": {
     "node": ">=14.0.0"
