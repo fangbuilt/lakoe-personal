@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Input, Image, Text } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
+import { Form, Link, useLoaderData } from '@remix-run/react';
 import { AiOutlineClose } from 'react-icons/ai';
 import PopupBank from '~/components/PopupBank';
 import UpdateBank from '~/components/PopupBankUpdate.$id';
@@ -71,6 +71,7 @@ export async function action({ request }: ActionArgs) {
 export default function Bank() {
   const dataBank = useLoaderData<typeof loader>();
   console.log('data bank', dataBank);
+
   return (
     <>
       <Box m={'2%'} boxShadow={'lg'}>
@@ -134,12 +135,14 @@ export default function Bank() {
                   )}
                 </Box>
 
-                <Text fontSize="13px">
-                  <Text as={'span'} fontWeight={'700'}>
-                    {data.bank}
+                <Link to={'/dashboard'}>
+                  <Text fontSize="13px">
+                    <Text as={'span'} fontWeight={'700'}>
+                      {data.bank}
+                    </Text>
+                    -{data.accountName}-{data.accountNumber}
                   </Text>
-                  -{data.accountName}-{data.accountNumber}
-                </Text>
+                </Link>
               </Box>
               <Box display={'flex'}>
                 <Form method="post">

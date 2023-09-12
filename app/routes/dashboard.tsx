@@ -24,7 +24,7 @@ import {
   getBankList,
 } from '~/modules/dashboard/dashboard.service';
 import { useLoaderData } from '@remix-run/react';
-import NavbarDashboard from './navbarDashboard';
+import NavbarDashboard from '../modules/dashboard/components/navbarDashboard';
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
@@ -36,7 +36,7 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
 
   const actionType = formData.get('actionType');
-  const amount = formData.get('amount');
+  const amount = +(formData.get('amount') as string);
   const bankAccount = formData.get('bankAccount');
   const approvedById = formData.get('approvedById');
   const storeId = formData.get('storeId');
@@ -98,15 +98,6 @@ export default function Dashboard() {
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#28a745'}>
                 Rp.0
               </Text>
-              {/* <Button
-                // onClick={() => setButtonPopup(true)}
-                onClick={(onOpen) => BasicUsage()}
-                bg={"#8dc63f"}
-                color={"white"}
-                _hover={{ bg: "blue.500" }}
-              >
-                Tarik Credit
-              </Button> */}
               <DashboardPopup dataBank={dataBank} />
             </Box>
             <Box
@@ -537,127 +528,6 @@ export default function Dashboard() {
             </Flex>
           </Box>
         </SimpleGrid>
-
-        {/* <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
-          <Flex
-            minH={'100vh'}
-            align={'center'}
-            justify={'center'}
-            bg={'white'}
-            mt={5}
-          >
-            <Stack
-              spacing={4}
-              w={'full'}
-              maxW={'md'}
-              bg={'white'}
-              rounded={'xl'}
-              p={0}
-              my={12}
-            >
-              <Box
-                borderLeft={'2px solid'}
-                borderColor={'blue.700'}
-                bg={'blue.100'}
-                padding={'10px'}
-              >
-                <UnorderedList>
-                  <ListItem>
-                    Withdraw hanya dapat dilakukan 1x per hari
-                  </ListItem>
-                  <ListItem>
-                    Dan akan diproses pada hari kerja pada jam 09:00 - 17:00 WIB
-                  </ListItem>
-                  <ListItem>
-                    Direkomendasikan Withdraw ke Rekening BCA, selain rekening
-                    BCA akan memakan waktu 2-3 hari kerja
-                  </ListItem>
-                </UnorderedList>
-              </Box>
-              <FormControl id="email" isRequired>
-                <FormLabel>Berapa banyak yang ingin anda tarik?</FormLabel>
-                <Input
-                  placeholder=""
-                  _placeholder={{ color: 'gray.500' }}
-                  type="email"
-                />
-                <Text fontStyle="italic" color="blue">
-                  Jumlah Maksimal: Rp0
-                </Text>
-              </FormControl>
-              <FormControl id="" isRequired>
-                <FormLabel>Tarik ke:</FormLabel>
-                <Accordion allowToggle>
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton>
-                        <Box as="span" flex="1" textAlign="left">
-                          Pilih Rekening Bank untuk menerima penarikan
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BRI
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BCA
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        MANDIRI
-                      </Button>
-                    </AccordionPanel>
-                    <AccordionPanel pb={0}>
-                      <Button colorScheme="none" color={'gray.600'}>
-                        BNI
-                      </Button>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </FormControl>
-              <FormControl id="password" isRequired>
-                <FormLabel>Password</FormLabel>
-                <Input
-                  placeholder="Silakan masukkan kata sandi akun Anda"
-                  _placeholder={{ color: 'gray.500' }}
-                  type="password"
-                />
-              </FormControl>
-              <Stack spacing={6}>
-                <Flex justifyContent={'end'} gap={3}>
-                  <Button
-                    onClick={() => setButtonPopup(false)}
-                    border={'1px solid'}
-                    borderColor={'gray.600'}
-                    bg={'white'}
-                    color={'gray.600'}
-                    _hover={{
-                      bg: 'green.400',
-                      color: 'white',
-                      borderStyle: 'none',
-                    }}
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    bg={'blue.400'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'blue.500',
-                    }}
-                  >
-                    Submit
-                  </Button>
-                </Flex>
-              </Stack>
-            </Stack>
-          </Flex>
-        </Popup> */}
       </Box>
     </>
   );

@@ -30,9 +30,6 @@ export function SelectBankOptionUpdate() {
 }
 
 export function SelectRekening({ dataBank }: any) {
-  // const { bank, accountNumber } = dataBank;
-  // console.log("ini isi Bank", dataBank);
-
   return (
     <div>
       {dataBank.map((data: any) => (
