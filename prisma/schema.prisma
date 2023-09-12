@@ -342,6 +342,8 @@ model Courier {
   shipmentDurationUnit         String
   price                        Float
   invoice                      Invoice[]
+  orderId                      String?
+  trackingId                   String?
   createdAt                    DateTime  @default(now())
   updatedAt                    DateTime  @default(now())
 
