@@ -14,6 +14,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Link } from '@remix-run/react';
 import { useState } from 'react';
 import { UseSearch } from '~/hooks/useSearchOrder';
 import type { IOrderList } from '~/interfaces/order';
@@ -59,7 +60,7 @@ export default function CardNewOrder(props: IOrderList) {
     }
   };
 
-  const systembalance = 100; //saldo LAKOE
+  const systembalance = 100000; //saldo LAKOE
 
   const afterpacking = () => {
     if (systembalance > 50000) {
@@ -164,18 +165,20 @@ export default function CardNewOrder(props: IOrderList) {
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-                <Button
-                  bg={'transparent'}
-                  border={'1px solid #D5D5D5'}
-                  borderRadius={'full'}
-                  fontSize={'14px'}
-                  onClick={() => {
-                    setModalText('Apakah sudah di pack dan siap dikirim?');
-                    onOpen();
-                  }}
-                >
-                  Proses Pesanan
-                </Button>
+                <Link to={`http://wa.me/${props.telephone}`}>
+                  <Button
+                    bg={'transparent'}
+                    border={'1px solid #D5D5D5'}
+                    borderRadius={'full'}
+                    fontSize={'14px'}
+                    onClick={() => {
+                      setModalText('Apakah sudah di pack dan siap dikirim?');
+                      onOpen();
+                    }}
+                  >
+                    Proses Pesanan
+                  </Button>
+                </Link>
                 {/*  */}
                 {/* Modal */}
                 <Modal
