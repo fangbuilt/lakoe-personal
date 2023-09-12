@@ -18,19 +18,22 @@ import {
   useSteps,
 } from "@chakra-ui/react";
 import { BsCircleFill } from "react-icons/bs";
-import APITrackings from "~/hooks/useOrderTracking";
+import getBiteshipTracking from "~/hooks/useOrderTracking";
+import { IBiteshipTracking } from "~/interfaces/orderTracking";
 
 interface SendProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
 export default function ModalTracking(props: SendProps) {
-  const { orderTrackingsData } = APITrackings();
-  const step = orderTrackingsData;
+  const { orderTrackingsData, orderMultiTrackingsData } = getBiteshipTracking();
+  const step = [orderMultiTrackingsData];
   const { activeStep } = useSteps({
     index: 1,
     count: step.length,
   });
+  console.log("isi step", step);
 
   return (
     <>
@@ -70,7 +73,7 @@ export default function ModalTracking(props: SendProps) {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      JNE
+                      {orderTrackingsData?.courier.company}
                     </Text>
                   </Box>
                   <Box width={"288px"} height={"44px"} gap={1}>
@@ -88,7 +91,7 @@ export default function ModalTracking(props: SendProps) {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      JT99418534765
+                      {orderTrackingsData?.waybill_id}
                     </Text>
                   </Box>
                   <Box width={"288px"} height={"44px"} gap={1}>
@@ -106,7 +109,7 @@ export default function ModalTracking(props: SendProps) {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      SAKURA LIFE
+                      {orderTrackingsData?.origin.contact_name}
                     </Text>
                   </Box>
                 </Box>
@@ -132,7 +135,7 @@ export default function ModalTracking(props: SendProps) {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      SYAHRAN IDN PAMIJAHAN
+                      {orderTrackingsData?.destination.contact_name}
                     </Text>
                     <Text
                       fontSize={"14px"}
@@ -140,7 +143,7 @@ export default function ModalTracking(props: SendProps) {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      SMP-SMK IDN BOARDING SCHOOL, PAMIJAHAN
+                      {orderTrackingsData?.destination.address}
                     </Text>
                   </Box>
                 </Box>
@@ -189,7 +192,7 @@ export default function ModalTracking(props: SendProps) {
                   gap="5"
                   p={"16px"}
                 >
-                  {step?.map((data: any, index) => (
+                  {step?.map((data: any, index: number) => (
                     <Step key={index}>
                       <StepIndicator fontSize={"11px"}>
                         <StepStatus
@@ -200,8 +203,9 @@ export default function ModalTracking(props: SendProps) {
                       </StepIndicator>
 
                       <Box flexShrink="0">
-                        <StepTitle>{data?.note}</StepTitle>
-                        <StepDescription>{data?.update_at}</StepDescription>
+                        <StepTitle>{data.history.note}</StepTitle>
+                        <StepDescription>{data.history.updated_at}</StepDescription>
+                        <StepDescription>{data.history.status}</StepDescription>
                       </Box>
 
                       <StepSeparator />

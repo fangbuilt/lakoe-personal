@@ -2,9 +2,11 @@ import { Box, Button, Card, Flex, Img, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import type { IOrderList } from "~/interfaces/order";
 import ModalTracking from "./OrderTrackingModal";
+import getBiteshipTracking from "~/hooks/useOrderTracking";
 
 export default function ReadyToShipCard(props: IOrderList) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {fetchData} = getBiteshipTracking()
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -39,7 +41,10 @@ export default function ReadyToShipCard(props: IOrderList) {
                     border={"1px solid #D5D5D5"}
                     borderRadius={"full"}
                     fontSize={"14px"}
-                    onClick={openModal}
+                    onClick= {() => {
+                      openModal(),
+                      fetchData()
+                    }}
                   >
                     Tracking Pengiriman
                   </Button>
