@@ -69,10 +69,10 @@ export default function DashboardPopup({ dataBank }: any) {
         <ModalOverlay />
         <ModalContent>
           <Form method="post">
-            <Input type="text" name="actionType" value="create" />
-            {/* <Input type="text" name="bankId" />
-            <Input type="text" name="storeId" />
-            <Input type="text" name="approvedById" /> */}
+            <Input type="hidden" name="actionType" value="create" />
+            {/* <Input type="text" name="withdrawId" /> */}
+            {/* <Input type="text" name="storeId" /> */}
+            {/* <Input type="text" name="approvedById" /> */}
             <ModalHeader display={'flex'} alignItems={'center'}>
               <Text ml={'5px'}>Tarik Credit</Text>
             </ModalHeader>

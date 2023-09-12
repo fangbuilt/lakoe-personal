@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,6 +12,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 import React from 'react';
 
 export default function TarikKredit(props: any) {
@@ -56,17 +58,22 @@ export default function TarikKredit(props: any) {
             </Box>
           </ModalBody>
           <ModalFooter>
-            <Button
-              colorScheme="none"
-              mr={3}
-              onClick={onClose}
-              color={'gray.500'}
-              border={'1px solid'}
-              borderColor={'gray.500'}
-            >
-              Batal
-            </Button>
-            <Button colorScheme="green" mr={3}>
+            <Form method="post">
+              <Input type="hidden" name="actionType" value="delete" />
+              <Input type="text" name="withdrawId" />
+              <Button
+                type="submit"
+                colorScheme="none"
+                mr={3}
+                onClick={onClose}
+                color={'gray.500'}
+                border={'1px solid'}
+                borderColor={'gray.500'}
+              >
+                Batal
+              </Button>
+            </Form>
+            <Button colorScheme="green" mr={3} onClick={onClose}>
               Oke
             </Button>
           </ModalFooter>

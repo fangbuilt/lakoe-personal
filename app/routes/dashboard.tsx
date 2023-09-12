@@ -20,11 +20,12 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import DashboardPopup from '~/components/PopupDashboard';
 import {
   createWithdraw,
+  deleteWithdraw,
   getBankList,
 } from '~/modules/dashboard/dashboard.service';
 import { useLoaderData } from '@remix-run/react';
 import NavbarDashboard from './navbarDashboard';
-import type { ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
 export async function loader(storeId: string) {
@@ -40,7 +41,7 @@ export async function action({ request }: ActionArgs) {
   const approvedById = formData.get('approvedById');
   const storeId = formData.get('storeId');
   const bankId = formData.get('bankId');
-  console.log('woii ini guaa');
+  const withdrawId = formData.get('withdrawId');
 
   if (actionType === 'create' && amount && bankAccount) {
     const createdWithdraw = await createWithdraw(
@@ -62,6 +63,12 @@ export async function action({ request }: ActionArgs) {
     console.log('Withdraw created:', createdWithdraw);
     return redirect('/dashboard');
   }
+
+  if (actionType === 'delete' && withdrawId) {
+    await deleteWithdraw(withdrawId as string);
+    return redirect('/dashboard');
+  }
+
   return redirect('/dashboard');
 }
 
