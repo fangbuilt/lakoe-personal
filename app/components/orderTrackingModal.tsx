@@ -27,13 +27,7 @@ interface SendProps {
 
 export default function ModalTracking(props: SendProps) {
   const { orderTrackingsData, orderMultiTrackingsData } = getBiteshipTracking();
-  // const steps = orderMultiTrackingsData
-
-  const steps = [
-    { note: 'Courier order is confirmed. sicepat has been notified to pick up', updated_at: '2023-09-12T20:12:17+07:00' },
-    { note: 'Courier is allocated and ready to pick up', updated_at: '2023-09-12T20:13:27+07:00' },
-    { note: 'Courier is on the way to pick up location', updated_at: '2023-09-12T20:13:56+07:00' },
-  ]
+  let steps = orderMultiTrackingsData;
 
   const { activeStep } = useSteps({
     index: 1,
@@ -177,13 +171,13 @@ export default function ModalTracking(props: SendProps) {
                     lineHeight={"20px"}
                     color={"#1D1D1D"}
                   >
-                    {/* {orderTrackingsData?.history.status} */} Dalam Pengiriman
+                    {orderTrackingsData?.status}
                   </Text>
                 </Box>
               </Box>
               <Box
                 width={"606px"}
-                height={"300px"}
+                // height={"300px"}
                 padding={" 20px 16px 0px 16px"}
               >
                 {/* Stepper */}
@@ -193,12 +187,12 @@ export default function ModalTracking(props: SendProps) {
                   borderRadius={"12px"}
                   index={activeStep}
                   orientation="vertical"
-                  height="110%"
+                  // height="110%"
                   width={"100%"}
                   gap="5"
                   p={"16px"}
                 >
-                  {steps.map((step, index) => (
+                  {steps.map((step: any, index: number) => (
                     <Step key={index}>
                       <StepIndicator fontSize={"11px"}>
                         <StepStatus
@@ -210,9 +204,7 @@ export default function ModalTracking(props: SendProps) {
 
                       <Box flexShrink="0">
                         <StepTitle>{step.note}</StepTitle>
-                        <StepDescription>
-                          {step.updated_at}
-                        </StepDescription>
+                        <StepDescription>{step.updated_at}</StepDescription>
                       </Box>
 
                       <StepSeparator />
