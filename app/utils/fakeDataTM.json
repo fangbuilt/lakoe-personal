@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Pesan Konfirmasi Pesanan",
+    "content": "Halo! Terima kasih telah berbelanja di Fesyen Store. Berikut rincian pesanan Anda:",
+    "store_id": 1
+  },
+  {
+    "id": 2,
+    "name": "Pesan Pengiriman",
+    "content": "Hai, kami dari Fesyen Store. Pesanan Anda telah dikirimkan dengan nomor resi [Nomor Resi]. Anda dapat melacak pengiriman Anda melalui [Link Pelacakan]. Terima kasih telah berbelanja di toko kami!",
+    "store_id": 2
+  },
+  {
+    "id": 3,
+    "name": "Pesan Promo",
+    "content": "Hai! Fesyen Store sedang mengadakan promo spesial! Dapatkan diskon [Persentase Diskon]% untuk pembelian di atas [Jumlah Minimum Pembelian]. Segera kunjungi toko kami dan manfaatkan promo ini!",
+    "store_id": 3
+  },
+  {
+    "id": 4,
+    "name": "Pesan Pembayaran",
+    "content": "Halo, ini Fesyen Store. Pesanan Anda sudah siap. Mohon segera lakukan pembayaran sebesar [Total Pembayaran] ke [Nomor Rekening] a/n [Nama Pemilik Rekening]. Setelah pembayaran dikonfirmasi, pesanan akan segera kami proses.",
+    "store_id": 4
+  },
+  {
+    "id": 5,
+    "name": "Pesan Follow-Up",
+    "content": "Hai [Nama Customer], kami ingin tahu apakah Anda puas dengan pesanan Anda dari Fesyen Store. Jika Anda memiliki pertanyaan atau umpan balik, jangan ragu untuk menghubungi kami. Kami selalu siap membantu!",
+    "store_id": 5
+  }
+]
