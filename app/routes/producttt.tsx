@@ -1,5 +1,5 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import ProductBody from '~/components/product/ProductBody';
@@ -45,12 +45,9 @@ export default function Product() {
     <ImplementGrid>
       <Stack mt={'7.5vh'} spacing={4}>
         <ProductBody products={data} />
-        {/* {data.map((a) => (
-            <ProductCard key={a.id} product={a}>
-              <ProductModal {...a} />
-            </ProductCard>
-          ))} */}
       </Stack>
     </ImplementGrid>
   );
 }
+
+// Untuk testing codingan

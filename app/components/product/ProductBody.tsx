@@ -19,14 +19,13 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import type { ReactNode} from 'react';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
 import BoxSearch from '~/assets/icon-pack/box-search.svg';
-// import ProductEmpty from "./ProductEmpty";
-import type IProduct from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
+import type { IProduct } from '~/interfaces/product/product';
 
 interface IProductBodyProps {
   children?: ReactNode;

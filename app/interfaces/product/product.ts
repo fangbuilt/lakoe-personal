@@ -2,7 +2,7 @@ export interface IProduct {
   id: string;
   name: string;
   // description: string[];
-  attachments: string[];
+  // attachments: string[];
   isActive: boolean;
   // minimumOrder: number;
   // store?: Store;
@@ -19,7 +19,7 @@ export interface IProduct {
 export interface IVariant {
   id: string;
   name: string;
-  isActive: boolean;
+  // isActive: boolean;
   product?: IProduct;
   // productId?: string;
   variantOptions: IVariantOption[];
@@ -45,7 +45,7 @@ export interface IVariantOptionValue {
   // size: VariantOptionValueSize;
   stock: number;
   price: number;
-  isActive: boolean;
+  // isActive: boolean;
   // variantOptionId?: string;
   // createdAt: Date;
   // updatedAt: Date;
