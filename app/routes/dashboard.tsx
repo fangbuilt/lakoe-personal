@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Flex,
@@ -42,13 +46,17 @@ export async function action({ request }: ActionArgs) {
   const bankId = formData.get('bankId');
   console.log('woii ini guaa');
 
-  // if (amount < 0) {
-  //   return window.alert("jdhfjdhfjdj");
-  // }
-
-  // if (amount > 500) {
-  //   return window.alert("fdf");
-  // }
+  if (formData === null) {
+    return (
+      <Alert status="error">
+        <AlertIcon />
+        <AlertTitle>Your browser is outdated!</AlertTitle>
+        <AlertDescription>
+          Your Chakra experience may be degraded.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   if (actionType === 'create' && amount && bankAccount) {
     const createdWithdraw = await createWithdraw(
@@ -99,15 +107,6 @@ export default function Dashboard() {
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#28a745'}>
                 Rp.0
               </Text>
-              {/* <Button
-                  // onClick={() => setButtonPopup(true)}
-                  onClick={(onOpen) => BasicUsage()}
-                  bg={"#8dc63f"}
-                  color={"white"}
-                  _hover={{ bg: "blue.500" }}
-                >
-                  Tarik Credit
-                </Button> */}
               <DashboardPopup dataBank={dataBank} />
             </Box>
             <Box

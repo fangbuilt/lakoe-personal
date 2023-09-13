@@ -100,7 +100,14 @@ export default function TarikKredit(props: any) {
             >
               Batal
             </Button>
-            <Button colorScheme="green" mr={3} onClick={WithdrawNotification}>
+            <Button
+              colorScheme="green"
+              mr={3}
+              onClick={() => {
+                WithdrawNotification(amount, bankAccount);
+                onClose();
+              }}
+            >
               Withdraw
             </Button>
           </ModalFooter>
