@@ -1,4 +1,5 @@
 import { Box, Center, Img, Text, Heading } from '@chakra-ui/react';
+import { Link } from '@remix-run/react';
 export default function CheckoutDescription() {
   return (
     <>
@@ -14,7 +15,16 @@ export default function CheckoutDescription() {
             ></Img>
             <Box>
               <Text textAlign={'center'} mt={3}>
-                <Heading color={'cyan.800'}>Swipe Up !</Heading>
+                <Heading color={'cyan.800'}>
+                  {' '}
+                  <Link
+                    to={'#description'}
+                    style={{ scrollBehavior: 'smooth' }}
+                  >
+                    {' '}
+                    Swipe Up !{' '}
+                  </Link>
+                </Heading>
               </Text>
             </Box>
           </Box>
@@ -25,10 +35,10 @@ export default function CheckoutDescription() {
             <Box>
               <Text textAlign={'center'} mt={5}>
                 <Heading fontFamily={'serif'}>Introducing,</Heading>
-                <Heading>Cave Natural Hair Powder</Heading>
+                <Heading id="description">Cave Natural Hair Powder</Heading>
               </Text>
               <Center>
-                <Box w={'80%'}>
+                <Box w={'80%'} pb={'100px'}>
                   <Text fontSize={'26px'} textAlign={'justify'} mt={5}>
                     Cave Natural Hair Powder adalah Produk rambut Lorem ipsum,
                     dolor sit amet consectetur adipisicing elit. Voluptas autem

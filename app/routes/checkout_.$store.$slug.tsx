@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   Image,
   Input,
@@ -21,13 +20,12 @@ import {
 import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
 import CheckoutDescription from '../components/checkoutDescription';
+import Counter from '../components/count';
 import {
   createCheckout,
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
-import Counter from '../components/count';
-import React from 'react';
 
 export async function loader({ params }: ActionArgs) {
   const id = params;
@@ -41,12 +39,12 @@ export const action = async ({ request }: ActionArgs) => {
 
     const name = formData.get('username') as string;
     const telp = formData.get('no-telp') as string;
-    // const email = formData.get("email") as string;
+    const email = formData.get('email') as string;
     const address = formData.get('address') as string;
     const province = formData.get('province') as string;
     const district = formData.get('district') as string;
     const village = formData.get('village') as string;
-    // const description = formData.get("description") as string;
+    const description = formData.get('description') as string;
     const courier = formData.get('courier') as string;
     // const buyway = formData.get("buyway") as string;
     // const voucher = formData.get("voucher") as string;
@@ -68,6 +66,9 @@ export const action = async ({ request }: ActionArgs) => {
       receiverPhone: telp,
       receiverAddress: village + ' ' + district + ' ' + province,
       receiverName: name,
+      receiverEmail: email,
+      receiverPostalCode: email,
+      receiverAddressNote: description,
       invoiceNumber: '',
       waybill: '',
       courierId: courier,
@@ -201,37 +202,52 @@ export default function Checkout() {
               </Box>
               <Box>
                 <Text fontWeight={'bold'}>Pengiriman</Text>
-
-                <Select name="courier" bgColor={'#fcfcfc'}>
-                  <option value="" hidden>
-                    Pilih Kurir
-                  </option>
-                  <option value="1">Grab</option>
-                  <option value="2">JNE</option>
-                  <option value="3">TIKI</option>
-                  <option value="4">ShoopeeExpress</option>
-                  <option value="5">TokopediaExpress</option>
-                </Select>
+                <Box display={'flex'} gap={3}>
+                  <Box width={'50%'}>
+                    <Select name="courier" bgColor={'#fcfcfc'}>
+                      <option value="" hidden>
+                        Pilih Kurir
+                      </option>
+                      <option value="1">Grab</option>
+                      <option value="2">JNE</option>
+                      <option value="3">TIKI</option>
+                      <option value="4">ShoopeeExpress</option>
+                      <option value="5">TokopediaExpress</option>
+                    </Select>
+                  </Box>
+                  <Box w={'50%'}>
+                    <Select name="getPackage" bgColor={'#fcfcfc'}>
+                      <option value="" hidden>
+                        Pilih Paket
+                      </option>
+                      <option value="1">Grab</option>
+                      <option value="2">JNE</option>
+                      <option value="3">TIKI</option>
+                      <option value="4">ShoopeeExpress</option>
+                      <option value="5">TokopediaExpress</option>
+                    </Select>
+                  </Box>
+                </Box>
               </Box>
-              <Box>
-                <Text fontWeight={'bold'}>Voucher</Text>
-                <Box bgColor={'#fcfcfc'} p={3}>
+              {/* <Box>
+                <Text fontWeight={"bold"}>Voucher</Text>
+                <Box bgColor={"#fcfcfc"} p={3}>
                   <Box>
                     <TableContainer>
                       <Table variant="simple">
                         <Thead>
-                          <Tr fontWeight={'bold'}>
-                            <Th width={'80%'}>Nama Voucher</Th>
+                          <Tr fontWeight={"bold"}>
+                            <Th width={"80%"}>Nama Voucher</Th>
                             <Th>Pilih Voucher</Th>
                           </Tr>
                         </Thead>
                         <Tbody>
                           <Tr>
-                            <Td display={'flex'} gap={3} alignItems={'center'}>
+                            <Td display={"flex"} gap={3} alignItems={"center"}>
                               <Text>Koin dapat Voucher</Text>
                             </Td>
                             <Td>
-                              <Checkbox value={'100.000'} name="voucher">
+                              <Checkbox value={"100.000"} name="voucher">
                                 Rp10.000
                               </Checkbox>
                             </Td>
@@ -241,7 +257,7 @@ export default function Checkout() {
                     </TableContainer>
                   </Box>
                 </Box>
-              </Box>
+              </Box> */}
               <Box>
                 <Text fontWeight={'bold'}>Metode Pembayaran</Text>
                 <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
@@ -294,7 +310,15 @@ export default function Checkout() {
                   RINCIAN PESANAN
                 </Text>
                 <Text color={'gray'}>{item?.name}</Text>
-                <Text color={'gray'}>{item?.description}</Text>
+                <Text
+                  w={'50%'}
+                  overflow={'hidden'}
+                  textOverflow={'ellipsis'}
+                  whiteSpace={'nowrap'}
+                  color={'gray'}
+                >
+                  {item?.description}
+                </Text>
                 <Box fontWeight={'bold'}>
                   <Box
                     display={'flex'}
