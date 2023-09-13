@@ -117,7 +117,6 @@ export default function Checkout() {
       <CheckoutDescription />
       <Box display={'flex'} flexDir={'column'} alignItems={'center'}>
         <Box
-          w={'1090px'}
           display={'flex'}
           flexDirection={'column'}
           gap={3}
@@ -135,7 +134,7 @@ export default function Checkout() {
                   <Thead>
                     <Tr fontWeight={'bold'}>
                       <Th width={'80%'}>Pilihan Variasi</Th>
-                      <Th>Jumlah</Th>
+                      <Th minW={'180px'}>Jumlah</Th>
                       <Th>Harga</Th>
                     </Tr>
                   </Thead>
@@ -145,7 +144,7 @@ export default function Checkout() {
                         <Image
                           boxSize={'10'}
                           borderRadius={'10%'}
-                          src={item?.attachments[0]}
+                          src={item?.attachment.attachment}
                           alt=""
                         />
                         <Text>{item?.name}</Text>

@@ -10,6 +10,7 @@ export async function loader() {
           locations: true,
         },
       },
+      attachment: true,
       variants: {
         include: {
           variantOptions: {
@@ -29,6 +30,7 @@ export async function loader() {
 
 export default function CheckoutPage() {
   const item = useLoaderData<typeof loader>();
+  console.log(item);
   // console.log(item);
   return (
     <>
@@ -57,8 +59,9 @@ export default function CheckoutPage() {
                 p={5}
               >
                 <Stack align={'start'} spacing={2}>
-                  <Image borderRadius={'10px'} src={i.attachments[0]} alt="" />
-                  <Link to={`/checkout/${i.store?.name}/${i.slug}/${i.id}`}>
+                  {/* <Image borderRadius={'10px'} src={i.[0]} alt="" /> */}
+                  <Image borderRadius={'10px'} src={i.attachment.attachment} />
+                  <Link to={`/checkout/${i.store?.name}/${i.slug}`}>
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
                       {/* <Text mt={1} fontSize={"sm"}>

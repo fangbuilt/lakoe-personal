@@ -1,10 +1,9 @@
 import { db } from '../../libs/prisma/db.server';
 
 export async function getCheckoutDetail(data: any) {
-  const id = data.id as string;
   return await db.product.findUnique({
     where: {
-      id: id,
+      slug: data.slug,
     },
     include: {
       store: {
@@ -12,6 +11,7 @@ export async function getCheckoutDetail(data: any) {
           users: true,
         },
       },
+      attachment: true,
       variants: {
         include: {
           variantOptions: {
