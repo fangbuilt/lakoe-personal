@@ -25,6 +25,7 @@ export async function action({ request }: ActionArgs) {
 
   // create
   const actionType = formData.get('actionType');
+  const storeId = formData.get('storeId');
   const accountName = formData.get('accountName');
   const bank = formData.get('bank');
   const accountNumber = formData.get('accountNumber');
@@ -41,6 +42,9 @@ export async function action({ request }: ActionArgs) {
 
   if (actionType === 'create' && bank && accountNumber) {
     await createBank({
+      store: {
+        connect: { id: storeId },
+      },
       accountName: accountName,
       bank: bank,
       accountNumber: accountNumber,

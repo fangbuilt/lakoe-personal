@@ -18,11 +18,11 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import TarikKredit from './PopupTarikKredit';
 import { redirect } from '@remix-run/node';
 import { Form, Link } from '@remix-run/react';
+import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMailerlite';
 
-export default function DashboardPopup({ dataBank, createWithdraw }: any) {
+export default function DashboardPopup({ dataBank }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
 
@@ -32,6 +32,8 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
   // alert
   const [alertMessage, setAlertMessage] = useState('');
   const [isFormValidation, setIsFormValidation] = useState(true);
+
+  const [alertAmountMessage, setAlertAmountMessage] = useState('');
 
   const [formData, setFormData] = useState({
     actionType: 'create',
@@ -44,12 +46,29 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleAmount = () => {
+    const { amount } = formData;
+    const parsedAmount = parseFloat(amount);
+
+    if (isNaN(parsedAmount)) {
+      setAlertAmountMessage('Amount harus berupa angka');
+    } else if (parsedAmount < 0) {
+      setAlertAmountMessage('Anda memasukkan jumlah kurang dari 0');
+    } else if (parsedAmount > 2500000) {
+      setAlertAmountMessage('Jumlah amount melebihi batas maksimal');
+    } else {
+      setAlertAmountMessage('');
+    }
+  };
+
   const toggleTarikKredit = () => {
     const { actionType, amount, bankAccount } = formData;
 
     if (!amount || !bankAccount) {
       setIsFormValidation(false);
-      setAlertMessage('Please complete the data above!');
+
+      setAlertMessage('Mohon lengkapi data di bawah!');
+
       setTimeout(() => {
         setIsFormValidation(true);
       }, 5000);
@@ -64,6 +83,16 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
       bankAccount
     );
   };
+
+  function formatRupiah(amount: number) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
+  }
+
+  const amount = formData.amount;
+  const formattedAmount = formatRupiah(parseInt(amount as string));
 
   const handleAddRekeningClick = () => {
     return redirect('/bank');
@@ -94,6 +123,7 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
             {/* <Input type="text" name="approvedById" /> */}
             <ModalHeader display={'flex'} alignItems={'center'}>
               <Text ml={'5px'}>Tarik Credit</Text>
+              {/* <Text ml={"5px"}>{createdWithdrawId}</Text> */}
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
@@ -117,6 +147,18 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
                   </ListItem>
                 </UnorderedList>
               </Box>
+              {!isFormValidation && (
+                <Text
+                  bg="red.400"
+                  p={1}
+                  mt={3}
+                  color={'white'}
+                  fontSize="14px"
+                  fontStyle="italic"
+                >
+                  {alertMessage}
+                </Text>
+              )}
 
               <FormControl mt={4}>
                 <FormLabel>Berapa banyak yang ingin anda tarik?</FormLabel>
@@ -126,12 +168,18 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
                   //   handleChange(event);
                   //   handleAmountChange(event);
                   // }}
-                  onChange={handleChange}
+                  onChange={(event) => {
+                    handleChange(event);
+                    handleAmount(); // Call handleAmount when the input changes
+                  }}
                   type="number"
                   ref={initialRef}
                   placeholder="Jumlah penarikan"
                   name="amount"
                 />
+                <Text color={'red.600'} fontSize={'13px'} mt={'1'}>
+                  {alertAmountMessage}
+                </Text>
                 <Text
                   // fontStyle={"italic"}
                   color={'blue.500'}
@@ -196,16 +244,6 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
                   placeholder="Silakan masukkan kata sandi akun anda"
                 />
               </FormControl>
-              {!isFormValidation && (
-                <Text
-                  color={'red.600'}
-                  mt={2}
-                  fontSize="14px"
-                  fontStyle="italic"
-                >
-                  {alertMessage}
-                </Text>
-              )}
             </ModalBody>
             <ModalFooter>
               <Button
@@ -220,21 +258,94 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
               </Button>
               <div>
                 <Button
-                  colorScheme="none"
+                  colorScheme="green"
+                  type="submit"
                   mr={3}
                   onClick={() => {
                     toggleTarikKredit();
+                    handleAmount();
                   }}
-                  type="submit"
                 >
-                  <TarikKredit />
+                  Tarik Kredit
                 </Button>
                 {showTarikKredit && (
-                  <TarikKredit
-                    // id={createWithdraw.id}
-                    amount={formData.amount}
-                    bankAccount={formData.bankAccount}
-                  />
+                  <Modal
+                    initialFocusRef={initialRef}
+                    finalFocusRef={finalRef}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                  >
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader display={'flex'} alignItems={'center'}>
+                        <Text ml={'5px'}>Tarik Credit</Text>
+                      </ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody pb={6}>
+                        <Box
+                          bg={'yellow.300'}
+                          padding={'10px'}
+                          fontSize={'13px'}
+                        >
+                          {/* {dataWithdraw.map((item: any) => ( */}
+                          <Box textAlign={'center'}>
+                            <Text>Anda melakukan penarikan sebesar</Text>
+                            <Text
+                              fontSize={'20px'}
+                              fontWeight={'bold'}
+                              color={'gray.700'}
+                            >
+                              {formattedAmount}
+                            </Text>
+                            <Text>Ke Nomor Rekening :</Text>
+                            <Text
+                              fontSize={'20px'}
+                              fontWeight={'bold'}
+                              color={'gray.700'}
+                            >
+                              {formData.bankAccount}
+                            </Text>
+                            <Text>Mohon tunggu beberapa saat..</Text>
+                            <Text>Terima Kasih!</Text>
+                          </Box>
+                          {/* ))} */}
+                        </Box>
+                      </ModalBody>
+                      <ModalFooter>
+                        {/* <Form method="post">
+                            <Input
+                              type="hidden"
+                              name="actionType"
+                              value="delete"
+                            /> */}
+                        <Button
+                          colorScheme="none"
+                          mr={3}
+                          onClick={onClose}
+                          color={'gray.500'}
+                          border={'1px solid'}
+                          borderColor={'gray.500'}
+                        >
+                          Batal
+                        </Button>
+                        {/* </Form> */}
+                        <Button
+                          type="submit"
+                          colorScheme="green"
+                          mr={3}
+                          onClick={() => {
+                            WithdrawNotification(
+                              formattedAmount,
+                              formData.bankAccount
+                            );
+                            onClose();
+                          }}
+                        >
+                          Withdraw
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
                 )}{' '}
               </div>
             </ModalFooter>
