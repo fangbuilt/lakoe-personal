@@ -220,14 +220,14 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
               </Button>
               <div>
                 <Button
-                  colorScheme="green"
+                  colorScheme="none"
                   mr={3}
                   onClick={() => {
                     toggleTarikKredit();
                   }}
                   type="submit"
                 >
-                  Tarik Kredit
+                  <TarikKredit />
                 </Button>
                 {showTarikKredit && (
                   <TarikKredit

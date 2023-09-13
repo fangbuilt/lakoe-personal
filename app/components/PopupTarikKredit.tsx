@@ -47,7 +47,7 @@ import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMai
 // }
 
 export default function TarikKredit(props: any) {
-  const { amount, bankAccount, id } = props;
+  const { amount, bankAccount } = props;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -66,7 +66,7 @@ export default function TarikKredit(props: any) {
   return (
     <>
       <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
-        Check
+        Tarik Kredit
       </Button>
 
       <Modal
