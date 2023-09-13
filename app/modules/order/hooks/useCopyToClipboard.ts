@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function useCopyToClipboard() {
   const toastStyle = {
+    zindex: "1",
     width: "400px",
     height: "3em",
     alignItems: "center",
