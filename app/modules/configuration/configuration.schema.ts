@@ -1,6 +1,5 @@
-import { z } from 'zod';
+import { object, string } from 'zod';
 
-export const createConfiguration = z.object({
-  title: z.string().min(1),
-  isDone: z.boolean().default(false),
+export const create = object({
+  title: string().min(1),
 });

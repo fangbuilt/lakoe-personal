@@ -1,4 +1,5 @@
 import { Container } from '@chakra-ui/react';
+import { db } from '~/libs/prisma/db.server';
 import type { ActionArgs } from '@remix-run/node';
 import PaymentConfirmation from '~/components/buyer/buyer';
 
@@ -21,7 +22,8 @@ export async function action({ request }: ActionArgs) {
       transferDate,
       buktiTransfer,
     };
-    console.log(data);
+
+    await db.payment.create({ data });
   }
 
   return null;

@@ -1,13 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+import { db } from '~/libs/prisma/db.server';
 
-const prisma = new PrismaClient();
-
-export async function getPosts() {
-  return await prisma.user.findMany();
+export async function get() {
+  return await db.payment.findMany({
+    where: {},
+  });
 }
 
-export async function createPost(data: any) {
-  const title = await prisma.user.create({
+export async function create(data: any) {
+  const title = await db.payment.create({
     data: data.title,
   });
   return title;

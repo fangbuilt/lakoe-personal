@@ -14,10 +14,26 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
+import { useState } from 'react';
 import CircleClose from '~/assets/icon/close-circle.svg';
 
 function TemplateMessage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [value, setValue] = useState('');
+
+  const handleChange = (event: any) => {
+    setValue(event.target.value);
+  };
+
+  const updateState = (value: any) => {
+    if (value === 'namaPembeli') {
+      setValue((prevState) => prevState + '[Nama Pembeli]');
+    } else if (value === 'namaProduk') {
+      setValue((prevState) => prevState + '[Nama Produk]');
+    } else if (value === 'namaToko') {
+      setValue((prevState) => prevState + '[Nama Toko]');
+    }
+  };
 
   return (
     <>
@@ -69,6 +85,7 @@ function TemplateMessage() {
                     name="StoreId"
                     height={'30px'}
                     value={'klik saya'}
+                    onClick={() => updateState('namaPembeli')}
                     color={'var(--text-dark, #1D1D1D)'}
                     borderRadius={'var(--rounded-full, 9999px)'}
                     border={'1px solid var(--gray-300, #D5D5D5)'}
@@ -78,18 +95,24 @@ function TemplateMessage() {
                     </Text>
                   </Button>
                   <Button
-                    borderRadius={'50px'}
+                    name="storeId"
+                    value={'ProdukName'}
                     bg={'white'}
-                    border={'1px solid var(--gray-300, #D5D5D5)'}
                     height={'30px'}
+                    borderRadius={'50px'}
+                    onClick={() => updateState('namaProduk')}
+                    border={'1px solid var(--gray-300, #D5D5D5)'}
                   >
                     <Text fontSize={'14px'} color={'gray.500'}>
                       Nama Produk
                     </Text>
                   </Button>
                   <Button
+                    name="storeId"
+                    value={'namaToko'}
                     borderRadius={'50px'}
                     bg={'white'}
+                    onClick={() => updateState('namaToko')}
                     border={'1px solid var(--gray-300, #D5D5D5)'}
                     height={'30px'}
                   >
@@ -101,10 +124,12 @@ function TemplateMessage() {
                 <Box mt={'10px'}>
                   <Textarea
                     name="content"
+                    value={value}
                     height={'150px'}
                     color={'gray.500'}
                     placeholder="Tuliskan Pesanmu"
-                  ></Textarea>
+                    onChange={handleChange}
+                  />
                 </Box>
               </Box>
 
