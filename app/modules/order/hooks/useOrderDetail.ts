@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const prisma = new PrismaClient();
 
-export function useOrderDetalil() {
+export function useOrderDetail() {
   const [isOrderHistoryVisible, setIsOrderHistoryVisible] = useState(false);
 
   const toggleOrderHistory = () => {
@@ -65,6 +65,8 @@ export function useOrderDetalil() {
     }
   };
 
+
+
   const { activeStep } = useSteps({
     index: 1,
     count: steps.length,
@@ -77,4 +79,42 @@ export function useOrderDetalil() {
     steps,
     activeStep,
   };
+}
+
+export function formatCurrency(price: number): string {
+  const formattedAmount = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+
+  return formattedAmount;
+}
+
+ export function dateConversion(createdAt: string): string {
+  const dateObj = new Date(createdAt);
+  const year = dateObj.getUTCFullYear();
+  const day = String(dateObj.getUTCDate()).padStart(2, "0");
+  const hour = String(dateObj.getUTCHours()).padStart(2, "0");
+  const minute = String(dateObj.getUTCMinutes()).padStart(2, "0");
+
+  const namaBulan = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
+
+  const namaBulanTeks = namaBulan[dateObj.getUTCMonth()];
+
+  return `${day} ${namaBulanTeks} ${year} ${hour}:${minute}`;
 }
