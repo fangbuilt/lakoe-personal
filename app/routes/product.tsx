@@ -19,51 +19,32 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
 import BoxSearch from '~/assets/icon-pack/box-search.svg';
-import type { IProduct } from '~/components/product/ProductCard';
 import ProductCard from '~/components/product/ProductCard';
 import ProductEmpty from '~/components/product/ProductEmpty';
+import ProductModal from '~/components/product/ProductModal';
 import { ImplementGrid } from '~/layouts/Grid';
+import { getProduct } from '~/modules/product/product.service';
 
 export async function loader() {
-  const res = await fetch('https://api.npoint.io/ee9d3229a94459dc546b');
-  const data = await res.json();
-  return data as IProduct[];
+  return await getProduct();
 }
-
 export default function Product() {
   const items = useLoaderData<typeof loader>();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filterList, setFilterList] = useState(items);
 
-  // const [data, setData] = useState(items);
-  // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
-  // const handleCheckboxChange = (category: string) => {
-  //   if (selectedCategories.includes(category)) {
-  //     setSelectedCategories(selectedCategories.filter((e) => e !== category));
-  //   } else {
-  //     setSelectedCategories([...selectedCategories, category]);
-  //   }
-  // };
-
-  // const filterData = filterList.filter((item) => {
-  //   if (selectedCategories.length === 0) return true;
-  //   return selectedCategories.includes(item.category);
-  // });
-
   // In the future, it will be refactored using a prism query
-  const search = items.filter((list) =>
-    list.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const search = items.filter((list) => list.name.includes(searchQuery));
 
   useEffect(() => {
     setFilterList(search);
   }, [searchQuery]);
+
   return (
     <ImplementGrid>
       <Stack mt={'7.5vh'} spacing={4}>
@@ -77,16 +58,18 @@ export default function Product() {
               <Text fontWeight={'bold'} fontSize={'20px'}>
                 Daftar Produk
               </Text>
-              <Button
-                borderRadius={20}
-                bgColor={'#0086B4'}
-                fontSize={'14px'}
-                color={'white'}
-                colorScheme={'#0086B4'}
-              >
-                <Image src={AddCircle} />
-                Tambah Produk
-              </Button>
+              <Link to={'/product/add'}>
+                <Button
+                  borderRadius={20}
+                  bgColor={'#0086B4'}
+                  fontSize={'14px'}
+                  color={'white'}
+                  colorScheme={'#0086B4'}
+                >
+                  <Image src={AddCircle} />
+                  Tambah Produk
+                </Button>
+              </Link>
             </Box>
           </Box>
           <Tabs w={'100%'}>
@@ -190,19 +173,10 @@ export default function Product() {
                     <Checkbox defaultChecked></Checkbox>
                   </Box>
                 </Box>
-                {/* conten di sini */}
                 {filterList.map((item) => (
-                  <ProductCard
-                    key={item.id}
-                    id={item.id}
-                    title={item.title}
-                    image={item.image}
-                    price={item.price}
-                    isActive={item.isActive}
-                    sku={item.sku}
-                    stock={item.stock}
-                    category={item.category}
-                  />
+                  <ProductCard key={item.id} product={item}>
+                    <ProductModal {...item} />
+                  </ProductCard>
                 ))}
               </TabPanel>
               <TabPanel>
@@ -219,19 +193,6 @@ export default function Product() {
                     <Checkbox defaultChecked></Checkbox>
                   </Box>
                 </Box>
-                {filterList.map((item) => (
-                  <ProductCard
-                    key={item.id}
-                    id={item.id}
-                    title={item.title}
-                    image={item.image}
-                    price={item.price}
-                    isActive={item.isActive}
-                    sku={item.sku}
-                    stock={item.stock}
-                    category={item.category}
-                  />
-                ))}
               </TabPanel>
               <TabPanel>
                 <Box
