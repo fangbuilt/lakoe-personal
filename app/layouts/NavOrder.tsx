@@ -33,8 +33,9 @@ import CardUnpaid from '../components/CardUnpaid';
 // import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import { Form } from '@remix-run/react';
 import type { Invoice } from '~/interfaces/ProductUnpaid';
+import { Form } from '@remix-run/react';
+
 export default function NavOrder() {
   const { filteredOrders, setSearchQuery, searchQuery, handleSearch } =
     UseSearch();
@@ -135,7 +136,7 @@ export default function NavOrder() {
                         {/* END NOTIFICATION ORDER */}
 
                         <Flex gap={1.5}>
-                          <Text>Pesanan </Text> <Text>Baru</Text>
+                          <Text>Pesanan</Text> <Text>Baru</Text>
                         </Flex>
                       </Tab>
                     </Box>
@@ -448,9 +449,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardUnpaid
-                      filteredOrdersByCourier={filteredOrdersByCourier}
-                    />
+                    <CardUnpaid />
 
                     {/* <CardUnpaid data={data}/> */}
                     {/* {filteredOrdersByCourier.map((data, index) => (
@@ -513,9 +512,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardUnpaid
-                      filteredOrdersByCourier={filteredOrdersByCourier}
-                    />
+                    <CardUnpaid />
                   </TabPanel>
                 </ScrollBox>
 
@@ -598,7 +595,7 @@ export default function NavOrder() {
                     ))} */}
                   </TabPanel>
                 </ScrollBox>
-                {filteredOrders.length === 0 && (
+                {filteredOrdersByCourier.length === 0 && (
                   <Center>
                     <Box textAlign="center" mt={5} display={'flex'}>
                       <Image src={ReceiptSearch} />

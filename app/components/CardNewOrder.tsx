@@ -1,7 +1,7 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import type { iOrderList } from '~/interfaces/order/iOrderList';
-export default function CardNewOrder(props: iOrderList) {
+import type { IOrderList } from '~/interfaces/order';
+export default function CardNewOrder(props: IOrderList) {
   return (
     <>
       <Card mb={5} boxShadow={'xs'}>
@@ -28,7 +28,7 @@ export default function CardNewOrder(props: iOrderList) {
                     borderRadius={'full'}
                     fontSize={'14px'}
                   >
-                    Hubungi Pembeli
+                    Proses Pesanan
                   </Button>
                 </Link>
                 {/*  */}

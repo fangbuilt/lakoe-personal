@@ -3,6 +3,7 @@ import NavOrder from '~/layouts/NavOrder';
 import { ImplementGrid } from '~/layouts/Grid';
 // import { useLoaderData } from '@remix-run/react';
 import { getAllProductUnpid } from '~/modules/order/order.service';
+import { useLoaderData } from '@remix-run/react';
 
 export async function loader() {
   const payments = await getAllProductUnpid();
@@ -11,8 +12,8 @@ export async function loader() {
   return payments;
 }
 export default function Order() {
-  // const data = useLoaderData<typeof loader>() as unknown as any;
-  // console.log(data)
+  const data = useLoaderData<typeof loader>();
+  console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', data);
 
   return (
     <ImplementGrid>

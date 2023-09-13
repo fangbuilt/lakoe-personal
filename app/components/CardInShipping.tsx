@@ -1,8 +1,8 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import type { iOrderList } from '~/interfaces/order/iOrderList';
+import type { IOrderList } from '~/interfaces/order';
 
-export default function CardInShipping(props: iOrderList) {
+export default function CardInShipping(props: IOrderList) {
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
@@ -32,7 +32,7 @@ export default function CardInShipping(props: iOrderList) {
                     borderRadius={'full'}
                     fontSize={'14px'}
                   >
-                    Hubungi Pembeli
+                    Lihat Rincian Pengiriman
                   </Button>
                 </Link>
                 {/*  */}
