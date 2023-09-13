@@ -10,8 +10,10 @@ import {
   InputRightAddon,
   Stack,
 } from '@chakra-ui/react';
+import useAddProduct from '../hooks/useAddProduct';
 
 export function WeightAndShipment() {
+  const { handleChange } = useAddProduct();
   return (
     <Card>
       <CardBody>
@@ -23,7 +25,8 @@ export function WeightAndShipment() {
               <Input
                 type="number"
                 placeholder="Masukan berat produk"
-                name="product-weight"
+                name="weight"
+                onChange={handleChange}
               />
               <InputRightAddon children="Gram" />
             </InputGroup>
@@ -36,7 +39,8 @@ export function WeightAndShipment() {
                 <Input
                   type="number"
                   placeholder="Panjang"
-                  name="product-length"
+                  name="length"
+                  onChange={handleChange}
                 />
                 <InputRightAddon children="cm" />
               </InputGroup>
@@ -44,7 +48,12 @@ export function WeightAndShipment() {
 
             <FormControl>
               <InputGroup>
-                <Input type="number" placeholder="Lebar" name="product-width" />
+                <Input
+                  type="number"
+                  placeholder="Lebar"
+                  name="width"
+                  onChange={handleChange}
+                />
                 <InputRightAddon children="cm" />
               </InputGroup>
             </FormControl>
@@ -54,7 +63,8 @@ export function WeightAndShipment() {
                 <Input
                   type="number"
                   placeholder="Tinggi"
-                  name="product-height"
+                  name="height"
+                  onChange={handleChange}
                 />
                 <InputRightAddon children="cm" />
               </InputGroup>

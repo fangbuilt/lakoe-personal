@@ -10,8 +10,10 @@ import {
   Select,
   Stack,
 } from '@chakra-ui/react';
+import useAddProduct from '../hooks/useAddProduct';
 
 export function ProductInformation() {
+  const { handleChange } = useAddProduct();
   return (
     <Card>
       <CardBody>
@@ -21,8 +23,9 @@ export function ProductInformation() {
             <FormLabel>Nama Produk</FormLabel>
             <Input
               type="text"
-              name="product-name"
+              name="name"
               placeholder="Masukan nama produk"
+              onChange={handleChange}
             />
           </FormControl>
 
@@ -30,7 +33,12 @@ export function ProductInformation() {
             <FormLabel>URL Halman Checkout</FormLabel>
             <InputGroup>
               <InputLeftAddon children="lakoe.store/" />
-              <Input type="text" name="product-url" placeholder="nama-produk" />
+              <Input
+                type="text"
+                name="url"
+                placeholder="nama-produk"
+                onChange={handleChange}
+              />
             </InputGroup>
           </FormControl>
 
@@ -38,7 +46,8 @@ export function ProductInformation() {
             <FormLabel>Kategori</FormLabel>
             <Select
               defaultValue={'Pilih kategori produk'}
-              name="product-category"
+              name="category"
+              onChange={handleChange}
             >
               <option disabled>Pilih kategori produk</option>
               <option value={'Option A'}>Option A</option>

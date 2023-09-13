@@ -7,8 +7,10 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
+import useAddProduct from '../hooks/useAddProduct';
 
 export function ProductManagement() {
+  const { handleChange } = useAddProduct();
   return (
     <Card>
       <CardBody>
@@ -19,13 +21,19 @@ export function ProductManagement() {
             <Input
               type="number"
               placeholder="Masukan jumlah stok"
-              name="product-stock"
+              name="stock"
+              onChange={handleChange}
             />
           </FormControl>
 
           <FormControl>
             <FormLabel>SKU (Stock Keeping Unit)</FormLabel>
-            <Input type="text" placeholder="Masukan SKU" name="product-sku" />
+            <Input
+              type="text"
+              placeholder="Masukan SKU"
+              name="sku"
+              onChange={handleChange}
+            />
           </FormControl>
         </Flex>
       </CardBody>

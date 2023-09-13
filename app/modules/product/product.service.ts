@@ -14,7 +14,6 @@ export async function createProduct(data: any, storeId: any) {
           connect: { id: storeId },
         },
         category: {
-          // connect: { id: categoryId },
           create: {
             name: data.category,
           },
