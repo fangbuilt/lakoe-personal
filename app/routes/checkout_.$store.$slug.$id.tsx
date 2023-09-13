@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Flex,
   Image,
   Input,
   Radio,
@@ -19,12 +20,15 @@ import {
 } from '@chakra-ui/react';
 import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
+import CheckoutDescription from '~/components/checkoutDescription';
 import {
   createCheckout,
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
+//
 
+import Counter from '~/components/count';
 export async function loader({ params }: ActionArgs) {
   const id = params;
   console.log('id:', id);
@@ -51,15 +55,8 @@ export const action = async ({ request }: ActionArgs) => {
     const storeId = formData.get('storeId') as string;
     const userId = formData.get('userId') as string;
     const productId = formData.get('productId') as string;
-    const paymentId = formData.get('payment') as string;
-
-    // if (paymentId === "") {
-    //   paymentId = null as any;
-    // } else if (buyway === "cod") {
-    //   paymentId = null as any;
-    // } else {
-    //   paymentId = paymentId;
-    // }
+    const payment = formData.get('payment') as string;
+    const count = formData.get('calculation') as string;
 
     const invoice = {
       price: price,
@@ -73,7 +70,6 @@ export const action = async ({ request }: ActionArgs) => {
       receiverName: name,
       invoiceNumber: '',
       waybill: '',
-      paymentId: paymentId,
       courierId: courier,
       userId: userId,
       mootaTransactionId: '',
@@ -98,7 +94,15 @@ export const action = async ({ request }: ActionArgs) => {
       status: 'UNPAID',
     };
 
-    const data = { invoice, cart, cartItem, invoiceHistory };
+    const getPayment = {
+      bank: payment,
+      amount: price,
+      status: 'UNPAID',
+      userId: userId,
+    };
+    console.log(count);
+
+    const data = { invoice, cart, cartItem, invoiceHistory, getPayment };
 
     await createCheckout(data);
   }
@@ -110,8 +114,10 @@ export default function Checkout() {
   const { id } = useParams();
   return (
     <>
-      <Box paddingInline={'10%'}>
+      <CheckoutDescription />
+      <Box display={'flex'} flexDir={'column'} alignItems={'center'}>
         <Box
+          w={'1090px'}
           display={'flex'}
           flexDirection={'column'}
           gap={3}
@@ -129,6 +135,7 @@ export default function Checkout() {
                   <Thead>
                     <Tr fontWeight={'bold'}>
                       <Th width={'80%'}>Pilihan Variasi</Th>
+                      <Th>Jumlah</Th>
                       <Th>Harga</Th>
                     </Tr>
                   </Thead>
@@ -142,6 +149,10 @@ export default function Checkout() {
                           alt=""
                         />
                         <Text>{item?.name}</Text>
+                      </Td>
+                      <Td>
+                        <Counter />
+                        {/* <Input type="text" hidden value={count} name="count" /> */}
                       </Td>
                       <Td>
                         {
@@ -234,16 +245,48 @@ export default function Checkout() {
               </Box>
               <Box>
                 <Text fontWeight={'bold'}>Metode Pembayaran</Text>
-                <RadioGroup
-                  name="buyway"
-                  bgColor={'#fcfcfc'}
-                  p={3}
-                  defaultValue="transfer"
-                >
+                <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
                   <Stack gap={2}>
-                    <Radio value="1">BCA</Radio>
-                    <Radio value="2">BRI</Radio>
-                    <Radio value="3">Mandiri</Radio>
+                    <Radio value="BCA">
+                      <Flex gap={2} alignItems={'center'}>
+                        <Image
+                          w={'50px'}
+                          src="https://www.bca.co.id/-/media/Feature/Card/List-Card/Tentang-BCA/Brand-Assets/Logo-BCA/Logo-BCA_Biru.png"
+                          alt="bca icon"
+                        />
+                        BCA
+                      </Flex>
+                    </Radio>
+                    <Radio value="BRI">
+                      <Flex gap={2} alignItems={'center'}>
+                        <Image
+                          w={'50px'}
+                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/2560px-BRI_2020.svg.png"
+                          alt="bca icon"
+                        />
+                        BRI
+                      </Flex>
+                    </Radio>
+                    <Radio value="Mandiri">
+                      <Flex gap={2} alignItems={'center'}>
+                        <Image
+                          w={'50px'}
+                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png"
+                          alt=""
+                        />
+                        Mandiri
+                      </Flex>
+                    </Radio>
+                    <Radio value="BNI">
+                      <Flex gap={2} alignItems={'center'}>
+                        <Image
+                          w={'50px'}
+                          src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"
+                          alt=""
+                        />
+                        BNI
+                      </Flex>
+                    </Radio>
                   </Stack>
                 </RadioGroup>
               </Box>
@@ -285,3 +328,4 @@ export default function Checkout() {
     </>
   );
 }
+// };

@@ -35,12 +35,16 @@ export async function createCheckout(data: any) {
   await db.cartItem.create({
     data: {
       ...data.cartItem,
-      cardId: cart.id,
+      cartId: cart.id,
     },
   });
 
+  const payment = await db.payment.create({
+    data: data.getPayment,
+  });
+
   const invoice = await db.invoice.create({
-    data: { ...data.invoice, cartId: cart.id },
+    data: { ...data.invoice, cartId: cart.id, paymentId: payment.id },
   });
 
   await db.invoiceHistory.create({
