@@ -20,15 +20,15 @@ import {
 } from '@chakra-ui/react';
 import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
-import CheckoutDescription from '~/components/checkoutDescription';
+import CheckoutDescription from '../components/checkoutDescription';
 import {
   createCheckout,
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
-//
+import Counter from '../components/count';
+import React from 'react';
 
-import Counter from '~/components/count';
 export async function loader({ params }: ActionArgs) {
   const id = params;
   console.log('id:', id);
