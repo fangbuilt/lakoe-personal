@@ -47,7 +47,7 @@ import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMai
 // }
 
 export default function TarikKredit(props: any) {
-  const { amount, bankAccount } = props;
+  const { amount, bankAccount, id } = props;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -95,6 +95,7 @@ export default function TarikKredit(props: any) {
                 </Text>
                 <Text>Mohon tunggu beberapa saat..</Text>
                 <Text>Terima Kasih!</Text>
+                {/* <Text>tes ini idnya:{id}</Text> */}
               </Box>
               {/* ))} */}
             </Box>
@@ -102,7 +103,7 @@ export default function TarikKredit(props: any) {
           <ModalFooter>
             {/* <Form method="post">
               <Input type="hidden" name="actionType" value="delete" />
-              <Input type="text" name="withdrawId" />
+              <Input type="text" name="withdrawId" value={id} />
               <Button
                 type="submit"
                 colorScheme="none"
