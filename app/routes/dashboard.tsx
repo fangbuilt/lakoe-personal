@@ -104,7 +104,7 @@ export default function Dashboard() {
               </Text>
               <DashboardPopup
                 dataBank={dataBank}
-                createdWithdraw={createWithdraw}
+                // createdWithdrawId={createdWithdrawId}
               />
             </Box>
             <Box

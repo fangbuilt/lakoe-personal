@@ -5,7 +5,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '50',
+        storeId: '18',
       },
       include: {
         withdraw: true,
@@ -40,14 +40,18 @@ export async function getNameBank(bank: string) {
 }
 
 export async function createBank(data: any) {
-  const dataPost = await db.bankAccount.create({
+  const createdBank = await db.bankAccount.create({
     data: {
+      store: {
+        connect: { id: '18' },
+      },
       accountName: data.accountName,
       bank: data.bank,
       accountNumber: data.accountNumber,
     },
   });
-  return dataPost;
+  console.log('Bank created:', createdBank);
+  return createdBank;
 }
 
 export async function updateBank(
@@ -88,7 +92,7 @@ export async function createWithdraw(
   const withdraw = await db.withdraw.create({
     data: {
       store: {
-        connect: { id: '50' },
+        connect: { id: '18' },
       },
       amount: amount,
       status: 'REQUEST',

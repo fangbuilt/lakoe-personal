@@ -16,37 +16,6 @@ import { Form } from '@remix-run/react';
 import React from 'react';
 import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMailerlite';
 
-// export async function loader({ request }: LoaderArgs) {
-//   const userId = await getuserId(request);
-//   const username = await getUser(request);
-//   const apikey = process.env.MAILERLITE_API_KEY as string;
-// }
-
-// if (userId) {
-//   return json({ username, apikey });
-// } else {
-//   throw (new Response("Unauthorized", { status: 401 }), redirect("/dasboard"));
-// }
-
-// export default function TarikKredit({ dataBank }: any) {
-// const data = useRouteLoaderData<typeof loader>();
-// const dataApi = data.apikey;
-// const mailerlite = new MailerLite({
-//   api_key: dataApi,
-// });
-
-// interface CreateOrUpdateParams {
-//   email: string;
-//   fields?: object;
-//   groups?: Array<string>;
-//   status?: "active" | "unsubsribed" | "unconfirmed" | "bounced" | " junk";
-//   subscribed_at?: string;
-//   ip_address: string;
-//   opted_in_at?: string;
-//   optin_ip?: string;
-//   unsubscribed_at?: string;
-// }
-
 export default function TarikKredit(props: any) {
   const { amount, bankAccount, id } = props;
 
@@ -67,7 +36,7 @@ export default function TarikKredit(props: any) {
   return (
     <>
       <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
-        Check
+        Tarik Kredit
       </Button>
 
       <Modal
@@ -121,7 +90,7 @@ export default function TarikKredit(props: any) {
               colorScheme="green"
               mr={3}
               onClick={() => {
-                WithdrawNotification(formattedAmount, bankAccount); // Pass props to WithdrawNotification
+                WithdrawNotification(formattedAmount, bankAccount);
                 onClose();
               }}
             >
