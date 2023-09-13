@@ -53,6 +53,16 @@ export default function TarikKredit(props: any) {
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+
+  function formatRupiah(amount: number) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
+  }
+
+  const formattedAmount = formatRupiah(amount);
+
   return (
     <>
       <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
@@ -77,7 +87,7 @@ export default function TarikKredit(props: any) {
               <Box textAlign={'center'}>
                 <Text>Anda melakukan penarikan sebesar</Text>
                 <Text fontSize={'20px'} fontWeight={'bold'} color={'gray.700'}>
-                  Rp.{amount}
+                  {formattedAmount}
                 </Text>
                 <Text>Ke Nomor Rekening :</Text>
                 <Text fontSize={'20px'} fontWeight={'bold'} color={'gray.700'}>
@@ -90,13 +100,28 @@ export default function TarikKredit(props: any) {
             </Box>
           </ModalBody>
           <ModalFooter>
+            {/* <Form method="post">
+              <Input type="hidden" name="actionType" value="delete" />
+              <Input type="text" name="withdrawId" />
+              <Button
+                type="submit"
+                colorScheme="none"
+                mr={3}
+                onClick={onClose}
+                color={"gray.500"}
+                border={"1px solid"}
+                borderColor={"gray.500"}
+              >
+                Batal
+              </Button>
+            </Form> */}
             <Button
-              colorScheme="none"
+              colorScheme="green"
               mr={3}
-              onClick={onClose}
-              color={'gray.500'}
-              border={'1px solid'}
-              borderColor={'gray.500'}
+              onClick={() => {
+                WithdrawNotification(formattedAmount, bankAccount); // Pass props to WithdrawNotification
+                onClose();
+              }}
             >
               Batal
             </Button>

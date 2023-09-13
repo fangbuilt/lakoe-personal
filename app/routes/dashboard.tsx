@@ -1,8 +1,4 @@
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   Button,
   Flex,
@@ -24,10 +20,11 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import DashboardPopup from '~/components/PopupDashboard';
 import {
   createWithdraw,
+  deleteWithdraw,
   getBankList,
 } from '~/modules/dashboard/dashboard.service';
 import { useLoaderData } from '@remix-run/react';
-import NavbarDashboard from './navbarDashboard';
+import NavbarDashboard from '../modules/dashboard/components/navbarDashboard';
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
@@ -44,19 +41,8 @@ export async function action({ request }: ActionArgs) {
   const approvedById = formData.get('approvedById');
   const storeId = formData.get('storeId');
   const bankId = formData.get('bankId');
-  console.log('woii ini guaa');
 
-  if (formData === null) {
-    return (
-      <Alert status="error">
-        <AlertIcon />
-        <AlertTitle>Your browser is outdated!</AlertTitle>
-        <AlertDescription>
-          Your Chakra experience may be degraded.
-        </AlertDescription>
-      </Alert>
-    );
-  }
+  const withdrawId = formData.get('withdrawId');
 
   if (actionType === 'create' && amount && bankAccount) {
     const createdWithdraw = await createWithdraw(
@@ -78,6 +64,12 @@ export async function action({ request }: ActionArgs) {
     console.log('Withdraw created:', createdWithdraw);
     return redirect('/dashboard');
   }
+
+  if (actionType === 'delete' && withdrawId) {
+    await deleteWithdraw(withdrawId as string);
+    return redirect('/dashboard');
+  }
+
   return redirect('/dashboard');
 }
 

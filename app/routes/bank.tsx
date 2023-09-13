@@ -20,11 +20,16 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   console.log('ini isi formData', formData);
 
+  // delete
   const bankId = formData.get('bankId');
+
+  // create
   const actionType = formData.get('actionType');
   const accountName = formData.get('accountName');
   const bank = formData.get('bank');
   const accountNumber = formData.get('accountNumber');
+
+  // update
   const updateAccountName = formData.get('updateAccountName');
   const updateBankName = formData.get('updateBankName');
   const updateAccountNumber = formData.get('updateAccountNumber');
@@ -67,15 +72,6 @@ export default function Bank() {
   const dataBank = useLoaderData<typeof loader>();
   console.log('data bank', dataBank);
 
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // const openModal = () => {
-  //   setIsModalOpen(true);
-  // };
-
-  // const closeModal = () => {
-  //   setIsModalOpen(false);
-  // };
   return (
     <>
       <Box m={'2%'} boxShadow={'lg'}>
