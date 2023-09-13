@@ -1,8 +1,35 @@
-import { Box, Button, Image, Text } from '@chakra-ui/react';
-import data from '../utils/dataFake.json';
-import { Link } from '@remix-run/react';
+import { Box, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
+import { Link, useLoaderData } from '@remix-run/react';
+import { db } from '~/libs/prisma/db.server';
+
+export async function loader() {
+  return await db.product.findMany({
+    include: {
+      store: {
+        include: {
+          locations: true,
+        },
+      },
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: {
+                include: {
+                  size: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
 
 export default function CheckoutPage() {
+  const item = useLoaderData<typeof loader>();
+  // console.log(item);
   return (
     <>
       <Box
@@ -10,51 +37,64 @@ export default function CheckoutPage() {
         display={'flex'}
         flexDirection={'column'}
         justifyContent={'center'}
-        borderBlockStart={'1px'}
         borderRadius={['120px', '140px', '160px', '180px']}
         pt={'50px'}
       >
-        <Box
-          gap={3}
-          display={'flex'}
-          flexDirection={'column'}
-          justifyContent={'center'}
-          alignItems={'center'}
-        >
-          <Text>Fungsi Utama</Text>
-          <Text>Cave Natural Hair Powder</Text>
-          {data.map((i, o) => (
-            <Box
-              key={o}
-              display={'flex'}
-              alignItems={'center'}
-              border={'1px'}
-              borderRadius={'10px'}
-              pr={3}
-              gap={3}
-              width={['80%', '70%', '60%']}
-            >
-              <Image
-                bgColor={'#3a5255'}
-                border={'1px'}
-                borderRadius={'full'}
-                boxSize={'60px'}
-                ml={-7}
-                src="https://cdn.icon-icons.com/icons2/2109/PNG/512/people_male_young_hair_style_sunglasses_party_icon_131009.png"
-                alt=""
-                width={'60px'}
-              />
-              <Text>{i.content}</Text>
+        <Text textAlign={'center'} fontSize={'30px'} fontWeight={'bold'} mb={5}>
+          Product
+        </Text>
+        <Flex flexWrap="wrap" gridGap={6} justify="center">
+          {item.map((i, o) => (
+            <Box key={o}>
+              <Box
+                boxShadow={'dark-lg'}
+                maxW={{ base: 'full', md: '275px' }}
+                w={'full'}
+                minH={'380px'}
+                borderWidth="1px"
+                borderRadius="lg"
+                overflow="hidden"
+                p={5}
+              >
+                <Stack align={'start'} spacing={2}>
+                  <Image borderRadius={'10px'} src={i.attachments[0]} alt="" />
+                  <Link to={`/checkout/form/${i.id}`}>
+                    <Box mt={2}>
+                      <Heading size="md">{i.name}</Heading>
+                      {/* <Text mt={1} fontSize={"sm"}>
+                        {i.description}
+                      </Text> */}
+                      <Text>{i.id}</Text>
+                      <Text fontWeight={'bold'}>Rp.50.000</Text>
+                      <Text>{i.store?.name}</Text>
+                      {/* <Text>{i.store?.locations[0].address}</Text> */}
+                    </Box>
+                  </Link>
+                </Stack>
+              </Box>
             </Box>
           ))}
-          <Box>
-            <Link to={`/checkout/form`}>
-              <Button bg={'#3a5255'} color={'white'} m={'20px'} w={'200px'}>
-                Buy
-              </Button>
-            </Link>
-          </Box>
-        </Box>
+        </Flex>
+        {/* <Box display={"flex"} flexDir={"column"} gap={3}>
+          {item.map((i, o) => (
+            <>
+              <Card border={"1px"} p={4}>
+                <Box display={"flex"} gap={3}>
+                  <Image
+                    boxSize={"10"}
+                    borderRadius={"10%"}
+                    src={i.attachments[0]}
+                    alt=""
+                  />
+                  <Link to={`/checkout/form/${i.id}`}>
+                    <Text>{i.name}</Text>
+                    <Text>{i.description}</Text>
+                  </Link>
+                </Box>
+              </Card>
+            </>
+          ))}
+        </Box> */}
       </Box>
     </>
   );

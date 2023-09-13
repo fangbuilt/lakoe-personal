@@ -1,30 +1,42 @@
 [
   {
-    "image": "none",
-    "content": "Membuat rambut terlihat lebih berfolume dan tebal"
+    "placeholder": "Nama Anda",
+    "name": "username",
+    "type": "text"
   },
   {
-    "image": "none",
-    "content": "Memberikan daya tahan lebih lama pada bentuk rambut yang telah ditata (long-lasting hold)"
+    "placeholder": "No. WhatsApp Anda",
+    "name": "no-telp",
+    "type": "number"
   },
   {
-    "image": "none",
-    "content": "Memberikan hasil Matte Finish pada rambut sehingga terlihat lebih natural"
+    "placeholder": "Email Anda",
+    "name": "email",
+    "type": "email"
   },
   {
-    "image": "none",
-    "content": "Mengontrol minyak berlebih pada Rambut dan Kulit kepala"
+    "placeholder": "Alamat Lengkap Anda",
+    "name": "address",
+    "type": "text"
   },
   {
-    "image": "none",
-    "content": "Bahan utama Hydrolyzed Keratin dan Argan Oil didalamnya dapat merawat rambut untuk tetap sehat, tebal, dan halus"
+    "placeholder": "Pilih Provinsi",
+    "name": "province",
+    "type": "text"
   },
   {
-    "image": "none",
-    "content": "Aplikator pump yang mempermudah styling rambut dan gak bikin berantakan"
+    "placeholder": "Pilih Kota/Kabupaten",
+    "name": "district",
+    "type": "text"
   },
   {
-    "image": "none",
-    "content": "Dapat digunakan untuk Pria maupun Wanita"
+    "placeholder": "Pilih Kecamatan",
+    "name": "village",
+    "type": "text"
+  },
+  {
+    "placeholder": "Masukkan Catatan Pemesanan",
+    "name": "description",
+    "type": "text"
   }
 ]

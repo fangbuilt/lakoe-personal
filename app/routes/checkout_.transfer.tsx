@@ -99,7 +99,7 @@ export default function PayTransfer() {
           </Text>
           <Text>Lakoe.id</Text>
         </Box>
-        <Text>copyt @ 2023</Text>righ
+        <Text>copyright @ 2023</Text>
       </Box>
     </>
   );
