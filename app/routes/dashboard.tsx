@@ -27,6 +27,7 @@ import { useLoaderData } from '@remix-run/react';
 import NavbarDashboard from '../modules/dashboard/components/navbarDashboard';
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
+// import React, { useState } from "react";
 
 export async function loader(storeId: string) {
   return await getBankList(storeId);
@@ -50,7 +51,7 @@ export async function action({ request }: ActionArgs) {
           connect: { id: storeId },
         },
         amount: amount.toString(),
-        status: 'unpaid',
+        status: 'REQUEST',
         bankAccount: {
           connect: { id: bankId },
         },
@@ -61,6 +62,9 @@ export async function action({ request }: ActionArgs) {
     );
 
     console.log('Withdraw created:', createdWithdraw);
+
+    // let createdWithdrawId = createdWithdraw.id;
+
     return redirect('/dashboard');
   }
 
@@ -98,7 +102,10 @@ export default function Dashboard() {
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#28a745'}>
                 Rp.0
               </Text>
-              <DashboardPopup dataBank={dataBank} />
+              <DashboardPopup
+                dataBank={dataBank}
+                createdWithdraw={createWithdraw}
+              />
             </Box>
             <Box
               display={'flex'}

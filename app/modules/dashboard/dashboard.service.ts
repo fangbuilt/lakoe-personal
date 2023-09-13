@@ -7,6 +7,9 @@ export async function getBankList(storeId: string) {
       where: {
         storeId: '50',
       },
+      include: {
+        withdraw: true,
+      },
     })
   );
 }
@@ -85,7 +88,7 @@ export async function createWithdraw(
   const withdraw = await db.withdraw.create({
     data: {
       store: {
-        connect: { id: '10' },
+        connect: { id: '50' },
       },
       amount: amount,
       status: 'REQUEST',

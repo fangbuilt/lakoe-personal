@@ -22,49 +22,16 @@ import TarikKredit from './PopupTarikKredit';
 import { redirect } from '@remix-run/node';
 import { Form, Link } from '@remix-run/react';
 
-export default function DashboardPopup({ dataBank }: any) {
+export default function DashboardPopup({ dataBank, createWithdraw }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
 
-  // Alert
-  // const [showAlert, setShowAlert] = useState(false);
-  // const [alertMessage, setAlertMessage] = useState("");
-  // const [amountFilled, setAmountFilled] = useState(false);
-  // const [bankAccountFilled, setBankAccountFilled] = useState(false);
-  // const [passwordFilled, setPasswordFilled] = useState(false);
-
-  // const [amountAlert, setAmountAlert] = useState<string>("");
-  // const [bankAccountAlert, setBankAccountAlert] = useState<string>("");
-  // const [passwordAlert, setPasswordAlert] = useState<string>("");
-
-  // const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const text = e.target.value;
-  //   setAmountAlert(text);
-  //   setAmountFilled(!!text);
-  // };
-  // const handleBankAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const text = e.target.value;
-  //   setBankAccountAlert(text);
-  //   setBankAccountFilled(!!text);
-  // };
-  // const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const text = e.target.value;
-  //   setPasswordAlert(text);
-  //   setPasswordFilled(!!text);
-  // };
-
-  // const handleSaveClick = async () => {
-  //   if (amountFilled && bankAccountFilled && passwordFilled) {
-  //     setShowAlert(true);
-  //     setAlertMessage("Data harus diisi semua");
-  //     setTimeout(() => {
-  //       setShowAlert(false);
-  //     }, 3000);
-  //   }
-  // };
-
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+
+  // alert
+  const [alertMessage, setAlertMessage] = useState('');
+  const [isFormValidation, setIsFormValidation] = useState(true);
 
   const [formData, setFormData] = useState({
     actionType: 'create',
@@ -79,13 +46,23 @@ export default function DashboardPopup({ dataBank }: any) {
 
   const toggleTarikKredit = () => {
     const { actionType, amount, bankAccount } = formData;
+
+    if (!amount || !bankAccount) {
+      setIsFormValidation(false);
+      setAlertMessage('Mohon lengkapi data diatas!');
+      setTimeout(() => {
+        setIsFormValidation(true);
+      }, 5000);
+    } else {
+      setIsFormValidation(true);
+      setShowTarikKredit(!showTarikKredit);
+    }
     console.log(
       'ini data-data inputan withdraw',
       actionType,
       amount,
       bankAccount
     );
-    setShowTarikKredit(!showTarikKredit);
   };
 
   const handleAddRekeningClick = () => {
@@ -97,18 +74,22 @@ export default function DashboardPopup({ dataBank }: any) {
       <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
         Tarik Credit
       </Button>
+      {/* <Text>ini id withdraw{withdrawId}</Text> */}
 
       <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={() => {
+          setIsFormValidation(true);
+          onClose();
+        }}
       >
         <ModalOverlay />
         <ModalContent>
           <Form method="post">
             <Input type="hidden" name="actionType" value="create" />
-            {/* <Input type="text" name="withdrawId" /> */}
+            {/* <Input type="text" name="withdrawId" value={withdrawId} /> */}
             {/* <Input type="text" name="storeId" /> */}
             {/* <Input type="text" name="approvedById" /> */}
             <ModalHeader display={'flex'} alignItems={'center'}>
@@ -165,31 +146,31 @@ export default function DashboardPopup({ dataBank }: any) {
               </FormControl>
 
               <FormControl mt={4}>
-                <FormLabel>Tarik Ke:</FormLabel>
-                {dataBank === null ? (
-                  <button onClick={handleAddRekeningClick}>Add Rekening</button>
-                ) : (
-                  <Select
-                    fontSize={'13px'}
-                    name="bankAccount"
-                    onChange={handleChange}
-                    value={formData.bankAccount}
-                    // onChange={(event) => {
-                    //   handleChange(event);
-                    //   handleBankAccountChange(event);
-                    // }}
-                  >
-                    <option value="">Select Your Bank Account</option>
-                    {dataBank.map((data: any) => (
-                      <option
-                        value={`${data.bank} - ${data.accountName} - ${data.accountNumber}`}
-                        key={data.id}
-                      >
-                        {`${data.bank} - ${data.accountName} - ${data.accountNumber}`}
-                      </option>
-                    ))}
-                  </Select>
-                )}
+                {/* <FormLabel>Tarik Ke:</FormLabel> */}
+                {/* {dataBank === null ? ( */}
+                <button onClick={handleAddRekeningClick}>Tarik ke:</button>
+                {/* : ( */}
+                <Select
+                  fontSize={'13px'}
+                  name="bankAccount"
+                  onChange={handleChange}
+                  value={formData.bankAccount}
+                  // onChange={(event) => {
+                  //   handleChange(event);
+                  //   handleBankAccountChange(event);
+                  // }}
+                >
+                  <option value="">Select Your Bank Account</option>
+                  {dataBank.map((data: any) => (
+                    <option
+                      value={`${data.bank} - ${data.accountName} - ${data.accountNumber}`}
+                      key={data.id}
+                    >
+                      {`${data.bank} - ${data.accountName} - ${data.accountNumber}`}
+                    </option>
+                  ))}
+                </Select>
+                {/* )} */}
                 <Link to={'/bank'}>
                   <Text
                     fontSize={'13px'}
@@ -215,6 +196,16 @@ export default function DashboardPopup({ dataBank }: any) {
                   placeholder="Silakan masukkan kata sandi akun anda"
                 />
               </FormControl>
+              {!isFormValidation && (
+                <Text
+                  color={'red.600'}
+                  mt={2}
+                  fontSize="14px"
+                  fontStyle="italic"
+                >
+                  {alertMessage}
+                </Text>
+              )}
             </ModalBody>
             <ModalFooter>
               <Button
@@ -233,7 +224,6 @@ export default function DashboardPopup({ dataBank }: any) {
                   mr={3}
                   onClick={() => {
                     toggleTarikKredit();
-                    // handleSaveClick();
                   }}
                   type="submit"
                 >
@@ -241,57 +231,16 @@ export default function DashboardPopup({ dataBank }: any) {
                 </Button>
                 {showTarikKredit && (
                   <TarikKredit
+                    // id={createWithdraw.id}
                     amount={formData.amount}
                     bankAccount={formData.bankAccount}
                   />
                 )}{' '}
-                {/* Conditionally render TarikKredit */}
               </div>
             </ModalFooter>
           </Form>
         </ModalContent>
       </Modal>
-      {/* {showAlert && (
-        <Center>
-          <Alert
-            justifyContent={'space-between'}
-            w={'30%'}
-            color="white"
-            status={
-              amountFilled && bankAccountFilled && passwordFilled
-                ? 'success'
-                : 'error'
-            }
-            variant={'subtle'}
-            borderRadius={'10px'}
-            bg={'blackAlpha.800'}
-            position={'fixed'}
-            top={'5px'}
-            py={0}
-            px={3}
-          >
-            <Image
-              sizes="10px"
-              me={2}
-              src={
-                amountFilled && bankAccountFilled && passwordFilled
-                  ? 'xx'
-                  : 'yy'
-              }
-            />
-            <AlertTitle fontWeight={'normal'} fontSize={'13px'}>
-              {alertMessage}
-            </AlertTitle>
-            <Button
-              fontSize={'13px'}
-              colorScheme="none"
-              onClick={() => setShowAlert(false)}
-            >
-              Oke
-            </Button>
-          </Alert>
-        </Center>
-      )} */}
     </>
   );
 }
