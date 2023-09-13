@@ -147,6 +147,7 @@ model Location {
   id             String   @id @unique @default(uuid())
   name           String
   address        String
+  addressNote    String?
   postalCode     String
   cityDistrict   String
   latitude       String
@@ -255,6 +256,8 @@ model Cart {
   store     Store?     @relation(fields: [storeId], references: [id])
   userId    String?
   storeId   String?
+  payment   Payment?   @relation(fields: [paymentId], references: [id])
+  paymentId String?
   cartItems CartItem[]
   invoice   Invoice[]
   createdAt DateTime   @default(now())
@@ -282,45 +285,49 @@ model CartItem {
 }
 
 model Invoice {
-  id                 String           @id @unique @default(uuid())
-  price              Float
-  discount           Float
-  status             String
-  receiverLongitude  String
-  receiverLatitude   String
-  receiverDistrict   String
-  receiverPhone      String
-  receiverAddress    String
-  receiverName       String
-  invoiceNumber      String
-  waybill            String
-  cart               Cart?            @relation(fields: [cartId], references: [id])
-  payment            Payment?         @relation(fields: [paymentId], references: [id])
-  courier            Courier?         @relation(fields: [courierId], references: [id])
-  user               User?            @relation(fields: [userId], references: [id])
-  cartId             String?
-  courierId          String?
-  userId             String?
-  invoiceHistories   InvoiceHistory[]
-  mootaTransactionId String
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @default(now())
-  paymentId          String?
+  id                  String           @id @unique @default(uuid())
+  price               Float
+  discount            Float
+  status              String
+  receiverLongitude   String
+  receiverLatitude    String
+  receiverDistrict    String
+  receiverPhone       String
+  receiverAddress     String
+  receiverName        String
+  receiverEmail       String
+  receiverPostalCode  String
+  receiverAddressNote String
+  invoiceNumber       String
+  waybill             String
+  cart                Cart?            @relation(fields: [cartId], references: [id])
+  payment             Payment?         @relation(fields: [paymentId], references: [id])
+  courier             Courier?         @relation(fields: [courierId], references: [id])
+  user                User?            @relation(fields: [userId], references: [id])
+  cartId              String?
+  courierId           String?
+  userId              String?
+  invoiceHistories    InvoiceHistory[]
+  mootaTransactionId  String
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @default(now())
+  paymentId           String?
 
   @@map("invoices")
 }
 
 model Payment {
-  id      String    @id @unique @default(uuid())
-  bank    String
-  amount  Float
-  status  String
-  invoice Invoice[]
-  user    User?     @relation(fields: [userId], references: [id])
-  userId  String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id         String        @id @unique @default(uuid())
+  bank       String
+  amount     Float
+  status     String
+  invoice    Invoice[]
+  user       User?         @relation(fields: [userId], references: [id])
+  userId     String?
+  cart       Cart[]
+  attachment Attachments[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @default(now())
 
   @@map("payments")
 }
@@ -330,6 +337,8 @@ model Courier {
   availableForCashOnDelivery   Boolean
   availableForProofOfDelivery  Boolean
   availableForInstantWaybillId Boolean
+  courierType                  String
+  courierInsurance             String
   courierName                  String
   courierCode                  String
   courierServiceName           String
@@ -344,6 +353,8 @@ model Courier {
   invoice                      Invoice[]
   orderId                      String?
   trackingId                   String?
+  deliveryDate                 String
+  deliveryTime                 String
   createdAt                    DateTime  @default(now())
   updatedAt                    DateTime  @default(now())
 
@@ -379,6 +390,13 @@ model Attachments {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
   Product    Product[]
+  payment    Payment   @relation(fields: [paymentId], references: [id])
+  paymentId  String
 
   @@map("attachments")
+}
+
+
+model ConfirmationPayment {
+  id            String     @id @unique @default(uuid())
 }
