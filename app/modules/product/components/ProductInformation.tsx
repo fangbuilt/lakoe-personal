@@ -11,8 +11,10 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import useAddProduct from '../hooks/useAddProduct';
+import useNestedOptions from '../hooks/useNestedOptions';
 
 export function ProductInformation() {
+  const { options } = useNestedOptions();
   const { handleChange } = useAddProduct();
   return (
     <Card>
@@ -50,9 +52,19 @@ export function ProductInformation() {
               onChange={handleChange}
             >
               <option disabled>Pilih kategori produk</option>
-              <option value={'Option A'}>Option A</option>
-              <option value={'Option B'}>Option B</option>
-              <option value={'Option C'}>Option C</option>
+              {options.map((option, index) => (
+                <option key={index}>
+                  {option.label}
+                  {option.children.map((child, index) => (
+                    <option key={index}>
+                      {child.label}
+                      {child.children.map((grandchild, index) => (
+                        <option key={index}>{grandchild.label}</option>
+                      ))}
+                    </option>
+                  ))}
+                </option>
+              ))}
             </Select>
           </FormControl>
         </Stack>
