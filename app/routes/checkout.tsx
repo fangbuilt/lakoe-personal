@@ -58,13 +58,14 @@ export default function CheckoutPage() {
               >
                 <Stack align={'start'} spacing={2}>
                   <Image borderRadius={'10px'} src={i.attachments[0]} alt="" />
-                  <Link to={`/checkout/form/${i.id}`}>
+                  <Link to={`/checkout/${i.store?.name}/${i.slug}/${i.id}`}>
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
                       {/* <Text mt={1} fontSize={"sm"}>
                         {i.description}
                       </Text> */}
                       <Text>{i.id}</Text>
+                      {/* <Text>{}</Text> */}
                       <Text fontWeight={'bold'}>Rp.50.000</Text>
                       <Text>{i.store?.name}</Text>
                       {/* <Text>{i.store?.locations[0].address}</Text> */}
@@ -75,26 +76,6 @@ export default function CheckoutPage() {
             </Box>
           ))}
         </Flex>
-        {/* <Box display={"flex"} flexDir={"column"} gap={3}>
-          {item.map((i, o) => (
-            <>
-              <Card border={"1px"} p={4}>
-                <Box display={"flex"} gap={3}>
-                  <Image
-                    boxSize={"10"}
-                    borderRadius={"10%"}
-                    src={i.attachments[0]}
-                    alt=""
-                  />
-                  <Link to={`/checkout/form/${i.id}`}>
-                    <Text>{i.name}</Text>
-                    <Text>{i.description}</Text>
-                  </Link>
-                </Box>
-              </Card>
-            </>
-          ))}
-        </Box> */}
       </Box>
     </>
   );

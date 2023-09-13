@@ -30,16 +30,22 @@ export async function getCheckoutDetail(data: any) {
 }
 
 export async function createCheckout(data: any) {
-  const postCart = await db.cart.create({ data: data.cart });
+  const cart = await db.cart.create({ data: data.cart });
 
   await db.cartItem.create({
     data: {
       ...data.cartItem,
-      // cardId: postCart.id,
+      cardId: cart.id,
     },
   });
 
-  return await db.invoice.create({
-    data: { ...data.invoice, cartId: postCart.id },
+  const invoice = await db.invoice.create({
+    data: { ...data.invoice, cartId: cart.id },
   });
+
+  await db.invoiceHistory.create({
+    data: { ...data.invoiceHistory, invoiceId: invoice.id },
+  });
+
+  return null;
 }

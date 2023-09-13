@@ -17,14 +17,13 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { type ActionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
 import {
   createCheckout,
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
-import React from 'react';
 
 export async function loader({ params }: ActionArgs) {
   const id = params;
@@ -95,17 +94,15 @@ export const action = async ({ request }: ActionArgs) => {
       storeId: storeId,
     };
 
-    const data = { invoice, cart, cartItem };
+    const invoiceHistory = {
+      status: 'UNPAID',
+    };
+
+    const data = { invoice, cart, cartItem, invoiceHistory };
 
     await createCheckout(data);
-
-    // if (buyway == "transfer") {
-    //   return redirect(`/checkout/transfer`);
-    // } else if (buyway == "cod") {
-    //   return redirect(`/checkout/cod`);
-    // }
   }
-  return null;
+  return redirect(`/checkout/transfer`);
 };
 
 export default function Checkout() {

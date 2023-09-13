@@ -173,7 +173,7 @@ model Product {
   storeId      String
   category     Category   @relation(fields: [categoryId], references: [id])
   categoryId   String
-  slug         String
+  slug         String     @unique
   variants     Variant[]
   cartItems    CartItem[]
   createdAt    DateTime   @default(now())
