@@ -26,25 +26,34 @@ import ScrollBox from '../components/ScrollBox';
 import { UseSearch } from '../hooks/useSearchOrder';
 import { useFilterCourier } from '../hooks/useFilterCourier';
 import CardUnpaid from '../components/CardUnpaid';
-import CardReadyToShip from '../components/CardReadyToShip';
-import CardNewOrder from '../components/CardNewOrder';
-import CardSuccessOrder from '../components/CardSuccesOrder';
-import CardInShipping from '../components/CardInShipping';
-import CardCanceled from '../components/CardCanceled';
+// import CardReadyToShip from '../components/CardReadyToShip';
+// import CardNewOrder from '../components/CardNewOrder';
+// import CardSuccessOrder from '../components/CardSuccesOrder';
+// import CardInShipping from '../components/CardInShipping';
+// import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
+import { Form } from '@remix-run/react';
+import type { Invoice } from '~/interfaces/ProductUnpaid';
 export default function NavOrder() {
-  const { filteredOrders, setSearchQuery } = UseSearch();
+  const { filteredOrders, setSearchQuery, searchQuery, handleSearch } =
+    UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
 
-  const filteredOrdersByCourier = filteredOrders.filter((order) => {
+  console.log('filteredOrders filteredOrders filteredOrders', filteredOrders);
+
+  const filteredOrdersByCourier: Invoice[] = filteredOrders.filter((order) => {
     if (selectedCouriers.length === 0) {
       return true;
     }
-    return selectedCouriers.includes(order.courier);
+    return (
+      order.courier?.courierName !== null &&
+      order.courier?.courierName !== undefined
+    );
+    // return selectedCouriers.includes(order);
   });
 
   return (
@@ -97,7 +106,8 @@ export default function NavOrder() {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {filteredOrders.length}{' '}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
                         <Flex gap={1.5}>
@@ -194,22 +204,30 @@ export default function NavOrder() {
             <Box my={5} paddingBottom={'100px'} background={'white'}>
               <Box mr={5} my={3} width={'100%'}>
                 <Box display={'flex'} mx={2} justifyContent={'space-between'}>
-                  <InputGroup mx={3}>
-                    <InputLeftElement pointerEvents="none">
-                      <Image src={SearchProduct} />
-                    </InputLeftElement>
-                    <Input
-                      type="text"
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Cari Pesanan"
-                      _placeholder={{
-                        opacity: 1,
-                        color: '#909090',
-                        fontSize: '14px',
-                      }}
-                    />
-                  </InputGroup>
-
+                  <Form onSubmit={handleSearch}>
+                    <InputGroup mx={3}>
+                      <InputLeftElement pointerEvents="none">
+                        <Image src={SearchProduct} />
+                      </InputLeftElement>
+                      <Input
+                        type="text"
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Cari Pesanan"
+                        value={searchQuery}
+                        _placeholder={{
+                          opacity: 1,
+                          color: '#909090',
+                          fontSize: '14px',
+                        }}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault(); // Mencegah pengiriman formulir
+                            handleSearch(e);
+                          }
+                        }}
+                      />
+                    </InputGroup>
+                  </Form>
                   <Menu closeOnSelect={false}>
                     <MenuButton
                       as={Button}
@@ -430,18 +448,12 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardUnpaid
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
+                    <CardUnpaid
+                      filteredOrdersByCourier={filteredOrdersByCourier}
+                    />
+
+                    {/* <CardUnpaid data={data}/> */}
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardNewOrder
                         key={index}
                         id={data.id}
@@ -451,7 +463,7 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} 
                     {filteredOrdersByCourier.map((data, index) => (
                       <CardReadyToShip
                         key={index}
@@ -495,29 +507,21 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardUnpaid
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
+                    <CardUnpaid
+                      filteredOrdersByCourier={filteredOrdersByCourier}
+                    />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardNewOrder
                         key={index}
                         id={data.id}
@@ -527,13 +531,13 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardReadyToShip
                         key={index}
                         id={data.id}
@@ -543,13 +547,13 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardInShipping
                         key={index}
                         id={data.id}
@@ -559,13 +563,13 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardSuccessOrder
                         key={index}
                         id={data.id}
@@ -575,13 +579,13 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data: any, index: any) => (
+                    {/* {filteredOrdersByCourier.map((data: any, index: any) => (
                       <CardCanceled
                         key={index}
                         id={data.id}
@@ -591,7 +595,7 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
                 {filteredOrders.length === 0 && (

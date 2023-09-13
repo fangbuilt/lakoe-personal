@@ -77,10 +77,12 @@ export interface Invoice {
   waybill: string;
   cart?: Cart;
   payment?: Payment;
+  courier?: Courier;
   user?: User;
   cartId?: string;
   courierId?: string;
   userId?: string;
+  // invoiceHistories: InvoiceHistory[];
   mootaTransactionId: string;
   createdAt: Date;
   updatedAt: Date;

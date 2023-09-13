@@ -21,39 +21,99 @@ export async function getProductUnpid() {
   });
   return payments;
 }
+// export async function getAllProductUnpid() {
+//   const payments = await db.payment.findMany({
+//     where: {
+//       status: 'UNPAID',
+//     },
+//     include: {
+//       invoice: {
+//         include: {
+//           cart: {
+//             include: {
+//               cartItems: {
+//                 include: {
+//                   product: true,
+//                 },
+//               },
+//               store: true,
+//             },
+//           },
+//         },
+//       },
+//       user: {
+//         include: {
+//           store: true,
+//           cartItems: true,
+//           carts: true,
+//         },
+//       },
 
+//     }
+//   });
+//   return payments;
+// }
+export async function getAllProductUnpid() {
+  const payments = await db.invoice.findMany({
+    where: {
+      status: 'UNPAID',
+    },
+    include: {
+      cart: {
+        include: {
+          cartItems: {
+            include: {
+              product: true,
+            },
+          },
+          store: true,
+        },
+      },
+      user: {
+        include: {
+          store: true,
+          cartItems: true,
+          carts: true,
+        },
+      },
+      payment: true,
+      courier: true,
+    },
+  });
+  return payments;
+}
 export async function getProductUnpid1() {
   const payments = await db.payment.findMany();
   console.log('getProductUnpid1getProductUnpid1', payments);
   return payments;
 }
-export async function getProductUnpid2() {
-  try {
-    const payments = await db.invoice.findMany({
-      include: {
-        user: {
-          include: {
-            payments: true,
-          },
-        },
-        cart: {
-          include: {
-            user: {
-              include: {
-                cartItems: true,
-                store: true,
-              },
-            },
-          },
-        },
-      },
-    });
+// export async function getProductUnpid2() {
+//   try {
+//     const payments = await db.invoice.findMany({
+//       include: {
+//         user: {
+//           include: {
+//             payments: true,
+//           },
+//         },
+//         cart: {
+//           include: {
+//             user: {
+//               include: {
+//                 cartItems: true,
+//                 store: true,
+//               },
+//             },
+//           },
+//         },
+//       },
+//     });
 
-    return console.log('getProductUnpid2getProductUnpid2', payments);
-  } catch (error) {
-    throw new Error(`Failed to get unpaid products: ${error}`);
-  }
-}
+//     return console.log('getProductUnpid2getProductUnpid2', payments);
+//   } catch (error) {
+//     throw new Error(`Failed to get unpaid products: ${error}`);
+//   }
+// }
 
 export async function getProductUnpid3() {
   try {

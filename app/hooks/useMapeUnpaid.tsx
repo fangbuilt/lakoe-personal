@@ -1,16 +1,20 @@
-import { useLoaderData } from '@remix-run/react';
-import { db } from '~/libs/prisma/db.server';
+import { useState, useEffect } from 'react';
 
-export async function loader() {
-  const payments = await db.payment.findMany();
+export default function useMapeUnpaid(data: any) {
+  const [searchQueryw, setSearchQueryw] = useState('');
+  const [filteredOrdersw, setFilteredOrdersw] = useState(data);
 
-  return payments;
-}
-
-export default function UseMapeUnpaid() {
-  const data = useLoaderData<typeof loader>();
-
-  console.log('useMapeUnpaid', data);
-
-  return <></>;
+  useEffect(() => {
+    const filtered = data.filter(
+      (order: any) =>
+        order.data.store?.products.map((product: any) =>
+          product.name.toLowerCase().includes(searchQueryw.toLowerCase())
+        )
+      // ||
+      // order.invoice.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredOrdersw(filtered);
+  }, [data, searchQueryw]);
+  console.log('filteredOrdersfilteredOrdersfilteredOrders', filteredOrdersw);
+  return { filteredOrdersw, setSearchQueryw };
 }
