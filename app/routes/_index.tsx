@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import { useState } from 'react';
-import { UseSearch } from '~/hooks/useSearchOrder original dummy';
+import { UseSearch } from '~/hooks/useSearchOrder';
 import type { IOrderList } from '~/interfaces/order';
 export default function CardNewOrder(props: IOrderList) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

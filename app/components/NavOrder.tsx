@@ -24,7 +24,7 @@ import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
 import CardOrder from '../layouts/CardOrder';
 import ScrollBox from '../components/ScrollBox';
-import { UseSearch } from '../hooks/useSearchOrder original dummy';
+import { UseSearch } from '../hooks/useSearchOrder';
 import NewOrder from '~/layouts/NewOrder';
 
 export default function NavOrder() {

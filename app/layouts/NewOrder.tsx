@@ -15,7 +15,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { UseSearch } from '../hooks/useSearchOrder original dummy';
+import { UseSearch } from '../hooks/useSearchOrder';
 import React, { useState } from 'react';
 
 export default function NewOrder() {

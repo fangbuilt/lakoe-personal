@@ -15,7 +15,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { UseSearch } from '~/hooks/useSearchOrder original dummy';
+import { UseSearch } from '~/hooks/useSearchOrder';
 import type { IOrderList } from '~/interfaces/order';
 export default function CardNewOrder(props: IOrderList) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,7 +59,7 @@ export default function CardNewOrder(props: IOrderList) {
     }
   };
 
-  const systembalance = 100; //saldo LAKOE
+  const systembalance = 100000; //saldo LAKOE
 
   const afterpacking = () => {
     if (systembalance > 50000) {
