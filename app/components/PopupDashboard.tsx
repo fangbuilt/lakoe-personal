@@ -49,7 +49,7 @@ export default function DashboardPopup({ dataBank, createWithdraw }: any) {
 
     if (!amount || !bankAccount) {
       setIsFormValidation(false);
-      setAlertMessage('Mohon lengkapi data diatas!');
+      setAlertMessage('Please complete the data above!');
       setTimeout(() => {
         setIsFormValidation(true);
       }, 5000);
