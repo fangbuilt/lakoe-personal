@@ -28,7 +28,7 @@ export function UsePickingUp(email: string, name: string, waybill: string) {
       waybill: `${waybill}`,
       // address: `${address}`,
     },
-    groups: ['98632001540589433'], // This is where you need to categorize which group it should go for email automation trigger
+    groups: ['98353352732051296'], // This is where you need to categorize which group it should go for email automation trigger
     status: 'active', // possible statuses: active, unsubscribed, unconfirmed, bounced or junk.
   };
 
