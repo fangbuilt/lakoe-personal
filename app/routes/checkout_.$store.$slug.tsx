@@ -28,9 +28,9 @@ import {
 import input from '../utils/dataFake.json';
 
 export async function loader({ params }: ActionArgs) {
-  const id = params;
-  console.log('id:', id);
-  return getCheckoutDetail(id);
+  const store = params;
+  console.log('id:', store);
+  return getCheckoutDetail(store);
 }
 
 export const action = async ({ request }: ActionArgs) => {
@@ -114,8 +114,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Checkout() {
   const item = useLoaderData<typeof loader>();
-  const { id, slug, store } = useParams();
-  console.log('item:', id);
+  const { slug, store } = useParams();
   console.log('item slug:', slug);
   console.log('item store:', store);
 
@@ -182,7 +181,6 @@ export default function Checkout() {
                           />
                           <Button onClick={handleIncrement}>+</Button>
                         </Flex>
-                        {/* <Counter /> */}
                       </Td>
                       <Td>
                         {
