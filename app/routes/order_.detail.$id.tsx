@@ -1,4 +1,5 @@
 import { Stack } from '@chakra-ui/react';
+<<<<<<< HEAD
 import type { LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
@@ -17,6 +18,10 @@ export async function loader({ params }: LoaderArgs) {
     throw error;
   }
 }
+=======
+import { ImplementGrid } from '~/layouts/Grid';
+import StatusOrderDetail from '~/modules/order/components/statusOrderDetail';
+>>>>>>> 0aa73c4d167d6e7d3ba456e0ea46edffec25ee63
 
 export default function OrderDetailId() {
   const data = useLoaderData<IOrderDetailInvoice>();
@@ -24,7 +29,11 @@ export default function OrderDetailId() {
     <>
       <ImplementGrid>
         <Stack mt={'7.5vh'} spacing={4}>
+<<<<<<< HEAD
           <StatusOrderDetail data={data} />
+=======
+          <StatusOrderDetail />
+>>>>>>> 0aa73c4d167d6e7d3ba456e0ea46edffec25ee63
         </Stack>
       </ImplementGrid>
     </>

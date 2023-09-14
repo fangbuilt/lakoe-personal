@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 /* @font-face {
   font-display: swap;
+=======
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+>>>>>>> 0aa73c4d167d6e7d3ba456e0ea46edffec25ee63
   font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-weight: 400;
   src: url("../../../public/fonts/plus-jakarta-sans/plus-jakarta-sans-v8-latin-regular.woff2")
+<<<<<<< HEAD
     format("woff2");
 } */
+=======
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+>>>>>>> 0aa73c4d167d6e7d3ba456e0ea46edffec25ee63

@@ -595,7 +595,7 @@ export default function NavOrder() {
                     ))}
                   </TabPanel>
                 </ScrollBox>
-                {filteredOrders.length === 0 && (
+                {filteredOrdersByCourier.length === 0 && (
                   <Center>
                     <Box textAlign="center" mt={5} display={'flex'}>
                       <Image src={ReceiptSearch} />

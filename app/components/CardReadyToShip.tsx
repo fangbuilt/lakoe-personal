@@ -1,5 +1,4 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
 import type { IOrderList } from '~/interfaces/order';
 
 export default function ReadyToShipCard(props: IOrderList) {
@@ -19,21 +18,20 @@ export default function ReadyToShipCard(props: IOrderList) {
                   size={'sm'}
                   pointerEvents={'none'}
                 >
-                  Dibatalkan
+                  Siap Dikirim
                 </Button>
-
-                {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-                <Link to={`http://wa.me/${props.telephone}`}>
+                <Box>
+                  {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
                   <Button
                     bg={'transparent'}
                     border={'1px solid #D5D5D5'}
                     borderRadius={'full'}
                     fontSize={'14px'}
                   >
-                    Hubungi Pembeli
+                    Tracking Pengiriman
                   </Button>
-                </Link>
-                {/*  */}
+                  {/*  */}
+                </Box>
               </Flex>
               <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
                 {props.invoice}
