@@ -43,6 +43,8 @@ function PaymentConfirmation() {
             <FormControl id="order-id" isRequired>
               <FormLabel>Order ID</FormLabel>
               <Input
+                // value=""
+                // hidden
                 name="cartId"
                 type="text"
                 placeholder="Masukkan Order ID Anda"
