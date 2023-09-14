@@ -1,4 +1,9 @@
 import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+} from '@chakra-ui/icons';
+import {
   Box,
   Button,
   Card,
@@ -11,26 +16,22 @@ import {
   StepDescription,
   StepIndicator,
   StepSeparator,
+  StepStatus,
   StepTitle,
   Stepper,
   Text,
 } from '@chakra-ui/react';
-import documentIcon from '~/assets/DetailOrderIcon/document.svg';
-import calender from '~/assets/DetailOrderIcon/calendar-2.svg';
+import { BsCircleFill } from 'react-icons/bs';
 import barcode from '~/assets/DetailOrderIcon/barcode.svg';
-import copy from '~/assets/DetailOrderIcon/copy.svg';
-import profile from '~/assets/DetailOrderIcon/profile-circle.svg';
-import whatsapp from '~/assets/DetailOrderIcon/whatsapp.svg';
 import box from '~/assets/DetailOrderIcon/box.svg';
+import calender from '~/assets/DetailOrderIcon/calendar-2.svg';
+import copy from '~/assets/DetailOrderIcon/copy.svg';
+import documentIcon from '~/assets/DetailOrderIcon/document.svg';
+import profile from '~/assets/DetailOrderIcon/profile-circle.svg';
 import truck from '~/assets/DetailOrderIcon/truck-fast.svg';
 import wallet from '~/assets/DetailOrderIcon/wallet.svg';
+import whatsapp from '~/assets/DetailOrderIcon/whatsapp.svg';
 import { useOrderDetalil } from '../hooks/useOrderDetail';
-// import { BsCircleFill } from "react-icons/bs";
-// import {
-//   ChevronDownIcon,
-//   ChevronRightIcon,
-//   ChevronUpIcon,
-// } from "@chakra-ui/icons";
 
 export default function StatusOrderDetail() {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
@@ -40,7 +41,9 @@ export default function StatusOrderDetail() {
       <Box display={'flex'} flexDirection={'column'} gap={3}>
         <Flex>
           <Text color={'#0EADD7'}>Daftar Pesanan</Text>{' '}
-          <Text>{/*<ChevronRightIcon />*/} CREWNECK BASIC-BLACK...</Text>
+          <Text>
+            <ChevronRightIcon /> CREWNECK BASIC-BLACK...
+          </Text>
         </Flex>
         <Box
           display={'flex'}
@@ -93,9 +96,13 @@ export default function StatusOrderDetail() {
               onClick={toggleOrderHistory}
             >
               {isOrderHistoryVisible ? (
-                <>Sembunyikan {/*<ChevronUpIcon />*/}</>
+                <>
+                  Sembunyikan <ChevronUpIcon />
+                </>
               ) : (
-                <>Lihat riwayat pesanan {/*<ChevronDownIcon />*/}</>
+                <>
+                  Lihat riwayat pesanan <ChevronDownIcon />
+                </>
               )}
             </Text>
             {isOrderHistoryVisible && (
@@ -113,11 +120,11 @@ export default function StatusOrderDetail() {
                 {steps.map((step) => (
                   <Step key={step.id}>
                     <StepIndicator fontSize={'11px'}>
-                      {/*} <StepStatus
+                      <StepStatus
                         complete={<BsCircleFill />}
                         incomplete={<BsCircleFill color="gray" />}
                         active={<BsCircleFill color="gray" />}
-                />*/}
+                      />
                     </StepIndicator>
 
                     <Box flexShrink="0">

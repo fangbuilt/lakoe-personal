@@ -38,5 +38,10 @@
     "placeholder": "Masukkan Catatan Pemesanan",
     "name": "description",
     "type": "text"
+  },
+  {
+    "placeholder": "Kode Pos",
+    "name": "postalCode",
+    "type": "text"
   }
 ]

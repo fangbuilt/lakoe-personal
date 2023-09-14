@@ -9,7 +9,7 @@ import {
   Select,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 import React from 'react';
@@ -62,7 +62,7 @@ export default function TransferPayment() {
           </Text>
         </Box>
         <Text fontWeight={'bold'} fontSize={'xl'}>
-          Konfirmasi Pembayaran
+          Konfirmasi Pembayaran ttftfct
         </Text>
         <Card w={'100%'} marginBlock={'20px'} boxShadow={'dark-lg'}>
           <Form method="post">

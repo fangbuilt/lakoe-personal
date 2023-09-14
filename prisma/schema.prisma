@@ -297,7 +297,7 @@ model Invoice {
   receiverPhone       String
   receiverAddress     String
   receiverName        String
-  notes               String
+  // notes               String
   receiverEmail       String
   receiverPostalCode  String
   receiverAddressNote String

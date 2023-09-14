@@ -19,8 +19,8 @@ import {
 } from '@chakra-ui/react';
 import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
+import { useState } from 'react';
 import CheckoutDescription from '../components/checkoutDescription';
-import Counter from '../components/count';
 import {
   createCheckout,
   getCheckoutDetail,
@@ -54,7 +54,8 @@ export const action = async ({ request }: ActionArgs) => {
     const userId = formData.get('userId') as string;
     const productId = formData.get('productId') as string;
     const payment = formData.get('payment') as string;
-    const count = formData.get('calculation') as string;
+    const count = +(formData.get('calculation') as string);
+    const postalCode = formData.get('postalCode') as string;
 
     const invoice = {
       price: price,
@@ -67,8 +68,9 @@ export const action = async ({ request }: ActionArgs) => {
       receiverAddress: village + ' ' + district + ' ' + province,
       receiverName: name,
       receiverEmail: email,
-      receiverPostalCode: email,
+      receiverPostalCode: postalCode,
       receiverAddressNote: description,
+      // notes: description,
       invoiceNumber: '',
       waybill: '',
       courierId: courier,
@@ -84,7 +86,7 @@ export const action = async ({ request }: ActionArgs) => {
     };
 
     const cartItem = {
-      qty: 1,
+      qty: count,
       price: price,
       productId: productId,
       userId: userId,
@@ -113,6 +115,22 @@ export const action = async ({ request }: ActionArgs) => {
 export default function Checkout() {
   const item = useLoaderData<typeof loader>();
   const { id } = useParams();
+  console.log(id);
+
+  const [count, setCount] = useState<number>(1);
+
+  const handleIncrement = () => {
+    setCount(count + 1);
+  };
+
+  const handleDecrement = () => {
+    setCount(count - 1);
+  };
+
+  const handleChange = (e: any) => {
+    setCount(e.target.value);
+  };
+
   return (
     <>
       <CheckoutDescription />
@@ -137,6 +155,7 @@ export default function Checkout() {
                       <Th width={'80%'}>Pilihan Variasi</Th>
                       <Th minW={'180px'}>Jumlah</Th>
                       <Th>Harga</Th>
+                      <Th>Total</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
@@ -151,14 +170,27 @@ export default function Checkout() {
                         <Text>{item?.name}</Text>
                       </Td>
                       <Td>
-                        <Counter />
-                        {/* <Input type="text" hidden value={count} name="count" /> */}
+                        <Flex alignItems="center">
+                          <Button onClick={handleDecrement}>-</Button>
+                          <Input
+                            type="number"
+                            value={count}
+                            onChange={handleChange}
+                            name="calculation"
+                          />
+                          <Button onClick={handleIncrement}>+</Button>
+                        </Flex>
+                        {/* <Counter /> */}
                       </Td>
                       <Td>
                         {
                           item?.variants[0].variantOptions[0]
-                            .variantOptionValues[0].price
+                            .variantOptionValues[0].price as number
                         }
+                      </Td>
+                      <Td>
+                        {(item?.variants[0].variantOptions[0]
+                          .variantOptionValues[0].price as number) * count}
                       </Td>
                     </Tr>
                   </Tbody>
@@ -175,7 +207,7 @@ export default function Checkout() {
                 }
               />
               <Input type="hidden" name="storeId" value={item?.storeId} />
-              <Input type="hidden" name="productId" value={id} />
+              <Input type="hidden" name="productId" value={item?.id} />
               <Input
                 type="hidden"
                 name="userId"
@@ -229,35 +261,6 @@ export default function Checkout() {
                   </Box>
                 </Box>
               </Box>
-              {/* <Box>
-                <Text fontWeight={"bold"}>Voucher</Text>
-                <Box bgColor={"#fcfcfc"} p={3}>
-                  <Box>
-                    <TableContainer>
-                      <Table variant="simple">
-                        <Thead>
-                          <Tr fontWeight={"bold"}>
-                            <Th width={"80%"}>Nama Voucher</Th>
-                            <Th>Pilih Voucher</Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          <Tr>
-                            <Td display={"flex"} gap={3} alignItems={"center"}>
-                              <Text>Koin dapat Voucher</Text>
-                            </Td>
-                            <Td>
-                              <Checkbox value={"100.000"} name="voucher">
-                                Rp10.000
-                              </Checkbox>
-                            </Td>
-                          </Tr>
-                        </Tbody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                </Box>
-              </Box> */}
               <Box>
                 <Text fontWeight={'bold'}>Metode Pembayaran</Text>
                 <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
@@ -331,10 +334,8 @@ export default function Checkout() {
                   <Box display={'flex'} justifyContent={'space-between'}>
                     <Text>Total</Text>
                     <Text>
-                      {
-                        item?.variants[0].variantOptions[0]
-                          .variantOptionValues[0].price
-                      }
+                      {(item?.variants[0].variantOptions[0]
+                        .variantOptionValues[0].price as number) * count}
                     </Text>
                   </Box>
                 </Box>

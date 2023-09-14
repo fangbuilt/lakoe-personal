@@ -30,7 +30,6 @@ export async function loader() {
 
 export default function CheckoutPage() {
   const item = useLoaderData<typeof loader>();
-  console.log(item);
   // console.log(item);
   return (
     <>
@@ -68,7 +67,7 @@ export default function CheckoutPage() {
                         {i.description}
                       </Text> */}
                       <Text>{i.id}</Text>
-                      {/* <Text>{}</Text> */}
+                      <Text>slug :{i.slug}</Text>
                       <Text fontWeight={'bold'}>Rp.50.000</Text>
                       <Text>{i.store?.name}</Text>
                       {/* <Text>{i.store?.locations[0].address}</Text> */}

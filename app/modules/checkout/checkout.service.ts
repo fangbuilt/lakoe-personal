@@ -4,6 +4,9 @@ export async function getCheckoutDetail(data: any) {
   return await db.product.findUnique({
     where: {
       slug: data.slug,
+      store: {
+        name: data.store,
+      },
     },
     include: {
       store: {
@@ -30,17 +33,19 @@ export async function getCheckoutDetail(data: any) {
 }
 
 export async function createCheckout(data: any) {
-  const cart = await db.cart.create({ data: data.cart });
+  const payment = await db.payment.create({
+    data: data.getPayment,
+  });
+
+  const cart = await db.cart.create({
+    data: { ...data.cart, paymentId: payment.id },
+  });
 
   await db.cartItem.create({
     data: {
       ...data.cartItem,
       cartId: cart.id,
     },
-  });
-
-  const payment = await db.payment.create({
-    data: data.getPayment,
   });
 
   const invoice = await db.invoice.create({
