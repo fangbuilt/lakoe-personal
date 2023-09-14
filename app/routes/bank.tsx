@@ -18,7 +18,7 @@ export async function loader(storeId: string) {
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-  console.log('ini isi formData', formData);
+  // console.log("ini isi formData", formData);
 
   // delete
   const bankId = formData.get('bankId');
@@ -74,7 +74,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function Bank() {
   const dataBank = useLoaderData<typeof loader>();
-  console.log('data bank', dataBank);
+  // console.log('data bank', dataBank);
 
   return (
     <>

@@ -1,14 +1,28 @@
 import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
+export async function getStoreData(id: string) {
+  return json(
+    await db.store.findMany({
+      where: {
+        id: '50',
+      },
+      include: {
+        bankAccount: {
+          include: {
+            withdraw: true,
+          },
+        },
+      },
+    })
+  );
+}
+
 export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '18',
-      },
-      include: {
-        withdraw: true,
+        storeId: '50',
       },
     })
   );
@@ -43,7 +57,7 @@ export async function createBank(data: any) {
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '18' },
+        connect: { id: '50' },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -84,26 +98,49 @@ export async function getWithdrawData() {
 
 export async function createWithdraw(
   data: any,
-  bankId: string,
+  id: any,
   storeId: string,
   approvedById: string
 ) {
   const amount = parseFloat(data.amount);
+
+  // Check if the User record with id "10" exists
+  const user = await db.user.findUnique({
+    where: { id: '50' },
+  });
+
+  if (!user) {
+    throw new Error('User with id not found.');
+  }
+
+  const bankAccount = await db.bankAccount.findFirst({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!bankAccount) {
+    throw new Error('Bank Account Id not found.');
+  }
+
+  const bankId = bankAccount.id;
+
   const withdraw = await db.withdraw.create({
     data: {
       store: {
-        connect: { id: '18' },
+        connect: { id: '50' },
       },
       amount: amount,
       status: 'REQUEST',
       bankAccount: {
-        connect: { id: '10' },
+        connect: { id: bankId },
       },
       approvedBy: {
-        connect: { id: '10' },
+        connect: { id: '1' },
       },
     },
   });
+
   console.log('Withdraw created:', withdraw);
   return withdraw;
 }
@@ -113,3 +150,36 @@ export async function deleteWithdraw(id: string) {
     where: { id: id },
   });
 }
+
+// withdrawal logic
+// export async function createWithdrawal(
+//   storeId: string,
+//   amount: number
+// ): Promise<boolean> {
+//   try {
+//     const store = await db.store.findFirst({
+//       where: {
+//         id: "18",
+//       },
+//     });
+
+//     if (store.credit >= amount) {
+//       const newCredit = store.credit - amount;
+
+//       await db.store.update({
+//         where: {
+//           id: "18",
+//         },
+//         data: {
+//           credit: newCredit,
+//         },
+//       });
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   } catch (error) {
+//     console.error("Withdrawal error:", error);
+//     return false;
+//   }
+// }

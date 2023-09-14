@@ -21,16 +21,17 @@ import DashboardPopup from '~/components/PopupDashboard';
 import {
   createWithdraw,
   deleteWithdraw,
-  getBankList,
+  getStoreData,
 } from '~/modules/dashboard/dashboard.service';
 import { useLoaderData } from '@remix-run/react';
 import NavbarDashboard from '../modules/dashboard/components/navbarDashboard';
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
+import { db } from '~/libs/prisma/db.server';
 // import React, { useState } from "react";
 
-export async function loader(storeId: string) {
-  return await getBankList(storeId);
+export async function loader(id: string) {
+  return await getStoreData(id);
 }
 
 export async function action({ request }: ActionArgs) {
@@ -44,28 +45,51 @@ export async function action({ request }: ActionArgs) {
   const bankId = formData.get('bankId');
   const withdrawId = formData.get('withdrawId');
 
-  if (actionType === 'create' && amount && bankAccount) {
-    const createdWithdraw = await createWithdraw(
-      {
-        store: {
-          connect: { id: storeId },
+  if (actionType === 'create' && amount && bankAccount && bankId) {
+    try {
+      const createdWithdraw = await createWithdraw(
+        {
+          store: {
+            connect: { id: storeId },
+          },
+          amount: amount.toString(),
+          status: 'REQUEST',
+          bankAccount: {
+            connect: { id: bankId },
+          },
         },
-        amount: amount.toString(),
-        status: 'REQUEST',
-        bankAccount: {
-          connect: { id: bankId },
+        bankId as string,
+        storeId as string,
+        approvedById as string
+      );
+
+      console.log('Withdraw created:', createdWithdraw);
+
+      const store = await db.store.findUnique({
+        where: {
+          id: '50',
         },
-      },
-      bankId as string,
-      storeId as string,
-      approvedById as string
-    );
+      });
+      if (store) {
+        // Calculate the new credit balance
+        const newCredit = store.credit - amount;
 
-    console.log('Withdraw created:', createdWithdraw);
-
-    // let createdWithdrawId = createdWithdraw.id;
-
-    return redirect('/dashboard');
+        await db.store.update({
+          where: {
+            id: '50',
+          },
+          data: {
+            credit: newCredit,
+          },
+        });
+      } else {
+        console.error('User not found');
+      }
+      return redirect('/dashboard');
+    } catch (error) {
+      console.error('Error creating withdrawal:', error);
+      return redirect('/dashboard');
+    }
   }
 
   if (actionType === 'delete' && withdrawId) {
@@ -77,7 +101,14 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function Dashboard() {
-  const dataBank = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+
+  function formatRupiah(saldo: number) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(saldo);
+  }
 
   return (
     <>
@@ -99,13 +130,19 @@ export default function Dashboard() {
               p={3}
             >
               <Text fontSize={'13px'}>Current Balance</Text>
-              <Text fontSize={'20px'} fontWeight={'bold'} color={'#28a745'}>
-                Rp.0
-              </Text>
-              <DashboardPopup
-                dataBank={dataBank}
-                // createdWithdrawId={createdWithdrawId}
-              />
+              {data.map((item) => (
+                <Text
+                  fontSize={'20px'}
+                  fontWeight={'bold'}
+                  color={'#28a745'}
+                  key={item.id}
+                >
+                  {formatRupiah(item.credit)}
+                </Text>
+              ))}
+              {data.map((item) => (
+                <DashboardPopup bankAccount={item.bankAccount} />
+              ))}
             </Box>
             <Box
               display={'flex'}
