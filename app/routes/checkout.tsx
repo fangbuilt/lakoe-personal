@@ -69,7 +69,12 @@ export default function CheckoutPage() {
                       <Text>{i.id}</Text>
                       {/* <Text>{i.attachments[0].url}</Text> */}
                       <Text>slug :{i.slug}</Text>
-                      <Text fontWeight={'bold'}>Rp.50.000</Text>
+                      {/* <Text fontWeight={"bold"}>
+                        {
+                          i.variants[0].variantOptions[0].variantOptionValues[0]
+                            .price
+                        }
+                      </Text> */}
                       <Text>{i.store?.name}</Text>
                       {/* <Text>{i.store?.locations[0].address}</Text> */}
                     </Box>

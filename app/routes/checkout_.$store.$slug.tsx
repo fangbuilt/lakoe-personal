@@ -6,7 +6,6 @@ import {
   Input,
   Radio,
   RadioGroup,
-  Select,
   Stack,
   Table,
   TableContainer,
@@ -20,6 +19,7 @@ import {
 import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
 import { useState } from 'react';
+import CheckoutCourier from '~/modules/checkout/component/checkoutCourier';
 import CheckoutDescription from '../components/checkoutDescription';
 import {
   createCheckout,
@@ -40,12 +40,13 @@ export const action = async ({ request }: ActionArgs) => {
     const name = formData.get('username') as string;
     const telp = formData.get('no-telp') as string;
     const email = formData.get('email') as string;
-    const address = formData.get('address') as string;
+    // const address = formData.get("address") as string;
     const province = formData.get('province') as string;
     const district = formData.get('district') as string;
     const village = formData.get('village') as string;
     const description = formData.get('description') as string;
     const courier = formData.get('courier') as string;
+    const courierService = +(formData.get('courierService') as string);
     // const buyway = formData.get("buyway") as string;
     // const voucher = formData.get("voucher") as string;
 
@@ -59,14 +60,16 @@ export const action = async ({ request }: ActionArgs) => {
     const variantOptionId = formData.get('variantOptionId') as string;
     const totalPrice = +(formData.get('totalPrice') as string);
     const totalPriceUnique = +(formData.get('totalPriceUnique') as string);
+    const variantOptionValueId = formData.get('valueId') as string;
+    const stock = +(formData.get('stock') as string);
 
     const invoice = {
-      price: totalPriceUnique,
+      price: totalPriceUnique + courierService,
       discount: 0,
       status: 'UNPAID',
       receiverLongitude: '',
       receiverLatitude: '',
-      receiverDistrict: address,
+      receiverDistrict: district,
       receiverPhone: telp,
       receiverAddress: village + ' ' + district + ' ' + province,
       receiverName: name,
@@ -76,7 +79,6 @@ export const action = async ({ request }: ActionArgs) => {
       invoiceNumber: '',
       waybill: '',
       mootaTransactionId: '',
-      courierId: courier,
       userId: userId,
     };
 
@@ -101,15 +103,58 @@ export const action = async ({ request }: ActionArgs) => {
 
     const getPayment = {
       bank: payment,
-      amount: price,
+      amount: totalPriceUnique + courierService,
       status: 'UNPAID',
       userId: userId,
     };
-    console.log('price', count);
 
-    const data = { invoice, cart, cartItem, invoiceHistory, getPayment };
+    const getCourier = {
+      availableForCashOnDelivery: false,
+      availableForProofOfDelivery: false,
+      availableForInstantWaybillId: false,
+      courierType: courier,
+      courierInsurance: '',
+      courierName: courier,
+      courierCode: courier,
+      courierServiceName: '',
+      courierServiceCode: '',
+      tier: '',
+      description: '',
+      serviceType: '',
+      shippingType: 'parcel',
+      shipmentDurationRange: '',
+      shipmentDurationUnit: '',
+      price: 1,
+      orderId: '',
+      trackingId: '',
+      deliveryDate: '',
+      deliveryTime: '',
+    };
+
+    const update = {
+      valueId: variantOptionValueId,
+      stock: stock,
+    };
+
+    console.log('update', update);
+
+    const data = {
+      invoice,
+      cart,
+      cartItem,
+      invoiceHistory,
+      getPayment,
+      update,
+      courierService,
+      getCourier,
+    };
+
+    console.log(data);
 
     await createCheckout(data);
+
+    console.log('id nya :', variantOptionValueId);
+    console.log('stock nya :', stock);
   }
   return redirect(`/checkout/transfer`);
 };
@@ -179,6 +224,14 @@ export default function Checkout() {
                               .variantOptionValues[0].stock as number) - count}
                             pcs
                           </Text>
+                          <Input
+                            type="hidden"
+                            name="stock"
+                            value={
+                              (item?.variants[0].variantOptions[0]
+                                .variantOptionValues[0].stock as number) - count
+                            }
+                          />
                         </Box>
                       </Td>
                       <Td>
@@ -209,6 +262,32 @@ export default function Checkout() {
               </TableContainer>
             </Box>
             <Box>
+              {item?.attachments.map((i, o) => (
+                <Box key={o}>
+                  <Image boxSize={'100px'} src={i.url} alt="" />
+                </Box>
+              ))}
+              {item?.variants.map((i, o) => (
+                <Box key={o}>
+                  <Text>{i.name}</Text>
+                  <Box>
+                    {i.variantOptions.map((i, o) => (
+                      <Box key={o}>
+                        <Text>{i.name}</Text>
+                        <Text>
+                          {i.variantOptionValues.map((i, o) => (
+                            <Box key={o}>
+                              <Text>{i.stock}</Text>
+                            </Box>
+                          ))}
+                        </Text>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+            <Box>
               <Input
                 type="hidden"
                 name="price"
@@ -219,6 +298,13 @@ export default function Checkout() {
               />
               <Input type="hidden" name="storeId" value={item?.storeId} />
               <Input type="hidden" name="productId" value={item?.id} />
+              <Input
+                type="hidden"
+                name="valueId"
+                value={
+                  item?.variants[0].variantOptions[0].variantOptionValues[0].id
+                }
+              />
               <Input
                 type="hidden"
                 name="variantOptionId"
@@ -247,12 +333,15 @@ export default function Checkout() {
                     />
                   ))}
                 </Box>
+                <Box mt={3}>
+                  <CheckoutCourier />
+                </Box>
               </Box>
-              <Box>
-                <Text fontWeight={'bold'}>Pengiriman</Text>
-                <Box display={'flex'} gap={3}>
-                  <Box width={'50%'}>
-                    <Select name="courier" bgColor={'#fcfcfc'}>
+              {/* <Box>
+                <Text fontWeight={"bold"}>Pengiriman</Text>
+                <Box display={"flex"} gap={3}>
+                  <Box width={"50%"}>
+                    <Select name="courier" bgColor={"#fcfcfc"}>
                       <option value="" hidden>
                         Pilih Kurir
                       </option>
@@ -263,8 +352,8 @@ export default function Checkout() {
                       <option value="5">TokopediaExpress</option>
                     </Select>
                   </Box>
-                  <Box w={'50%'}>
-                    <Select name="getPackage" bgColor={'#fcfcfc'}>
+                  <Box w={"50%"}>
+                    <Select name="getPackage" bgColor={"#fcfcfc"}>
                       <option value="" hidden>
                         Pilih Paket
                       </option>
@@ -276,7 +365,7 @@ export default function Checkout() {
                     </Select>
                   </Box>
                 </Box>
-              </Box>
+              </Box> */}
               <Box>
                 <Text fontWeight={'bold'}>Metode Pembayaran</Text>
                 <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
@@ -388,4 +477,3 @@ export default function Checkout() {
     </>
   );
 }
-// };

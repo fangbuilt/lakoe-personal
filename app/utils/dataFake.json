@@ -15,33 +15,8 @@
     "type": "email"
   },
   {
-    "placeholder": "Alamat Lengkap Anda",
-    "name": "address",
-    "type": "text"
-  },
-  {
-    "placeholder": "Pilih Provinsi",
-    "name": "province",
-    "type": "text"
-  },
-  {
-    "placeholder": "Pilih Kota/Kabupaten",
-    "name": "district",
-    "type": "text"
-  },
-  {
-    "placeholder": "Pilih Kecamatan",
-    "name": "village",
-    "type": "text"
-  },
-  {
     "placeholder": "Masukkan Catatan Pemesanan",
     "name": "description",
-    "type": "text"
-  },
-  {
-    "placeholder": "Kode Pos",
-    "name": "postalCode",
     "type": "text"
   }
 ]
