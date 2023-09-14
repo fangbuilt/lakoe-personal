@@ -5,7 +5,7 @@ import { getInvoiceByStatus } from '~/modules/order/order.service';
 import { useLoaderData } from '@remix-run/react';
 
 export async function loader() {
-  const dataInvoice = await getInvoiceByStatus(status);
+  const dataInvoice = await getInvoiceByStatus();
 
   return dataInvoice;
 }

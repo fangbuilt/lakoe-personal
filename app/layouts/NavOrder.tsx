@@ -444,7 +444,7 @@ export default function NavOrder({ jancok }: any) {
                     ))} */}
                     {jancok.map((data: any) => (
                       <CardNewOrder
-                        key={data.cart}
+                        key={data}
                         id={data.id}
                         title={data.titleProduct}
                         telephone={data.telephone}
@@ -502,9 +502,9 @@ export default function NavOrder({ jancok }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {jancok.map((data: any) => (
                       <CardUnpaid
-                        key={index}
+                        key={data}
                         id={data.id}
                         title={data.titleProduct}
                         telephone={data.telephone}

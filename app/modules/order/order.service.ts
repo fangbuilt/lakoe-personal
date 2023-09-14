@@ -1,6 +1,6 @@
 import { db } from '~/libs/prisma/db.server';
 
-export async function getInvoiceByStatus(status: string) {
+export async function getInvoiceByStatus() {
   const getorderdataforbiteship = await db.invoice.findMany({
     where: {
       status,
