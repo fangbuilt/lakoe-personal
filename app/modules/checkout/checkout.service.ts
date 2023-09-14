@@ -14,7 +14,7 @@ export async function getCheckoutDetail(data: any) {
           users: true,
         },
       },
-      attachment: true,
+      attachments: true,
       variants: {
         include: {
           variantOptions: {

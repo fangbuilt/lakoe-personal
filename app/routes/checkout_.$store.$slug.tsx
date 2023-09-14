@@ -164,7 +164,7 @@ export default function Checkout() {
                         <Image
                           boxSize={'10'}
                           borderRadius={'10%'}
-                          src={item?.attachment.attachment}
+                          src={item?.attachments[0].url}
                           alt=""
                         />
                         <Text>{item?.name}</Text>
