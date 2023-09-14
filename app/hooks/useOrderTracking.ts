@@ -22,7 +22,7 @@ export default function getBiteshipTracking() {
           "https://api.biteship.com/v1/trackings/scPhFwoqEulGqPL3IQmjDYUp",
           {
             headers: {
-              authorization: useData,
+              authorization: "useData",
             },
           }
         );
