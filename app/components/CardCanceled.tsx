@@ -19,19 +19,27 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import type { IMessageTemplates, IOrderList } from '~/interfaces/order';
 import {
   createWhatsAppTemplateMessageLink1,
   phoneNumber,
 } from '../utils/TemplateMessage';
 import dummyMessage from '../utils/templateMessage.json';
+import CanceledService from '~/modules/order/orderCanceledService';
 
-export default function CardCenceled(props: IOrderList) {
+export async function loader (){
+  return await CanceledService()
+}
+export default function CardCenceled() {
+  const data = useLoaderData<typeof loader>()
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
       <Card mb={5} boxShadow={'xs'}>
+        {data.map((data)=>(
+
+
         <Box>
           <Box mt={5}>
             <Box>
@@ -97,16 +105,18 @@ export default function CardCenceled(props: IOrderList) {
                 </Modal>
               </Flex>
               <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                {props.invoice}
+                {data.invoiceNumber}
               </Text>
               <hr />
+              {data.cart?.cartItems?.map((item)=>(
+
               <Flex justifyContent={'space-between'}>
                 <Box display={'flex'} w={'80%'}>
                   <Img
                     w={'52px'}
                     h={'52px'}
                     display={'inline'}
-                    src={props.imageProduct}
+                    // src={props.imageProduct}
                     mt={3}
                   />
                   <Text
@@ -118,9 +128,9 @@ export default function CardCenceled(props: IOrderList) {
                     whiteSpace={'nowrap'}
                     fontWeight={'700'}
                   >
-                    {props.title}
+                    {item.product?.name}
                     <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                      1 Barang
+                      {item.qty} Barang
                     </Text>
                   </Text>
                 </Box>
@@ -134,13 +144,15 @@ export default function CardCenceled(props: IOrderList) {
                     </Text>
                   </Flex>
                   <Text fontWeight={'bold'} fontSize={'14px'}>
-                    Rp {props.totalAmount}
+                    Rp {data.price}
                   </Text>
                 </Box>
               </Flex>
+              ))}
             </Box>
           </Box>
         </Box>
+        ))}
       </Card>
     </>
   );

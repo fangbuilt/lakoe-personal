@@ -431,7 +431,8 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    <h1>Semua</h1>
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardUnpaid
                         key={index}
                         id={data.id}
@@ -496,7 +497,7 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
@@ -582,7 +583,8 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data: any, index: any) => (
+                    <CardCanceled/>
+                    {/* {filteredOrdersByCourier.map((data: any, index: any) => (
                       <CardCanceled
                         key={index}
                         id={data.id}
@@ -592,7 +594,7 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
                 {filteredOrdersByCourier.length === 0 && (
