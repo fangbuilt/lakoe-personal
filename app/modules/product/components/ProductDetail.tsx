@@ -17,11 +17,11 @@ import {
 import Dropzone from 'react-dropzone';
 import CloseCircle from '~/assets/icon-pack/button-icons/close-circle.svg';
 import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
-import useAddProduct from '../hooks/useAddProduct';
+// import useAddProduct from '../hooks/useAddProduct';
 import { useState } from 'react';
 
 export function ProductDetail() {
-  const { preview } = useAddProduct();
+  // const { preview } = useAddProduct();
 
   const [photos, setPhotos] = useState([
     { label: 'Foto Utama', name: 'mainPhoto', image: null },
@@ -50,6 +50,7 @@ export function ProductDetail() {
     });
     setPhotos(updatedPhotos);
   };
+
   return (
     <Card>
       <CardBody>
@@ -82,13 +83,14 @@ export function ProductDetail() {
                     <section>
                       <div {...getRootProps()}>
                         <input
-                          {...getInputProps()}
+                          // {...getInputProps()}
+                          hidden
                           name="image"
                           type="file"
                           accept="image/*"
                         />
 
-                        {preview || photo.image ? (
+                        {photo.image ? (
                           <Flex
                             direction={'column'}
                             justify={'center'}

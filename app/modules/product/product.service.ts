@@ -8,7 +8,11 @@ export async function createProduct(data: any, storeId: any) {
         name: data.name,
         slug: data.slug,
         description: data.description,
-        attachments: data.attachments,
+        attachment: {
+          create: {
+            attachment: data.attachment,
+          },
+        },
         minumumOrder: data.minumumOrder,
         store: {
           connect: { id: storeId },
@@ -18,6 +22,7 @@ export async function createProduct(data: any, storeId: any) {
             name: data.category,
           },
         },
+
         variants: {
           create: [
             {
@@ -53,14 +58,13 @@ export async function createProduct(data: any, storeId: any) {
         },
       },
       include: {
+        category: true,
+        attachment: true,
         variants: {
           include: {
             variantOptions: {
               include: {
-                variantOptionValues: {
-                  // include: {
-                  // }
-                },
+                variantOptionValues: true,
               },
             },
           },
