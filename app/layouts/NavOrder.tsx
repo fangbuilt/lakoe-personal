@@ -25,7 +25,6 @@ import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import ScrollBox from '../components/ScrollBox';
 import { UseSearch } from '../hooks/useSearchOrder';
 import { useFilterCourier } from '../hooks/useFilterCourier';
-import CardUnpaid from '../components/CardUnpaid';
 import CardReadyToShip from '../components/CardReadyToShip';
 import CardNewOrder from '../components/CardNewOrder';
 import CardSuccessOrder from '../components/CardSuccesOrder';
@@ -503,7 +502,7 @@ export default function NavOrder({ jancok }: any) {
                 <ScrollBox>
                   <TabPanel>
                     {jancok.map((data: any) => (
-                      <CardUnpaid
+                      <CardNewOrder
                         key={data}
                         id={data.id}
                         title={data.titleProduct}
