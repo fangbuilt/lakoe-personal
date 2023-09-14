@@ -14,7 +14,7 @@ export async function GetDataProductReadyToShip() {
             include: {
               product: {
                 include: {
-                  attachment: true,
+                  attachments: true,
                 },
               },
             },

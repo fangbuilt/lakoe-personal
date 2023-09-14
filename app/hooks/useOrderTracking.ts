@@ -1,14 +1,14 @@
-import { useLoaderData } from '@remix-run/react';
+// import { useLoaderData } from '@remix-run/react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 
 export async function loader() {
-  return process.env.API_LAKOE_TEST as string;
+  return process.env.API_BITESHIP_TEST as string;
 }
 
 export default function GetBiteshipTracking() {
-  const useData = useLoaderData<typeof loader>();
+  // const useData = useLoaderData<typeof loader>();
 
   const [orderTrackingsData, setOrderTrackingsData] =
     useState<IBiteshipTracking>();
@@ -23,7 +23,8 @@ export default function GetBiteshipTracking() {
           'https://api.biteship.com/v1/trackings/scPhFwoqEulGqPL3IQmjDYUp',
           {
             headers: {
-              authorization: useData,
+              authorization:
+                'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQVBJX0JJVEVTSElQX1RFU1QiLCJ1c2VySWQiOiI2NGY1MjYyMjM5Yzk5YzNkMjg0MDkwM2MiLCJpYXQiOjE2OTQ2NzQ2NTB9.3lmu3MXV2ipjU_naD3teN2aNDa-ez6Sm77oSh0Q9xlk',
             },
           }
         );

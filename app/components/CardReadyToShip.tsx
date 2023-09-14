@@ -1,13 +1,9 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import { GetDataProductReadyToShip } from '~/modules/order/order.service';
-
+// import { GetDataProductReadyToShip } from '~/modules/order/order.service';
+import type { loader } from '~/routes/order';
 import ModalTracking from './orderTrackingModal';
-
-export async function loader() {
-  return await GetDataProductReadyToShip();
-}
 
 export default function ReadyToShipCard() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -34,51 +30,57 @@ export default function ReadyToShipCard() {
       {/* CARD START HERE */}
 
       <Card mb={5} boxShadow={'xs'}>
-        {cardProduct.map((data) => (
-          <Box key={data.id}>
-            <Box mt={5}>
-              <Box>
-                <Flex justifyContent={'space-between'} px={2}>
-                  <Button
-                    bg={'#147AF3'}
-                    color={'white'}
-                    fontWeight={'bold'}
-                    colorScheme="gray.600"
-                    size={'sm'}
-                    pointerEvents={'none'}
-                  >
-                    Siap Dikirim {data.status}
-                  </Button>
-                  <Box>
-                    {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
+        {cardProduct !== null ? (
+          cardProduct.map((data) => (
+            <Box key={data.id}>
+              <Box mt={5}>
+                <Box>
+                  <Flex justifyContent={'space-between'} px={2}>
                     <Button
-                      bg={'transparent'}
-                      border={'1px solid #D5D5D5'}
-                      borderRadius={'full'}
-                      fontSize={'14px'}
-                      onClick={openModal}
+                      bg={'#147AF3'}
+                      color={'white'}
+                      fontWeight={'bold'}
+                      colorScheme="gray.600"
+                      size={'sm'}
+                      pointerEvents={'none'}
                     >
-                      Tracking Pengiriman
+                      {data.status}
                     </Button>
-                    <ModalTracking isOpen={modalIsOpen} onClose={closeModal} />
-                    {/*  */}
-                  </Box>
-                </Flex>
-                <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                  {data.invoiceNumber}
-                </Text>
-                <hr />
-
-                {data.cart?.cartItems?.map((item) => (
-                  <Flex justifyContent={'space-between'} key={item.id}>
-                    <Box display={'flex'} w={'80%'}>
-                      <Img
-                        w={'52px'}
-                        h={'52px'}
-                        display={'inline'}
-                        // src={props.imageProduct}
-                        mt={3}
+                    <Box>
+                      {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
+                      <Button
+                        bg={'transparent'}
+                        border={'1px solid #D5D5D5'}
+                        borderRadius={'full'}
+                        fontSize={'14px'}
+                        onClick={openModal}
+                      >
+                        Tracking Pengiriman
+                      </Button>
+                      <ModalTracking
+                        isOpen={modalIsOpen}
+                        onClose={closeModal}
                       />
+                      {/*  */}
+                    </Box>
+                  </Flex>
+                  <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
+                    {data.invoiceNumber}
+                  </Text>
+                  <hr />
+
+                  <Flex justifyContent={'space-between'}>
+                    <Box display={'flex'} w={'80%'}>
+                      {data.cart?.cartItems.map((item, index) => (
+                        <Img
+                          key={index}
+                          w={'52px'}
+                          h={'52px'}
+                          display={'inline'}
+                          // src={item.product?.attachments}
+                          mt={3}
+                        />
+                      ))}
                       <Text
                         mt={4}
                         id="fm500"
@@ -88,9 +90,9 @@ export default function ReadyToShipCard() {
                         whiteSpace={'nowrap'}
                         fontWeight={'700'}
                       >
-                        {item.product?.name}
+                        {data.cart?.cartItems.map((item) => item.product?.name)}
                         <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                          {item.qty} Barang
+                          {data.cart?.cartItems.map((item) => item.qty)} Barang
                         </Text>
                       </Text>
                     </Box>
@@ -104,15 +106,17 @@ export default function ReadyToShipCard() {
                         </Text>
                       </Flex>
                       <Text fontWeight={'bold'} fontSize={'14px'}>
-                        Rp {item.qty * item.price}
+                        Rp {data.price}
                       </Text>
                     </Box>
                   </Flex>
-                ))}
+                </Box>
               </Box>
             </Box>
-          </Box>
-        ))}
+          ))
+        ) : (
+          <Text> No Data Available</Text>
+        )}
       </Card>
 
       {/* END CARD */}

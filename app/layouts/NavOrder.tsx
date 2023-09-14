@@ -34,7 +34,7 @@ import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 // import { useLoaderData } from '@remix-run/react';
 
-export default function NavOrder() {
+export default function NavOrder({ cardProduct }: any) {
   // const loaderData =  useLoaderData()
 
   // const { filteredOrders, setSearchQuery } = UseSearch(loaderData);
@@ -536,10 +536,11 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {/* {filteredOrders.map((data, index) => ( */}
+                    {/* {cardProduct.map((data, index) => ( */}
+
                     <CardReadyToShip />
 
-                    {/* ))} */}
+                    {/* // ))} */}
                   </TabPanel>
                 </ScrollBox>
 
