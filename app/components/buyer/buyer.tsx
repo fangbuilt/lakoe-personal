@@ -30,6 +30,7 @@ function PaymentConfirmation() {
       </Heading>
 
       <Container
+        width={'80%'}
         bg={'whiteAlpha.50'}
         p={10}
         mt={'3%'}
@@ -42,34 +43,35 @@ function PaymentConfirmation() {
             <FormControl id="order-id" isRequired>
               <FormLabel>Order ID</FormLabel>
               <Input
-                name="orderId"
+                name="cartId"
                 type="text"
                 placeholder="Masukkan Order ID Anda"
               />
             </FormControl>
-            <FormControl id="account-name" isRequired>
+            <FormControl id="bankAccountId" isRequired>
               <FormLabel>Atas Nama Rekening</FormLabel>
               <Input
-                name="accountName"
+                name="bankAccountId"
                 type="text"
                 placeholder="Pemilik Rekening"
               />
             </FormControl>
-            <FormControl id="transfer-to" isRequired>
+            <FormControl id="bankAccount" isRequired>
               <FormLabel>Transfer Ke</FormLabel>
-              <Select name="transferTo">
+              <Select name="bankAccount">
                 <option value="" hidden>
                   Pilihan Bank
                 </option>
                 <option value="Bank BRI">Bank BRI</option>
                 <option value="Bank BCA">Bank BCA</option>
                 <option value="Bank BNI">Bank BNI</option>
+                <option value="Bank BNI">Bank MANDIRI</option>
               </Select>
             </FormControl>
             <FormControl id="transfer-date" isRequired>
               <FormLabel>Tanggal Transfer</FormLabel>
               <Input
-                name="transferDate"
+                name="createdAt"
                 type="date"
                 placeholder="Pilih Tanggal Transfer"
               />
@@ -78,7 +80,7 @@ function PaymentConfirmation() {
               <FormLabel>Jumlah Transfer</FormLabel>
               <InputGroup>
                 <Input
-                  name="transferAmount"
+                  name="amount"
                   type="number"
                   placeholder="Jumlah Transfer"
                 />
@@ -89,7 +91,7 @@ function PaymentConfirmation() {
               <FormLabel>Bukti Transfer</FormLabel>
               <Box position={'relative'} mb={5} alignItems={'center'}>
                 <Input
-                  name="buktiTransfer"
+                  name="attachment"
                   position={'absolute'}
                   p={1}
                   placeholder="medium size"

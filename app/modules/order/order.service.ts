@@ -6,9 +6,33 @@ export async function getPosts() {
   });
 }
 
-export async function create(data: any) {
-  const title = await db.payment.create({
-    data: data.title,
+// export async function create(data: any) {
+//   const post = await db.confirmationPayment.create({
+
+//     data: data.title,
+//   });
+//   return post;
+// }
+
+// export async function createPost(data: any) {
+//   console.log(data);
+//   await db.confirmationPayment.create({data})
+
+//  return null
+// }
+
+export async function createConfirmationPayment(data: any) {
+  const post = await db.confirmationPayment.findUnique({
+    where: {
+      cartId: data.cart.id,
+    },
   });
-  return title;
+
+  if (!post) {
+    const newPost = await db.confirmationPayment.create({
+      data,
+    });
+
+    return newPost;
+  }
 }

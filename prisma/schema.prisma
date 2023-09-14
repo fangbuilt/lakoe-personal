@@ -413,7 +413,7 @@ model ConfirmationPayment {
   cartId        String                        @unique
   bankAccount   BankAccount                   @relation(fields: [bankAccountId], references: [id])
   bankAccountId String                        @unique
-  amount        String
+  amount        Float
   attachment    ConfirmationPaymentAttachment @relation(fields: [attachmentId], references: [id])
   attachmentId  String                        @unique
   createdAt     DateTime                      @default(now())
