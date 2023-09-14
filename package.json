@@ -9,23 +9,27 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@mailerlite/mailerlite-nodejs": "^1.1.0",
     "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/react": "^2.8.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.0.9",
     "@fontsource/open-sans": "^5.0.11",
     "@fontsource/raleway": "^5.0.8",
-    "@fontsource-variable/plus-jakarta-sans": "^5.0.9",
     "@prisma/client": "^5.2.0",
     "@remix-run/css-bundle": "^1.19.3",
     "@remix-run/node": "^1.19.3",
     "@remix-run/react": "^1.19.3",
     "@remix-run/vercel": "^1.19.3",
+    "@types/axios": "^0.14.0",
     "@vercel/node": "^2.10.3",
+    "axios": "^1.5.0",
     "framer-motion": "^6.5.1",
     "isbot": "^3.6.8",
+    "mailerlite-api-v2-node": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
@@ -46,6 +50,9 @@
     "lint-staged": "^14.0.1",
     "prisma": "^5.2.0",
     "typescript": "^5.0.4"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "engines": {
     "node": ">=14.0.0"
