@@ -17,7 +17,7 @@ export function WithdrawNotification(
   bankAccount: string
 ) {
   const params: IDroppingOff = {
-    email: 'muhammadalisyamsi+hhhh@gmail.com', // The receiver email's - We will get the email from table invoice userId relation to get the email
+    email: 'muhammadalisyamsi+hdhhh@gmail.com', // The receiver email's - We will get the email from table invoice userId relation to get the email
     fields: {
       // This is where you can make custom fields variable for email template display
 

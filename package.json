@@ -33,7 +33,7 @@
     "mailerlite-api-v2-node": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.10.1",
+    "react-icons": "^4.11.0",
     "react-select": "^5.7.4",
     "source-map-support": "^0.5.21",
     "zod": "^3.22.2"
