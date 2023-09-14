@@ -169,13 +169,13 @@ model Product {
   name         String
   description  String
   minumumOrder Int
+  slug         String              @unique
   isActive     Boolean             @default(true)
   store        Store?              @relation(fields: [storeId], references: [id])
   storeId      String
   category     Category?           @relation(fields: [categoryId], references: [id])
   categoryId   String
   attachments  ProductAttachment[]
-  slug         String             @unique
   variants     Variant[]
   cartItems    CartItem[]
   createdAt    DateTime            @default(now())
