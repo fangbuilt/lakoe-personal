@@ -1,11 +1,12 @@
-import { Flex, Heading } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
+import NavOrder from '~/layouts/NavOrder';
 import { ImplementGrid } from '~/layouts/Grid';
 
 export default function Order() {
   return (
     <ImplementGrid>
-      <Flex align={'center'} justify={'center'} px={5} h={'100vh'}>
-        <Heading textAlign={'center'}>This is Order's Route</Heading>
+      <Flex align={'center'} justify={'center'} h={'100vh'}>
+        <NavOrder />
       </Flex>
     </ImplementGrid>
   );
