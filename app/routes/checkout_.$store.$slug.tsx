@@ -28,9 +28,9 @@ import {
 import input from '../utils/dataFake.json';
 
 export async function loader({ params }: ActionArgs) {
-  const store = params;
-  console.log('id:', store);
-  return getCheckoutDetail(store);
+  const data = params;
+  console.log('data:', data);
+  return getCheckoutDetail(data);
 }
 
 export const action = async ({ request }: ActionArgs) => {
@@ -57,9 +57,11 @@ export const action = async ({ request }: ActionArgs) => {
     const count = +(formData.get('calculation') as string);
     const postalCode = formData.get('postalCode') as string;
     const variantOptionId = formData.get('variantOptionId') as string;
+    const totalPrice = +(formData.get('totalPrice') as string);
+    const totalPriceUnique = +(formData.get('totalPriceUnique') as string);
 
     const invoice = {
-      price: price,
+      price: totalPriceUnique,
       discount: 0,
       status: 'UNPAID',
       receiverLongitude: '',
@@ -79,7 +81,7 @@ export const action = async ({ request }: ActionArgs) => {
     };
 
     const cart = {
-      price: price,
+      price: totalPrice,
       discount: 0,
       userId: userId,
       storeId: storeId,
@@ -132,6 +134,8 @@ export default function Checkout() {
     setCount(e.target.value);
   };
 
+  const unique = Math.floor(Math.random() * (200 - 100)) + 100;
+
   return (
     <>
       <CheckoutDescription />
@@ -168,7 +172,14 @@ export default function Checkout() {
                           src={item?.attachments[0].url}
                           alt=""
                         />
-                        <Text>{item?.name}</Text>
+                        <Box>
+                          <Text>{item?.name}</Text>
+                          <Text color={'gray.600'}>
+                            {(item?.variants[0].variantOptions[0]
+                              .variantOptionValues[0].stock as number) - count}
+                            pcs
+                          </Text>
+                        </Box>
                       </Td>
                       <Td>
                         <Flex alignItems="center">
@@ -334,14 +345,34 @@ export default function Checkout() {
                     borderBottom={'1px'}
                   >
                     <Text>Kode Unik</Text>
-                    <Text>{'none'}</Text>
+                    <Text>{unique}</Text>
                   </Box>
                   <Box display={'flex'} justifyContent={'space-between'}>
                     <Text>Total</Text>
                     <Text>
                       {(item?.variants[0].variantOptions[0]
-                        .variantOptionValues[0].price as number) * count}
+                        .variantOptionValues[0].price as number) *
+                        count +
+                        unique}
                     </Text>
+                    <Input
+                      type="hidden"
+                      name="totalPrice"
+                      value={
+                        (item?.variants[0].variantOptions[0]
+                          .variantOptionValues[0].price as number) * count
+                      }
+                    />
+                    <Input
+                      type="hidden"
+                      name="totalPriceUnique"
+                      value={
+                        (item?.variants[0].variantOptions[0]
+                          .variantOptionValues[0].price as number) *
+                          count +
+                        unique
+                      }
+                    />
                   </Box>
                 </Box>
               </Box>
