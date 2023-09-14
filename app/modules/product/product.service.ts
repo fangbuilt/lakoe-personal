@@ -6,7 +6,7 @@ export async function getProduct() {
       id: 'desc',
     },
     include: {
-      attachment: true,
+      attachments: true,
       variants: {
         include: {
           variantOptions: {
@@ -18,6 +18,7 @@ export async function getProduct() {
       },
     },
   });
+  // console.log("ini", data);
   return data;
 }
 
@@ -27,6 +28,7 @@ export async function getProductByStoreId(id: any) {
       storeId: id,
     },
     include: {
+      attachments: true,
       variants: {
         include: {
           variantOptions: {
@@ -47,6 +49,7 @@ export async function getProductByCategoryId(id: any) {
       categoryId: id,
     },
     include: {
+      attachments: true,
       variants: {
         include: {
           variantOptions: {
@@ -61,13 +64,20 @@ export async function getProductByCategoryId(id: any) {
   return data;
 }
 
-export async function deleteProduct(id: any) {
-  const data = await db.product.delete({
+export async function deleteProduct(id: string) {
+  // const deleteVariant = db.variant.deleteMany({
+  //   where: {
+  //     productId: id,
+  //   },
+  // });
+  const deleteProduct = await db.product.delete({
     where: {
       id,
     },
   });
-  return data;
+  // const trnasaction = await db.$transaction([deleteVariant, deleteProduct]);
+  // console.log("sukses", trnasaction);
+  return deleteProduct;
 }
 
 export async function update(data: any): Promise<any> {
@@ -100,23 +110,3 @@ export async function update(data: any): Promise<any> {
   console.log('ini update', update);
   return update;
 }
-
-// export async function createPyment({id, data}: any){
-//   const post = await db.payment.create({
-//     data,
-//     include: {
-//       user: {
-//         include: {
-//           store: {
-//             include: {
-//               products: {
-//                 id: data.id,
-//               },
-//             },
-//           },
-//         },
-//       },
-//     },
-//   });
-//   return post
-// }
