@@ -29,10 +29,6 @@ export async function action({ request }: ActionArgs) {
     const price = formData.get('price');
     const stock = formData.get('stock');
 
-    console.log('id', id);
-    console.log('price', price);
-    console.log('stock', stock);
-
     await update({ id, price, stock });
   }
 
@@ -44,7 +40,7 @@ export default function Product() {
   return (
     <ImplementGrid>
       <Stack mt={'7.5vh'} spacing={4}>
-        <ProductBody products={data} />
+        <ProductBody product={data} />
       </Stack>
     </ImplementGrid>
   );

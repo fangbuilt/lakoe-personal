@@ -44,7 +44,7 @@ export default function Product() {
   return (
     <ImplementGrid>
       <Stack mt={'7.5vh'} spacing={4}>
-        <ProductBody products={data} />
+        <ProductBody product={data} />
       </Stack>
     </ImplementGrid>
   );

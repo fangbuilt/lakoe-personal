@@ -19,23 +19,21 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import type { ReactNode } from 'react';
 import { useState } from 'react';
-import Empty from '~/assets/icon-pack/empty.svg';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
 import BoxSearch from '~/assets/icon-pack/box-search.svg';
+import Empty from '~/assets/icon-pack/empty.svg';
+import { useFilterProducts } from '~/hooks/product/useFilterProducts';
+import { useSortProducts } from '~/hooks/product/useSortProducts';
+import type { IProduct } from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
-import type { IProduct } from '~/interfaces/product/product';
-import { useSortProducts } from '~/hooks/product/useSortProducts';
-import { useFilterProducts } from '~/hooks/product/useFilterProducts';
 
 interface IProductBodyProps {
-  children?: ReactNode;
-  products: IProduct[];
+  product: IProduct[];
 }
 export default function ProductBody(props: IProductBodyProps) {
-  const { products } = props;
+  const { product } = props;
   const [activeTab, setActiveTab] = useState(0);
 
   const { selectedCategories, toggleCategory, getSelectedCategoryCount } =
@@ -45,10 +43,10 @@ export default function ProductBody(props: IProductBodyProps) {
 
   const filteredProducts =
     activeTab === 1
-      ? products.filter((a) => a.isActive)
+      ? product.filter((a) => a.isActive)
       : activeTab === 2
-      ? products.filter((a) => !a.isActive)
-      : products;
+      ? product.filter((a) => !a.isActive)
+      : product;
 
   return (
     <>
