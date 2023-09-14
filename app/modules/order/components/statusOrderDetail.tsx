@@ -37,8 +37,8 @@ import {
 import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import { useState } from "react";
 import { db } from "~/libs/prisma/db.server";
-import ModalPengiriman from "~/components/ModalPengiriman";
-import ModalInShipping, { ITracking } from "~/components/ModalInShipping";
+import ModalInShipping from "~/components/ModalInShipping";
+import { ITracking } from "~/interfaces/order/orderTracking";
 
 export function getStatusBadge(status: string) {
   if (status.toUpperCase() === "UNPAID") {
@@ -248,18 +248,19 @@ export function getStatusLacakButton(status: string) {
 
 export function getStatusLacakPengiriman(
   status: string,
-  data: IOrderDetailInvoice,
-  data2: ITracking
+  data: any,
+  dataTracking: ITracking
 ) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const openModal = () => {
+  function openModal() {
     setModalIsOpen(true);
-  };
+  }
 
-  const closeModal = () => {
+  function closeModal() {
     setModalIsOpen(false);
-  };
+  }
+
   if (status.toUpperCase() === "IN_TRANSIT") {
     return (
       <>
@@ -271,15 +272,19 @@ export function getStatusLacakPengiriman(
           background={"#FFFFFF)"}
           colorScheme="#FFFFFF)"
           w={"120px"}
-          onClick={openModal}
+          onClick={() => {
+            openModal();
+          }}
         >
           Lacak Pengiriman
         </Button>
-        <ModalInShipping
-          isOpen={modalIsOpen}
-          onClose={closeModal}
-          data={data2}
-        />
+        {modalIsOpen && (
+          <ModalInShipping
+            isOpen={modalIsOpen}
+            onClose={closeModal}
+            data={dataTracking}
+          />
+        )}
       </>
     );
   }
@@ -328,10 +333,10 @@ export async function getInvoiceById(id: any) {
 
 export default function StatusOrderDetail({
   data,
-  data2,
+  dataTracking,
 }: {
   data: IOrderDetailInvoice;
-  data2: ITracking;
+  dataTracking: ITracking;
 }) {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
@@ -661,7 +666,7 @@ export default function StatusOrderDetail({
               <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
                 Detail Pengiriman
               </Text>
-              {getStatusLacakPengiriman(data.status, data, data2)}
+              {getStatusLacakPengiriman(data.status, data, dataTracking)}
             </Box>
             <Box display={"flex"}>
               <Box display={"flex"} flexDirection={"column"} width={"192px"}>

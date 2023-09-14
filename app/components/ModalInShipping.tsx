@@ -16,49 +16,40 @@ import {
   StepTitle,
   Stepper,
   Text,
+  useSteps,
   useToast,
 } from "@chakra-ui/react";
 import { BsCircleFill } from "react-icons/bs";
-import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
-import useDetailPengiriman from "~/modules/order/hooks/useDetailPengiriman";
 import copy from "~/assets/DetailOrderIcon/copy.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBiteshipTrack } from "~/hooks/useBiteshipTrack";
+import { format } from "date-fns-tz";
+import { ITracking } from "~/interfaces/order/orderTracking";
 
-export interface ITracking {
-  id: string;
-  waybill_id?: string;
-  courier?: {
-    company: string;
-    name: string;
-    phone: string;
-  };
-  destination?: {
-    contact_name?: string;
-    address?: string;
-  };
-  history?: {
-    note?: string;
-    service_type?: string;
-    status?: string;
-    updated_at?: string;
-  };
-  origin?: {
-    contact_name?: string;
-    address?: string;
-  };
-  status?: string;
-}
+
+
 
 export default function ModalInShipping(props: {
   isOpen: boolean;
   onClose: () => void;
   data: ITracking;
 }) {
-  const { trackingInfoArray, activeStep, trackingInfo } = useBiteshipTrack();
-  console.log("ini", trackingInfo)
+  const { trackingInfoArray, trackingInfo } = useBiteshipTrack();
+
+  const steps = trackingInfoArray;
+  console.log("step", steps);
+
+  const { activeStep } = useSteps({
+    index: 1,
+    count: steps.length,
+  });
+
   const toast = useToast();
   const [_, setCopied] = useState(false);
+
+  useEffect(() => {
+    steps;
+  }, []);
 
   const handleCopyClick = () => {
     const textToCopy = props.data.waybill_id as string;
@@ -113,7 +104,7 @@ export default function ModalInShipping(props: {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      {props.data?.courier?.company}
+                      {trackingInfo?.courier.company}
                     </Text>
                   </Box>
                   <Box width={"288px"} height={"44px"} gap={1}>
@@ -143,7 +134,7 @@ export default function ModalInShipping(props: {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      {props.data?.waybill_id}
+                      {trackingInfo?.waybill_id}
                     </Text>
                   </Box>
                   <Box width={"288px"} height={"44px"} gap={1}>
@@ -161,7 +152,7 @@ export default function ModalInShipping(props: {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      {props.data?.origin?.contact_name}
+                      {trackingInfo?.origin.contact_name}
                     </Text>
                   </Box>
                 </Box>
@@ -187,7 +178,7 @@ export default function ModalInShipping(props: {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      {props.data?.destination?.contact_name}
+                      {trackingInfo?.destination.contact_name}
                     </Text>
                     <Text
                       fontSize={"14px"}
@@ -195,7 +186,7 @@ export default function ModalInShipping(props: {
                       lineHeight={"20px"}
                       color={"#1D1D1D"}
                     >
-                      {props.data?.destination?.address}
+                      {trackingInfo?.destination.address}
                     </Text>
                   </Box>
                 </Box>
@@ -224,13 +215,13 @@ export default function ModalInShipping(props: {
                     lineHeight={"20px"}
                     color={"#1D1D1D"}
                   >
-                    {props.data?.status}
+                    {trackingInfo?.status}
                   </Text>
                 </Box>
               </Box>
               <Box
                 width={"606px"}
-                height={"300px"}
+                // height={"300px"}
                 padding={" 20px 16px 0px 16px"}
               >
                 <Stepper
@@ -239,13 +230,13 @@ export default function ModalInShipping(props: {
                   borderRadius={"12px"}
                   index={activeStep}
                   orientation="vertical"
-                  height="110%"
+                  // height="110%"
                   width={"100%"}
                   gap="5"
                   p={"16px"}
                 >
-                  {trackingInfoArray.map((step) => (
-                    <Step key={step.id}>
+                  {steps.map((step: any, index: number) => (
+                    <Step key={index}>
                       <StepIndicator fontSize={"11px"}>
                         <StepStatus
                           complete={<BsCircleFill />}
@@ -253,11 +244,17 @@ export default function ModalInShipping(props: {
                           active={<BsCircleFill color="gray" />}
                         />
                       </StepIndicator>
-
                       <Box flexShrink="0">
-                        <StepTitle>{step.history?.note}</StepTitle>
+                        <StepTitle>
+                          {console.log("step note", step?.note)}
+                          {step?.note}
+                        </StepTitle>
                         <StepDescription>
-                          {step.history?.updated_at}
+                          {format(
+                            new Date(step?.updated_at),
+                            "EEE, dd MMM yyyy - HH:mm zzzz", // Desired output format
+                            { timeZone: "Asia/Jakarta" } // Time zone (WIB)
+                          )}
                         </StepDescription>
                       </Box>
 

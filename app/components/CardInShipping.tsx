@@ -1,21 +1,18 @@
 import { Box, Button, Card, Flex, Img, Text } from "@chakra-ui/react";
-import { Link } from "@remix-run/react";
 import React, { useState } from "react";
 import { iOrderList } from "../interfaces/order/iOrderList";
 import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
-import ModalPengiriman from "./ModalPengiriman";
+import ModalInShipping from "./ModalInShipping";
+import { ITracking } from "~/interfaces/order/orderTracking";
 
-export default function CardInShipping(
-  props: iOrderList,
-  data: IOrderDetailInvoice
-) {
+export default function CardInShipping(props: iOrderList, data: ITracking) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const openModal = () => {
+  function openModal(){
     setModalIsOpen(true);
   };
 
-  const closeModal = () => {
+ function closeModal() {
     setModalIsOpen(false);
   };
   return (
@@ -48,12 +45,13 @@ export default function CardInShipping(
                 >
                   Lihat Rincian Pengiriman
                 </Button>
-                {/* <ModalPengiriman
-                  isOpen={modalIsOpen}
-                  onClose={closeModal}
-                  data={data}
-                /> */}
-                {/*  */}
+                {modalIsOpen && (
+                  <ModalInShipping
+                    isOpen={modalIsOpen}
+                    onClose={closeModal}
+                    data={data}
+                  />
+                )}
               </Flex>
               <Text my={1} fontSize={"14px"} color={"gray.400"} px={2}>
                 {props.invoice}
