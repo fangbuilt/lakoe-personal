@@ -12,7 +12,11 @@ export async function getInvoiceById(id: any) {
           user: true,
           cartItems: {
             include: {
-              product: true,
+              product: {
+                include: {
+                  attachments: true,
+                },
+              },
             },
           },
         },
@@ -20,4 +24,16 @@ export async function getInvoiceById(id: any) {
     },
   });
   return dataInvoice;
+}
+
+export async function updateStatusInvoice(data: any) {
+  const { id } = data;
+  return await db.invoice.update({
+    data: {
+      status: "READY_TO_SHIP",
+    },
+    where: {
+      id: id,
+    },
+  });
 }

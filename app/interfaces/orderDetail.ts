@@ -38,10 +38,15 @@ export interface IOrderDetailCartItem {
 export interface IOrderDetailProduct {
   id: string;
   name: string;
-  attachments: string[];
+  attachments: IOrderDetailAttachment[];
   cartItems: IOrderDetailCartItem[];
 }
 
 export interface IOrderDetailUser {
   id: string;
+}
+
+export interface IOrderDetailAttachment {
+  id: string;
+  url: string;
 }

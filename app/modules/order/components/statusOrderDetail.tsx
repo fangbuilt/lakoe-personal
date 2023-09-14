@@ -1,5 +1,4 @@
 import {
-  Badge,
   Box,
   Button,
   Card,
@@ -8,6 +7,7 @@ import {
   Flex,
   Heading,
   Image,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -49,7 +49,9 @@ import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import circle from "~/assets/DetailOrderIcon/info-circle.svg";
 import { useState } from "react";
-import { Link } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
+import getStatusBadge from "./statusInvoice";
+import { updateStatusInvoice } from "../order.service";
 
 export default function StatusOrderDetail({
   data,
@@ -303,153 +305,19 @@ export default function StatusOrderDetail({
     }
   }
 
-  function getStatusBadge(status: string) {
-    if (status.toUpperCase() === "UNPAID") {
-      return (
-        <Badge
-          display={"flex"}
-          height={"24px"}
-          padding={`var(--1, 4px) var(--2, 8px)`}
-          justifyContent={"center"}
-          alignItems={"center"}
-          gap={`var(--1, 4px)`}
-          borderRadius={`var(--rounded, 4px)`}
-          background={`var(--yellow-400, #E8C600)`}
-          width={"150px"}
-        >
-          <Text
-            color={`var(--text-dark, #1D1D1D)`}
-            textAlign={"center"}
-            fontSize={"14px"}
-            fontWeight={"600"}
-          >
-            Belum Dibayar
-          </Text>
-        </Badge>
-      );
-    }
-    if (status.toUpperCase() === "NEW_ORDER") {
-      return (
-        <Badge
-          display={"flex"}
-          height={"24px"}
-          padding={`var(--1, 4px) var(--2, 8px)`}
-          justifyContent={"center"}
-          alignItems={"center"}
-          gap={`var(--1, 4px)`}
-          borderRadius={`var(--rounded, 4px)`}
-          background={`var(--green-800, #008F5D)`}
-          width={"150px"}
-        >
-          <Text
-            color={`var(--text-light, #FFF)`}
-            textAlign={"center"}
-            fontSize={"14px"}
-            fontWeight={"600"}
-          >
-            Pesanan Baru
-          </Text>
-        </Badge>
-      );
-    }
-    if (status.toUpperCase() === "READY_TO_SHIP") {
-      return (
-        <Badge
-          display={"flex"}
-          height={"24px"}
-          padding={`var(--1, 4px) var(--2, 8px)`}
-          justifyContent={"center"}
-          alignItems={"center"}
-          gap={`var(--1, 4px)`}
-          borderRadius={`var(--rounded, 4px)`}
-          background={`var(--blue-800, #147AF3)`}
-          width={"150px"}
-        >
-          <Text
-            color={`var(--text-light, #FFF)`}
-            textAlign={"center"}
-            fontSize={"14px"}
-            fontWeight={"600"}
-          >
-            Siap Dikirim
-          </Text>
-        </Badge>
-      );
-    }
-    if (status.toUpperCase() === "IN_TRANSIT") {
-      return (
-        <Badge
-          display={"flex"}
-          height={"24px"}
-          padding={`var(--1, 4px) var(--2, 8px)`}
-          justifyContent={"center"}
-          alignItems={"center"}
-          gap={`var(--1, 4px)`}
-          borderRadius={`var(--rounded, 4px)`}
-          background={`var(--orange-600, #F68511)`}
-          width={"150px"}
-        >
-          <Text
-            color={`var(--text-light, #FFF)`}
-            textAlign={"center"}
-            fontSize={"14px"}
-            fontWeight={"600"}
-          >
-            Dalam Pengiriman
-          </Text>
-        </Badge>
-      );
-    }
-    if (status.toUpperCase() === "ORDER_COMPLETED") {
-      return (
-        <Badge
-          display={"flex"}
-          height={"24px"}
-          padding={`var(--1, 4px) var(--2, 8px)`}
-          justifyContent={"center"}
-          alignItems={"center"}
-          gap={`var(--1, 4px)`}
-          borderRadius={`var(--rounded, 4px)`}
-          background={`var(--gray-200, #E6E6E6)`}
-          width={"150px"}
-        >
-          <Text
-            color={`var(--text-dark, #1D1D1D)`}
-            textAlign={"center"}
-            fontSize={"14px"}
-            fontWeight={"600"}
-          >
-            Pesanan Selesai
-          </Text>
-        </Badge>
-      );
-    }
-    if (status.toUpperCase() === "ORDER_CANCELLED") {
-      return (
-        <Badge
-          display={"flex"}
-          height={"24px"}
-          padding={`var(--1, 4px) var(--2, 8px)`}
-          justifyContent={"center"}
-          alignItems={"center"}
-          gap={`var(--1, 4px)`}
-          borderRadius={`var(--rounded, 4px)`}
-          background={`var(--red-800, #EA3829)`}
-          width={"150px"}
-        >
-          <Text
-            color={`var(--text-light, #FFF)`}
-            textAlign={"center"}
-            fontSize={"14px"}
-            fontWeight={"600"}
-          >
-            Dibatalkan
-          </Text>
-        </Badge>
-      );
-    }
-  }
+  const updateOrderStatus = async () => {
+    const id = data.id;
+    const newStatus = "READY_TO_SHIP";
 
+    const validateData = {
+      id,
+      newStatus,
+    };
+
+    await updateStatusInvoice(validateData);
+    onClose();
+    afterpacking();
+  };
   return (
     <>
       <Box display={"flex"} flexDirection={"column"} gap={3}>
@@ -501,8 +369,9 @@ export default function StatusOrderDetail({
             src={documentIcon}
           />
           <Box display={"flex"} flexDirection={"column"} gap={3}>
-            {getStatusBadge(data.status)}
+            {getStatusBadge({ status: data.status })}
             {getStatusText(data.status)}
+
             <Text
               color={"#0086B4"}
               cursor={"pointer"}
@@ -740,7 +609,7 @@ export default function StatusOrderDetail({
                           objectFit="cover"
                           width={"52px"}
                           height={"52px"}
-                          src={item.product.attachments[0]}
+                          src={item.product.attachments[0].url}
                           alt="brown clothes"
                           borderRadius={"8px"}
                         />
@@ -1057,7 +926,9 @@ export default function StatusOrderDetail({
                 borderRadius={`var(--rounded-full, 9999px)`}
                 background={`var(--cyan-800, #0086B4)`}
                 onClick={() => {
-                  setModalText("You can scroll the content behind the modal");
+                  setModalText(
+                    "Apakah anda yakin untuk melanjutkan proses ini?"
+                  );
                   onOpen();
                 }}
               >
@@ -1099,15 +970,16 @@ export default function StatusOrderDetail({
                   >
                     Cancel
                   </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      afterpacking();
-                      onClose();
-                    }}
-                  >
-                    Selesai di Packing
-                  </Button>
+                  <Form method="patch">
+                    <Input name="id" type="hidden" value={data.id} />
+                    <Button
+                      variant="ghost"
+                      onClick={updateOrderStatus}
+                      type="submit"
+                    >
+                      Selesai di Packing
+                    </Button>
+                  </Form>
                 </ModalFooter>
               </ModalContent>
             </Modal>
