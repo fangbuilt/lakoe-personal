@@ -129,21 +129,25 @@ async function main() {
     });
   }
 
+  // product attachment
+  for (let x = 1; x <= seedDataPerTable; x++) {
+    await prisma.productAttachment.create({
+      data: {
+        id: x.toString(),
+        attachment: faker.image.url(),
+      },
+    });
+  }
+
   // product
   for (let x = 1; x <= seedDataPerTable; x++) {
     await prisma.product.create({
       data: {
         id: x.toString(),
-        attachments: [
-          faker.image.url(),
-          faker.image.url(),
-          faker.image.url(),
-          faker.image.url(),
-          faker.image.url(),
-        ],
         name: faker.commerce.product(),
         description: faker.commerce.productDescription(),
         minumumOrder: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
+        attachmentId: faker.helpers.arrayElement(relationsId),
         slug: faker.helpers.slugify(),
         storeId: faker.helpers.arrayElement(relationsId),
         categoryId: faker.helpers.arrayElement(relationsId),
@@ -219,12 +223,12 @@ async function main() {
     await prisma.cartItem.create({
       data: {
         id: faker.string.uuid(),
-        cartId: faker.helpers.arrayElement(relationsId),
+        cartId: x.toString(),
         price: faker.helpers.rangeToNumber({ min: 100, max: 5000000 }),
         qty: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
-        storeId: faker.helpers.arrayElement(relationsId),
+        storeId: x.toString(),
         userId: '1', // just in case buyer can login
-        productId: faker.helpers.arrayElement(relationsId),
+        productId: x.toString(),
       },
     });
   }
@@ -248,6 +252,10 @@ async function main() {
         shipmentDurationRange: '1 - 3',
         shipmentDurationUnit: 'hours',
         price: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        courierInsurance: faker.helpers.arrayElement(['true', 'false']),
+        courierType: 'jne',
+        deliveryDate: '2022-01-01T06:00:00Z',
+        deliveryTime: '2022-01-01T06:00:00Z',
       },
       {
         id: '2',
@@ -265,6 +273,10 @@ async function main() {
         shipmentDurationRange: '1 - 3',
         shipmentDurationUnit: 'hours',
         price: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        courierInsurance: faker.helpers.arrayElement(['true', 'false']),
+        courierType: 'jne',
+        deliveryDate: '2022-01-01T06:00:00Z',
+        deliveryTime: '2022-01-01T06:00:00Z',
       },
       {
         id: '3',
@@ -282,6 +294,10 @@ async function main() {
         shipmentDurationRange: '1 - 3',
         shipmentDurationUnit: 'hours',
         price: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        courierInsurance: faker.helpers.arrayElement(['true', 'false']),
+        courierType: 'jne',
+        deliveryDate: '2022-01-01T06:00:00Z',
+        deliveryTime: '2022-01-01T06:00:00Z',
       },
 
       {
@@ -300,6 +316,10 @@ async function main() {
         shipmentDurationRange: '1 - 3',
         shipmentDurationUnit: 'hours',
         price: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        courierInsurance: faker.helpers.arrayElement(['true', 'false']),
+        courierType: 'jne',
+        deliveryDate: '2022-01-01T06:00:00Z',
+        deliveryTime: '2022-01-01T06:00:00Z',
       },
 
       {
@@ -318,6 +338,10 @@ async function main() {
         shipmentDurationRange: '1 - 3',
         shipmentDurationUnit: 'hours',
         price: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        courierInsurance: faker.helpers.arrayElement(['true', 'false']),
+        courierType: 'jne',
+        deliveryDate: '2022-01-01T06:00:00Z',
+        deliveryTime: '2022-01-01T06:00:00Z',
       },
     ],
   });
@@ -373,17 +397,25 @@ async function main() {
         mootaTransactionId: faker.finance.accountNumber().toString(),
         price: faker.helpers.rangeToNumber({ min: 100, max: 5000000 }),
         receiverName: faker.person.fullName(),
-        receiverPhone: faker.phone.toString(),
+        receiverPhone: faker.helpers
+          .rangeToNumber({
+            min: 1000000000,
+            max: 9999999999,
+          })
+          .toString(),
         receiverAddress: faker.location.streetAddress(),
         receiverDistrict: faker.location.state(),
         receiverLatitude: faker.location.latitude().toString(),
         receiverLongitude: faker.location.longitude().toString(),
         status: 'UNPAID',
         waybill: faker.finance.accountNumber().toString(),
-        cartId: faker.helpers.arrayElement(relationsId),
+        cartId: x.toString(),
         courierId: faker.helpers.arrayElement(['1', '2', '3', '4', '5']),
         paymentId: faker.helpers.arrayElement(['1', '2', '3', '4', '5']),
         userId: '1', // just in case buyer can login
+        receiverAddressNote: 'deket tiang listrik',
+        receiverPostalCode: '53371',
+        receiverEmail: 'surya@gmail.com',
       },
     });
   }
