@@ -3,7 +3,7 @@ import { db } from '~/libs/prisma/db.server';
 export async function getInvoiceByStatus() {
   const getorderdataforbiteship = await db.invoice.findMany({
     where: {
-      status,
+      status: 'NEW_ORDER',
     },
     include: {
       courier: true,
