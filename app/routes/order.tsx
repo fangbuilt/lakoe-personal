@@ -5,19 +5,17 @@ import { getInvoiceByStatus } from '~/modules/order/order.service';
 import { useLoaderData } from '@remix-run/react';
 
 export async function loader() {
-  const dataInvoice = await getInvoiceByStatus();
-  console.log('test', dataInvoice);
+  const dataInvoice = await getInvoiceByStatus(status);
 
   return dataInvoice;
 }
 
 export default function Order() {
   const data = useLoaderData<typeof loader>();
-  console.log(data);
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        <NavOrder />
+        <NavOrder jancok={data} />
       </Flex>
     </ImplementGrid>
   );

@@ -34,7 +34,7 @@ import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 
-export default function NavOrder() {
+export default function NavOrder({ jancok }: any) {
   const { filteredOrders, setSearchQuery } = UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
@@ -431,7 +431,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardUnpaid
                         key={index}
                         id={data.id}
@@ -441,10 +441,10 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
+                    ))} */}
+                    {jancok.map((data: any) => (
                       <CardNewOrder
-                        key={index}
+                        key={data.cart}
                         id={data.id}
                         title={data.titleProduct}
                         telephone={data.telephone}
@@ -453,7 +453,7 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardReadyToShip
                         key={index}
                         id={data.id}
@@ -463,8 +463,8 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
+                    ))} */}
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardInShipping
                         key={index}
                         id={data.id}
@@ -496,7 +496,7 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
