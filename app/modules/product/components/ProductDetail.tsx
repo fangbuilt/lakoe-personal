@@ -75,8 +75,6 @@ export function ProductDetail() {
                 )}
                 <Dropzone
                   onDrop={(acceptedFiles) => {
-                    console.log('ininnin', acceptedFiles);
-
                     handleImageUpload(photo.name, acceptedFiles[0]);
                   }}
                 >

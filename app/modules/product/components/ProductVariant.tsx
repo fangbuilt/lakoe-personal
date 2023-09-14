@@ -101,7 +101,7 @@ export function ProductVariant() {
             </Button>
           </HStack>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel>Warna</FormLabel>
             <Input type="text" name="variant-label"></Input>
           </FormControl>
@@ -113,7 +113,7 @@ export function ProductVariant() {
             </FormLabel>
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel>Foto Produk</FormLabel>
             <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
               {({ getRootProps, getInputProps }) => (
@@ -184,7 +184,7 @@ export function ProductVariant() {
 
               <Stack spacing={10}>
                 <Flex gap={4}>
-                  <FormControl>
+                  <FormControl isRequired>
                     <FormLabel>Harga</FormLabel>
                     <InputGroup>
                       <InputLeftAddon children="Rp" />
@@ -196,7 +196,7 @@ export function ProductVariant() {
                     </InputGroup>
                   </FormControl>
 
-                  <FormControl>
+                  <FormControl isRequired>
                     <FormLabel>Stock Produk</FormLabel>
                     <Input
                       type="number"
@@ -212,7 +212,7 @@ export function ProductVariant() {
                     <Input type="text" placeholder="Masukan SKU" name="sku" />
                   </FormControl>
 
-                  <FormControl>
+                  <FormControl isRequired>
                     <FormLabel>Berat Produk</FormLabel>
                     <InputGroup>
                       <Input

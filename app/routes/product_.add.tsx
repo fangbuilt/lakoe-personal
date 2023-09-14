@@ -55,8 +55,9 @@ export async function action({ request }: ActionArgs) {
 
     return newProduct;
   }
-  return redirect('http://localhost:3000/product/add');
+  return redirect('/product/add');
 }
+
 export default function AddProduct() {
   return (
     <ImplementGrid>
