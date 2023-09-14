@@ -13,17 +13,35 @@ import Locations from '~/modules/configuration/components/location/Locations';
 export default function StoreConfiguration() {
   return (
     <ImplementGrid>
-      <Flex h={'100vh'} mt={5}>
+      <Flex h={'105vh'} mt={5}>
         <Tabs bg={'white'} mt={5} w={'100%'} borderRadius={5}>
-          <Text fontWeight={'semibold'} fontSize={'16px'} my={4} ms={4}>
+          <Text fontWeight={'bold'} fontSize={'16px'} my={4} ms={4}>
             Fesyen Store
           </Text>
           <TabList>
-            <Tab textDecoration={'none'}>Informasi</Tab>
+            <Tab
+              fontWeight={'semibold'}
+              fontSize={'sm'}
+              textDecoration={'none'}
+            >
+              Informasi
+            </Tab>
 
-            <Tab textDecoration={'none'}>Lokasi</Tab>
+            <Tab
+              fontWeight={'semibold'}
+              fontSize={'sm'}
+              textDecoration={'none'}
+            >
+              Lokasi
+            </Tab>
 
-            <Tab textDecoration={'none'}>Template Pesan</Tab>
+            <Tab
+              fontWeight={'semibold'}
+              fontSize={'sm'}
+              textDecoration={'none'}
+            >
+              Template Pesan
+            </Tab>
           </TabList>
 
           <TabPanels>
@@ -37,7 +55,7 @@ export default function StoreConfiguration() {
 
             {/* INI BAGIAN bani */}
             <TabPanel>
-              <p>Template Pesan</p>
+              <Text>hi</Text>
             </TabPanel>
           </TabPanels>
         </Tabs>
