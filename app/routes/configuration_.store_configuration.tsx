@@ -40,10 +40,52 @@ import Trash from '../assets/icon-pack/trash.svg';
 import LocationSlash from '../assets/icon-pack/location-slash.svg';
 import CloseCircle from '../assets/icon-pack/close-circle.svg';
 import React from 'react';
-import { DeleteButton, UpdateButton, AddButon } from '~/components/CrudModal';
-import data from '../utils/fakeDataTM.json';
+import {
+  DeleteButton,
+  UpdateButton,
+  AddButon,
+} from '~/modules/configuration/components/CrudModal';
+// import data from '../utils/fakeDataTM.json';
+import type { ActionArgs} from '@remix-run/node';
+import { redirect } from '@remix-run/node';
+import {
+  getMessages,
+  updateMesage,
+  deleteMesage,
+  createMesage,
+} from '~/modules/configuration/configuration.service';
+import { useLoaderData } from '@remix-run/react';
+
+export async function loader() {
+  const messages = await getMessages();
+
+  return messages;
+}
+
+export async function action({ request }: ActionArgs) {
+  const formData = await request.formData();
+  const action = formData.get('action');
+
+  if (action === 'create') {
+    const message = formData.get('message');
+    await createMesage({
+      message: message as string,
+    });
+  } else if (action === 'delete') {
+    const id = formData.get('id') as string;
+    await deleteMesage(id);
+  } else if (action === 'update') {
+    const id = formData.get('id') as string;
+    const updatedName = formData.get('updatedName');
+    const updatedContent = formData.get('updatedContent');
+    await updateMesage(id, updatedName, updatedContent);
+  }
+
+  return redirect('/configuration/store_configuration');
+}
 
 export default function StoreConfiguration() {
+  const data = useLoaderData<typeof loader>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);

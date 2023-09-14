@@ -1,5 +1,5 @@
 export interface ITemplateMessage {
-  id: number;
+  id: string;
   name: string;
   content: string;
   store_id?: number;
