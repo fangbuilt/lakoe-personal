@@ -26,7 +26,6 @@ export function ProductInformation() {
   } = useNestedOptions();
 
   const { handleChange } = useAddProduct();
-
   return (
     <Card>
       <CardBody>
