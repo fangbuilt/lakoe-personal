@@ -51,6 +51,9 @@
     "prisma": "^5.2.0",
     "typescript": "^5.0.4"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "engines": {
     "node": ">=14.0.0"
   },
