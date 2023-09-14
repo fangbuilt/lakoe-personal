@@ -214,6 +214,7 @@ async function main() {
         discount: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
         price: faker.helpers.rangeToNumber({ min: 100, max: 5000000 }),
         storeId: faker.helpers.arrayElement(relationsId),
+        paymentId: faker.helpers.arrayElement(relationsId),
       },
     });
   }
@@ -256,6 +257,8 @@ async function main() {
         courierType: 'jne',
         deliveryDate: '2022-01-01T06:00:00Z',
         deliveryTime: '2022-01-01T06:00:00Z',
+        orderId: 'orderId-test',
+        trackingId: 'trackingId-test',
       },
       {
         id: '2',
@@ -277,6 +280,8 @@ async function main() {
         courierType: 'jne',
         deliveryDate: '2022-01-01T06:00:00Z',
         deliveryTime: '2022-01-01T06:00:00Z',
+        orderId: 'orderId-test',
+        trackingId: 'trackingId-test',
       },
       {
         id: '3',
@@ -298,8 +303,9 @@ async function main() {
         courierType: 'jne',
         deliveryDate: '2022-01-01T06:00:00Z',
         deliveryTime: '2022-01-01T06:00:00Z',
+        orderId: 'orderId-test',
+        trackingId: 'trackingId-test',
       },
-
       {
         id: '4',
         availableForCashOnDelivery: faker.helpers.arrayElement([true, false]),
@@ -320,6 +326,8 @@ async function main() {
         courierType: 'jne',
         deliveryDate: '2022-01-01T06:00:00Z',
         deliveryTime: '2022-01-01T06:00:00Z',
+        orderId: 'orderId-test',
+        trackingId: 'trackingId-test',
       },
 
       {
@@ -342,6 +350,8 @@ async function main() {
         courierType: 'jne',
         deliveryDate: '2022-01-01T06:00:00Z',
         deliveryTime: '2022-01-01T06:00:00Z',
+        orderId: 'orderId-test',
+        trackingId: 'trackingId-test',
       },
     ],
   });

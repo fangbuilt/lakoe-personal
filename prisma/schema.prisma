@@ -169,7 +169,7 @@ model Product {
   name         String
   description  String
   minumumOrder Int
-  slug         String
+  slug         String              @unique
   isActive     Boolean             @default(true)
   store        Store?              @relation(fields: [storeId], references: [id])
   storeId      String
