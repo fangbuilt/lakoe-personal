@@ -21,11 +21,14 @@ import {
 import { Link } from '@remix-run/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import Empty from '~/assets/icon-pack/empty.svg';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
 import BoxSearch from '~/assets/icon-pack/box-search.svg';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import type { IProduct } from '~/interfaces/product/product';
+import { useSortProducts } from '~/hooks/product/useSortProducts';
+import { useFilterProducts } from '~/hooks/product/useFilterProducts';
 
 interface IProductBodyProps {
   children?: ReactNode;
@@ -34,6 +37,11 @@ interface IProductBodyProps {
 export default function ProductBody(props: IProductBodyProps) {
   const { products } = props;
   const [activeTab, setActiveTab] = useState(0);
+
+  const { selectedCategories, toggleCategory, getSelectedCategoryCount } =
+    useFilterProducts();
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortProducts();
 
   const filteredProducts =
     activeTab === 1
@@ -95,6 +103,7 @@ export default function ProductBody(props: IProductBodyProps) {
                 />
               </InputGroup>
             </Box>
+            {/* kategori */}
             <Menu closeOnSelect={false}>
               <MenuButton
                 as={Button}
@@ -103,34 +112,90 @@ export default function ProductBody(props: IProductBodyProps) {
                 bgColor={'white'}
                 w={'240px'}
               >
-                <Text fontSize={'14px'} textAlign={'left'}>
-                  Semua Kategori
+                <Text fontSize={'14px'} textAlign={'left'} isTruncated>
+                  {getSelectedCategoryCount() > 0
+                    ? `${getSelectedCategoryCount()} kategori terpilih`
+                    : 'Semua Kategori'}
                 </Text>
               </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <Checkbox>Audio, Kamera & Elektronik</Checkbox>
+              <MenuList minWidth="190px" maxW="190px">
+                <MenuItem
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  <Checkbox
+                    onChange={() =>
+                      toggleCategory('Audio, Kamera & Elektronik')
+                    }
+                    isChecked={selectedCategories.includes(
+                      'Audio, Kamera & Elektronik'
+                    )}
+                  >
+                    <Text maxW="160px" isTruncated>
+                      Audio, Kamera & Elektronik
+                    </Text>
+                  </Checkbox>
                 </MenuItem>
                 <MenuItem>
-                  <Checkbox>Buku</Checkbox>
+                  <Checkbox
+                    onChange={() => toggleCategory('Buku')}
+                    isChecked={selectedCategories.includes('Buku')}
+                  >
+                    Buku
+                  </Checkbox>
                 </MenuItem>
                 <MenuItem>
-                  <Checkbox>Dapur</Checkbox>
+                  <Checkbox
+                    onChange={() => toggleCategory('Dapur')}
+                    isChecked={selectedCategories.includes('Dapur')}
+                  >
+                    Dapur
+                  </Checkbox>
+                </MenuItem>
+                <MenuItem
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  <Checkbox
+                    onChange={() => toggleCategory('Fashion Anak & Bayi')}
+                    isChecked={selectedCategories.includes(
+                      'Fashion Anak & Bayi'
+                    )}
+                  >
+                    <Text maxW="160px" isTruncated>
+                      Fashion Anak & Bayi
+                    </Text>
+                  </Checkbox>
                 </MenuItem>
                 <MenuItem>
-                  <Checkbox>Fashion Anak & Bayi</Checkbox>
+                  <Checkbox
+                    onChange={() => toggleCategory('Fashion Muslim')}
+                    isChecked={selectedCategories.includes('Fashion Muslim')}
+                  >
+                    Fashion Muslim
+                  </Checkbox>
                 </MenuItem>
                 <MenuItem>
-                  <Checkbox>Fashion Muslim</Checkbox>
+                  <Checkbox
+                    onChange={() => toggleCategory('Fashion Pria')}
+                    isChecked={selectedCategories.includes('Fashion Pria')}
+                  >
+                    Fashion Pria
+                  </Checkbox>
                 </MenuItem>
                 <MenuItem>
-                  <Checkbox>Fashion Pria</Checkbox>
-                </MenuItem>
-                <MenuItem>
-                  <Checkbox>Fashion Wanita</Checkbox>
+                  <Checkbox
+                    onChange={() => toggleCategory('Fashion Wanita')}
+                    isChecked={selectedCategories.includes('Fashion Wanita')}
+                  >
+                    Fashion Wanita
+                  </Checkbox>
                 </MenuItem>
               </MenuList>
             </Menu>
+            {/* urutan */}
             <Menu closeOnSelect={false}>
               <MenuButton
                 as={Button}
@@ -140,17 +205,129 @@ export default function ProductBody(props: IProductBodyProps) {
                 bgColor={'white'}
               >
                 <Text fontSize={'14px'} textAlign={'left'}>
-                  Urutan
+                  {getSelectedSortOption()
+                    ? getSelectedSortOption()
+                    : 'Urutkan'}
                 </Text>
               </MenuButton>
-              <MenuList>
-                <MenuItem>Terkahir Diubah</MenuItem>
-                <MenuItem>Terlaris</MenuItem>
-                <MenuItem>Kurang Diminati</MenuItem>
-                <MenuItem>Harga Tertinggi</MenuItem>
-                <MenuItem>Harga Terendah</MenuItem>
-                <MenuItem>Stok Terbanyak</MenuItem>
-                <MenuItem>Stok Tersedikit</MenuItem>
+              <MenuList minWidth={'190px'}>
+                <MenuItem
+                  onClick={() => setSortOption('Terakhir Diubah')}
+                  className={
+                    selectedSortOption === 'Terakhir Diubah' ? 'active' : ''
+                  }
+                >
+                  Terakhir Diubah
+                  <Image
+                    src={Empty}
+                    ml={'auto'}
+                    display={
+                      selectedSortOption === 'Terakhir Diubah'
+                        ? 'inline-block'
+                        : 'none'
+                    }
+                  />
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setSortOption('Terlaris')}
+                  className={selectedSortOption === 'Terlaris' ? 'active' : ''}
+                >
+                  Terlaris
+                  <Image
+                    src={Empty}
+                    ml={'auto'}
+                    display={
+                      selectedSortOption === 'Terlaris'
+                        ? 'inline-block'
+                        : 'none'
+                    }
+                  />
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setSortOption('Kurang Diminati')}
+                  className={
+                    selectedSortOption === 'Kurang Diminati' ? 'active' : ''
+                  }
+                >
+                  Kurang Diminati
+                  <Image
+                    src={Empty}
+                    ml={'auto'}
+                    display={
+                      selectedSortOption === 'Kurang Diminati'
+                        ? 'inline-block'
+                        : 'none'
+                    }
+                  />
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setSortOption('Harga Tertinggi')}
+                  className={
+                    selectedSortOption === 'Harga Tertinggi' ? 'active' : ''
+                  }
+                >
+                  Harga Tertinggi
+                  <Image
+                    src={Empty}
+                    ml={'auto'}
+                    display={
+                      selectedSortOption === 'Harga Tertinggi'
+                        ? 'inline-block'
+                        : 'none'
+                    }
+                  />
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setSortOption('Harga Terendah')}
+                  className={
+                    selectedSortOption === 'Harga Terendah' ? 'active' : ''
+                  }
+                >
+                  Harga Terendah
+                  <Image
+                    src={Empty}
+                    ml={'auto'}
+                    display={
+                      selectedSortOption === 'Harga Terendah'
+                        ? 'inline-block'
+                        : 'none'
+                    }
+                  />
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setSortOption('Stok Terbanyak')}
+                  className={
+                    selectedSortOption === 'Stok Terbanyak' ? 'active' : ''
+                  }
+                >
+                  Stok Terbanyak
+                  <Image
+                    src={Empty}
+                    ml={'auto'}
+                    display={
+                      selectedSortOption === 'Stok Terbanyak'
+                        ? 'inline-block'
+                        : 'none'
+                    }
+                  />
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setSortOption('Stok Tersedikit')}
+                  className={
+                    selectedSortOption === 'Stok Tersedikit' ? 'active' : ''
+                  }
+                >
+                  Stok Tersedikit
+                  <Image
+                    src={Empty}
+                    ml={'auto'}
+                    display={
+                      selectedSortOption === 'Stok Tersedikit'
+                        ? 'inline-block'
+                        : 'none'
+                    }
+                  />
+                </MenuItem>
               </MenuList>
             </Menu>
           </Box>
