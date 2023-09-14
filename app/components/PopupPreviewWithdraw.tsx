@@ -23,7 +23,7 @@ export default function PreviewWithdraw(props: any) {
 
   return (
     <>
-      <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
+      <Button onClick={onOpen} bg={'teal'} color={'#fff'} colorScheme="none">
         <LuZoomIn />
       </Button>
 

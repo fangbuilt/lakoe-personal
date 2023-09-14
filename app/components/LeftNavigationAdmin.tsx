@@ -19,6 +19,10 @@ export function LeftNavigationAdmin() {
       h={'100vh'}
       py={4}
       justifyContent={'space-between'}
+      border={'1px solid grey'}
+      padding={'10px'}
+      borderRadius={'15px'}
+      margin={'10px'}
     >
       <Stack px={4}>
         <Button

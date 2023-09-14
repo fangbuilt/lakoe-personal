@@ -22,7 +22,7 @@ import { redirect } from '@remix-run/node';
 import { Form, Link } from '@remix-run/react';
 import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMailerlite';
 
-export default function DashboardPopup({ dataBank }: any) {
+export default function DashboardPopup({ bankAccount }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
 
@@ -37,6 +37,7 @@ export default function DashboardPopup({ dataBank }: any) {
 
   const [formData, setFormData] = useState({
     actionType: 'create',
+    bankId: '',
     amount: '',
     bankAccount: '',
   });
@@ -62,7 +63,7 @@ export default function DashboardPopup({ dataBank }: any) {
   };
 
   const toggleTarikKredit = () => {
-    const { amount, bankAccount } = formData;
+    const { actionType, amount, bankAccount, bankId } = formData;
 
     if (!amount || !bankAccount) {
       setIsFormValidation(false);
@@ -74,6 +75,13 @@ export default function DashboardPopup({ dataBank }: any) {
       setIsFormValidation(true);
       setShowTarikKredit(!showTarikKredit);
     }
+    console.log(
+      'ini data-data inputan withdraw',
+      actionType,
+      bankId,
+      amount,
+      bankAccount
+    );
   };
 
   function formatRupiah(amount: number) {
@@ -95,8 +103,6 @@ export default function DashboardPopup({ dataBank }: any) {
       <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
         Tarik Credit
       </Button>
-      {/* <Text>ini id withdraw{withdrawId}</Text> */}
-
       <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
@@ -180,22 +186,44 @@ export default function DashboardPopup({ dataBank }: any) {
 
               <FormControl mt={4}>
                 {/* <FormLabel>Tarik Ke:</FormLabel> */}
-                {/* {dataBank === null ? ( */}
+                {/* {data === null ? ( */}
                 <button onClick={handleAddRekeningClick}>Tarik ke:</button>
                 {/* : ( */}
+                <Select
+                  fontSize={'13px'}
+                  name="bankId"
+                  onChange={handleChange}
+                  value={formData.bankId}
+                  // onChange={(event) => {
+                  //   handleChange(event);
+                  //   handleBankAccountChange(event);
+                  // }}
+                >
+                  <option value={formData.bankId}>
+                    Select Your Bank Account
+                  </option>
+                  {bankAccount.map((dataBank: any) => (
+                    <option
+                      value={`${dataBank.id}`}
+                      key={dataBank.id}
+                    >{`${dataBank.id}`}</option>
+                  ))}
+                </Select>
                 <Select
                   fontSize={'13px'}
                   name="bankAccount"
                   onChange={handleChange}
                   value={formData.bankAccount}
                 >
-                  <option value="">Select Your Bank Account</option>
-                  {dataBank.map((data: any) => (
+                  <option value={formData.bankId}>
+                    Select Your Bank Account
+                  </option>
+                  {bankAccount.map((dataBank: any) => (
                     <option
-                      value={`${data.bank} - ${data.accountName} - ${data.accountNumber}`}
-                      key={data.id}
+                      value={`${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
+                      key={dataBank.id}
                     >
-                      {`${data.bank} - ${data.accountName} - ${data.accountNumber}`}
+                      {`${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
                     </option>
                   ))}
                 </Select>
@@ -283,6 +311,7 @@ export default function DashboardPopup({ dataBank }: any) {
                             </Text>
                             <Text>Mohon tunggu beberapa saat..</Text>
                             <Text>Terima Kasih!</Text>
+                            <Text>ini bank id: {formData.bankId}</Text>
                           </Box>
                         </Box>
                       </ModalBody>
