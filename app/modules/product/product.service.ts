@@ -6,6 +6,7 @@ export async function getProduct() {
       id: 'desc',
     },
     include: {
+      attachment: true,
       variants: {
         include: {
           variantOptions: {
@@ -99,3 +100,23 @@ export async function update(data: any): Promise<any> {
   console.log('ini update', update);
   return update;
 }
+
+// export async function createPyment({id, data}: any){
+//   const post = await db.payment.create({
+//     data,
+//     include: {
+//       user: {
+//         include: {
+//           store: {
+//             include: {
+//               products: {
+//                 id: data.id,
+//               },
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
+//   return post
+// }

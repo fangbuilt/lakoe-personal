@@ -2,7 +2,7 @@ export interface IProduct {
   id: string;
   name: string;
   // description: string[];
-  // attachments: string[];
+  attachments: IProductAttachment;
   isActive: boolean;
   // minimumOrder: number;
   // store?: Store;
@@ -49,4 +49,10 @@ export interface IVariantOptionValue {
   // variantOptionId?: string;
   // createdAt: Date;
   // updatedAt: Date;
+}
+
+export interface IProductAttachment {
+  id: string;
+  attachment: string;
+  product: IProduct;
 }

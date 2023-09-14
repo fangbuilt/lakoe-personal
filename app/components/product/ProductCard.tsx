@@ -1,4 +1,4 @@
-import { Box, Checkbox, Switch, Text } from '@chakra-ui/react';
+import { Box, Checkbox, Switch, Text, Image } from '@chakra-ui/react';
 import { useState, type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
@@ -25,13 +25,13 @@ export default function ProductCard(props: IProductCardProps) {
       >
         <Box display={'flex'} gap={3}>
           <Box display={'flex'} gap={3}>
-            {/* <Image
-              src={product.attachments[0]}
-              w={"100px"}
-              h={"100px"}
-              borderRadius={"8px"}
-              objectFit={"cover"}
-            /> */}
+            <Image
+              src={product.attachments.attachment}
+              w={'100px'}
+              h={'100px'}
+              borderRadius={'8px'}
+              objectFit={'cover'}
+            />
             <Box>
               <Text
                 fontSize={'18px'}
