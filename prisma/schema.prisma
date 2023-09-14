@@ -12,7 +12,412 @@ datasource db {
 
 // your beautiful schema goes below :
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+  id        String     @id @unique @default(uuid())
+  name      String
+  email     String     @unique
+  phone     String     @unique
+  password  String
+  profile   Profile?
+  store     Store?     @relation(fields: [storeId], references: [id])
+  carts     Cart[]
+  cartItems CartItem[]
+  invoices  Invoice[]
+  payments  Payment[]
+  role      Role       @relation(fields: [roleId], references: [id])
+  roleId    String
+  storeId   String?
+  withdraw  Withdraw[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+
+  @@map("users")
+}
+
+model Withdraw {
+  id           String       @id @unique @default(uuid())
+  store        Store?       @relation(fields: [storeId], references: [id])
+  storeId      String
+  bankAccount  BankAccount? @relation(fields: [bankId], references: [id])
+  bankId       String
+  amount       Float
+  status       String
+  approvedBy   User?        @relation(fields: [approvedById], references: [id])
+  approvedById String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
+
+  @@map("withdraws")
+}
+
+model Role {
+  id        String   @id @unique @default(uuid())
+  name      String
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("roles")
+}
+
+model Profile {
+  id        String     @id @unique @default(uuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @unique
+  locations Location[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+
+  @@map("profiles")
+}
+
+model Store {
+  id                String            @id @unique @default(uuid())
+  name              String
+  credit            Int               @default(0)
+  slogan            String?
+  description       String
+  domain            String
+  logoAttachment    String?
+  bannerAttachment  String?
+  users             User[]
+  storesDecorations StoreDecoration[]
+  operationHours    OperationHour[]
+  messageTemplates  MessageTemplate[]
+  locations         Location[]
+  products          Product[]
+  carts             Cart[]
+  cartItems         CartItem[]
+  bankAccount       BankAccount[]
+  withdraw          Withdraw[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now())
+
+  @@map("stores")
+}
+
+model Decoration {
+  id                String            @id @unique @default(uuid())
+  type              String
+  storesDecorations StoreDecoration[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now())
+
+  @@map("decorations")
+}
+
+model StoreDecoration {
+  id           String      @id @unique @default(uuid())
+  decoration   Decoration? @relation(fields: [decorationId], references: [id])
+  store        Store?      @relation(fields: [storeId], references: [id])
+  decorationId String?
+  storeId      String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now())
+
+  @@map("stores_decorations")
+}
+
+model OperationHour {
+  id        String   @id @unique @default(uuid())
+  day       String
+  openAt    DateTime
+  closeAt   DateTime
+  isOff     Boolean?
+  store     Store?   @relation(fields: [storeId], references: [id])
+  storeId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("operation_hours")
+}
+
+model MessageTemplate {
+  id        String   @id @unique @default(uuid())
+  name      String
+  content   String
+  store     Store?   @relation(fields: [storeId], references: [id])
+  storeId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("message_templates")
+}
+
+model Location {
+  id             String   @id @unique @default(uuid())
+  name           String
+  address        String
+  addressNote    String?
+  postalCode     String
+  cityDistrict   String
+  latitude       String
+  longtitude     String
+  store          Store?   @relation(fields: [storeId], references: [id])
+  profile        Profile? @relation(fields: [profileId], references: [id])
+  isMainLocation Boolean
+  storeId        String?
+  profileId      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+
+  @@map("locations")
+}
+
+model Product {
+  id           String             @id @unique @default(uuid())
+  name         String
+  description  String
+  attachment   ProductAttachment? @relation(fields: [attachmentId], references: [id])
+  attachmentId String?
+  isActive     Boolean            @default(true)
+  minumumOrder Int
+  store        Store?             @relation(fields: [storeId], references: [id])
+  storeId      String
+  category     Category           @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  slug         String
+  variants     Variant[]
+  cartItems    CartItem[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now())
+
+  @@map("products")
+}
+
+model Variant {
+  id             String          @id @unique @default(uuid())
+  name           String
+  isActive       Boolean
+  product        Product?        @relation(fields: [productId], references: [id])
+  productId      String?
+  variantOptions VariantOption[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now())
+
+  @@map("variants")
+}
+
+model VariantOption {
+  id                  String               @id @unique @default(uuid())
+  name                String
+  variant             Variant?             @relation(fields: [variantId], references: [id])
+  variantId           String?
+  variantOptionValues VariantOptionValue[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now())
+
+  @@map("variant_options")
+}
+
+model VariantOptionValue {
+  id              String                  @id @unique @default(uuid())
+  variantOption   VariantOption?          @relation(fields: [variantOptionId], references: [id])
+  sku             String
+  weight          Float
+  size            VariantOptionValueSize?
+  stock           Int
+  price           Float
+  isActive        Boolean                 @default(true)
+  variantOptionId String?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @default(now())
+
+  @@map("variant_option_values")
+}
+
+model VariantOptionValueSize {
+  id                   String              @id @unique @default(uuid())
+  length               Float
+  width                Float
+  height               Float
+  variantOptionValue   VariantOptionValue? @relation(fields: [variantOptionValueId], references: [id])
+  variantOptionValueId String?             @unique
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now())
+
+  @@map("product_sizes")
+}
+
+model Category {
+  id        String    @id @unique @default(uuid())
+  name      String
+  parentId  String?
+  product   Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+
+  @@map("categories")
+}
+
+model Cart {
+  id                  String               @id @unique @default(uuid())
+  price               Float
+  discount            Float
+  user                User?                @relation(fields: [userId], references: [id])
+  store               Store?               @relation(fields: [storeId], references: [id])
+  userId              String?
+  storeId             String?
+  payment             Payment?             @relation(fields: [paymentId], references: [id])
+  paymentId           String?
+  cartItems           CartItem[]
+  invoice             Invoice[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now())
+  ConfirmationPayment ConfirmationPayment?
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String   @id @unique @default(uuid())
+  qty       Int
+  price     Float
+  product   Product? @relation(fields: [productId], references: [id])
+  cart      Cart?    @relation(fields: [cartId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+  store     Store?   @relation(fields: [storeId], references: [id])
+  productId String?
+  cartId    String?
+  userId    String?
+  storeId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("cart_items")
+}
+
+model Invoice {
+  id                  String           @id @unique @default(uuid())
+  price               Float
+  discount            Float
+  status              String
+  receiverLongitude   String
+  receiverLatitude    String
+  receiverDistrict    String
+  receiverPhone       String
+  receiverAddress     String
+  receiverName        String
+  notes               String
+  receiverEmail       String
+  receiverPostalCode  String
+  receiverAddressNote String
+  invoiceNumber       String
+  waybill             String
+  cart                Cart?            @relation(fields: [cartId], references: [id])
+  payment             Payment?         @relation(fields: [paymentId], references: [id])
+  courier             Courier?         @relation(fields: [courierId], references: [id])
+  user                User?            @relation(fields: [userId], references: [id])
+  cartId              String?
+  courierId           String?
+  userId              String?
+  invoiceHistories    InvoiceHistory[]
+  mootaTransactionId  String
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @default(now())
+  paymentId           String?
+
+  @@map("invoices")
+}
+
+model Payment {
+  id        String    @id @unique @default(uuid())
+  bank      String
+  amount    Float
+  status    String
+  invoice   Invoice[]
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+  cart      Cart[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+
+  @@map("payments")
+}
+
+model Courier {
+  id                           String    @id @unique @default(uuid())
+  availableForCashOnDelivery   Boolean
+  availableForProofOfDelivery  Boolean
+  availableForInstantWaybillId Boolean
+  courierType                  String
+  courierInsurance             String
+  courierName                  String
+  courierCode                  String
+  courierServiceName           String
+  courierServiceCode           String
+  tier                         String
+  description                  String
+  serviceType                  String
+  shippingType                 String
+  shipmentDurationRange        String
+  shipmentDurationUnit         String
+  price                        Float
+  invoice                      Invoice[]
+  orderId                      String?
+  trackingId                   String?
+  deliveryDate                 String
+  deliveryTime                 String
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @default(now())
+
+  @@map("couriers")
+}
+
+model InvoiceHistory {
+  id        String   @id @unique @default(uuid())
+  status    String
+  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("invoice_histories")
+}
+
+model BankAccount {
+  id                  String               @id @unique @default(uuid())
+  bank                String
+  accountName         String
+  accountNumber       String
+  store               Store?               @relation(fields: [storeId], references: [id])
+  storeId             String?
+  withdraw            Withdraw[]
+  confirmationPayment ConfirmationPayment?
+
+  @@map("bank_accounts")
+}
+
+model ProductAttachment {
+  id         String    @id @unique @default(uuid())
+  attachment String
+  product    Product[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+
+  @@map("product_attachments")
+}
+
+model ConfirmationPaymentAttachment {
+  id                  String               @id @unique @default(uuid())
+  attachment          String
+  confirmationPayment ConfirmationPayment?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now())
+
+  @@map("confirmation_payment_attachments")
+}
+
+model ConfirmationPayment {
+  id            String                        @id @unique @default(uuid())
+  cart          Cart                          @relation(fields: [cartId], references: [id])
+  cartId        String                        @unique
+  bankAccount   BankAccount                   @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String                        @unique
+  amount        String
+  attachment    ConfirmationPaymentAttachment @relation(fields: [attachmentId], references: [id])
+  attachmentId  String                        @unique
+  createdAt     DateTime                      @default(now())
+  updatedAt     DateTime                      @default(now())
+
+  @@map("confirmation_payments")
 }
