@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 async function main() {
-  const seedDataPerTable = 20;
+  const seedDataPerTable = 5;
 
   let relationsId = [];
   for (let x = 1; x <= seedDataPerTable; x++) {
@@ -129,29 +129,33 @@ async function main() {
     });
   }
 
+  // product
+  for (let x = 1; x <= seedDataPerTable; x++) {
+    const name = faker.commerce.product();
+    await prisma.product.create({
+      data: {
+        id: x.toString(),
+        name: name,
+        description: faker.commerce.productDescription(),
+        minumumOrder: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
+        slug: faker.helpers.slugify(name) + x.toString(),
+        storeId: faker.helpers.arrayElement(relationsId),
+        categoryId: faker.helpers.arrayElement(relationsId),
+        isActive: faker.helpers.arrayElement([true, false]),
+        height: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
+        width: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
+        length: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
+      },
+    });
+  }
+
   // product attachment
   for (let x = 1; x <= seedDataPerTable; x++) {
     await prisma.productAttachment.create({
       data: {
         id: x.toString(),
-        attachment: faker.image.url(),
-      },
-    });
-  }
-
-  // product
-  for (let x = 1; x <= seedDataPerTable; x++) {
-    await prisma.product.create({
-      data: {
-        id: x.toString(),
-        name: faker.commerce.product(),
-        description: faker.commerce.productDescription(),
-        minumumOrder: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
-        attachmentId: faker.helpers.arrayElement(relationsId),
-        slug: faker.helpers.slugify(),
-        storeId: faker.helpers.arrayElement(relationsId),
-        categoryId: faker.helpers.arrayElement(relationsId),
-        isActive: faker.helpers.arrayElement([true, false]),
+        productId: faker.helpers.arrayElement(relationsId),
+        url: faker.image.url(),
       },
     });
   }
@@ -189,22 +193,51 @@ async function main() {
         stock: faker.helpers.rangeToNumber({ min: 0, max: 10000 }),
         weight: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
         isActive: faker.helpers.arrayElement([true, false]),
-        variantOptionId: faker.helpers.arrayElement(relationsId),
+        variantOptionId: x.toString(),
       },
     });
   }
 
-  // variant option value size
-  for (let x = 1; x <= seedDataPerTable; x++) {
-    await prisma.variantOptionValueSize.create({
-      data: {
-        id: faker.string.uuid(),
-        height: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
-        width: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
-        length: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
+  // payment
+  await prisma.payment.createMany({
+    data: [
+      {
+        id: '1',
+        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        bank: 'BCA',
+        status: 'UNPAID',
+        userId: '1', // just in case buyer can login
       },
-    });
-  }
+      {
+        id: '2',
+        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        bank: 'JAGO',
+        status: 'UNPAID',
+        userId: '1', // just in case buyer can login
+      },
+      {
+        id: '3',
+        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        bank: 'DANAMON',
+        status: 'UNPAID',
+        userId: '1', // just in case buyer can login
+      },
+      {
+        id: '4',
+        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        bank: 'MANDIRI SYARIAH',
+        status: 'UNPAID',
+        userId: '1', // just in case buyer can login
+      },
+      {
+        id: '5',
+        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
+        bank: 'MANDIRI',
+        status: 'UNPAID',
+        userId: '1', // just in case buyer can login
+      },
+    ],
+  });
 
   // cart
   for (let x = 1; x <= seedDataPerTable; x++) {
@@ -214,7 +247,6 @@ async function main() {
         discount: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
         price: faker.helpers.rangeToNumber({ min: 100, max: 5000000 }),
         storeId: faker.helpers.arrayElement(relationsId),
-        paymentId: faker.helpers.arrayElement(relationsId),
       },
     });
   }
@@ -227,9 +259,8 @@ async function main() {
         cartId: x.toString(),
         price: faker.helpers.rangeToNumber({ min: 100, max: 5000000 }),
         qty: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
-        storeId: x.toString(),
         userId: '1', // just in case buyer can login
-        productId: x.toString(),
+        variantOptionId: faker.helpers.arrayElement(relationsId),
       },
     });
   }
@@ -352,47 +383,6 @@ async function main() {
         deliveryTime: '2022-01-01T06:00:00Z',
         orderId: 'orderId-test',
         trackingId: 'trackingId-test',
-      },
-    ],
-  });
-
-  // payment
-  await prisma.payment.createMany({
-    data: [
-      {
-        id: '1',
-        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
-        bank: 'BCA',
-        status: 'UNPAID',
-        userId: '1', // just in case buyer can login
-      },
-      {
-        id: '2',
-        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
-        bank: 'JAGO',
-        status: 'UNPAID',
-        userId: '1', // just in case buyer can login
-      },
-      {
-        id: '3',
-        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
-        bank: 'DANAMON',
-        status: 'UNPAID',
-        userId: '1', // just in case buyer can login
-      },
-      {
-        id: '4',
-        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
-        bank: 'MANDIRI SYARIAH',
-        status: 'UNPAID',
-        userId: '1', // just in case buyer can login
-      },
-      {
-        id: '5',
-        amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
-        bank: 'MANDIRI',
-        status: 'UNPAID',
-        userId: '1', // just in case buyer can login
       },
     ],
   });
