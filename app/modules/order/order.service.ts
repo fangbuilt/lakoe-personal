@@ -17,23 +17,10 @@ export async function getInvoiceByStatus() {
           },
           cartItems: {
             include: {
-              product: {
+              product: true,
+              variantOption: {
                 include: {
-                  attachments: true,
-                  cartItems: true,
-                  variants: {
-                    include: {
-                      variantOptions: {
-                        include: {
-                          variantOptionValues: {
-                            include: {
-                              size: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
+                  variantOptionValues: true,
                 },
               },
             },
