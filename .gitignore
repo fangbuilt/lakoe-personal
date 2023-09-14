@@ -8,7 +8,6 @@ node_modules
 /api/metafile.*
 /build
 /public/build
-.env
 .eslintcache
 
 **/.DS_Store

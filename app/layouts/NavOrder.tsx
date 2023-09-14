@@ -17,36 +17,38 @@ import {
   Image,
   Checkbox,
   Button,
-  Center,
 } from '@chakra-ui/react';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+// import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import ScrollBox from '../components/ScrollBox';
-import { UseSearch } from '../hooks/useSearchOrder';
+// import { UseSearch } from '../hooks/useSearchOrder';
 import { useFilterCourier } from '../hooks/useFilterCourier';
-import CardUnpaid from '../components/CardUnpaid';
+// import CardUnpaid from '../components/CardUnpaid';
 import CardReadyToShip from '../components/CardReadyToShip';
-import CardNewOrder from '../components/CardNewOrder';
-import CardSuccessOrder from '../components/CardSuccesOrder';
-import CardInShipping from '../components/CardInShipping';
-import CardCanceled from '../components/CardCanceled';
+// import CardNewOrder from '../components/CardNewOrder';
+// import CardSuccessOrder from '../components/CardSuccesOrder';
+// import CardInShipping from '../components/CardInShipping';
+// import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
+// import { useLoaderData } from '@remix-run/react';
 
-export default function NavOrder() {
-  const { filteredOrders, setSearchQuery } = UseSearch();
+export default function NavOrder({ cardProduct }: any) {
+  // const loaderData =  useLoaderData()
+
+  // const { filteredOrders, setSearchQuery } = UseSearch(loaderData);
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
 
-  const filteredOrdersByCourier = filteredOrders.filter((order) => {
-    if (selectedCouriers.length === 0) {
-      return true;
-    }
-    return selectedCouriers.includes(order.courier);
-  });
+  // const filteredOrdersByCourier = filteredOrders.filter((order) => {
+  //   if (selectedCouriers.length === 0) {
+  //     return true;
+  //   }
+  //   return selectedCouriers.includes(order.courier);
+  // });
 
   return (
     <>
@@ -201,7 +203,7 @@ export default function NavOrder() {
                     </InputLeftElement>
                     <Input
                       type="text"
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      // onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Cari Pesanan"
                       _placeholder={{
                         opacity: 1,
@@ -430,7 +432,7 @@ export default function NavOrder() {
                 {/* PASTE YOUR CARD IN HERE DON'T FORGET TO MAP IT*/}
 
                 <ScrollBox>
-                  <TabPanel>
+                  {/* <TabPanel>
                     {filteredOrdersByCourier.map((data, index) => (
                       <CardUnpaid
                         key={index}
@@ -497,11 +499,11 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                  </TabPanel>
+                  </TabPanel> */}
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel>
+                  {/* <TabPanel>
                     {filteredOrdersByCourier.map((data, index) => (
                       <CardUnpaid
                         key={index}
@@ -513,11 +515,11 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                  </TabPanel>
+                  </TabPanel> */}
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel>
+                  {/* <TabPanel>
                     {filteredOrdersByCourier.map((data, index) => (
                       <CardNewOrder
                         key={index}
@@ -529,43 +531,32 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
+                  </TabPanel> */}
+                </ScrollBox>
+
+                <ScrollBox>
+                  <TabPanel>
+                    {/* {cardProduct.map((data, index) => ( */}
+
+                    <CardReadyToShip />
+
+                    {/* // ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardReadyToShip
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
-                  </TabPanel>
-                </ScrollBox>
-
-                <ScrollBox>
-                  <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrders.map((data) => (
                       <CardInShipping
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
+                        key={data.id}
+                        data={data}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel>
+                  {/* <TabPanel>
                     {filteredOrdersByCourier.map((data, index) => (
                       <CardSuccessOrder
                         key={index}
@@ -577,11 +568,11 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                  </TabPanel>
+                  </TabPanel> */}
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel>
+                  {/* <TabPanel>
                     {filteredOrdersByCourier.map((data: any, index: any) => (
                       <CardCanceled
                         key={index}
@@ -593,9 +584,9 @@ export default function NavOrder() {
                         imageProduct={data.imageProduct}
                       />
                     ))}
-                  </TabPanel>
+                  </TabPanel> */}
                 </ScrollBox>
-                {filteredOrdersByCourier.length === 0 && (
+                {/* {filteredOrdersByCourier.length === 0 && (
                   <Center>
                     <Box textAlign="center" mt={5} display={'flex'}>
                       <Image src={ReceiptSearch} />
@@ -611,7 +602,7 @@ export default function NavOrder() {
                       </Text>
                     </Box>
                   </Center>
-                )}
+                )} */}
 
                 {/* END CARD */}
               </TabPanels>
