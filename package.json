@@ -9,13 +9,17 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/react": "^2.8.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.9",
+    "@fontsource/open-sans": "^5.0.11",
+    "@fontsource/raleway": "^5.0.8",
     "@prisma/client": "^5.2.0",
+    "@react-google-maps/api": "^2.19.2",
     "@remix-run/css-bundle": "^1.19.3",
     "@remix-run/node": "^1.19.3",
     "@remix-run/react": "^1.19.3",
@@ -25,6 +29,7 @@
     "isbot": "^3.6.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
     "source-map-support": "^0.5.21",
     "zod": "^3.22.2"
   },

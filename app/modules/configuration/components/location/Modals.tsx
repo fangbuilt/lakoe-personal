@@ -22,7 +22,8 @@ import {
   AlertDescription,
 } from '@chakra-ui/react';
 
-import CloseCircle from '../../../assets/icon-pack/close-circle.svg';
+import CloseCircle from '~/assets/icon-pack/close-circle.svg';
+import { Form } from '@remix-run/react';
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -62,48 +63,50 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
           </Button>
         </ModalHeader>
         {/* <ModalCloseButton /> */}
-        <ModalBody>
-          <FormControl>
-            <FormLabel>Nama Lokasi</FormLabel>
-            <Input ref={initialRef} placeholder="Cth. Toko Alamanda" />
-          </FormControl>
+        <Form>
+          <ModalBody>
+            <FormControl isRequired>
+              <FormLabel>Nama Lokasi</FormLabel>
+              <Input ref={initialRef} placeholder="Cth. Toko Alamanda" />
+            </FormControl>
 
-          <FormControl mt={4}>
-            <FormLabel>Kota/Kecamatan</FormLabel>
-            <Select>
-              <option value="" hidden>
-                Cari kota / Kecamatan
-              </option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-            </Select>
-          </FormControl>
+            <FormControl mt={4} isRequired>
+              <FormLabel>Kota/Kecamatan</FormLabel>
+              <Select>
+                <option value="" hidden>
+                  Cari kota / Kecamatan
+                </option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+              </Select>
+            </FormControl>
 
-          <FormControl mt={4}>
-            <FormLabel>Kode Pos</FormLabel>
-            <Select>
-              <option value="" hidden color="red">
-                Masukan 5 digit kode pos
-              </option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-            </Select>
-          </FormControl>
+            <FormControl mt={4} isRequired>
+              <FormLabel>Kode Pos</FormLabel>
+              <Select>
+                <option value="" hidden color="red">
+                  Masukan 5 digit kode pos
+                </option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+              </Select>
+            </FormControl>
 
-          <FormControl mt={4}>
-            <FormLabel>Alamat Lengkap</FormLabel>
-            <Textarea placeholder="Tuliskan Alamat lengkap Toko" />
-          </FormControl>
-        </ModalBody>
+            <FormControl mt={4} isRequired>
+              <FormLabel>Alamat Lengkap</FormLabel>
+              <Textarea placeholder="Tuliskan Alamat lengkap Toko" />
+            </FormControl>
+          </ModalBody>
 
-        <ModalFooter>
-          <Button mr={2} onClick={onClose} borderRadius={'20px'}>
-            Batalkan
-          </Button>
-          <Button colorScheme="blue" borderRadius={'20px'}>
-            Simpan
-          </Button>
-        </ModalFooter>
+          <ModalFooter>
+            <Button mr={2} onClick={onClose} borderRadius={'20px'}>
+              Batalkan
+            </Button>
+            <Button colorScheme="blue" borderRadius={'20px'}>
+              Simpan
+            </Button>
+          </ModalFooter>
+        </Form>
       </ModalContent>
     </Modal>
   );
