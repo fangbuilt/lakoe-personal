@@ -15,11 +15,7 @@ export async function loader() {
         include: {
           variantOptions: {
             include: {
-              variantOptionValues: {
-                include: {
-                  size: true,
-                },
-              },
+              variantOptionValues: true,
             },
           },
         },
@@ -59,7 +55,11 @@ export default function CheckoutPage() {
               >
                 <Stack align={'start'} spacing={2}>
                   {/* <Image borderRadius={'10px'} src={i.[0]} alt="" /> */}
-                  <Image borderRadius={'10px'} src="" alt="none" />
+                  <Image
+                    borderRadius={'10px'}
+                    src={i.attachments[0].url}
+                    alt="none"
+                  />
                   <Link to={`/checkout/${i.store?.name}/${i.slug}`}>
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
@@ -67,7 +67,7 @@ export default function CheckoutPage() {
                         {i.description}
                       </Text> */}
                       <Text>{i.id}</Text>
-                      <Text>{i.attachments[0].url ?? 'uuuu'}</Text>
+                      {/* <Text>{i.attachments[0].url}</Text> */}
                       <Text>slug :{i.slug}</Text>
                       <Text fontWeight={'bold'}>Rp.50.000</Text>
                       <Text>{i.store?.name}</Text>

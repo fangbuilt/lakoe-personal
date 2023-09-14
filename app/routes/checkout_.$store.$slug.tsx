@@ -56,6 +56,7 @@ export const action = async ({ request }: ActionArgs) => {
     const payment = formData.get('payment') as string;
     const count = +(formData.get('calculation') as string);
     const postalCode = formData.get('postalCode') as string;
+    const variantOptionId = formData.get('variantOptionId') as string;
 
     const invoice = {
       price: price,
@@ -70,12 +71,11 @@ export const action = async ({ request }: ActionArgs) => {
       receiverEmail: email,
       receiverPostalCode: postalCode,
       receiverAddressNote: description,
-      // notes: description,
       invoiceNumber: '',
       waybill: '',
+      mootaTransactionId: '',
       courierId: courier,
       userId: userId,
-      mootaTransactionId: '',
     };
 
     const cart = {
@@ -88,9 +88,9 @@ export const action = async ({ request }: ActionArgs) => {
     const cartItem = {
       qty: count,
       price: price,
-      productId: productId,
+      variantOptionId: variantOptionId,
       userId: userId,
-      storeId: storeId,
+      productId: productId,
     };
 
     const invoiceHistory = {
@@ -103,7 +103,7 @@ export const action = async ({ request }: ActionArgs) => {
       status: 'UNPAID',
       userId: userId,
     };
-    console.log(count);
+    console.log('price', count);
 
     const data = { invoice, cart, cartItem, invoiceHistory, getPayment };
 
@@ -114,8 +114,10 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Checkout() {
   const item = useLoaderData<typeof loader>();
-  const { id } = useParams();
-  console.log(id);
+  const { id, slug, store } = useParams();
+  console.log('item:', id);
+  console.log('item slug:', slug);
+  console.log('item store:', store);
 
   const [count, setCount] = useState<number>(1);
 
@@ -208,6 +210,11 @@ export default function Checkout() {
               />
               <Input type="hidden" name="storeId" value={item?.storeId} />
               <Input type="hidden" name="productId" value={item?.id} />
+              <Input
+                type="hidden"
+                name="variantOptionId"
+                value={item?.variants[0].variantOptions[0].id}
+              />
               <Input
                 type="hidden"
                 name="userId"

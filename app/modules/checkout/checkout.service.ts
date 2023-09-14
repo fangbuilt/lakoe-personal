@@ -19,11 +19,7 @@ export async function getCheckoutDetail(data: any) {
         include: {
           variantOptions: {
             include: {
-              variantOptionValues: {
-                include: {
-                  size: true,
-                },
-              },
+              variantOptionValues: true,
             },
           },
         },
@@ -38,7 +34,7 @@ export async function createCheckout(data: any) {
   });
 
   const cart = await db.cart.create({
-    data: { ...data.cart, paymentId: payment.id },
+    data: data.cart,
   });
 
   await db.cartItem.create({

@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionArgs) => {
       file_transfer,
     };
 
-    console.log(data);
+    console.log('data:', data);
   }
 
   return redirect(`/checkout/transfer/confirm`);
