@@ -6,6 +6,7 @@ CREATE TABLE "users" (
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "roleId" TEXT,
+    "invoiceId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -207,6 +208,7 @@ CREATE TABLE "carts" (
     "discount" DOUBLE PRECISION NOT NULL,
     "usersId" TEXT,
     "storeId" TEXT,
+    "invoiceId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -245,6 +247,7 @@ CREATE TABLE "invoices" (
     "paymentId" TEXT,
     "courierId" TEXT,
     "userId" TEXT,
+    "mooteTransactionId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -255,9 +258,9 @@ CREATE TABLE "invoices" (
 CREATE TABLE "payments" (
     "id" TEXT NOT NULL,
     "bank" TEXT NOT NULL,
-    "vaNumber" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
     "status" TEXT NOT NULL,
+    "invoiceId" TEXT,
     "usersId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -272,6 +275,7 @@ CREATE TABLE "couriers" (
     "courierServiceName" TEXT NOT NULL,
     "courierServiceCode" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+    "invoiceId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -289,6 +293,16 @@ CREATE TABLE "invoice_histories" (
     CONSTRAINT "invoice_histories_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "bank_accounts" (
+    "id" TEXT NOT NULL,
+    "bank" TEXT NOT NULL,
+    "accNumber" INTEGER NOT NULL,
+    "storeId" TEXT,
+
+    CONSTRAINT "bank_accounts_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_id_key" ON "users"("id");
 
@@ -297,6 +311,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_invoiceId_key" ON "users"("invoiceId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "roles_id_key" ON "roles"("id");
@@ -350,6 +367,9 @@ CREATE UNIQUE INDEX "products_categories_id_key" ON "products_categories"("id");
 CREATE UNIQUE INDEX "carts_id_key" ON "carts"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "carts_invoiceId_key" ON "carts"("invoiceId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "cart_items_id_key" ON "cart_items"("id");
 
 -- CreateIndex
@@ -371,13 +391,25 @@ CREATE UNIQUE INDEX "invoice_user_id_unique" ON "invoices"("userId");
 CREATE UNIQUE INDEX "payments_id_key" ON "payments"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "payments_invoiceId_key" ON "payments"("invoiceId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "couriers_id_key" ON "couriers"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "couriers_invoiceId_key" ON "couriers"("invoiceId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "invoice_histories_id_key" ON "invoice_histories"("id");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "bank_accounts_id_key" ON "bank_accounts"("id");
+
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "invoices"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -434,6 +466,9 @@ ALTER TABLE "carts" ADD CONSTRAINT "carts_usersId_fkey" FOREIGN KEY ("usersId") 
 ALTER TABLE "carts" ADD CONSTRAINT "carts_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "carts" ADD CONSTRAINT "carts_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "invoices"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -446,19 +481,16 @@ ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_userId_fkey" FOREIGN KEY ("u
 ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_cart_fk" FOREIGN KEY ("cartId") REFERENCES "carts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_payment_fk" FOREIGN KEY ("paymentId") REFERENCES "payments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_courier_fk" FOREIGN KEY ("courierId") REFERENCES "couriers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "invoices" ADD CONSTRAINT "invoice_user_fk" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "payments" ADD CONSTRAINT "payments_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "invoices"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "payments" ADD CONSTRAINT "payments_usersId_fkey" FOREIGN KEY ("usersId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "couriers" ADD CONSTRAINT "couriers_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "invoices"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "invoice_histories" ADD CONSTRAINT "invoice_histories_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "invoices"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bank_accounts" ADD CONSTRAINT "bank_accounts_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
