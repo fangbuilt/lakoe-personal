@@ -162,7 +162,6 @@ export default function CardNewOrder(props: IOrderList) {
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-<<<<<<< HEAD
                 <Button
                   bg={'transparent'}
                   border={'1px solid #D5D5D5'}
@@ -175,18 +174,6 @@ export default function CardNewOrder(props: IOrderList) {
                 >
                   Proses Pesanan
                 </Button>
-=======
-                <Link to={`http://wa.me/${props.telephone}`}>
-                  <Button
-                    bg={'transparent'}
-                    border={'1px solid #D5D5D5'}
-                    borderRadius={'full'}
-                    fontSize={'14px'}
-                  >
-                    Proses Pesanan
-                  </Button>
-                </Link>
->>>>>>> 0aa73c4d167d6e7d3ba456e0ea46edffec25ee63
                 {/*  */}
                 {/* Modal */}
                 <Modal

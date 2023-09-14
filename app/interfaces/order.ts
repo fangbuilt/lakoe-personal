@@ -7,7 +7,6 @@ export interface IOrderList {
   imageProduct: string;
 }
 
-<<<<<<< HEAD
 export interface IOrderData {
   shipper_contact_name: string;
   shipper_contact_phone: number;
@@ -42,9 +41,8 @@ export interface IOrderData {
   length: number;
   weight: number;
   width: number;
-=======
+}
 export interface IMessageTemplates {
   id: number;
   message: string;
->>>>>>> 0aa73c4d167d6e7d3ba456e0ea46edffec25ee63
 }
