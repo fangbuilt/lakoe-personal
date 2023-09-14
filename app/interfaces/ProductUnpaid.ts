@@ -2,14 +2,17 @@ export interface Cart {
   id: string;
   price: number;
   discount: number;
-  user: User | undefined;
+  user?: User;
   store?: Store;
   userId?: string;
   storeId?: string;
+  payment?: Payment;
+  paymentId?: string;
   cartItems: CartItem[];
   invoice: Invoice[];
   createdAt: Date;
   updatedAt: Date;
+  // confirmationPayment?: ConfirmationPayment;
 }
 
 export interface Store {
@@ -22,26 +25,15 @@ export interface Store {
   logoAttachment?: string;
   bannerAttachment?: string;
   users: User[];
+  storesDecorations: StoreDecoration[];
+  operationHours: OperationHour[];
+  messageTemplates: MessageTemplate[];
   locations: Location[];
   products: Product[];
   carts: Cart[];
   cartItems: CartItem[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  attachments: string[];
-  isActive: boolean;
-  minimumOrder: number;
-  store?: Store;
-  storeId: string;
-  categoryId: string;
-  slug: string;
-  cartItems: CartItem[];
+  bankAccount: BankAccount[];
+  withdraw: Withdraw[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -73,6 +65,10 @@ export interface Invoice {
   receiverPhone: string;
   receiverAddress: string;
   receiverName: string;
+  notes: string;
+  receiverEmail: string;
+  receiverPostalCode: string;
+  receiverAddressNote: string;
   invoiceNumber: string;
   waybill: string;
   cart?: Cart;
@@ -82,7 +78,7 @@ export interface Invoice {
   cartId?: string;
   courierId?: string;
   userId?: string;
-  // invoiceHistories: InvoiceHistory[];
+  invoiceHistories: InvoiceHistory[];
   mootaTransactionId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -97,6 +93,7 @@ export interface Payment {
   invoice: Invoice[];
   user?: User;
   userId?: string;
+  cart: Cart[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -107,17 +104,73 @@ export interface User {
   email: string;
   phone: string;
   password: string;
+  profile?: Profile;
   store?: Store;
   carts: Cart[];
   cartItems: CartItem[];
   invoices: Invoice[];
   payments: Payment[];
+  role: Role;
   roleId: string;
   storeId?: string;
+  withdraw: Withdraw[];
   createdAt: Date;
   updatedAt: Date;
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  attachment?: ProductAttachment;
+  attachmentId?: string;
+  isActive: boolean;
+  minimumOrder: number;
+  store?: Store;
+  storeId: string;
+  category: Category;
+  categoryId: string;
+  slug: string;
+  variants: Variant[];
+  cartItems: CartItem[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ProductAttachment {
+  id: string;
+  attachment: string;
+  product: Product[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Courier {
+  id: string;
+  availableForCashOnDelivery?: boolean;
+  availableForProofOfDelivery?: boolean;
+  availableForInstantWaybillId?: boolean;
+  courierType: string;
+  courierInsurance?: string;
+  courierName: string;
+  courierCode: string;
+  courierServiceName: string;
+  courierServiceCode: string;
+  tier: string;
+  description: string;
+  serviceType: string;
+  shippingType: string;
+  shipmentDurationRange: string;
+  shipmentDurationUnit: string;
+  price: number;
+  orderId: string;
+  trackingId: string;
+  deliveryDate: string;
+  deliveryTime: string;
+  invoices: Invoice[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 export interface Withdraw {
   id: string;
   store: Store[];
@@ -139,7 +192,6 @@ export interface Role {
   createdAt: string;
   updatedAt: string;
 }
-
 export interface Profile {
   id: string;
   user: User;
@@ -258,27 +310,6 @@ export interface Category {
   createdAt: string;
   updatedAt: string;
   Product: Product[];
-}
-
-export interface Courier {
-  id: string;
-  availableForCashOnDelivery: boolean;
-  availableForProofOfDelivery: boolean;
-  availableForInstantWaybillId: boolean;
-  courierName: string;
-  courierCode: string;
-  courierServiceName: string;
-  courierServiceCode: string;
-  tier: string;
-  description: string;
-  serviceType: string;
-  shippingType: string;
-  shipmentDurationRange: string;
-  shipmentDurationUnit: string;
-  price: number;
-  invoice: Invoice[];
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface InvoiceHistory {

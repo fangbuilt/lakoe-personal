@@ -17,11 +17,11 @@ import {
   Image,
   Checkbox,
   Button,
-  Center,
+  // Center,
 } from '@chakra-ui/react';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+// import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import ScrollBox from '../components/ScrollBox';
 import { UseSearch } from '../hooks/useSearchOrder';
 import { useFilterCourier } from '../hooks/useFilterCourier';
@@ -33,10 +33,13 @@ import CardUnpaid from '../components/CardUnpaid';
 // import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import type { Invoice } from '~/interfaces/ProductUnpaid';
-import { Form } from '@remix-run/react';
-
+import { Form, useLoaderData } from '@remix-run/react';
+import UnpaidAllCard from '~/components/CardUnpaidAll';
+import type { loader } from '~/routes/order';
+// import type { Invoice } from '~/interfaces/ProductUnpaid';
 export default function NavOrder() {
+  const { unpaidCard } = useLoaderData<typeof loader>();
+
   const { filteredOrders, setSearchQuery, searchQuery, handleSearch } =
     UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
@@ -46,17 +49,17 @@ export default function NavOrder() {
 
   console.log('filteredOrders filteredOrders filteredOrders', filteredOrders);
 
-  const filteredOrdersByCourier: Invoice[] = filteredOrders.filter((order) => {
-    if (selectedCouriers.length === 0) {
-      return true;
-    }
-    return (
-      order.courier?.courierName !== null &&
-      order.courier?.courierName !== undefined
-    );
-    // return selectedCouriers.includes(order);
-  });
-
+  // const filteredOrdersByCourier = filteredOrders.filter((order) => {
+  //   if (selectedCouriers.length === 0) {
+  //     return true;
+  //   }
+  // return (
+  //   order.courier?.courierName !== null &&
+  //   order.courier?.courierName !== undefined
+  // );
+  // return selectedCouriers.includes(order);
+  // });
+  console.log(filteredOrders);
   return (
     <>
       <Box
@@ -98,6 +101,7 @@ export default function NavOrder() {
                     <Box display={'flex'}>
                       <Tab>
                         {/* NOTIFICATION ORDER */}
+
                         <Text
                           my={4}
                           color={'white'}
@@ -107,7 +111,7 @@ export default function NavOrder() {
                           fontSize={14}
                           marginRight={2}
                         >
-                          {filteredOrders.length}{' '}
+                          {unpaidCard.length}
                           {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
@@ -449,7 +453,9 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardUnpaid />
+                    <UnpaidAllCard
+                    // filteredOrdersByCourier={filteredOrdersByCourier}
+                    />
 
                     {/* <CardUnpaid data={data}/> */}
                     {/* {filteredOrdersByCourier.map((data, index) => (
@@ -512,7 +518,9 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardUnpaid />
+                    <CardUnpaid
+                    // filteredOrdersByCourier={filteredOrdersByCourier}
+                    />
                   </TabPanel>
                 </ScrollBox>
 
@@ -595,7 +603,7 @@ export default function NavOrder() {
                     ))} */}
                   </TabPanel>
                 </ScrollBox>
-                {filteredOrdersByCourier.length === 0 && (
+                {/* {filteredOrdersByCourier.length === 0 && (
                   <Center>
                     <Box textAlign="center" mt={5} display={'flex'}>
                       <Image src={ReceiptSearch} />
@@ -611,7 +619,7 @@ export default function NavOrder() {
                       </Text>
                     </Box>
                   </Center>
-                )}
+                )} */}
 
                 {/* END CARD */}
               </TabPanels>

@@ -20,43 +20,42 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Link, useLoaderData } from '@remix-run/react';
-// import type { IMessageTemplates } from '~/interfaces/order';
-// import {
-// createWhatsAppTemplateMessageLink1,
-// phoneNumber,
-// } from '../utils/TemplateMessage';
+import type { IMessageTemplates } from '~/interfaces/order';
 import dummyMessage from '../utils/templateMessage.json';
 import type { loader } from '~/routes/order';
-import type { IMessageTemplates } from '~/interfaces/order';
 
-export default function UnpaidCard() {
-  // const {data} = useLoaderData<typeof loader>();
-  const { unpaidCard } = useLoaderData<typeof loader>();
-  console.log('unpaidCardunpaidCard', unpaidCard);
+export default function UnpaidAllCard() {
+  const { unpaidCardAll } = useLoaderData<typeof loader>();
+  console.log('unpaidCardAllunpaidCardAllunpaidCardAll', unpaidCardAll);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const formatter = new Intl.NumberFormat('en-ID', {
     style: 'currency',
     currency: 'IDR',
-  });
 
+    // These options are needed to round to whole numbers if that's what you want.
+    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+    //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+  });
   function createWhatsAppTemplateMessageLink1(
     phone: string,
-    message: string
+    template: string
   ): string {
     const whatsappBaseUrl = 'https://wa.me/';
     const encodedPhoneNumber = encodeURIComponent(phone);
-    const encodedTemplate = encodeURIComponent(message);
+    const encodedTemplate = encodeURIComponent(template);
     const whatsappLink = `${whatsappBaseUrl}${encodedPhoneNumber}?text=${encodedTemplate}`;
     return whatsappLink;
   }
-  //  const phone = '+6285776410884';
+  // export const phone = '+6285776410884';
+
+  // console.log(formatter.format(2500)); /* $2,500.00 */
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
 
       {/* CARD START HERE */}
-      {unpaidCard.map((item, index) => (
+      {unpaidCardAll.map((item, index) => (
         // eslint-disable-next-line react/jsx-key
         <Card mb={5} boxShadow={'xs'}>
           <Box key={index}>
@@ -80,9 +79,7 @@ export default function UnpaidCard() {
                     border={'1px solid #D5D5D5'}
                     borderRadius={'full'}
                     fontSize={'14px'}
-                    onClick={() => {
-                      onOpen();
-                    }}
+                    onClick={onOpen}
                   >
                     Hubungi Pembeli
                   </Button>
@@ -114,7 +111,7 @@ export default function UnpaidCard() {
                                   >
                                     <Link
                                       to={createWhatsAppTemplateMessageLink1(
-                                        item.user?.phone ?? '',
+                                        item.user?.phone ?? ' ',
                                         itemtemp.message
                                       )}
                                       target="_blank"

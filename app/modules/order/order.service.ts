@@ -1,58 +1,28 @@
 import { db } from '~/libs/prisma/db.server';
 
 export async function getProductUnpid() {
-  const payments = await db.cart.findMany({
+  const payments = await db.invoice.findMany({
     include: {
-      store: true,
       user: true,
-      cartItems: {
+      payment: true,
+      cart: {
         include: {
-          product: true,
-          user: {
+          cartItems: {
             include: {
-              invoices: true,
-              payments: true,
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
             },
           },
         },
       },
-      invoice: true,
     },
   });
   return payments;
 }
-// export async function getAllProductUnpid() {
-//   const payments = await db.payment.findMany({
-//     where: {
-//       status: 'UNPAID',
-//     },
-//     include: {
-//       invoice: {
-//         include: {
-//           cart: {
-//             include: {
-//               cartItems: {
-//                 include: {
-//                   product: true,
-//                 },
-//               },
-//               store: true,
-//             },
-//           },
-//         },
-//       },
-//       user: {
-//         include: {
-//           store: true,
-//           cartItems: true,
-//           carts: true,
-//         },
-//       },
-
-//     }
-//   });
-//   return payments;
-// }
 
 export async function getAllProductUnpid() {
   const payments = await db.invoice.findMany({
@@ -60,25 +30,22 @@ export async function getAllProductUnpid() {
       status: 'UNPAID',
     },
     include: {
+      user: true,
+      payment: true,
       cart: {
         include: {
           cartItems: {
             include: {
-              product: true,
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
             },
           },
-          store: true,
         },
       },
-      user: {
-        include: {
-          store: true,
-          cartItems: true,
-          carts: true,
-        },
-      },
-      payment: true,
-      courier: true,
     },
   });
   return payments;
@@ -88,33 +55,6 @@ export async function getProductUnpid1() {
   console.log('getProductUnpid1getProductUnpid1', payments);
   return payments;
 }
-// export async function getProductUnpid2() {
-//   try {
-//     const payments = await db.invoice.findMany({
-//       include: {
-//         user: {
-//           include: {
-//             payments: true,
-//           },
-//         },
-//         cart: {
-//           include: {
-//             user: {
-//               include: {
-//                 cartItems: true,
-//                 store: true,
-//               },
-//             },
-//           },
-//         },
-//       },
-//     });
-
-//     return console.log('getProductUnpid2getProductUnpid2', payments);
-//   } catch (error) {
-//     throw new Error(`Failed to get unpaid products: ${error}`);
-//   }
-// }
 
 export async function getProductUnpid3() {
   try {
