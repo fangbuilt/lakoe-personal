@@ -7,7 +7,7 @@ import { Price } from '~/modules/product/components/Price';
 import { ProductDetail } from '~/modules/product/components/ProductDetail';
 import { ProductInformation } from '~/modules/product/components/ProductInformation';
 import { ProductManagement } from '~/modules/product/components/ProductManagement';
-import { ProductVariant } from '~/modules/product/components/ProductVariant';
+// import { ProductVariant } from '~/modules/product/components/ProductVariant';
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
 import { createProduct } from '~/modules/product/product.service';
 import { uploadImage } from '~/utils/uploadImage';
@@ -18,16 +18,12 @@ import {
 } from '@remix-run/node';
 
 export async function action({ request }: ActionArgs) {
-  // let formData = await request.formData();
-
   const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
     if (name !== 'image') {
       return undefined;
     }
 
     const uploadedImage = await uploadImage(data);
-
-    console.log('ini:', uploadedImage);
 
     return uploadedImage.secure_url;
   }, createMemoryUploadHandler());
@@ -43,7 +39,7 @@ export async function action({ request }: ActionArgs) {
     const data = {
       name: formData.get('name'),
       description: formData.get('description'),
-      attachment: imageUrl,
+      url: imageUrl,
       minumumOrder: Number(formData.get('min_order')),
       price: parseFloat(formData.get('price') as string),
       stock: parseInt(formData.get('stock') as string),
@@ -68,7 +64,7 @@ export default function AddProduct() {
         <Stack mt={'7.5vh'} spacing={4}>
           <ProductInformation />
           <ProductDetail />
-          <ProductVariant />
+          {/* <ProductVariant /> */}
           <Price />
           <ProductManagement />
           <WeightAndShipment />

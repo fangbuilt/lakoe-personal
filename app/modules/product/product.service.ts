@@ -8,12 +8,10 @@ export async function createProduct(data: any, storeId: any) {
         name: data.name,
         slug: data.slug,
         description: data.description,
-        attachment: {
-          create: {
-            attachment: data.attachment,
-          },
-        },
         minumumOrder: data.minumumOrder,
+        length: data.length,
+        width: data.width,
+        height: data.height,
         store: {
           connect: { id: storeId },
         },
@@ -21,6 +19,13 @@ export async function createProduct(data: any, storeId: any) {
           create: {
             name: data.category,
           },
+        },
+        attachments: {
+          create: [
+            {
+              url: data.url,
+            },
+          ],
         },
 
         variants: {
@@ -40,13 +45,6 @@ export async function createProduct(data: any, storeId: any) {
                           stock: data.stock,
                           weight: data.weight,
                           isActive: true,
-                          size: {
-                            create: {
-                              height: data.height,
-                              width: data.width,
-                              length: data.length,
-                            },
-                          },
                         },
                       ],
                     },
@@ -59,7 +57,6 @@ export async function createProduct(data: any, storeId: any) {
       },
       include: {
         category: true,
-        attachment: true,
         variants: {
           include: {
             variantOptions: {

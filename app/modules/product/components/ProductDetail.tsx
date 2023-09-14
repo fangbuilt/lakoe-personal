@@ -9,7 +9,6 @@ import {
   FormLabel,
   Heading,
   Image,
-  // Input,
   Stack,
   Text,
   Textarea,
@@ -25,9 +24,9 @@ export function ProductDetail() {
 
   const [photos, setPhotos] = useState([
     { label: 'Foto Utama', name: 'mainPhoto', image: null },
-    { label: 'Foto 2', name: 'photo2', image: null },
-    { label: 'Foto 3', name: 'photo3', image: null },
-    { label: 'Foto 4', name: 'photo4', image: null },
+    // { label: 'Foto 2', name: 'photo2', image: null },
+    // { label: 'Foto 3', name: 'photo3', image: null },
+    // { label: 'Foto 4', name: 'photo4', image: null },
     // { label: 'Foto 5', name: 'photo5', image: null },
   ]);
 
@@ -76,6 +75,8 @@ export function ProductDetail() {
                 )}
                 <Dropzone
                   onDrop={(acceptedFiles) => {
+                    console.log('ininnin', acceptedFiles);
+
                     handleImageUpload(photo.name, acceptedFiles[0]);
                   }}
                 >
@@ -84,7 +85,6 @@ export function ProductDetail() {
                       <div {...getRootProps()}>
                         <input
                           // {...getInputProps()}
-                          hidden
                           name="image"
                           type="file"
                           accept="image/*"
