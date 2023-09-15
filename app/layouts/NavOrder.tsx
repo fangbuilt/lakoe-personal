@@ -33,7 +33,7 @@ import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 
-export default function NavOrder({ jancok }: any) {
+export default function NavOrder({ dataOrder }: any) {
   const { filteredOrders, setSearchQuery } = UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
@@ -441,7 +441,7 @@ export default function NavOrder({ jancok }: any) {
                         imageProduct={data.imageProduct}
                       />
                     ))} */}
-                    {jancok.map((data: any) => (
+                    {dataOrder.map((data: any) => (
                       <CardNewOrder
                         key={data}
                         id={data.id}
@@ -501,7 +501,7 @@ export default function NavOrder({ jancok }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    {jancok.map((data: any) => (
+                    {dataOrder.map((data: any) => (
                       <CardNewOrder
                         key={data}
                         id={data.id}

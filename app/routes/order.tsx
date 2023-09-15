@@ -15,7 +15,7 @@ export default function Order() {
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        <NavOrder jancok={data} />
+        <NavOrder dataOrder={data} />
       </Flex>
     </ImplementGrid>
   );
