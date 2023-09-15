@@ -29,13 +29,18 @@
     "@vercel/node": "^2.10.3",
     "datetime-difference": "^1.0.2",
     "dotenv": "^16.3.1",
+    "cloudinary": "^1.40.0",
+    "formidable": "^3.5.1",
     "framer-motion": "^6.5.1",
+    "google-map-react": "^2.2.1",
+    "i": "^0.3.7",
     "isbot": "^3.6.8",
     "mailerlite": "^0.4.0",
     "npkill": "^0.11.3",
     "npm": "^10.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-icons": "^4.10.1",
     "source-map-support": "^0.5.21",
     "zod": "^3.22.2"
@@ -55,6 +60,9 @@
     "lint-staged": "^14.0.1",
     "prisma": "^5.2.0",
     "typescript": "^5.0.4"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "engines": {
     "node": ">=14.0.0"
