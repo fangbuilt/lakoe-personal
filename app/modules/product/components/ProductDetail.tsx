@@ -13,21 +13,42 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
-import CloseCircle from '~/assets/icon-pack/button-icons/close-circle.svg';
 import Dropzone from 'react-dropzone';
-import useAddProduct from '../hooks/useAddProduct';
+import CloseCircle from '~/assets/icon-pack/button-icons/close-circle.svg';
+import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
+// import useAddProduct from '../hooks/useAddProduct';
+import { useState } from 'react';
 
 export function ProductDetail() {
-  const { preview, handleChange, cancelPreview } = useAddProduct();
+  // const { preview } = useAddProduct();
 
-  const photos = [
-    { label: 'Foto Utama' },
-    { label: 'Foto 2' },
-    { label: 'Foto 3' },
-    { label: 'Foto 4' },
-    { label: 'Foto 5' },
-  ];
+  const [photos, setPhotos] = useState([
+    { label: 'Foto Utama', name: 'mainPhoto', image: null },
+    // { label: 'Foto 2', name: 'photo2', image: null },
+    // { label: 'Foto 3', name: 'photo3', image: null },
+    // { label: 'Foto 4', name: 'photo4', image: null },
+    // { label: 'Foto 5', name: 'photo5', image: null },
+  ]);
+
+  const handleImageUpload = (name: string, image: any) => {
+    const updatedPhotos = photos.map((photo) => {
+      if (photo.name === name) {
+        return { ...photo, image };
+      }
+      return photo;
+    });
+    setPhotos(updatedPhotos);
+  };
+
+  const handleRemoveImage = (name: string) => {
+    const updatedPhotos = photos.map((photo) => {
+      if (photo.name === name) {
+        return { ...photo, image: null };
+      }
+      return photo;
+    });
+    setPhotos(updatedPhotos);
+  };
 
   return (
     <Card>
@@ -41,7 +62,6 @@ export function ProductDetail() {
               minH={200}
               placeholder="Masukan deskripsi lengkap produk kamu"
               name="description"
-              onChange={handleChange}
             />
             <FormHelperText textAlign={'right'}>0/3000</FormHelperText>
             {/* how to make the form helper text dynamic as we type? */}
@@ -55,27 +75,20 @@ export function ProductDetail() {
                 )}
                 <Dropzone
                   onDrop={(acceptedFiles) => {
-                    const syntheticEvent: any = {
-                      target: {
-                        name: 'attachment_1',
-                        value: acceptedFiles[0],
-                        type: 'file',
-                      },
-                    };
-                    handleChange(syntheticEvent);
+                    handleImageUpload(photo.name, acceptedFiles[0]);
                   }}
                 >
                   {({ getRootProps, getInputProps }) => (
                     <section>
                       <div {...getRootProps()}>
                         <input
-                          {...getInputProps()}
-                          onChange={handleChange}
+                          // {...getInputProps()}
                           name="image"
                           type="file"
-                          accept="image/jpeg, image/png, image/gif"
+                          accept="image/*"
                         />
-                        {preview ? (
+
+                        {photo.image ? (
                           <Flex
                             direction={'column'}
                             justify={'center'}
@@ -89,7 +102,7 @@ export function ProductDetail() {
                             position={'relative'}
                           >
                             <Button
-                              onClick={cancelPreview}
+                              onClick={() => handleRemoveImage(photo.name)}
                               size={'xs'}
                               position={'absolute'}
                               top={-2}
@@ -115,7 +128,11 @@ export function ProductDetail() {
                               </Box>
                             )}
                             <Image
-                              src={preview}
+                              src={
+                                photo.image
+                                  ? URL.createObjectURL(photo.image)
+                                  : undefined
+                              }
                               borderRadius={'md'}
                               aspectRatio={'1 / 1'}
                               objectFit={'cover'}
