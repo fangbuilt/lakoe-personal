@@ -30,6 +30,7 @@
     "formidable": "^3.5.1",
     "framer-motion": "^6.5.1",
     "google-map-react": "^2.2.1",
+    "date-fns-tz": "^2.0.0",
     "i": "^0.3.7",
     "isbot": "^3.6.8",
     "mailerlite-api-v2-node": "^1.2.0",
