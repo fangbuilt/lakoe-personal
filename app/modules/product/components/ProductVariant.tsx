@@ -175,10 +175,10 @@ export function ProductVariant() {
           {variants.map((variant, index) => (
             <Stack spacing={4} key={index}>
               <FormControl display="flex" alignItems="center">
-                <FormLabel fontWeight={'bold'} htmlFor="variant" mb="0">
+                <FormLabel fontWeight={'bold'} htmlFor={variant.name} mb="0">
                   {variant.name}
                 </FormLabel>
-                <Switch id="variant" />
+                <Switch id={variant.name} />
                 <Text ms={2}>Aktif</Text>
               </FormControl>
 
