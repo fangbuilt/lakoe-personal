@@ -54,7 +54,7 @@ export async function UpdateInvoiceStatusInTransit(dataInvoice: any) {
   });
 
   const data = {
-    status: 'ORDER_COMPLETED',
+    status: 'IN_TRANSIT',
     invoiceId: dataInvoice.id,
   };
   await db.invoiceHistory.create({ data });
