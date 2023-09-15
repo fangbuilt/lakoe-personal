@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Tab,
@@ -501,8 +502,8 @@ export default function NavOrder({ dataOrder }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    {dataOrder.map((data: any) => (
-                      <CardNewOrder
+                    {/* {filteredOrdersByCourier.map((data: any) => (
+                      <CardReadyToShip
                         key={data}
                         id={data.id}
                         title={data.titleProduct}
@@ -511,15 +512,15 @@ export default function NavOrder({ dataOrder }: any) {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {dataOrder.map((data: any) => (
                       <CardNewOrder
-                        key={index}
+                        key={data.id}
                         id={data.id}
                         title={data.titleProduct}
                         telephone={data.telephone}
@@ -533,7 +534,7 @@ export default function NavOrder({ dataOrder }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardReadyToShip
                         key={index}
                         id={data.id}
@@ -543,13 +544,13 @@ export default function NavOrder({ dataOrder }: any) {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardInShipping
                         key={index}
                         id={data.id}
@@ -559,13 +560,13 @@ export default function NavOrder({ dataOrder }: any) {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardSuccessOrder
                         key={index}
                         id={data.id}
@@ -575,13 +576,13 @@ export default function NavOrder({ dataOrder }: any) {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data: any, index: any) => (
+                    {/* {filteredOrdersByCourier.map((data: any, index: any) => (
                       <CardCanceled
                         key={index}
                         id={data.id}
@@ -591,7 +592,7 @@ export default function NavOrder({ dataOrder }: any) {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
                 {filteredOrdersByCourier.length === 0 && (

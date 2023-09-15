@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import type { Invoice } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
+import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 
 // Inisialisasi Prisma Client
 const prisma = new PrismaClient();
 
 export function UseSearch() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredOrders, setFilteredOrders] = useState<Invoice[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<IOrderDetailInvoice[]>(
+    []
+  );
 
   useEffect(() => {
     // Fungsi untuk mengambil data Invoice dari database berdasarkan pencarian
