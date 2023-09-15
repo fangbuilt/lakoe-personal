@@ -1,14 +1,17 @@
-import { db } from '~/libs/prisma/db.server';
+// import { db } from "~/libs/prisma/db.server";
 
-export async function getPosts() {
-  return await db.confirmationPayment.findMany({
-    where: {},
-  });
-}
+// // Import PrismaClient
+// export async function ConfirmationPayment(data: any) {
+//     const existingInvoice = await db.invoice.findUnique({
+//       where: {
+//         id: data.invoiceId,
+//       }
+//     });
+// }
 
-export async function createaPayment(data: any) {
-  console.log(data);
-  await db.confirmationPayment.create({ data });
+// export async function createaPayment(data: any) {
+//   console.log(data);
+//   await db.confirmationPayment.create({ data });
 
-  return data;
-}
+//   return data;
+// }

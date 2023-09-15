@@ -1,6 +1,5 @@
 import { Container } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
-import { title } from 'process';
 import TemplateMessage from '~/components/TemplateMessage/TemplateMessage';
 import { db } from '~/libs/prisma/db.server';
 
@@ -21,7 +20,7 @@ export async function action({ request }: ActionArgs) {
     await db.messageTemplate.create({ data });
   }
 
-  return title;
+  return null;
 }
 export default function ConfigurationTemplateMessage() {
   return (
