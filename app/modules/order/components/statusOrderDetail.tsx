@@ -254,7 +254,6 @@ export function getStatusLacakPengiriman(
   apiKey: string
 ) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const {fetchData} = UseBiteshipTrack()
 
   function openModal() {
     setModalIsOpen(true);
@@ -275,10 +274,7 @@ export function getStatusLacakPengiriman(
           background={"#FFFFFF)"}
           colorScheme="#FFFFFF)"
           w={"120px"}
-          onClick={() => {
-            openModal(),
-            fetchData()
-          }}
+          onClick={openModal}
         >
           Lacak Pengiriman
         </Button>
@@ -338,11 +334,11 @@ export async function getInvoiceById(id: any) {
 export default function StatusOrderDetail({
   data,
   dataTracking,
-  apiKey
+  apiKey,
 }: {
   data: IOrderDetailInvoice;
   dataTracking: ITracking;
-  apiKey: string
+  apiKey: string;
 }) {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
@@ -672,7 +668,12 @@ export default function StatusOrderDetail({
               <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
                 Detail Pengiriman
               </Text>
-              {getStatusLacakPengiriman(data.status, data, dataTracking, apiKey)}
+              {getStatusLacakPengiriman(
+                data.status,
+                data,
+                dataTracking,
+                apiKey
+              )}
             </Box>
             <Box display={"flex"}>
               <Box display={"flex"} flexDirection={"column"} width={"192px"}>

@@ -44,6 +44,7 @@ export default function ModalInShipping(props: {
   const toast = useToast();
   const [_, setCopied] = useState(false);
 
+  
   useEffect(() => {
     steps;
   }, []);
@@ -242,10 +243,7 @@ export default function ModalInShipping(props: {
                         />
                       </StepIndicator>
                       <Box flexShrink="0">
-                        <StepTitle>
-                          {console.log("step note", step?.note)}
-                          {step?.note}
-                        </StepTitle>
+                        <StepTitle>{step?.note}</StepTitle>
                         <StepDescription>
                           {format(
                             new Date(step?.updated_at),

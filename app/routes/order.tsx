@@ -5,7 +5,7 @@ import { useLoaderData } from "@remix-run/react";
 import getDataInShipping from "~/modules/order/orderShippingService";
 export async function loader() {
   const apiKey = process.env.API_KEY_BITESHIP as string;
-  console.log("apiiiiii", apiKey);
+
 
   return {
     dataShipping: await getDataInShipping(),

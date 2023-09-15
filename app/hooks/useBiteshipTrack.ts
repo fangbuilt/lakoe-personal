@@ -4,11 +4,8 @@ import { useLoaderData } from "@remix-run/react";
 import { ITracking } from "~/interfaces/order/orderTracking";
 import { loader } from "~/routes/order";
 
-
-
 export function UseBiteshipTrack() {
-  // const data = useLoaderData<typeof loader>();
-
+  const data = useLoaderData<typeof loader>();
 
   const [trackingInfoArray, setTrackingInfoArray] = useState<ITracking[]>([]);
   const [trackingInfo, setTrackingInfo] = useState<ITracking>();
@@ -20,7 +17,7 @@ export function UseBiteshipTrack() {
         "https://api.biteship.com/v1/trackings/Roi50pFE5PWwkU7UMYgYlb5I",
         {
           headers: {
-            authorization: "biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjY0ZjU1NDQ1M2VlYmViM2MyZGJiMmY4ZiIsImlhdCI6MTY5MzgzMzcxNX0.5CUu--0tl8oVDLrT_eUlrFgmV4qu0y8HaJnrN-NWdUA",
+            authorization: data.apiKey,
           },
         }
       );
@@ -40,6 +37,6 @@ export function UseBiteshipTrack() {
     trackingInfo,
     error,
     trackingInfoArray,
-    fetchData
+    
   };
 }

@@ -1,17 +1,13 @@
 import { Box, Button, Card, Flex, Img, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { iOrderList } from "../interfaces/order/iOrderList";
-import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
+import { useState } from "react";
 import ModalInShipping from "./ModalInShipping";
 import { ITracking } from "~/interfaces/order/orderTracking";
 import { useLoaderData } from "@remix-run/react";
 import { loader } from "~/routes/order";
-import { UseBiteshipTrack } from "~/hooks/useBiteshipTrack";
 
 export default function CardInShipping(props: ITracking) {
   const data = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
- 
 
   function openModal() {
     setModalIsOpen(true);
@@ -27,8 +23,8 @@ export default function CardInShipping(props: ITracking) {
 
       {/* CARD START HERE */}
       <Card mb={5} boxShadow={"xs"}>
-        {data.dataShipping.map((data) => (
-          <Box>
+        {data.dataShipping.map((data, index) => (
+          <Box key={data.id}>
             <Box mt={5}>
               <Box>
                 <Flex justifyContent={"space-between"} px={2}>
@@ -40,7 +36,7 @@ export default function CardInShipping(props: ITracking) {
                     size={"sm"}
                     pointerEvents={"none"}
                   >
-                    {data.status}
+                    Dalam Pengiriman
                   </Button>
 
                   <Button
@@ -52,7 +48,7 @@ export default function CardInShipping(props: ITracking) {
                   >
                     Lihat Rincian Pengiriman
                   </Button>
-                  {modalIsOpen && (
+                  {modalIsOpen && data.id && (
                     <ModalInShipping
                       isOpen={modalIsOpen}
                       onClose={closeModal}
