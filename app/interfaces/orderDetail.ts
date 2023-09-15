@@ -12,6 +12,13 @@ export interface IOrderDetailInvoice {
   createdAt: string;
   courier: IOrderDetailCourier;
   cart: IOrderDetailCart;
+  invoiceHistories: IOrderDetailInvoiceHistory[];
+}
+
+export interface IOrderDetailInvoiceHistory {
+  id: string;
+  status: string;
+  createdAt: string;
 }
 
 export interface IOrderDetailCourier {
@@ -33,6 +40,18 @@ export interface IOrderDetailCartItem {
   price: number;
   qty: number;
   product: IOrderDetailProduct;
+  variantOption: IOrderDetailVariantOption;
+}
+
+export interface IOrderDetailVariantOption {
+  id: string;
+  variantId: string;
+  variantOptionValues: IOrderDetailVariantOptionValue[];
+}
+
+export interface IOrderDetailVariantOptionValue {
+  id: string;
+  price: number;
 }
 
 export interface IOrderDetailProduct {

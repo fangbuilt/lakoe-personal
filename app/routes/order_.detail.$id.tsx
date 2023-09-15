@@ -27,11 +27,12 @@ export async function action({ request }: ActionArgs) {
     const status = formData.get("status") as string;
     const id = formData.get("id") as string;
 
-    const validateData = {
+    const validateDataUpdate = {
       id,
       status,
     };
-    await updateStatusInvoice(validateData);
+
+    await updateStatusInvoice(validateDataUpdate);
     return redirect("/order/detail/" + id);
   }
 }

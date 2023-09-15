@@ -45,7 +45,7 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from "@chakra-ui/icons";
-import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
+import type { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import circle from "~/assets/DetailOrderIcon/info-circle.svg";
 import { useState } from "react";
@@ -86,7 +86,7 @@ export default function StatusOrderDetail({
   const [modalText, setModalText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const systembalance = 1000; //saldo LAKOE
+  const systembalance = 1000;
 
   const afterpacking = () => {
     if (systembalance > 50000) {
@@ -106,7 +106,7 @@ export default function StatusOrderDetail({
       const mailerData = {
         email: "angga.ardiansyah955+012unch@gmail.com",
         fields: {
-          company: "ADD MORE BALANCE", //company berperan sebagai "title" dalam mailerlite
+          company: "ADD MORE BALANCE",
           last_name:
             "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message") dalam mailerlite
         },
@@ -126,8 +126,7 @@ export default function StatusOrderDetail({
         `${mailerBaseUrl}${mailerEndPoint}`,
         mailerRequest
       );
-      const responseData = await response.json();
-      console.log("Data Email :", responseData);
+      await response.json();
     } catch (error) {
       alert(error);
     }
@@ -210,10 +209,7 @@ export default function StatusOrderDetail({
   const stepCount = filterStepsByStatus(data.status).length;
   const stepHeight = 65;
 
-  let totalPenjualan = 0;
   const products = data.cart.cartItems.map((cartItem) => {
-    const subtotal = cartItem.qty * cartItem.price;
-    totalPenjualan += subtotal;
     return { ...cartItem, cartItem };
   });
 
@@ -305,19 +301,6 @@ export default function StatusOrderDetail({
     }
   }
 
-  const updateOrderStatus = async () => {
-    const id = data.id;
-    const newStatus = "READY_TO_SHIP";
-
-    const validateData = {
-      id,
-      newStatus,
-    };
-
-    await updateStatusInvoice(validateData);
-    onClose();
-    afterpacking();
-  };
   return (
     <>
       <Box display={"flex"} flexDirection={"column"} gap={3}>
@@ -634,7 +617,10 @@ export default function StatusOrderDetail({
                             fontWeight={"500"}
                           >
                             {item.cartItem.qty} x{" "}
-                            {formatCurrency(item.cartItem.price)}
+                            {formatCurrency(
+                              item.cartItem.variantOption.variantOptionValues[0]
+                                .price
+                            )}
                           </Text>
                         </CardBody>
                       </Box>
@@ -661,9 +647,7 @@ export default function StatusOrderDetail({
                         lineHeight={"16px"}
                         textAlign={"right"}
                       >
-                        {formatCurrency(
-                          item.cartItem.qty * item.cartItem.price
-                        )}
+                        {formatCurrency(item.cartItem.price)}
                       </Text>
                     </Box>
                   </Box>
@@ -829,7 +813,7 @@ export default function StatusOrderDetail({
               </Box>
               <Box>
                 <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                  {formatCurrency(totalPenjualan)}
+                  {formatCurrency(data.cart.price)}
                 </Text>
               </Box>
             </Box>
@@ -865,7 +849,7 @@ export default function StatusOrderDetail({
               </Box>
               <Box>
                 <Text fontSize={"14px"} fontWeight={"700"} lineHeight={"20px"}>
-                  Rp0
+                  Rp 0
                 </Text>
               </Box>
             </Box>
@@ -974,7 +958,7 @@ export default function StatusOrderDetail({
                     <Input name="id" type="hidden" value={data.id} />
                     <Button
                       variant="ghost"
-                      onClick={updateOrderStatus}
+                      onClick={afterpacking}
                       type="submit"
                     >
                       Selesai di Packing
