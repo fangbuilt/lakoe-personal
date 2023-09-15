@@ -1,16 +1,34 @@
-import { Box, Checkbox, Image, Switch, Text } from '@chakra-ui/react';
+import { Box, Checkbox, Switch, Text, Image } from '@chakra-ui/react';
+import { useState, type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
-import ProductModal from './ProductModal';
 import type { IProduct } from '~/interfaces/product/product';
 
-export default function ProductCard(props: IProduct) {
+interface IProductCardProps {
+  product: IProduct;
+  children?: ReactNode;
+}
+
+export default function ProductCard(props: IProductCardProps) {
+  const { product, children } = props;
+
+  const [isActive, setIsActive] = useState(product.isActive);
+  const handleSwitchChange = () => {
+    setIsActive(!isActive);
+  };
+
   return (
     <>
-      <Box mt={3} p={3} borderWidth="2px" borderRadius={'10px'} key={props.id}>
+      <Box
+        mt={3}
+        p={3}
+        borderWidth="2px"
+        borderRadius={'10px'}
+        key={product.id}
+      >
         <Box display={'flex'} gap={3}>
           <Box display={'flex'} gap={3}>
             <Image
-              src={props.image}
+              src={product.attachments[0].url}
               w={'100px'}
               h={'100px'}
               borderRadius={'8px'}
@@ -25,10 +43,17 @@ export default function ProductCard(props: IProduct) {
                 overflow={'hidden'}
                 textOverflow={'ellipsis'}
               >
-                {props.title}
+                {product.name}
               </Text>
               <Box display={'flex'} alignItems={'center'} gap={2} mb={2}>
-                <Text fontSize={'16px'}>Rp {props.price}</Text>
+                <Text fontSize={'16px'}>
+                  Rp
+                  {product.variants.map((a) =>
+                    a.variantOptions.map((b) =>
+                      b.variantOptionValues.map((c) => c.price)
+                    )
+                  )}
+                </Text>
                 <Box
                   display={'flex'}
                   alignItems={'center'}
@@ -36,7 +61,14 @@ export default function ProductCard(props: IProduct) {
                   color={'gray'}
                 >
                   <FaCircle size="5px" />
-                  <Text fontSize={'16px'}>Stok: {props.stock}</Text>
+                  <Text fontSize={'16px'}>
+                    Stok:{' '}
+                    {product.variants.map((a) =>
+                      a.variantOptions.map((b) =>
+                        b.variantOptionValues.map((c) => c.stock)
+                      )
+                    )}
+                  </Text>
                 </Box>
                 <Box
                   display={'flex'}
@@ -45,10 +77,17 @@ export default function ProductCard(props: IProduct) {
                   color={'gray'}
                 >
                   <FaCircle size="5px" />
-                  <Text fontSize={'16px'}>SKU: {props.sku}</Text>
+                  <Text fontSize={'16px'}>
+                    SKU:{' '}
+                    {product.variants.map((a) =>
+                      a.variantOptions.map((b) =>
+                        b.variantOptionValues.map((c) => c.sku)
+                      )
+                    )}
+                  </Text>
                 </Box>
               </Box>
-              <ProductModal />
+              {children}
             </Box>
           </Box>
           <Box
@@ -58,8 +97,12 @@ export default function ProductCard(props: IProduct) {
             py={1}
             gap={10}
           >
-            <Checkbox size="lg"></Checkbox>
-            <Switch size="md" />
+            <Checkbox size="lg" />
+            <Switch
+              size="md"
+              isChecked={isActive}
+              onChange={handleSwitchChange}
+            />
           </Box>
         </Box>
       </Box>

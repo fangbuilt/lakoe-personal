@@ -16,15 +16,15 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
-
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Copy from '~/assets/icon-pack/copy.svg';
 import Edit from '~/assets/icon-pack/edit.svg';
+import Link2 from '~/assets/icon-pack/link-2.svg';
 import More from '~/assets/icon-pack/more.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
-import Link2 from '~/assets/icon-pack/link-2.svg';
+import type { IProduct } from '~/interfaces/product/product';
 
-export default function ProductModal() {
+export default function ProductModal(props: IProduct) {
   const {
     isOpen: isEditPriceOpen,
     onOpen: onEditPriceOpen,
@@ -40,6 +40,7 @@ export default function ProductModal() {
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
+
   return (
     <>
       <Box display={'flex'} alignItems={'center'} gap={2}>
@@ -113,36 +114,43 @@ export default function ProductModal() {
               <Image src={CloseCircle} />
             </Button>
           </Box>
-          <Box py={3}>
-            <Text fontSize={'14px'}>
-              Ubah harga untuk produk KAOS BASIC COTTON KENARI - DUSTY ROSE [
-              COTTON COMBED 30S ]
-            </Text>
-            <Form method="POST">
+          <Form method="PATCH">
+            <Box py={3}>
+              <Text fontSize={'14px'}>
+                Ubah harga untuk produk {props.name}
+              </Text>
               <InputGroup mt={3} marginBottom={1}>
                 <InputLeftAddon children="Rp" />
-                <Input placeholder="ubah harga" w={'350px'} />
+                <Input type="hidden" name="id" value={props.id} />
+                <Input
+                  type="number"
+                  name="price"
+                  placeholder="ubah harga"
+                  w={'350px'}
+                  autoFocus
+                />
               </InputGroup>
-            </Form>
-          </Box>
+            </Box>
 
-          <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
-            <Button
-              onClick={onEditPriceClose}
-              borderRadius={'50px'}
-              variant={'outline'}
-            >
-              Batal
-            </Button>
-            <Button
-              colorScheme="#0086B4"
-              bgColor={'#0086B4'}
-              color={'white'}
-              borderRadius={'50px'}
-            >
-              Simpan
-            </Button>
-          </Box>
+            <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
+              <Button
+                onClick={onEditPriceClose}
+                borderRadius={'50px'}
+                variant={'outline'}
+              >
+                Batal
+              </Button>
+              <Button
+                colorScheme="#0086B4"
+                bgColor={'#0086B4'}
+                color={'white'}
+                borderRadius={'50px'}
+                type="submit"
+              >
+                Simpan
+              </Button>
+            </Box>
+          </Form>
         </ModalContent>
       </Modal>
 
@@ -156,42 +164,46 @@ export default function ProductModal() {
             alignContent={'center'}
           >
             <Text fontSize={'18px'} color={'#1D1D1D'}>
-              Ubah Harga
+              Ubah Stok
             </Text>
             <Button onClick={onEditStockClose} variant="link">
               <Image src={CloseCircle} />
             </Button>
           </Box>
-          <Box py={3}>
-            <Text fontSize={'14px'}>
-              Ubah stok untuk produk KAOS BASIC COTTON KENARI - DUSTY ROSE [
-              COTTON COMBED 30S ]
-            </Text>
-            <Form method="POST">
+          <Form method="PATCH">
+            <Box py={3}>
+              <Text fontSize={'14px'}>Ubah stok untuk produk {props.name}</Text>
               <InputGroup mt={3} marginBottom={1}>
-                {/* <InputLeftAddon children="Rp" /> */}
-                <Input placeholder="ubah stok" w={'400px'} />
+                <Input type="hidden" name="id" value={props.id} />
+                <Input
+                  type="number"
+                  name="stock"
+                  placeholder="ubah stok"
+                  w={'400px'}
+                  autoFocus
+                />
               </InputGroup>
-            </Form>
-          </Box>
+            </Box>
 
-          <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
-            <Button
-              onClick={onEditStockClose}
-              borderRadius={'50px'}
-              variant={'outline'}
-            >
-              Batal
-            </Button>
-            <Button
-              colorScheme="#0086B4"
-              bgColor={'#0086B4'}
-              color={'white'}
-              borderRadius={'50px'}
-            >
-              Simpan
-            </Button>
-          </Box>
+            <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
+              <Button
+                onClick={onEditStockClose}
+                borderRadius={'50px'}
+                variant={'outline'}
+              >
+                Batal
+              </Button>
+              <Button
+                colorScheme="#0086B4"
+                bgColor={'#0086B4'}
+                color={'white'}
+                borderRadius={'50px'}
+                type="submit"
+              >
+                Simpan
+              </Button>
+            </Box>
+          </Form>
         </ModalContent>
       </Modal>
 
@@ -213,8 +225,7 @@ export default function ProductModal() {
           </Box>
           <Box py={3}>
             <Text fontSize={'14px'}>
-              Produk KAOS BASIC COTTON KENARI - DUSTY ROSE [ COTTON COMBED 30S ]
-              akan dihapus
+              Produk {props.name} {''}akan dihapus
             </Text>
             <Text fontSize={'14px'} mt={3}>
               Produk yang dihapus tidak akan bisa dibatalkan. Pastikan produk
@@ -230,14 +241,18 @@ export default function ProductModal() {
             >
               Batalkan
             </Button>
-            <Button
-              colorScheme="#0086B4"
-              bgColor={'#0086B4'}
-              color={'white'}
-              borderRadius={'50px'}
-            >
-              Ya, Hapus
-            </Button>
+            <Form method="DELETE">
+              <Input type="hidden" name="id" value={props.id} />
+              <Button
+                colorScheme="#0086B4"
+                bgColor={'#0086B4'}
+                color={'white'}
+                borderRadius={'50px'}
+                type="submit"
+              >
+                Ya, Hapus
+              </Button>
+            </Form>
           </Box>
         </ModalContent>
       </Modal>

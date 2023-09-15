@@ -18,28 +18,35 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
+import { Link } from '@remix-run/react';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
 import BoxSearch from '~/assets/icon-pack/box-search.svg';
 import Empty from '~/assets/icon-pack/empty.svg';
+import { useFilterProducts } from '~/hooks/product/useFilterProducts';
+import { useSortProducts } from '~/hooks/product/useSortProducts';
+import { useSearchProducts } from '~/hooks/product/useSearchProducts';
 import type { IProduct } from '~/interfaces/product/product';
-import ProductCard from '~/components/product/ProductCard';
-import ProductEmpty from '~/components/product/ProductEmpty';
-import { useSearchProducts } from '~/hooks/useSearchProducts';
-import { useFilterProducts } from '~/hooks/useFilterProducts';
-import { useSortProducts } from '~/hooks/useSortProducts';
+import ProductCard from './ProductCard';
+import ProductModal from './ProductModal';
 
-export async function loader() {
-  const res = await fetch('https://api.npoint.io/ee9d3229a94459dc546b');
-  const data = await res.json();
-  return data as IProduct[];
+interface IProductBodyProps {
+  product: IProduct[];
 }
+export default function ProductBody(props: IProductBodyProps) {
+  const { product } = props;
 
-export default function Product({ items }: { items: IProduct[] }) {
-  const { setSearchQuery, filterList } = useSearchProducts(items);
+  const { setSearchQuery, filteredProducts } = useSearchProducts(product);
   const { selectedCategories, toggleCategory, getSelectedCategoryCount } =
     useFilterProducts();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortProducts();
+
+  // const filteredProducts =
+  //   activeTab === 1
+  //     ? product.filter((a) => a.isActive)
+  //     : activeTab === 2
+  //     ? product.filter((a) => !a.isActive)
+  //     : product;
 
   return (
     <>
@@ -53,19 +60,22 @@ export default function Product({ items }: { items: IProduct[] }) {
             <Text fontWeight={'bold'} fontSize={'20px'}>
               Daftar Produk
             </Text>
-            <Button
-              borderRadius={20}
-              bgColor={'#0086B4'}
-              fontSize={'14px'}
-              color={'white'}
-              colorScheme={'#0086B4'}
-            >
-              <Image src={AddCircle} />
-              Tambah Produk
-            </Button>
+            <Link to={'/product/add'}>
+              <Button
+                borderRadius={20}
+                bgColor={'#0086B4'}
+                fontSize={'14px'}
+                color={'white'}
+                colorScheme={'#0086B4'}
+              >
+                <Image src={AddCircle} />
+                Tambah Produk
+              </Button>
+            </Link>
           </Box>
         </Box>
         <Tabs w={'100%'}>
+          {/* <Tabs w={'100%'} onChange={(index) => setActiveTab(index)}> */}
           <TabList px={1}>
             <Tab>
               <Text fontSize={'16px'}>Semua</Text>
@@ -92,6 +102,7 @@ export default function Product({ items }: { items: IProduct[] }) {
                 />
               </InputGroup>
             </Box>
+            {/* kategori */}
             <Menu closeOnSelect={false}>
               <MenuButton
                 as={Button}
@@ -183,6 +194,7 @@ export default function Product({ items }: { items: IProduct[] }) {
                 </MenuItem>
               </MenuList>
             </Menu>
+            {/* urutan */}
             <Menu closeOnSelect={false}>
               <MenuButton
                 as={Button}
@@ -326,26 +338,17 @@ export default function Product({ items }: { items: IProduct[] }) {
                 justifyContent={'space-between'}
               >
                 <Text fontSize={'18px'} fontWeight={'bold'}>
-                  5 Produk
+                  {filteredProducts.length} Produk
                 </Text>
                 <Box display={'flex'} gap={2}>
                   <Text fontSize={'14px'}>Pilih Semua</Text>
                   <Checkbox defaultChecked></Checkbox>
                 </Box>
               </Box>
-              {/* conten di sini */}
-              {filterList.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  id={item.id}
-                  title={item.title}
-                  image={item.image}
-                  price={item.price}
-                  isActive={item.isActive}
-                  sku={item.sku}
-                  stock={item.stock}
-                  varians={item.varians}
-                />
+              {filteredProducts.map((a) => (
+                <ProductCard key={a.id} product={a}>
+                  <ProductModal {...a} />
+                </ProductCard>
               ))}
             </TabPanel>
             <TabPanel>
@@ -355,25 +358,17 @@ export default function Product({ items }: { items: IProduct[] }) {
                 justifyContent={'space-between'}
               >
                 <Text fontSize={'18px'} fontWeight={'bold'}>
-                  4 Produk
+                  {filteredProducts.length} Produk
                 </Text>
                 <Box display={'flex'} gap={2}>
                   <Text fontSize={'14px'}>Pilih Semua</Text>
                   <Checkbox defaultChecked></Checkbox>
                 </Box>
               </Box>
-              {filterList.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  id={item.id}
-                  title={item.title}
-                  image={item.image}
-                  price={item.price}
-                  isActive={item.isActive}
-                  sku={item.sku}
-                  stock={item.stock}
-                  varians={item.varians}
-                />
+              {filteredProducts.map((a) => (
+                <ProductCard key={a.id} product={a}>
+                  <ProductModal {...a} />
+                </ProductCard>
               ))}
             </TabPanel>
             <TabPanel>
@@ -383,14 +378,18 @@ export default function Product({ items }: { items: IProduct[] }) {
                 justifyContent={'space-between'}
               >
                 <Text fontSize={'18px'} fontWeight={'bold'}>
-                  0 Produk
+                  {filteredProducts.length} Produk
                 </Text>
                 <Box display={'flex'} gap={2}>
                   <Text fontSize={'14px'}>Pilih Semua</Text>
                   <Checkbox defaultChecked></Checkbox>
                 </Box>
               </Box>
-              <ProductEmpty />
+              {filteredProducts.map((a) => (
+                <ProductCard key={a.id} product={a}>
+                  <ProductModal {...a} />
+                </ProductCard>
+              ))}
             </TabPanel>
           </TabPanels>
         </Tabs>

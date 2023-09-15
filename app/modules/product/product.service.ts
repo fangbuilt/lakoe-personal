@@ -1,16 +1,112 @@
-// import { z } from "zod";
-// import { db } from "~/libs/prisma/db.server";
-// import  fake from "./../../utils/fake.json"
-// import { PrismaClient } from "@prisma/client";
+import { db } from '~/libs/prisma/db.server';
 
-// // const prisma = new PrismaClient();
+export async function getProduct() {
+  const data = await db.product.findMany({
+    orderBy: {
+      id: 'desc',
+    },
+    include: {
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  // console.log("ini", data);
+  return data;
+}
 
-// export async function getProducts(title:any) {
-//   return fake.post.findMany({
-//     where: {
-//       title: {
-//         contains:title
-//       }
-//     }
-//   })
-// }
+export async function getProductByStoreId(id: any) {
+  const data = await db.product.findMany({
+    where: {
+      storeId: id,
+    },
+    include: {
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return data;
+}
+
+export async function getProductByCategoryId(id: any) {
+  const data = await db.product.findMany({
+    where: {
+      categoryId: id,
+    },
+    include: {
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return data;
+}
+
+export async function deleteProduct(id: string) {
+  // const deleteVariant = db.variant.deleteMany({
+  //   where: {
+  //     productId: id,
+  //   },
+  // });
+  const deleteProduct = await db.product.delete({
+    where: {
+      id,
+    },
+  });
+  // const trnasaction = await db.$transaction([deleteVariant, deleteProduct]);
+  // console.log("sukses", trnasaction);
+  return deleteProduct;
+}
+
+export async function update(data: any): Promise<any> {
+  const currentData = await db.variantOptionValue.findFirst({
+    where: {
+      variantOption: {
+        variant: {
+          id: data.id,
+        },
+      },
+    },
+  });
+  const newData = {
+    price: data.price ? parseFloat(data.price) : currentData?.price,
+    stock: data.stock ? parseInt(data.stock) : currentData?.stock,
+  };
+
+  const update = await db.variantOptionValue.updateMany({
+    data: newData,
+    where: {
+      variantOption: {
+        variant: {
+          product: {
+            id: data.id,
+          },
+        },
+      },
+    },
+  });
+  console.log('ini update', update);
+  return update;
+}

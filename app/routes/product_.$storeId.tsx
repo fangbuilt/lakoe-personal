@@ -1,20 +1,19 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+import { redirect, type ActionArgs, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import ProductBody from '~/components/product/ProductBody';
 import { ImplementGrid } from '~/layouts/Grid';
 import {
   deleteProduct,
-  getProduct,
+  getProductByStoreId,
   update,
 } from '~/modules/product/product.service';
 
-export async function loader() {
-  return await getProduct();
+export async function loader({ params }: LoaderArgs) {
+  return await getProductByStoreId(params.storeId);
 }
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request, params }: ActionArgs) {
   if (request.method.toLowerCase() === 'delete') {
     const formData = await request.formData();
     const id = formData.get('id') as string;
@@ -36,7 +35,7 @@ export async function action({ request }: ActionArgs) {
     await update({ id, price, stock });
   }
 
-  return redirect('/product');
+  return redirect(`/product/${params.storeId}`);
 }
 
 export default function Product() {
@@ -44,10 +43,8 @@ export default function Product() {
   return (
     <ImplementGrid>
       <Stack mt={'7.5vh'} spacing={4}>
-        <ProductBody product={data} />
+        <ProductBody products={data} />
       </Stack>
     </ImplementGrid>
   );
 }
-
-// Untuk testing codingan
