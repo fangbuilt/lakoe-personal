@@ -14,13 +14,14 @@ const mailerlite = new MailerLite({
 
 export function WithdrawNotification(
   formattedAmount: string,
-  bankAccount: string
+  bankAccount: string,
+  accountName: string
 ) {
   const params: IDroppingOff = {
-    email: 'rahmatrizkyrifai+ewdfeyhdfdye@gmail.com', // The receiver email's - We will get the email from table invoice userId relation to get the email
+    email: 'rahmatrizkyrifai+ehsdseyhdfdye@gmail.com', // The receiver email's - We will get the email from table invoice userId relation to get the email
     fields: {
       // This is where you can make custom fields variable for email template display
-      storename: { bankAccount },
+      storename: { accountName },
       amount: { formattedAmount },
       bankaccount: { bankAccount },
       // We must add field first in our MailerLite dashboard for it to work

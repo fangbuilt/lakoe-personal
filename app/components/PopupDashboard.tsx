@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -34,6 +35,7 @@ export default function DashboardPopup({ bankAccount }: any) {
   const [isFormValidation, setIsFormValidation] = useState(true);
 
   const [alertAmountMessage, setAlertAmountMessage] = useState('');
+  const [alertBankMessage, setAlertBankMessage] = useState('');
 
   const [formData, setFormData] = useState({
     actionType: 'create',
@@ -65,9 +67,15 @@ export default function DashboardPopup({ bankAccount }: any) {
   const toggleTarikKredit = () => {
     const { actionType, amount, bankAccount, bankId } = formData;
 
-    if (!amount || !bankAccount) {
+    if (!amount || !bankAccount || !bankId) {
       setIsFormValidation(false);
       setAlertMessage('Mohon lengkapi data di bawah!');
+      setTimeout(() => {
+        setIsFormValidation(true);
+      }, 5000);
+    } else if (bankAccount.split(' - ')[0] !== bankId) {
+      setIsFormValidation(false);
+      setAlertBankMessage('Konfirmasi Bank tidak sinkron.');
       setTimeout(() => {
         setIsFormValidation(true);
       }, 5000);
@@ -80,9 +88,13 @@ export default function DashboardPopup({ bankAccount }: any) {
       actionType,
       bankId,
       amount,
-      bankAccount
+      bankAccount.split(' - ')[0]
     );
   };
+
+  const splitBankAccount = formData.bankAccount.split(' - ');
+  const accountName = splitBankAccount[2];
+  const bankAccountPreview = splitBankAccount.slice(1, 4).join(' - ');
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -206,35 +218,10 @@ export default function DashboardPopup({ bankAccount }: any) {
                   //   handleBankAccountChange(event);
                   // }}
                 >
-                  <option value={formData.bankId}>
-                    Select Your Bank Account
-                  </option>
+                  <option value={bankAccount.id}>Select Bank Account</option>
                   {bankAccount.map((dataBank: any) => (
-                    <option
-                      value={`${dataBank.id}`}
-                      key={dataBank.id}
-                    >{`${dataBank.id}`}</option>
-                  ))}
-                </Select>
-                <Select
-                  fontSize={'13px'}
-                  name="bankAccount"
-                  onChange={handleChange}
-                  value={formData.bankAccount}
-                  // onChange={(event) => {
-                  //   handleChange(event);
-                  //   handleBankAccountChange(event);
-                  // }}
-                >
-                  <option value={formData.bankId}>
-                    Select Your Bank Account
-                  </option>
-                  {bankAccount.map((dataBank: any) => (
-                    <option
-                      value={`${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
-                      key={dataBank.id}
-                    >
-                      {`${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
+                    <option value={`${dataBank.id}`} key={dataBank.id}>
+                      {`${dataBank.accountName} - ${dataBank.bank} - ${dataBank.accountNumber}`}
                     </option>
                   ))}
                 </Select>
@@ -264,6 +251,32 @@ export default function DashboardPopup({ bankAccount }: any) {
                   placeholder="Silakan masukkan kata sandi akun anda"
                 />
               </FormControl>
+              <FormControl mt={4}>
+                <FormLabel>Konfirmasi Bank Account*</FormLabel>
+                <Select
+                  fontSize={'13px'}
+                  name="bankAccount"
+                  onChange={handleChange}
+                  value={formData.bankAccount}
+                  // onChange={(event) => {
+                  //   handleChange(event);
+                  //   handleBankAccountChange(event);
+                  // }}
+                >
+                  <option value="">Confirm Your Bank Account</option>
+                  {bankAccount.map((dataBank: any) => (
+                    <option
+                      key={dataBank.id}
+                      value={`${dataBank.id} - ${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
+                    >
+                      {`${dataBank.accountName} - ${dataBank.bank} - ${dataBank.accountNumber}`}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+              <Text color={'red.600'} fontSize={'13px'} mt={'1'}>
+                {alertBankMessage}
+              </Text>
             </ModalBody>
             <ModalFooter>
               <Button
@@ -309,7 +322,12 @@ export default function DashboardPopup({ bankAccount }: any) {
                         >
                           {/* {dataWithdraw.map((item: any) => ( */}
                           <Box textAlign={'center'}>
-                            <Text>Anda melakukan penarikan sebesar</Text>
+                            <Flex direction={'column'}>
+                              <Text fontWeight="bold" fontSize="20px">
+                                {accountName}
+                              </Text>
+                              <Text>melakukan penarikan sebesar</Text>
+                            </Flex>
                             <Text
                               fontSize={'20px'}
                               fontWeight={'bold'}
@@ -323,11 +341,11 @@ export default function DashboardPopup({ bankAccount }: any) {
                               fontWeight={'bold'}
                               color={'gray.700'}
                             >
-                              {formData.bankAccount}
+                              {bankAccountPreview}
                             </Text>
                             <Text>Mohon tunggu beberapa saat..</Text>
                             <Text>Terima Kasih!</Text>
-                            <Text>ini bank id: {formData.bankId}</Text>
+                            {/* <Text>ini bank id: {formData.bankId}</Text> */}
                           </Box>
                           {/* ))} */}
                         </Box>
@@ -357,7 +375,8 @@ export default function DashboardPopup({ bankAccount }: any) {
                           onClick={() => {
                             WithdrawNotification(
                               formattedAmount,
-                              formData.bankAccount
+                              bankAccountPreview,
+                              accountName
                             );
                             onClose();
                           }}

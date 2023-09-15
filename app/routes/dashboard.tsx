@@ -39,13 +39,13 @@ export async function action({ request }: ActionArgs) {
 
   const actionType = formData.get('actionType');
   const amount = +(formData.get('amount') as string);
-  const bankAccount = formData.get('bankAccount');
+  const bankId = formData.get('bankId');
   const approvedById = formData.get('approvedById');
   const storeId = formData.get('storeId');
-  const bankId = formData.get('bankId');
+  const bankAccount = formData.get('bankAccount');
   const withdrawId = formData.get('withdrawId');
 
-  if (actionType === 'create' && amount && bankAccount && bankId) {
+  if (actionType === 'create' && amount && bankAccount) {
     try {
       const createdWithdraw = await createWithdraw(
         {
@@ -55,7 +55,7 @@ export async function action({ request }: ActionArgs) {
           amount: amount.toString(),
           status: 'REQUEST',
           bankAccount: {
-            connect: { id: bankId },
+            connect: { id: bankAccount },
           },
         },
         bankId as string,
@@ -64,6 +64,7 @@ export async function action({ request }: ActionArgs) {
       );
 
       console.log('Withdraw created:', createdWithdraw);
+      // console.log("bank id:", bankAccountId);
 
       const store = await db.store.findUnique({
         where: {

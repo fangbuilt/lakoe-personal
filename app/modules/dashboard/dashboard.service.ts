@@ -102,47 +102,51 @@ export async function createWithdraw(
   storeId: string,
   approvedById: string
 ) {
-  const amount = parseFloat(data.amount);
+  try {
+    const amount = parseFloat(data.amount);
 
-  // Check if the User record with id "10" exists
-  const user = await db.user.findUnique({
-    where: { id: '50' },
-  });
+    const user = await db.user.findUnique({
+      where: { id: '50' },
+    });
 
-  if (!user) {
-    throw new Error('User with id not found.');
+    if (!user) {
+      throw new Error('User with id not found.');
+    }
+
+    const bankAccount = await db.bankAccount.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!bankAccount) {
+      throw new Error('Bank Account Id not found.');
+    }
+
+    const bankId = bankAccount.id;
+
+    const withdraw = await db.withdraw.create({
+      data: {
+        store: {
+          connect: { id: '50' },
+        },
+        amount: amount,
+        status: 'REQUEST',
+        bankAccount: {
+          connect: { id: bankId },
+        },
+        approvedBy: {
+          connect: { id: '1' },
+        },
+      },
+    });
+
+    // console.log("Withdraw created:", withdraw);
+    return withdraw;
+  } catch (error) {
+    console.error('Error creating withdrawal:', error);
+    throw error;
   }
-
-  const bankAccount = await db.bankAccount.findFirst({
-    where: {
-      id: id,
-    },
-  });
-
-  if (!bankAccount) {
-    throw new Error('Bank Account Id not found.');
-  }
-
-  const bankId = bankAccount.id;
-
-  const withdraw = await db.withdraw.create({
-    data: {
-      store: {
-        connect: { id: '50' },
-      },
-      amount: amount,
-      status: 'REQUEST',
-      bankAccount: {
-        connect: { id: bankId },
-      },
-      approvedBy: {
-        connect: { id: '1' },
-      },
-    },
-  });
-
-  console.log('Withdraw created:', withdraw);
-  return withdraw;
 }
 
 export async function deleteWithdraw(id: string) {
