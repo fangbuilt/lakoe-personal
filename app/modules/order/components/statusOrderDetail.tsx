@@ -51,7 +51,6 @@ import circle from "~/assets/DetailOrderIcon/info-circle.svg";
 import { useState } from "react";
 import { Form, Link } from "@remix-run/react";
 import getStatusBadge from "./statusInvoice";
-import { updateStatusInvoice } from "../order.service";
 
 export default function StatusOrderDetail({
   data,
