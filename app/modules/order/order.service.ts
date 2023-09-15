@@ -1,4 +1,4 @@
-import { db } from "~/libs/prisma/db.server";
+import { db } from '~/libs/prisma/db.server';
 
 export async function getInvoiceById(id: any) {
   const dataInvoice = await db.invoice.findFirst({
