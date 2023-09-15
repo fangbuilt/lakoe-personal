@@ -34,7 +34,7 @@ import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 
-export default function NavOrder() {
+export default function NavOrder(data: any) {
   const { filteredOrders, setSearchQuery } = UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
@@ -431,7 +431,7 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardUnpaid
                         key={index}
                         id={data.id}
@@ -496,7 +496,7 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
@@ -550,7 +550,18 @@ export default function NavOrder() {
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
+                    <CardInShipping id={''} waybill_id={''} courier={{
+                      company: '',
+                      name: '',
+                      phone: ''
+                    }} destination={{
+                      contact_name: undefined,
+                      address: undefined
+                    }} origin={{
+                      contact_name: '',
+                      address: ''
+                    }} status={''}/>
+                    {/* {filteredOrdersByCourier.map((data, index) => (
                       <CardInShipping
                         key={index}
                         id={data.id}
@@ -560,7 +571,7 @@ export default function NavOrder() {
                         totalAmount={data.totalAmount}
                         imageProduct={data.imageProduct}
                       />
-                    ))}
+                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 

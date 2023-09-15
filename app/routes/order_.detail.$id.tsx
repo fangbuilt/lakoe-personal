@@ -3,9 +3,7 @@ import { LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
 import { ImplementGrid } from "~/layouts/Grid";
-import StatusOrderDetail, {
-  getInvoiceById,
-} from "~/modules/order/components/StatusOrderDetail";
+import StatusOrderDetail, { getInvoiceById } from "~/modules/order/components/statusOrderDetail";
 
 export async function loader({ params }: LoaderArgs) {
   const { id } = params;

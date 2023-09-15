@@ -39,6 +39,7 @@ import { useState } from "react";
 import { db } from "~/libs/prisma/db.server";
 import ModalInShipping from "~/components/ModalInShipping";
 import { ITracking } from "~/interfaces/order/orderTracking";
+import { UseBiteshipTrack } from "~/hooks/useBiteshipTrack";
 
 export function getStatusBadge(status: string) {
   if (status.toUpperCase() === "UNPAID") {
@@ -249,9 +250,11 @@ export function getStatusLacakButton(status: string) {
 export function getStatusLacakPengiriman(
   status: string,
   data: any,
-  dataTracking: ITracking
+  dataTracking: ITracking,
+  apiKey: string
 ) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {fetchData} = UseBiteshipTrack()
 
   function openModal() {
     setModalIsOpen(true);
@@ -273,7 +276,8 @@ export function getStatusLacakPengiriman(
           colorScheme="#FFFFFF)"
           w={"120px"}
           onClick={() => {
-            openModal();
+            openModal(),
+            fetchData()
           }}
         >
           Lacak Pengiriman
@@ -334,9 +338,11 @@ export async function getInvoiceById(id: any) {
 export default function StatusOrderDetail({
   data,
   dataTracking,
+  apiKey
 }: {
   data: IOrderDetailInvoice;
   dataTracking: ITracking;
+  apiKey: string
 }) {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =
     useOrderDetalil();
@@ -666,7 +672,7 @@ export default function StatusOrderDetail({
               <Text fontSize={"16px"} fontWeight={"700"} lineHeight={"24px"}>
                 Detail Pengiriman
               </Text>
-              {getStatusLacakPengiriman(data.status, data, dataTracking)}
+              {getStatusLacakPengiriman(data.status, data, dataTracking, apiKey)}
             </Box>
             <Box display={"flex"}>
               <Box display={"flex"} flexDirection={"column"} width={"192px"}>

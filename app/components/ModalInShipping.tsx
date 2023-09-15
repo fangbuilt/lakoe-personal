@@ -22,19 +22,16 @@ import {
 import { BsCircleFill } from "react-icons/bs";
 import copy from "~/assets/DetailOrderIcon/copy.svg";
 import { useEffect, useState } from "react";
-import { useBiteshipTrack } from "~/hooks/useBiteshipTrack";
 import { format } from "date-fns-tz";
 import { ITracking } from "~/interfaces/order/orderTracking";
-
-
-
+import { UseBiteshipTrack } from "~/hooks/useBiteshipTrack";
 
 export default function ModalInShipping(props: {
   isOpen: boolean;
   onClose: () => void;
   data: ITracking;
 }) {
-  const { trackingInfoArray, trackingInfo } = useBiteshipTrack();
+  const { trackingInfoArray, trackingInfo } = UseBiteshipTrack();
 
   const steps = trackingInfoArray;
   console.log("step", steps);
