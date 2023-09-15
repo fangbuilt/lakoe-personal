@@ -28,6 +28,14 @@ export default function useNestedOptions() {
     }>
   );
 
+  const [data3, setData3] = useState<Category[]>(
+    Array<{
+      id: number;
+      parentId: number | null;
+      name: string;
+    }>
+  );
+
   const [selected, setSelected] = useState<CategoryNames>({
     grandparent: null,
     parent: null,
@@ -59,6 +67,27 @@ export default function useNestedOptions() {
       parent,
       child: null,
     }));
+  };
+
+  const [value, setValue] = useState<string | null>(null);
+
+  const handleClick3 = (parentId: number) => {
+    const newData = options.filter((option) => option.parentId === parentId);
+    setData3(newData);
+
+    const child =
+      options.find((option) => option.id === parentId)?.name || null;
+    setSelected((prevState) => ({
+      ...prevState,
+      child,
+    }));
+
+    setValue(child);
+  };
+
+  const [openOptions, setOpenOptions] = useState(false);
+  const toggleOptions = () => {
+    setOpenOptions(!openOptions);
   };
 
   const options = [
@@ -654,10 +683,15 @@ export default function useNestedOptions() {
   return {
     handleClick,
     handleClick2,
+    handleClick3,
     options,
     parentOptions,
     data,
     data2,
+    data3,
     selected,
+    toggleOptions,
+    openOptions,
+    value,
   };
 }

@@ -9,23 +9,32 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
+  InputRightElement,
   Stack,
+  VisuallyHiddenInput,
 } from '@chakra-ui/react';
 import useAddProduct from '../hooks/useAddProduct';
 import useNestedOptions from '../hooks/useNestedOptions';
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 
 export function ProductInformation() {
   const {
     handleClick,
     handleClick2,
+    handleClick3,
     // options,
     parentOptions,
     data,
     data2,
     selected,
+    toggleOptions,
+    openOptions,
   } = useNestedOptions();
 
   const { handleChange } = useAddProduct();
+
+  const checkValue = selected.child;
+  console.log(checkValue);
 
   return (
     <Card>
@@ -57,63 +66,77 @@ export function ProductInformation() {
 
           <FormControl isRequired>
             <FormLabel>Kategori</FormLabel>
-            <Input
-              type="text"
-              fontSize={'sm'}
-              isReadOnly
-              value={`${selected.grandparent || ''} ${
-                selected.parent ? '>' : ''
-              } ${selected.parent || ''} ${selected.child ? '>' : ''} ${
-                selected.child || ''
-              }`}
-            />
-            <Grid templateColumns={'repeat(3, 1fr)'}>
-              <Stack>
-                {parentOptions.map((option) => (
-                  <Button
-                    justifyContent={'left'}
-                    variant={'ghost'}
-                    fontSize={'xs'}
-                    size={'sm'}
-                    onClick={() => handleClick(option.id)}
-                    key={option.id}
-                    _focusWithin={{ textColor: 'lakoeCyan' }}
-                  >
-                    {option.name}
-                  </Button>
-                ))}
-              </Stack>
+            <InputGroup onClick={toggleOptions} style={{ cursor: 'pointer' }}>
+              <Input
+                type="text"
+                fontSize={'sm'}
+                isReadOnly
+                value={`${selected.grandparent || ''} ${
+                  selected.parent ? '>' : ''
+                } ${selected.parent || ''} ${selected.child ? '>' : ''} ${
+                  selected.child || ''
+                }`}
+              />
+              <InputRightElement>
+                {!openOptions ? <ChevronDownIcon /> : <ChevronUpIcon />}
+              </InputRightElement>
+            </InputGroup>
 
-              <Stack>
-                {data.map((option) => (
-                  <Button
-                    justifyContent={'left'}
-                    variant={'ghost'}
-                    fontSize={'xs'}
-                    size={'sm'}
-                    onClick={() => handleClick2(option.id)}
-                    key={option.id}
-                  >
-                    {option.name}
-                  </Button>
-                ))}
-              </Stack>
+            {openOptions && (
+              <Grid templateColumns={'repeat(3, 1fr)'} mt={4}>
+                <Stack>
+                  {parentOptions.map((option) => (
+                    <Button
+                      justifyContent={'left'}
+                      variant={'ghost'}
+                      fontSize={'xs'}
+                      size={'sm'}
+                      onClick={() => handleClick(option.id)}
+                      key={option.id}
+                      _focusWithin={{ textColor: 'lakoeCyan' }}
+                    >
+                      {option.name}
+                    </Button>
+                  ))}
+                </Stack>
 
-              <Stack>
-                {data2.map((option) => (
-                  <Button
-                    justifyContent={'left'}
-                    variant={'ghost'}
-                    fontSize={'xs'}
-                    size={'sm'}
-                    key={option.id}
-                  >
-                    {option.name}
-                  </Button>
-                ))}
-              </Stack>
-            </Grid>
+                <Stack>
+                  {data.map((option) => (
+                    <Button
+                      justifyContent={'left'}
+                      variant={'ghost'}
+                      fontSize={'xs'}
+                      size={'sm'}
+                      onClick={() => handleClick2(option.id)}
+                      key={option.id}
+                    >
+                      {option.name}
+                    </Button>
+                  ))}
+                </Stack>
+
+                <Stack>
+                  {data2.map((option) => (
+                    <Button
+                      justifyContent={'left'}
+                      variant={'ghost'}
+                      fontSize={'xs'}
+                      size={'sm'}
+                      onClick={() => handleClick3(option.id)}
+                      key={option.id}
+                    >
+                      {option.name}
+                    </Button>
+                  ))}
+                </Stack>
+              </Grid>
+            )}
           </FormControl>
+
+          <VisuallyHiddenInput
+            onChange={handleChange}
+            value={selected.child || ''}
+          />
         </Stack>
       </CardBody>
     </Card>
