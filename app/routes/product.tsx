@@ -8,6 +8,7 @@ import {
   deleteProduct,
   getProduct,
   update,
+  updateIsActive,
 } from '~/modules/product/product.service';
 
 export async function loader() {
@@ -30,6 +31,15 @@ export async function action({ request }: ActionArgs) {
     const stock = formData.get('stock');
 
     await update({ id, price, stock });
+  }
+
+  if (request.method.toLowerCase() === 'patch') {
+    const formData = await request.formData();
+    const id = formData.get('id') as string;
+    const isActive =
+      (formData.get('isActive') as string) === 'true' ? true : false;
+
+    await updateIsActive({ id, isActive });
   }
 
   return redirect('/product');

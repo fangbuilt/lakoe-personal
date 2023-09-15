@@ -18,7 +18,6 @@ export async function getProduct() {
       },
     },
   });
-  // console.log("ini", data);
   return data;
 }
 
@@ -65,18 +64,11 @@ export async function getProductByCategoryId(id: any) {
 }
 
 export async function deleteProduct(id: string) {
-  // const deleteVariant = db.variant.deleteMany({
-  //   where: {
-  //     productId: id,
-  //   },
-  // });
   const deleteProduct = await db.product.delete({
     where: {
       id,
     },
   });
-  // const trnasaction = await db.$transaction([deleteVariant, deleteProduct]);
-  // console.log("sukses", trnasaction);
   return deleteProduct;
 }
 
@@ -107,6 +99,16 @@ export async function update(data: any): Promise<any> {
       },
     },
   });
-  console.log('ini update', update);
   return update;
+}
+
+export async function updateIsActive(data: any) {
+  const updateIsActive = await db.product.update({
+    data,
+    where: {
+      id: data.id,
+    },
+  });
+  console.log('ini update isActive', updateIsActive);
+  return updateIsActive;
 }

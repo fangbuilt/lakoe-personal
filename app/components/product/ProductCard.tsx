@@ -2,6 +2,7 @@ import { Box, Checkbox, Switch, Text, Image } from '@chakra-ui/react';
 import { useState, type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
+import { updateIsActive } from '~/modules/product/product.service';
 
 interface IProductCardProps {
   product: IProduct;
@@ -12,8 +13,25 @@ export default function ProductCard(props: IProductCardProps) {
   const { product, children } = props;
 
   const [isActive, setIsActive] = useState(product.isActive);
-  const handleSwitchChange = () => {
-    setIsActive(!isActive);
+  // const handleSwitchChange = () => {
+  //   setIsActive(!isActive);
+  // };
+
+  const handleSwitchChange = async () => {
+    try {
+      const newData = {
+        id: product.id,
+        isActive: !isActive,
+      };
+      const updateStatus = await updateIsActive(newData);
+      if (updateStatus) {
+        setIsActive(!isActive);
+      } else {
+        console.error('failed to update product status');
+      }
+    } catch (error) {
+      console.error('failed to update product status');
+    }
   };
 
   return (
