@@ -46,7 +46,7 @@ import {
   AddButon,
 } from '~/modules/configuration/components/CrudModal';
 // import data from '../utils/fakeDataTM.json';
-import type { ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import {
   getMessages,

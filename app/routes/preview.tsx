@@ -1,6 +1,5 @@
 import { Flex, Heading } from '@chakra-ui/react';
 import { ImplementGrid } from '~/layouts/Grid';
-
 export default function Preview() {
   return (
     <ImplementGrid>

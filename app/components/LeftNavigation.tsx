@@ -10,18 +10,18 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { useLocation, useNavigate } from '@remix-run/react';
-import BagFilled from '~/assets/icon-pack/bag-filled.svg';
-import BagOutline from '~/assets/icon-pack/bag-outline.svg';
-import BoxFilled from '~/assets/icon-pack/box-filled.svg';
-import BoxOutline from '~/assets/icon-pack/box-outline.svg';
-import HomeFilled from '~/assets/icon-pack/home-filled.svg';
-import HomeOutline from '~/assets/icon-pack/home-outline.svg';
-import SettingFilled from '~/assets/icon-pack/setting-filled.svg';
-import SettingOutline from '~/assets/icon-pack/setting-outline.svg';
-import ActiveDot from '~/assets/icon-pack/active-dot.svg';
-import InactiveDot from '~/assets/icon-pack/inactive-dot.svg';
-import ProfileFilled from '~/assets/icon-pack/profile-filled.svg';
-import ProfileOutline from '~/assets/icon-pack/profile-outline.svg';
+import BagFilled from '~/assets/icon-pack/navigation-icons/bag-filled.svg';
+import BagOutline from '~/assets/icon-pack/navigation-icons/bag-outline.svg';
+import BoxFilled from '~/assets/icon-pack/navigation-icons/box-filled.svg';
+import BoxOutline from '~/assets/icon-pack/navigation-icons/box-outline.svg';
+import HomeFilled from '~/assets/icon-pack/navigation-icons/home-filled.svg';
+import HomeOutline from '~/assets/icon-pack/navigation-icons/home-outline.svg';
+import SettingFilled from '~/assets/icon-pack/navigation-icons/setting-filled.svg';
+import SettingOutline from '~/assets/icon-pack/navigation-icons/setting-outline.svg';
+import ActiveDot from '~/assets/icon-pack/navigation-icons/active-dot.svg';
+import InactiveDot from '~/assets/icon-pack/navigation-icons/inactive-dot.svg';
+import ProfileFilled from '~/assets/icon-pack/navigation-icons/profile-filled.svg';
+import ProfileOutline from '~/assets/icon-pack/navigation-icons/profile-outline.svg';
 
 export function LeftNavigation() {
   const navigate = useNavigate();
@@ -38,17 +38,23 @@ export function LeftNavigation() {
         <Button
           justifyContent={'left'}
           leftIcon={
-            location.pathname === '/dashboard' ? (
+            location.pathname.startsWith('/dashboard') ? (
               <Image src={HomeFilled} />
             ) : (
               <Image src={HomeOutline} />
             )
           }
-          variant={location.pathname === '/dashboard' ? 'solid' : 'ghost'}
+          variant={
+            location.pathname.startsWith('/dashboard') ? 'solid' : 'ghost'
+          }
           py={6}
           onClick={() => navigate('/dashboard')}
-          textColor={location.pathname === '/dashboard' ? '#0086B4' : 'unset'}
-          fontWeight={location.pathname === '/dashboard' ? 'bold' : 'semibold'}
+          textColor={
+            location.pathname.startsWith('/dashboard') ? '#0086B4' : 'unset'
+          }
+          fontWeight={
+            location.pathname.startsWith('/dashboard') ? 'bold' : 'semibold'
+          }
         >
           Dashboard
         </Button>
@@ -56,17 +62,21 @@ export function LeftNavigation() {
         <Button
           justifyContent={'left'}
           leftIcon={
-            location.pathname === '/product' ? (
+            location.pathname.startsWith('/product') ? (
               <Image src={BoxFilled} />
             ) : (
               <Image src={BoxOutline} />
             )
           }
-          variant={location.pathname === '/product' ? 'solid' : 'ghost'}
+          variant={location.pathname.startsWith('/product') ? 'solid' : 'ghost'}
           py={6}
           onClick={() => navigate('/product')}
-          textColor={location.pathname === '/product' ? '#0086B4' : 'unset'}
-          fontWeight={location.pathname === '/product' ? 'bold' : 'semibold'}
+          textColor={
+            location.pathname.startsWith('/product') ? '#0086B4' : 'unset'
+          }
+          fontWeight={
+            location.pathname.startsWith('/product') ? 'bold' : 'semibold'
+          }
         >
           Produk
         </Button>
@@ -74,17 +84,21 @@ export function LeftNavigation() {
         <Button
           justifyContent={'left'}
           leftIcon={
-            location.pathname === '/order' ? (
+            location.pathname.startsWith('/order') ? (
               <Image src={BagFilled} />
             ) : (
               <Image src={BagOutline} />
             )
           }
-          variant={location.pathname === '/order' ? 'solid' : 'ghost'}
+          variant={location.pathname.startsWith('/order') ? 'solid' : 'ghost'}
           py={6}
           onClick={() => navigate('/order')}
-          textColor={location.pathname === '/order' ? '#0086B4' : 'unset'}
-          fontWeight={location.pathname === '/order' ? 'bold' : 'semibold'}
+          textColor={
+            location.pathname.startsWith('/order') ? '#0086B4' : 'unset'
+          }
+          fontWeight={
+            location.pathname.startsWith('/order') ? 'bold' : 'semibold'
+          }
         >
           Pesanan
         </Button>
@@ -132,26 +146,26 @@ export function LeftNavigation() {
                   justifyContent={'left'}
                   leftIcon={
                     location.pathname ===
-                    '/configuration/store_configuration' ? (
+                    '/configuration/storeConfiguration' ? (
                       <Image src={ActiveDot} />
                     ) : (
                       <Image src={InactiveDot} />
                     )
                   }
                   variant={
-                    location.pathname === '/configuration/store_configuration'
+                    location.pathname === '/configuration/storeConfiguration'
                       ? 'solid'
                       : 'ghost'
                   }
                   py={5}
-                  onClick={() => navigate('/configuration/store_configuration')}
+                  onClick={() => navigate('/configuration/storeConfiguration')}
                   textColor={
-                    location.pathname === '/configuration/store_configuration'
+                    location.pathname === '/configuration/storeConfiguration'
                       ? '#0086B4'
                       : 'unset'
                   }
                   fontWeight={
-                    location.pathname === '/configuration/store_configuration'
+                    location.pathname === '/configuration/storeConfiguration'
                       ? 'medium'
                       : 'normal'
                   }
@@ -190,26 +204,26 @@ export function LeftNavigation() {
                 <Button
                   justifyContent={'left'}
                   leftIcon={
-                    location.pathname === '/configuration/payment_method' ? (
+                    location.pathname === '/configuration/paymentMethod' ? (
                       <Image src={ActiveDot} />
                     ) : (
                       <Image src={InactiveDot} />
                     )
                   }
                   variant={
-                    location.pathname === '/configuration/payment_method'
+                    location.pathname === '/configuration/paymentMethod'
                       ? 'solid'
                       : 'ghost'
                   }
                   py={5}
-                  onClick={() => navigate('/configuration/payment_method')}
+                  onClick={() => navigate('/configuration/paymentMethod')}
                   textColor={
-                    location.pathname === '/configuration/payment_method'
+                    location.pathname === '/configuration/paymentMethod'
                       ? '#0086B4'
                       : 'unset'
                   }
                   fontWeight={
-                    location.pathname === '/configuration/payment_method'
+                    location.pathname === '/configuration/paymentMethod'
                       ? 'medium'
                       : 'normal'
                   }
@@ -226,17 +240,21 @@ export function LeftNavigation() {
         <Button
           justifyContent={'left'}
           leftIcon={
-            location.pathname === '/profile' ? (
+            location.pathname.startsWith('/profile') ? (
               <Image src={ProfileFilled} />
             ) : (
               <Image src={ProfileOutline} />
             )
           }
-          variant={location.pathname === '/profile' ? 'solid' : 'ghost'}
+          variant={location.pathname.startsWith('/profile') ? 'solid' : 'ghost'}
           py={6}
           onClick={() => navigate('/profile')}
-          textColor={location.pathname === '/profile' ? '#0086B4' : 'unset'}
-          fontWeight={location.pathname === '/profile' ? 'bold' : 'semibold'}
+          textColor={
+            location.pathname.startsWith('/profile') ? '#0086B4' : 'unset'
+          }
+          fontWeight={
+            location.pathname.startsWith('/profile') ? 'bold' : 'semibold'
+          }
         >
           Profile
         </Button>
