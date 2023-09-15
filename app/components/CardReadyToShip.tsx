@@ -11,8 +11,6 @@ export default function ReadyToShipCard() {
 
   const cardProduct = useLoaderData<typeof loader>();
 
-  console.log('ini adalah isi cardProduct: ', cardProduct);
-
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -44,7 +42,7 @@ export default function ReadyToShipCard() {
                       size={'sm'}
                       pointerEvents={'none'}
                     >
-                      {data.status}
+                      {data.status === "READY_TO_SHIP" ? "Siap Dikirim" : ""}
                     </Button>
                     <Box>
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
@@ -77,7 +75,7 @@ export default function ReadyToShipCard() {
                           w={'52px'}
                           h={'52px'}
                           display={'inline'}
-                          // src={item.product?.attachments}
+                          src={item.product?.attachments[0]?.url}
                           mt={3}
                         />
                       ))}

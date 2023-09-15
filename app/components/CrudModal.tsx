@@ -23,7 +23,7 @@ import type { ITemplateMessage } from '~/interfaces/TemplateMessage';
 export function DeleteButton(props: ITemplateMessage) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const id = props.id;
-  console.log(id);
+  // console.log(id);
 
   return (
     <Box>
@@ -104,7 +104,7 @@ export function DeleteButton(props: ITemplateMessage) {
 export function UpdateButton(props: ITemplateMessage) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const id = props.id;
-  console.log(id);
+  // console.log(id);
 
   return (
     <>
