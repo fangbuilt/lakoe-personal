@@ -25,9 +25,9 @@ import { Link, useLoaderData } from '@remix-run/react';
 // createWhatsAppTemplateMessageLink1,
 // phoneNumber,
 // } from '../utils/TemplateMessage';
-import dummyMessage from '../utils/templateMessage.json';
+// import dummyMessage from '../utils/templateMessage.json';
 import type { loader } from '~/routes/order';
-import type { IMessageTemplates } from '~/interfaces/order';
+// import type { IMessageTemplates } from '~/interfaces/order';
 
 export default function UnpaidCard() {
   // const {data} = useLoaderData<typeof loader>();
@@ -90,14 +90,14 @@ export default function UnpaidCard() {
                     <ModalOverlay />
                     <ModalContent>
                       <ModalHeader>
-                        Send Message ke {item.user?.name}
+                        Send Message ke {item.receiverName}
                       </ModalHeader>
                       <ModalCloseButton />
                       <ModalBody>
                         <Accordion allowToggle>
-                          {dummyMessage.map(
-                            (itemtemp: IMessageTemplates, index) => (
-                              <AccordionItem key={index}>
+                          {item.cart?.store?.messageTemplates.map(
+                            (itemtemp) => (
+                              <AccordionItem key={itemtemp.id}>
                                 <Text>
                                   <AccordionButton>
                                     <Box as="span" flex="1" textAlign="left">
@@ -107,15 +107,15 @@ export default function UnpaidCard() {
                                   </AccordionButton>
                                 </Text>
                                 <AccordionPanel pb={4}>
-                                  {itemtemp.message}
+                                  {itemtemp.content}
                                   <Button
                                     colorScheme={'whatsapp'}
                                     float={'right'}
                                   >
                                     <Link
                                       to={createWhatsAppTemplateMessageLink1(
-                                        item.user?.phone ?? '',
-                                        itemtemp.message
+                                        item.receiverPhone ?? '',
+                                        itemtemp.content
                                       )}
                                       target="_blank"
                                     >

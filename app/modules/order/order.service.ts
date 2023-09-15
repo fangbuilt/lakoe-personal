@@ -7,6 +7,11 @@ export async function getProductUnpid() {
       payment: true,
       cart: {
         include: {
+          store: {
+            include: {
+              messageTemplates: true,
+            },
+          },
           cartItems: {
             include: {
               product: {
@@ -34,12 +39,17 @@ export async function getAllProductUnpid() {
       payment: true,
       cart: {
         include: {
+          store: {
+            include: {
+              messageTemplates: true,
+            },
+          },
           cartItems: {
             include: {
               product: {
                 include: {
                   attachments: true,
-                  store: true,
+                  // store: true,
                 },
               },
             },
