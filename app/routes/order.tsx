@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import NavOrder from '~/layouts/NavOrder';
+import NavOrderBa from '~/layouts/NavOrderBa';
 import { ImplementGrid } from '~/layouts/Grid';
 import {
   getInvoiceByStatus,
@@ -11,6 +11,7 @@ import { redirect } from '@remix-run/node';
 
 export async function loader() {
   const dataInvoice = await getInvoiceByStatus();
+  console.log('ini data', dataInvoice);
   return dataInvoice;
 }
 
@@ -33,7 +34,9 @@ export default function Order() {
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        <NavOrder dataOrder={data} />
+        {/* <NavOrderBa prderDetailInvoice={data} /> */}
+
+        <NavOrderBa prderDetailInvoice={data} />
       </Flex>
     </ImplementGrid>
   );

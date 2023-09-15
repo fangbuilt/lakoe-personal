@@ -16,8 +16,8 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { UseSearch } from '~/hooks/useSearchOrder';
-import type { IOrderList } from '~/interfaces/order';
-export default function CardNewOrder(props: IOrderList) {
+
+export default function CardNewOrder(props: IOrderDetailInvoice) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { filteredOrders } = UseSearch();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -218,7 +218,7 @@ export default function CardNewOrder(props: IOrderList) {
                 </Modal>
               </Flex>
               <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                {props.invoice}
+                {props.invoiceNumber}
               </Text>
               <hr />
               <Flex justifyContent={'space-between'}>
@@ -227,7 +227,9 @@ export default function CardNewOrder(props: IOrderList) {
                     w={'52px'}
                     h={'52px'}
                     display={'inline'}
-                    src={props.imageProduct}
+                    src={
+                      'https://yandex.com/images/search?pos=4&from=tabbar&img_url=https%3A%2F%2Fwww.static-src.com%2Fwcsstore%2FIndraprastha%2Fimages%2Fcatalog%2Ffull%2Fkaosyes_kaosyes-kaos-polos-t-shirt-raglan-lengan-3-4-abu-hitam_full06.jpg&text=kaos+combad&rpt=simage&lr=114912'
+                    }
                     mt={3}
                   />
                   <Text
@@ -239,7 +241,7 @@ export default function CardNewOrder(props: IOrderList) {
                     whiteSpace={'nowrap'}
                     fontWeight={'700'}
                   >
-                    {props.title}
+                    {props.cart?.cartItems.map((a) => a.product?.name)}
                     <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
                       1 Barang
                     </Text>

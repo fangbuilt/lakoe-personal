@@ -1,7 +1,8 @@
-import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
+import { Box, Button, Card, Flex, Image, Text } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import type { IOrderList } from '~/interfaces/order';
-export default function CardNewOrder(props: IOrderList) {
+import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
+
+export default function CardNewOrderBa(props: IOrderDetailInvoice) {
   return (
     <>
       <Card mb={5} boxShadow={'xs'}>
@@ -21,7 +22,7 @@ export default function CardNewOrder(props: IOrderList) {
                 </Button>
 
                 {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-                <Link to={`http://wa.me/${props.telephone}`}>
+                <Link to={`http://wa.me`}>
                   <Button
                     bg={'transparent'}
                     border={'1px solid #D5D5D5'}
@@ -34,16 +35,16 @@ export default function CardNewOrder(props: IOrderList) {
                 {/*  */}
               </Flex>
               <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                {props.invoice}
+                {props.invoiceNumber}
               </Text>
               <hr />
               <Flex justifyContent={'space-between'}>
                 <Box display={'flex'} w={'80%'}>
-                  <Img
+                  <Image
                     w={'52px'}
                     h={'52px'}
                     display={'inline'}
-                    src={props.imageProduct}
+                    // src={`${props.cart.cartItems.map((a)=> a.product.attachments.map)}`}
                     mt={3}
                   />
                   <Text
@@ -55,7 +56,7 @@ export default function CardNewOrder(props: IOrderList) {
                     whiteSpace={'nowrap'}
                     fontWeight={'700'}
                   >
-                    {props.title}
+                    {props.cart.cartItems.map((a) => a.product.name)}
                     <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
                       1 Barang
                     </Text>
@@ -71,7 +72,10 @@ export default function CardNewOrder(props: IOrderList) {
                     </Text>
                   </Flex>
                   <Text fontWeight={'bold'} fontSize={'14px'}>
-                    Rp {props.totalAmount}
+                    Rp{' '}
+                    {props.cart.cartItems.map((a) =>
+                      a.variantOption.variantOptionValues.map((b) => b.price)
+                    )}
                   </Text>
                 </Box>
               </Flex>

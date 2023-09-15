@@ -4,61 +4,61 @@ export interface IOrderDetailUser {
   email: string;
   phone: string;
   password: string;
-  store?: IOrderDetailStore | null;
-  storeId?: string | null;
-  role?: IOrderDetailRole | null;
+  store: IOrderDetailStore;
+  storeId: string;
+  role: IOrderDetailRole;
   roleId: string;
-  profile?: IOrderDetailProfile | null;
+  profile: IOrderDetailProfile;
   biteshipTrackingLimits: IOrderDetailBiteshipTrackingLimit[];
   carts: IOrderDetailCart[];
   cartItems: IOrderDetailCartItem[];
   invoices: IOrderDetailInvoice[];
   payments: IOrderDetailPayment[];
   withdraws: IOrderDetailWithdraw[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailWithdraw {
   id: string;
   amount: number;
   status: string;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
-  bankAccount?: IOrderDetailBankAccount | null;
+  bankAccount: IOrderDetailBankAccount;
   bankId: string;
-  approvedBy?: IOrderDetailUser | null;
+  approvedBy: IOrderDetailUser;
   approvedById: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailRole {
   id: string;
   name: string;
   users: IOrderDetailUser[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailProfile {
   id: string;
-  user?: IOrderDetailUser | null;
+  user: IOrderDetailUser;
   userId: string;
   locations: IOrderDetailLocation[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailStore {
   id: string;
   name: string;
   credit: number;
-  slogan?: string | null;
+  slogan: string;
   description: string;
   domain: string;
-  logoAttachment?: string | null;
-  bannerAttachment?: string | null;
+  logoAttachment: string;
+  bannerAttachment: string;
   users: IOrderDetailUser[];
   storesDecorations: IOrderDetailStoreDecoration[];
   operationHours: IOrderDetailOperationHour[];
@@ -66,69 +66,68 @@ export interface IOrderDetailStore {
   locations: IOrderDetailLocation[];
   products: IOrderDetailProduct[];
   carts: IOrderDetailCart[];
-  cartItems: IOrderDetailCartItem[];
   bankAccounts: IOrderDetailBankAccount[];
   withdraws: IOrderDetailWithdraw[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailDecoration {
   id: string;
   type: string;
   storesDecorations: IOrderDetailStoreDecoration[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailStoreDecoration {
   id: string;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
-  decoration?: IOrderDetailDecoration | null;
+  decoration: IOrderDetailDecoration;
   decorationId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailOperationHour {
   id: string;
   day: string;
-  openAt: string;
-  closeAt: string;
+  openAt: Date;
+  closeAt: Date;
   isOff: boolean;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailMessageTemplate {
   id: string;
   name: string;
   content: string;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailLocation {
   id: string;
   name: string;
   address: string;
-  addressNote?: string | null;
+  addressNote: string;
   latitude: string;
   longtitude: string;
   postalCode: string;
   cityDistrict: string;
   isMainLocation: boolean;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
-  profile?: IOrderDetailProfile | null;
+  profile: IOrderDetailProfile;
   profileId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailProduct {
@@ -136,38 +135,42 @@ export interface IOrderDetailProduct {
   name: string;
   description: string;
   minumumOrder: number;
+  length: number;
+  width: number;
+  height: number;
   slug: string;
   isActive: boolean;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
-  category?: IOrderDetailCategory | null;
+  category: IOrderDetailCategory;
   categoryId: string;
   attachments: IOrderDetailProductAttachment[];
   variants: IOrderDetailVariant[];
   cartItems: IOrderDetailCartItem[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailVariant {
   id: string;
   name: string;
   isActive: boolean;
-  product?: IOrderDetailProduct | null;
+  product: IOrderDetailProduct;
   productId: string;
   variantOptions: IOrderDetailVariantOption[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailVariantOption {
   id: string;
   name: string;
-  variant?: IOrderDetailVariant | null;
+  variant: IOrderDetailVariant;
   variantId: string;
+  cartItems: IOrderDetailCartItem[];
   variantOptionValues: IOrderDetailVariantOptionValue[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailVariantOptionValue {
@@ -176,65 +179,50 @@ export interface IOrderDetailVariantOptionValue {
   weight: number;
   stock: number;
   price: number;
-  variantOption?: IOrderDetailVariantOption | null;
+  variantOption: IOrderDetailVariantOption;
   variantOptionId: string;
-  size?: IOrderDetailVariantOptionValueSize | null;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface IOrderDetailVariantOptionValueSize {
-  id: string;
-  length: number;
-  width: number;
-  height: number;
-  variantOptionValue?: IOrderDetailVariantOptionValue | null;
-  variantOptionValueId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailCategory {
   id: string;
   name: string;
-  parentId?: string | null;
+  parentId: string;
   products: IOrderDetailProduct[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailCart {
   id: string;
   price: number;
   discount: number;
-  confirmationPayment?: IOrderDetailConfirmationPayment | null;
-  user?: IOrderDetailUser | null;
+  user: IOrderDetailUser;
   userId: string;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
-  payment?: IOrderDetailPayment | null;
-  paymentId: string;
   cartItems: IOrderDetailCartItem[];
   invoices: IOrderDetailInvoice[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailCartItem {
   id: string;
   qty: number;
   price: number;
-  product?: IOrderDetailProduct | null;
-  productId: string;
-  cart?: IOrderDetailCart | null;
+  variantOption: IOrderDetailVariantOption;
+  variantOptionId: string;
+  cart: IOrderDetailCart;
   cartId: string;
-  store?: IOrderDetailStore | null;
-  storeId: string;
-  user?: IOrderDetailUser | null;
+  user: IOrderDetailUser;
   userId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
+  product: IOrderDetailProduct;
+  productId: string;
 }
 
 export interface IOrderDetailInvoice {
@@ -250,22 +238,23 @@ export interface IOrderDetailInvoice {
   receiverName: string;
   receiverEmail: string;
   receiverPostalCode: string;
-  receiverAddressNote?: string | null;
+  receiverAddressNote: string;
   invoiceNumber: string;
   waybill: string;
   mootaTransactionId: string;
-  cart?: IOrderDetailCart | null;
+  confirmationPayment: IOrderDetailConfirmationPayment;
+  cart: IOrderDetailCart;
   cartId: string;
-  courier?: IOrderDetailCourier | null;
+  courier: IOrderDetailCourier;
   courierId: string;
-  user?: IOrderDetailUser | null;
+  user: IOrderDetailUser;
   userId: string;
-  payment?: IOrderDetailPayment | null;
+  payment: IOrderDetailPayment;
   paymentId: string;
   biteshipTrackinglimits: IOrderDetailBiteshipTrackingLimit[];
   invoiceHistories: IOrderDetailInvoiceHistory[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailPayment {
@@ -273,21 +262,20 @@ export interface IOrderDetailPayment {
   bank: string;
   amount: number;
   status: string;
-  user?: IOrderDetailUser | null;
+  user: IOrderDetailUser;
   userId: string;
   invoices: IOrderDetailInvoice[];
-  carts: IOrderDetailCart[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailCourier {
   id: string;
-  availableForCashOnDelivery?: boolean | null;
-  availableForProofOfDelivery?: boolean | null;
-  availableForInstantWaybillId?: boolean | null;
+  availableForCashOnDelivery: boolean;
+  availableForProofOfDelivery: boolean;
+  availableForInstantWaybillId: boolean;
   courierType: string;
-  courierInsurance?: string | null;
+  courierInsurance: string;
   courierName: string;
   courierCode: string;
   courierServiceName: string;
@@ -304,17 +292,17 @@ export interface IOrderDetailCourier {
   deliveryDate: string;
   deliveryTime: string;
   invoices: IOrderDetailInvoice[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailInvoiceHistory {
   id: string;
   status: string;
-  invoice?: IOrderDetailInvoice | null;
+  invoice: IOrderDetailInvoice;
   invoiceId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailBankAccount {
@@ -322,42 +310,40 @@ export interface IOrderDetailBankAccount {
   bank: string;
   accountName: string;
   accountNumber: string;
-  confirmationPayment?: IOrderDetailConfirmationPayment | null;
-  store?: IOrderDetailStore | null;
+  store: IOrderDetailStore;
   storeId: string;
   withdraws: IOrderDetailWithdraw[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailProductAttachment {
   id: string;
   url: string;
-  product?: IOrderDetailProduct | null;
+  product: IOrderDetailProduct;
   productId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailConfirmationPayment {
   id: string;
   amount: number;
   attachment: string;
-  cart?: IOrderDetailCart | null;
-  cartId: string;
-  bankAccount?: IOrderDetailBankAccount | null;
-  bankAccountId: string;
-  createdAt: string;
-  updatedAt: string;
+  invoice: IOrderDetailInvoice;
+  invoiceId: string;
+  bank: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderDetailBiteshipTrackingLimit {
   id: string;
-  user?: IOrderDetailUser | null;
+  user: IOrderDetailUser;
   userId: string;
-  invoice?: IOrderDetailInvoice | null;
+  invoice: IOrderDetailInvoice;
   invoiceId: string;
-  nextAccessTime: string;
-  createdAt: string;
-  updatedAt: string;
+  nextAccessTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
