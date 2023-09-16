@@ -64,7 +64,6 @@ export async function action({ request }: ActionArgs) {
       );
 
       console.log('Withdraw created:', createdWithdraw);
-      // console.log("bank id:", bankAccountId);
 
       const store = await db.store.findUnique({
         where: {
@@ -72,7 +71,6 @@ export async function action({ request }: ActionArgs) {
         },
       });
       if (store) {
-        // Calculate the new credit balance
         const newCredit = store.credit - amount;
 
         await db.store.update({
@@ -111,6 +109,19 @@ export default function Dashboard() {
     }).format(saldo);
   }
 
+  let totalWithdrawAmount = 0;
+  data.forEach((item) => {
+    if (item.bankAccounts && item.bankAccounts.length > 0) {
+      item.bankAccounts.forEach((account) => {
+        if (account.withdraws && account.withdraws.length > 0) {
+          account.withdraws.forEach((withdraw) => {
+            totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+          });
+        }
+      });
+    }
+  });
+
   return (
     <>
       <NavbarDashboard />
@@ -142,7 +153,7 @@ export default function Dashboard() {
                 </Text>
               ))}
               {data.map((item) => (
-                <DashboardPopup bankAccount={item.bankAccount} />
+                <DashboardPopup bankAccount={item.bankAccounts} />
               ))}
             </Box>
             <Box
@@ -160,7 +171,7 @@ export default function Dashboard() {
               </Text>
               <Text fontSize={'13px'}>Penarikan sedang dalam proses</Text>
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#656565'}>
-                Rp.0
+                {formatRupiah(totalWithdrawAmount)}
               </Text>
             </Box>
             <Box

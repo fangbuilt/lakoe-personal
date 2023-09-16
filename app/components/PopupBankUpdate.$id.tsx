@@ -85,7 +85,7 @@ export default function UpdateBank(props: any) {
                 mr={3}
                 onClick={onClose}
               >
-                Tambah Akun Bank
+                Update Akun Bank
               </Button>
             </ModalFooter>
           </Form>

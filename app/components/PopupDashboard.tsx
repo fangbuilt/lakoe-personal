@@ -57,7 +57,7 @@ export default function DashboardPopup({ bankAccount }: any) {
       setAlertAmountMessage('Amount harus berupa angka');
     } else if (parsedAmount < 0) {
       setAlertAmountMessage('Anda memasukkan jumlah kurang dari 0');
-    } else if (parsedAmount > 2500000) {
+    } else if (parsedAmount > 250000) {
       setAlertAmountMessage('Jumlah amount melebihi batas maksimal');
     } else {
       setAlertAmountMessage('');
@@ -171,8 +171,15 @@ export default function DashboardPopup({ bankAccount }: any) {
               )}
 
               <FormControl mt={4}>
-                <FormLabel>Berapa banyak yang ingin anda tarik?</FormLabel>
+                <FormLabel
+                  fontSize={'14px'}
+                  fontWeight={'bold'}
+                  color="gray.500"
+                >
+                  Berapa banyak yang ingin anda tarik?
+                </FormLabel>
                 <Input
+                  fontSize={'13px'}
                   value={formData.amount}
                   // onChange={(event) => {
                   //   handleChange(event);
@@ -197,7 +204,7 @@ export default function DashboardPopup({ bankAccount }: any) {
                   mt={'1'}
                 >
                   Max amount:{''}
-                  <Text as="span" fontWeight={700}>
+                  <Text as="span" fontWeight={700} fontSize={'13px'}>
                     Rp.2.500.000
                   </Text>
                 </Text>
@@ -206,7 +213,14 @@ export default function DashboardPopup({ bankAccount }: any) {
               <FormControl mt={4}>
                 {/* <FormLabel>Tarik Ke:</FormLabel> */}
                 {/* {data === null ? ( */}
-                <button onClick={handleAddRekeningClick}>Tarik ke:</button>
+                <Text
+                  onClick={handleAddRekeningClick}
+                  fontSize={'14px'}
+                  fontWeight={'bold'}
+                  color="gray.500"
+                >
+                  Tarik ke:
+                </Text>
                 {/* : ( */}
                 <Select
                   fontSize={'13px'}
@@ -237,22 +251,14 @@ export default function DashboardPopup({ bankAccount }: any) {
                   </Text>
                 </Link>
               </FormControl>
-
               <FormControl mt={4}>
-                <FormLabel>Password</FormLabel>
-                <Input
-                  // onChange={(event) => {
-                  //   handleChange(event);
-                  //   handlePasswordChange(event);
-                  // }}
-                  // onChange={handlePasswordChange}
-                  type="password"
-                  ref={initialRef}
-                  placeholder="Silakan masukkan kata sandi akun anda"
-                />
-              </FormControl>
-              <FormControl mt={4}>
-                <FormLabel>Konfirmasi Bank Account*</FormLabel>
+                <FormLabel
+                  fontSize={'14px'}
+                  fontWeight={'bold'}
+                  color="gray.500"
+                >
+                  Konfirmasi Bank Account*
+                </FormLabel>
                 <Select
                   fontSize={'13px'}
                   name="bankAccount"
@@ -277,6 +283,27 @@ export default function DashboardPopup({ bankAccount }: any) {
               <Text color={'red.600'} fontSize={'13px'} mt={'1'}>
                 {alertBankMessage}
               </Text>
+
+              <FormControl mt={4}>
+                <FormLabel
+                  fontSize={'14px'}
+                  fontWeight={'bold'}
+                  color="gray.500"
+                >
+                  Password*
+                </FormLabel>
+                <Input
+                  // onChange={(event) => {
+                  //   handleChange(event);
+                  //   handlePasswordChange(event);
+                  // }}
+                  // onChange={handlePasswordChange}
+                  fontSize={'13px'}
+                  type="password"
+                  ref={initialRef}
+                  placeholder="Silakan masukkan kata sandi akun anda"
+                />
+              </FormControl>
             </ModalBody>
             <ModalFooter>
               <Button

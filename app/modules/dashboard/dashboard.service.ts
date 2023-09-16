@@ -8,9 +8,9 @@ export async function getStoreData(id: string) {
         id: '50',
       },
       include: {
-        bankAccount: {
+        bankAccounts: {
           include: {
-            withdraw: true,
+            withdraws: true,
           },
         },
       },
@@ -33,16 +33,15 @@ export async function getStore() {
 }
 
 export async function deleteBankList(id: string) {
-  // Unlink related records in the 'withdraw' table
   await db.withdraw.updateMany({
     where: { bankId: id },
     data: { bankId: null || undefined },
   });
 
-  // Now you can safely delete the 'bankAccount' record
-  return await db.bankAccount.delete({
+  await db.bankAccount.delete({
     where: { id: id },
   });
+  return { success: true };
 }
 
 export async function getNameBank(bank: string) {
