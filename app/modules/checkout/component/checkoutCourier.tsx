@@ -1,29 +1,40 @@
-import { Box, Input, Select, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Image,
+  Input,
+  Radio,
+  RadioGroup,
+  Select,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 
 import { useEffect, useState } from 'react';
+// import count from "~/components/count";
 
 const dataCourier = [
-  'gojek',
-  'grab',
-  'deliveree',
+  // "gojek",
+  // "grab",
+  // "deliveree",
   'jne',
   'tiki',
-  'ninja',
-  'lion',
+  // "ninja",
+  // "lion",
   'sicepat',
-  'rara',
+  // "rara",
   'jnt',
-  'idexpress',
-  'rpx',
-  'jdl',
-  'wahana',
+  // "idexpress",
+  // "rpx",
+  // "jdl",
+  // "wahana",
   'pos',
   'anteraja',
-  'sap',
-  'paxel',
-  'mrspeedy',
-  'borzo',
-  'lalamove',
+  // "sap",
+  // "paxel",
+  // "mrspeedy",
+  // "borzo",
+  // "lalamove",
 ];
 
 interface CourierService {
@@ -46,7 +57,7 @@ interface CourierService {
   type: string;
 }
 
-export default function CheckoutCourier() {
+export default function CheckoutCourier(props: any) {
   const [postalCode, setPostalCode] = useState();
   // const [courier, setCourier] = useState("");
   const [rates, setRates] = useState('');
@@ -55,6 +66,18 @@ export default function CheckoutCourier() {
   const [dataRates, setDataRates] = useState({
     postalCode: '',
   });
+
+  const rate = parseInt(rates);
+  const total = props.totalPriceUnique as number;
+  let totalValue = 0;
+  if (!rate) {
+    totalValue = total;
+  } else {
+    totalValue = total + rate;
+  }
+
+  const valueTotal = totalValue.toLocaleString('id-ID');
+  const ValueAfter = total.toLocaleString('id-ID');
 
   console.log(setPostalCode);
 
@@ -292,6 +315,14 @@ export default function CheckoutCourier() {
               })
             }
           />
+
+          <Input
+            bgColor={'#fcfcfc'}
+            type="text"
+            name="description"
+            placeholder="Masukkan Catatan Pemesanan"
+          />
+
           <Box>
             <Text fontWeight={'bold'}>Pengiriman</Text>
           </Box>
@@ -329,6 +360,94 @@ export default function CheckoutCourier() {
           </Box>
 
           <Text>Harga Ongkir : {rates} </Text>
+          <Box>
+            <Box>
+              <Text fontWeight={'bold'}>Metode Pembayaran</Text>
+              <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
+                <Stack gap={2}>
+                  <Radio value="BCA">
+                    <Flex gap={2} alignItems={'center'}>
+                      <Image
+                        w={'50px'}
+                        src="https://www.bca.co.id/-/media/Feature/Card/List-Card/Tentang-BCA/Brand-Assets/Logo-BCA/Logo-BCA_Biru.png"
+                        alt="bca icon"
+                      />
+                      BCA
+                    </Flex>
+                  </Radio>
+                  <Radio value="BRI">
+                    <Flex gap={2} alignItems={'center'}>
+                      <Image
+                        w={'50px'}
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/2560px-BRI_2020.svg.png"
+                        alt="bca icon"
+                      />
+                      BRI
+                    </Flex>
+                  </Radio>
+                  <Radio value="Mandiri">
+                    <Flex gap={2} alignItems={'center'}>
+                      <Image
+                        w={'50px'}
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png"
+                        alt=""
+                      />
+                      Mandiri
+                    </Flex>
+                  </Radio>
+                  <Radio value="BNI">
+                    <Flex gap={2} alignItems={'center'}>
+                      <Image
+                        w={'50px'}
+                        src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"
+                        alt=""
+                      />
+                      BNI
+                    </Flex>
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            </Box>
+            <Box bgColor={'#fcfcfc'} p={3}>
+              <Text color={'gray'} as="ins">
+                RINCIAN PESANAN
+              </Text>
+              <Text color={'gray'}>{props.name}</Text>
+              <Text
+                w={'50%'}
+                overflow={'hidden'}
+                textOverflow={'ellipsis'}
+                whiteSpace={'nowrap'}
+                color={'gray'}
+              >
+                {props.description}
+              </Text>
+              <Box fontWeight={'bold'}>
+                <Box
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  borderBottom={'1px'}
+                >
+                  <Text>Kode Unik</Text>
+                  <Text>{props.unique}</Text>
+                </Box>
+                <Box display={'flex'} justifyContent={'space-between'}>
+                  <Text>Total</Text>
+                  <Text>{valueTotal ?? ValueAfter}</Text>
+                  <Input
+                    type="hidden"
+                    name="totalPrice"
+                    value={props.totalPrice}
+                  />
+                  <Input
+                    type="hidden"
+                    name="totalPriceUnique"
+                    value={props.totalPriceUnique}
+                  />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
           {/* <Input
             hidden
             name="selectedProvinceName"

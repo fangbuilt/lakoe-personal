@@ -13,10 +13,5 @@
     "placeholder": "Email Anda",
     "name": "email",
     "type": "email"
-  },
-  {
-    "placeholder": "Masukkan Catatan Pemesanan",
-    "name": "description",
-    "type": "text"
   }
 ]

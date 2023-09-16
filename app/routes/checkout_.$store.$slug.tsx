@@ -4,9 +4,6 @@ import {
   Flex,
   Image,
   Input,
-  Radio,
-  RadioGroup,
-  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -16,7 +13,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { redirect, type ActionArgs } from '@remix-run/node';
+import { type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
 import { useState } from 'react';
 import CheckoutCourier from '~/modules/checkout/component/checkoutCourier';
@@ -150,13 +147,12 @@ export const action = async ({ request }: ActionArgs) => {
     };
 
     console.log(data);
-
-    await createCheckout(data);
-
     console.log('id nya :', variantOptionValueId);
     console.log('stock nya :', stock);
+
+    return await createCheckout(data);
   }
-  return redirect(`/checkout/transfer`);
+  return null;
 };
 
 export default function Checkout() {
@@ -183,7 +179,11 @@ export default function Checkout() {
 
   return (
     <>
-      <CheckoutDescription />
+      <CheckoutDescription
+        image={item?.attachments[0].url}
+        name={item?.name}
+        description={item?.description}
+      />
       <Box display={'flex'} flexDir={'column'} alignItems={'center'}>
         <Box
           display={'flex'}
@@ -247,45 +247,20 @@ export default function Checkout() {
                         </Flex>
                       </Td>
                       <Td>
-                        {
-                          item?.variants[0].variantOptions[0]
-                            .variantOptionValues[0].price as number
-                        }
+                        {item?.variants[0].variantOptions[0].variantOptionValues[0].price.toLocaleString(
+                          'id-ID'
+                        )}
                       </Td>
                       <Td>
-                        {(item?.variants[0].variantOptions[0]
-                          .variantOptionValues[0].price as number) * count}
+                        {(
+                          (item?.variants[0].variantOptions[0]
+                            .variantOptionValues[0].price as number) * count
+                        ).toLocaleString('id-ID')}
                       </Td>
                     </Tr>
                   </Tbody>
                 </Table>
               </TableContainer>
-            </Box>
-            <Box>
-              {item?.attachments.map((i, o) => (
-                <Box key={o}>
-                  <Image boxSize={'100px'} src={i.url} alt="" />
-                </Box>
-              ))}
-              {item?.variants.map((i, o) => (
-                <Box key={o}>
-                  <Text>{i.name}</Text>
-                  <Box>
-                    {i.variantOptions.map((i, o) => (
-                      <Box key={o}>
-                        <Text>{i.name}</Text>
-                        <Text>
-                          {i.variantOptionValues.map((i, o) => (
-                            <Box key={o}>
-                              <Text>{i.stock}</Text>
-                            </Box>
-                          ))}
-                        </Text>
-                      </Box>
-                    ))}
-                  </Box>
-                </Box>
-              ))}
             </Box>
             <Box>
               <Input
@@ -334,135 +309,27 @@ export default function Checkout() {
                   ))}
                 </Box>
                 <Box mt={3}>
-                  <CheckoutCourier />
-                </Box>
-              </Box>
-              {/* <Box>
-                <Text fontWeight={"bold"}>Pengiriman</Text>
-                <Box display={"flex"} gap={3}>
-                  <Box width={"50%"}>
-                    <Select name="courier" bgColor={"#fcfcfc"}>
-                      <option value="" hidden>
-                        Pilih Kurir
-                      </option>
-                      <option value="1">Grab</option>
-                      <option value="2">JNE</option>
-                      <option value="3">TIKI</option>
-                      <option value="4">ShoopeeExpress</option>
-                      <option value="5">TokopediaExpress</option>
-                    </Select>
-                  </Box>
-                  <Box w={"50%"}>
-                    <Select name="getPackage" bgColor={"#fcfcfc"}>
-                      <option value="" hidden>
-                        Pilih Paket
-                      </option>
-                      <option value="1">Grab</option>
-                      <option value="2">JNE</option>
-                      <option value="3">TIKI</option>
-                      <option value="4">ShoopeeExpress</option>
-                      <option value="5">TokopediaExpress</option>
-                    </Select>
-                  </Box>
-                </Box>
-              </Box> */}
-              <Box>
-                <Text fontWeight={'bold'}>Metode Pembayaran</Text>
-                <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
-                  <Stack gap={2}>
-                    <Radio value="BCA">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://www.bca.co.id/-/media/Feature/Card/List-Card/Tentang-BCA/Brand-Assets/Logo-BCA/Logo-BCA_Biru.png"
-                          alt="bca icon"
-                        />
-                        BCA
-                      </Flex>
-                    </Radio>
-                    <Radio value="BRI">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/2560px-BRI_2020.svg.png"
-                          alt="bca icon"
-                        />
-                        BRI
-                      </Flex>
-                    </Radio>
-                    <Radio value="Mandiri">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png"
-                          alt=""
-                        />
-                        Mandiri
-                      </Flex>
-                    </Radio>
-                    <Radio value="BNI">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"
-                          alt=""
-                        />
-                        BNI
-                      </Flex>
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-              </Box>
-              <Box bgColor={'#fcfcfc'} p={3}>
-                <Text color={'gray'} as="ins">
-                  RINCIAN PESANAN
-                </Text>
-                <Text color={'gray'}>{item?.name}</Text>
-                <Text
-                  w={'50%'}
-                  overflow={'hidden'}
-                  textOverflow={'ellipsis'}
-                  whiteSpace={'nowrap'}
-                  color={'gray'}
-                >
-                  {item?.description}
-                </Text>
-                <Box fontWeight={'bold'}>
-                  <Box
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                    borderBottom={'1px'}
-                  >
-                    <Text>Kode Unik</Text>
-                    <Text>{unique}</Text>
-                  </Box>
-                  <Box display={'flex'} justifyContent={'space-between'}>
-                    <Text>Total</Text>
-                    <Text>
-                      {(item?.variants[0].variantOptions[0]
+                  <CheckoutCourier
+                    name={item?.name}
+                    description={item?.description}
+                    unique={unique}
+                    total={
+                      (item?.variants[0].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
-                        unique}
-                    </Text>
-                    <Input
-                      type="hidden"
-                      name="totalPrice"
-                      value={
-                        (item?.variants[0].variantOptions[0]
-                          .variantOptionValues[0].price as number) * count
-                      }
-                    />
-                    <Input
-                      type="hidden"
-                      name="totalPriceUnique"
-                      value={
-                        (item?.variants[0].variantOptions[0]
-                          .variantOptionValues[0].price as number) *
-                          count +
-                        unique
-                      }
-                    />
-                  </Box>
+                      unique
+                    }
+                    totalPrice={
+                      (item?.variants[0].variantOptions[0]
+                        .variantOptionValues[0].price as number) * count
+                    }
+                    totalPriceUnique={
+                      (item?.variants[0].variantOptions[0]
+                        .variantOptionValues[0].price as number) *
+                        count +
+                      unique
+                    }
+                  />
                 </Box>
               </Box>
               <Box>

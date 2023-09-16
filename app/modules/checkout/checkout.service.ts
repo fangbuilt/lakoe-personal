@@ -1,3 +1,4 @@
+import { redirect } from '@remix-run/node';
 import { db } from '../../libs/prisma/db.server';
 
 export async function getCheckoutDetail(data: any) {
@@ -68,5 +69,5 @@ export async function createCheckout(data: any) {
     data: { stock: data.update.stock as number },
   });
 
-  return null;
+  return redirect(`/checkout/transfer/${invoice.id}`);
 }
