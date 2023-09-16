@@ -15,7 +15,8 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
+import { Form, useNavigation } from '@remix-run/react';
+import { useEffect, useRef } from 'react';
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Copy from '~/assets/icon-pack/copy.svg';
 import Edit from '~/assets/icon-pack/edit.svg';
@@ -24,7 +25,7 @@ import More from '~/assets/icon-pack/more.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { IProduct } from '~/interfaces/product/product';
 
-export default function ProductModal(props: IProduct) {
+export default function ProductModalBackUp(props: IProduct) {
   const {
     isOpen: isEditPriceOpen,
     onOpen: onEditPriceOpen,
@@ -40,6 +41,45 @@ export default function ProductModal(props: IProduct) {
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
+
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [isSuccess, setIsSuccess] = useState(false);
+  // const handleUpdatePrice = async () => {
+  //   setIsLoading(true);
+  //   setIsSuccess(false);
+  //   try {
+  //     await update({
+  //       id: props.id,
+  //       price: props.variants.map((a) =>
+  //         a.variantOptions.map((b) => b.variantOptionValues.map((c) => c.price))
+  //       ),
+  //       // stock: props.variants.map((a) =>
+  //       //   a.variantOptions.map((b) => b.variantOptionValues.map((c) => c.stock))
+  //       // ),
+  //     });
+  //     setIsLoading(false);
+  //     setIsSuccess(true);
+  //     onEditPriceClose();
+  //   } catch (error) {
+  //     console.error("Update failed!", error);
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     const timer = setTimeout(() => {
+  //       setIsSuccess(false);
+  //     }, 3000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [isSuccess]);
+
+  const { state } = useNavigation();
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (state === 'submitting') formRef.current?.reset();
+  }, [state]);
 
   return (
     <>
@@ -114,7 +154,7 @@ export default function ProductModal(props: IProduct) {
               <Image src={CloseCircle} />
             </Button>
           </Box>
-          <Form method="PATCH">
+          <Form method="PATCH" ref={formRef}>
             <Box py={3}>
               <Text fontSize={'14px'}>
                 Ubah harga untuk produk {props.name}
@@ -148,7 +188,7 @@ export default function ProductModal(props: IProduct) {
                 type="submit"
                 onClick={onEditPriceClose}
               >
-                Simpan
+                {state === 'submitting' ? 'Mengirim...' : 'Simpan'}
               </Button>
             </Box>
           </Form>
@@ -171,7 +211,7 @@ export default function ProductModal(props: IProduct) {
               <Image src={CloseCircle} />
             </Button>
           </Box>
-          <Form method="PATCH">
+          <Form method="PATCH" ref={formRef}>
             <Box py={3}>
               <Text fontSize={'14px'}>Ubah stok untuk produk {props.name}</Text>
               <InputGroup mt={3} marginBottom={1}>
@@ -202,7 +242,7 @@ export default function ProductModal(props: IProduct) {
                 type="submit"
                 onClick={onEditStockClose}
               >
-                Simpan
+                {state === 'submitting' ? 'Mengirim...' : 'Simpan'}
               </Button>
             </Box>
           </Form>

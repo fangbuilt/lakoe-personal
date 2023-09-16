@@ -25,13 +25,14 @@ import BoxSearch from '~/assets/icon-pack/box-search.svg';
 import Empty from '~/assets/icon-pack/empty.svg';
 import { useFilterProducts } from '~/hooks/product/useFilterProducts';
 import { useSortProducts } from '~/hooks/product/useSortProducts';
-import type { IProduct } from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
+import type { IProduct } from '~/interfaces/product/product';
 import ProductModal from './ProductModal';
 
 interface IProductBodyProps {
   product: IProduct[];
 }
+
 export default function ProductBody(props: IProductBodyProps) {
   const { product } = props;
   const [activeTab, setActiveTab] = useState(0);
@@ -97,7 +98,6 @@ export default function ProductBody(props: IProductBodyProps) {
                   variant="outline"
                   placeholder="Cari Produk"
                   w={'200px'}
-                  // onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </InputGroup>
             </Box>

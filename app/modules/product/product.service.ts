@@ -3,7 +3,7 @@ import { db } from '~/libs/prisma/db.server';
 export async function getProduct() {
   const data = await db.product.findMany({
     orderBy: {
-      id: 'desc',
+      createdAt: 'desc',
     },
     include: {
       attachments: true,
@@ -25,6 +25,9 @@ export async function getProductByStoreId(id: any) {
   const data = await db.product.findMany({
     where: {
       storeId: id,
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
     include: {
       attachments: true,

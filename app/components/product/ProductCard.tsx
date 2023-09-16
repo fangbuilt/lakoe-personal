@@ -1,4 +1,5 @@
-import { Box, Checkbox, Switch, Text, Image } from '@chakra-ui/react';
+import { Box, Checkbox, Image, Switch, Text } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 import { useState, type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
@@ -13,24 +14,34 @@ export default function ProductCard(props: IProductCardProps) {
   const { product, children } = props;
 
   const [isActive, setIsActive] = useState(product.isActive);
-  // const handleSwitchChange = () => {
-  //   setIsActive(!isActive);
-  // };
 
-  const handleSwitchChange = async () => {
+  const handleSwitchChange = async (e: any) => {
+    e.preventDefault();
+    const newData = {
+      id: product.id,
+      isActive: !isActive,
+    };
+    console.log('ini target', newData);
     try {
-      const newData = {
-        id: product.id,
-        isActive: !isActive,
-      };
-      const updateStatus = await updateIsActive(newData);
-      if (updateStatus) {
-        setIsActive(!isActive);
+      const response = await fetch(`/producttt/${newData.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newData),
+      });
+      if (response.ok) {
+        const updateStatus = await updateIsActive(newData);
+        if (updateStatus) {
+          setIsActive(!isActive);
+        } else {
+          console.error('failed to update product status');
+        }
       } else {
         console.error('failed to update product status');
       }
     } catch (error) {
-      console.error('failed to update product status');
+      console.error('failed to update product status', error);
     }
   };
 
@@ -116,11 +127,14 @@ export default function ProductCard(props: IProductCardProps) {
             gap={10}
           >
             <Checkbox size="lg" />
-            <Switch
-              size="md"
-              isChecked={isActive}
-              onChange={handleSwitchChange}
-            />
+            <Form method="PATCH">
+              <Switch
+                size="md"
+                isChecked={isActive}
+                name="isActive"
+                onChange={handleSwitchChange}
+              />
+            </Form>
           </Box>
         </Box>
       </Box>
