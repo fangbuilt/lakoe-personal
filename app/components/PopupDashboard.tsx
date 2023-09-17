@@ -104,7 +104,7 @@ export default function DashboardPopup({ bankAccount }: any) {
   }
 
   const amount = formData.amount;
-  const formattedAmount = formatRupiah(parseInt(amount as string));
+  const formattedAmount = formatRupiah(parseInt(amount));
 
   const handleAddRekeningClick = () => {
     return redirect('/bank');
