@@ -9,14 +9,12 @@ import {
 import { json } from '@remix-run/node';
 
 export async function loader() {
-  const [unpaidCard, unpaidCardAll] = await Promise.all([
+  //jangan ampai terbalik posisi untuk menampilkan dara load
+  const [unpaidCardAll, unpaidCard] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),
   ]);
-  return json({ unpaidCard, unpaidCardAll });
-  // const payments = await getAllProductUnpid();
-  // const payment = await getProductUnpid();
-  // return {payments, payment};
+  return json({ unpaidCardAll, unpaidCard });
 }
 
 export default function Order() {

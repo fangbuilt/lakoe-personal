@@ -2,6 +2,9 @@ import { db } from '~/libs/prisma/db.server';
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
+    where: {
+      status: 'UNPAID',
+    },
     include: {
       user: true,
       payment: true,
@@ -31,12 +34,10 @@ export async function getProductUnpid() {
 
 export async function getAllProductUnpid() {
   const payments = await db.invoice.findMany({
-    where: {
-      status: 'UNPAID',
-    },
     include: {
       user: true,
       payment: true,
+      courier: true,
       cart: {
         include: {
           store: {
