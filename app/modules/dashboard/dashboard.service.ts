@@ -63,7 +63,7 @@ export async function createBank(data: any) {
       accountNumber: data.accountNumber,
     },
   });
-  console.log('Bank created:', createdBank);
+
   return createdBank;
 }
 
@@ -89,10 +89,6 @@ export async function updateBank(
     console.error('error updating', error);
     throw error;
   }
-}
-
-export async function getWithdrawData() {
-  return json(await db.withdraw.findMany());
 }
 
 export async function createWithdraw(

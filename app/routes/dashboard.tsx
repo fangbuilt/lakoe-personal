@@ -27,6 +27,7 @@ import { useLoaderData } from '@remix-run/react';
 import NavbarDashboard from '../modules/dashboard/components/navbarDashboard';
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
+
 import { db } from '~/libs/prisma/db.server';
 // import React, { useState } from "react";
 
@@ -122,6 +123,15 @@ export default function Dashboard() {
     }
   });
 
+  let createdAtArray: string[] = [];
+  data.forEach((dataItem) => {
+    dataItem.bankAccounts.forEach((bankAccountItem) => {
+      bankAccountItem.withdraws.forEach((withdrawItem) => {
+        createdAtArray.push(withdrawItem.createdAt);
+      });
+    });
+  });
+
   return (
     <>
       <NavbarDashboard />
@@ -142,6 +152,7 @@ export default function Dashboard() {
               p={3}
             >
               <Text fontSize={'13px'}>Current Balance</Text>
+
               {data.map((item) => (
                 <Text
                   fontSize={'20px'}
@@ -153,7 +164,12 @@ export default function Dashboard() {
                 </Text>
               ))}
               {data.map((item) => (
-                <DashboardPopup bankAccount={item.bankAccounts} />
+                <DashboardPopup
+                  key={item.id}
+                  bankAccount={item.bankAccounts}
+                  storeName={item.name}
+                  createdAt={createdAtArray}
+                />
               ))}
             </Box>
             <Box

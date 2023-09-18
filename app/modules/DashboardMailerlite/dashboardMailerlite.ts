@@ -44,6 +44,7 @@ export function WithdrawNotification(
       // This is where you can make custom fields variable for email template display
       storename: { accountName },
       amount: { formattedAmount },
+
       bankaccount: { bankAccount },
       // We must add field first in our MailerLite dashboard for it to work
     },

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -22,8 +23,13 @@ import React, { useState } from 'react';
 import { redirect } from '@remix-run/node';
 import { Form, Link } from '@remix-run/react';
 import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMailerlite';
+import moment from 'moment';
 
-export default function DashboardPopup({ bankAccount }: any) {
+export default function DashboardPopup({
+  bankAccount,
+  storeName,
+  createdAt,
+}: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
 
@@ -36,6 +42,10 @@ export default function DashboardPopup({ bankAccount }: any) {
 
   const [alertAmountMessage, setAlertAmountMessage] = useState('');
   const [alertBankMessage, setAlertBankMessage] = useState('');
+
+  const createWithdrawal = moment(createdAt, 'YYYY-MM-DD HH:mm:ss').format(
+    'LLLL'
+  );
 
   const [formData, setFormData] = useState({
     actionType: 'create',
@@ -94,6 +104,8 @@ export default function DashboardPopup({ bankAccount }: any) {
 
   const splitBankAccount = formData.bankAccount.split(' - ');
   const accountName = splitBankAccount[2];
+  const bankName = splitBankAccount[1];
+  const accountNumber = splitBankAccount[3];
   const bankAccountPreview = splitBankAccount.slice(1, 4).join(' - ');
 
   function formatRupiah(amount: number) {
@@ -104,7 +116,10 @@ export default function DashboardPopup({ bankAccount }: any) {
   }
 
   const amount = formData.amount;
+  const transferFee = 10000;
+  const tax = (parseInt(amount) * 1) / 100;
   const formattedAmount = formatRupiah(parseInt(amount));
+  const withdarwalTotal = formatRupiah(parseInt(amount) - transferFee - tax);
 
   const handleAddRekeningClick = () => {
     return redirect('/bank');
@@ -336,54 +351,91 @@ export default function DashboardPopup({ bankAccount }: any) {
                     onClose={onClose}
                   >
                     <ModalOverlay />
+
                     <ModalContent>
                       <ModalHeader display={'flex'} alignItems={'center'}>
                         <Text ml={'5px'}>Tarik Credit</Text>
                       </ModalHeader>
-                      <ModalCloseButton />
-                      <ModalBody pb={6}>
+                      <ModalCloseButton mr={2} />
+                      <ModalBody pt={0} pb={1}>
                         <Box
-                          bg={'yellow.300'}
-                          padding={'10px'}
+                          borderRadius={7}
+                          bg={'blue.100'}
+                          padding={3}
                           fontSize={'13px'}
                         >
-                          {/* {dataWithdraw.map((item: any) => ( */}
-                          <Box textAlign={'center'}>
-                            <Flex direction={'column'}>
-                              <Text fontWeight="bold" fontSize="20px">
-                                {accountName}
-                              </Text>
-                              <Text>melakukan penarikan sebesar</Text>
-                            </Flex>
-                            <Text
-                              fontSize={'20px'}
-                              fontWeight={'bold'}
-                              color={'gray.700'}
-                            >
-                              {formattedAmount}
+                          <Box>
+                            <Text display={'flex'}>
+                              Nomor Penarikan:{' '}
+                              <Text fontWeight={700}>123ASD</Text>
                             </Text>
-                            <Text>Ke Nomor Rekening :</Text>
-                            <Text
-                              fontSize={'20px'}
-                              fontWeight={'bold'}
-                              color={'gray.700'}
-                            >
-                              {bankAccountPreview}
-                            </Text>
-                            <Text>Mohon tunggu beberapa saat..</Text>
-                            <Text>Terima Kasih!</Text>
-                            {/* <Text>ini bank id: {formData.bankId}</Text> */}
+                            <Text>{createWithdrawal}</Text>
                           </Box>
-                          {/* ))} */}
+
+                          <Flex justifyContent={'space-between'} mt={'15px'}>
+                            <Box>
+                              <Text fontWeight={700}>{accountName}</Text>
+                              <Text fontSize={'12px'}>{storeName}</Text>
+                            </Box>
+                            <Box>
+                              <Text fontSize={'12px'}>Status: Request</Text>
+                            </Box>
+                          </Flex>
+
+                          <Box mt={'20px'} fontSize={'12px'}>
+                            <Text fontWeight={700}>Informasi Bank</Text>
+                            <Flex>
+                              <Text width={'150px'}>Nama Bank</Text>
+                              <Text>: {bankName}</Text>
+                            </Flex>
+                            <Flex>
+                              <Text width={'150px'}>Nomor Rekening</Text>
+                              <Text>: {accountNumber}</Text>
+                            </Flex>
+                            <Flex>
+                              <Text width={'150px'}>Nama Pemilik</Text>
+                              <Text>: {accountName}</Text>
+                            </Flex>
+                          </Box>
+
+                          <Box mt={'20px'} fontSize={'12px'}>
+                            <Text fontWeight={700}>Rincian</Text>
+                            <Flex justifyContent={'space-between'}>
+                              <Flex>
+                                <Text width={'150px'}>Jumlah Penarikan</Text>
+                                <Text>:</Text>
+                              </Flex>
+                              <Text>{formattedAmount}</Text>
+                            </Flex>
+                            <Flex justifyContent={'space-between'}>
+                              <Flex>
+                                <Text width={'150px'}>Biaya Admin</Text>
+                                <Text>:</Text>
+                              </Flex>
+                              <Text>{formatRupiah(tax)}</Text>
+                            </Flex>
+                            <Text fontSize={'10px'} color={'grey'}>
+                              *1% jumlah penarikan
+                            </Text>
+                            <Flex justifyContent={'space-between'}>
+                              <Flex>
+                                <Text width={'150px'}>Biaya Transfer</Text>
+                                <Text>:</Text>
+                              </Flex>
+                              <Text> {formatRupiah(transferFee)}</Text>
+                            </Flex>
+                            <Divider my={'5px'} py={'1px'} bg={'grey'} />
+                            <Flex justifyContent={'space-between'}>
+                              <Flex>
+                                <Text width={'150px'}>Saldo yang diterima</Text>
+                                <Text>:</Text>
+                              </Flex>
+                              <Text>{withdarwalTotal}</Text>
+                            </Flex>
+                          </Box>
                         </Box>
                       </ModalBody>
                       <ModalFooter>
-                        {/* <Form method="post">
-                            <Input
-                              type="hidden"
-                              name="actionType"
-                              value="delete"
-                            /> */}
                         <Button
                           colorScheme="none"
                           mr={3}
@@ -398,17 +450,23 @@ export default function DashboardPopup({ bankAccount }: any) {
                         <Button
                           type="submit"
                           colorScheme="green"
-                          mr={3}
+                          mr={0}
                           onClick={() => {
                             WithdrawNotification(
                               formattedAmount,
                               bankAccountPreview,
                               accountName
                             );
-                            onClose();
+                            {
+                              {
+                                {
+                                  onClose();
+                                }
+                              }
+                            }
                           }}
                         >
-                          Withdraw
+                          Oke
                         </Button>
                       </ModalFooter>
                     </ModalContent>

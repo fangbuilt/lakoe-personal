@@ -28,22 +28,3 @@ export function SelectBankOptionUpdate() {
     />
   );
 }
-
-export function SelectRekening({ dataBank }: any) {
-  return (
-    <div>
-      {dataBank.map((data: any) => (
-        <CreatableSelect
-          key={data.id}
-          placeholder="Pilih Rekening Anda"
-          options={[
-            {
-              label: `${data.bank} - ${data.accountName} - ${data.accountNumber}`,
-              value: `${data.bank} - ${data.accountName} - ${data.accountNumber}`,
-            },
-          ]}
-        />
-      ))}
-    </div>
-  );
-}
