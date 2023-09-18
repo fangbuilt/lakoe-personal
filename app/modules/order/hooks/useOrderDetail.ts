@@ -33,7 +33,6 @@ export function useOrderDetalil() {
     },
   ];
 
-  // const steps = ["pesanan dibuat", "pesanan terverifikasi", "pesanan diproses"];
   const { activeStep } = useSteps({
     index: 1,
     count: steps.length,

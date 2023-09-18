@@ -1,4 +1,4 @@
-export function createWhatsAppTemplateMessageLink1(
+export function whatsappConfiguration(
   phoneNumber: string,
   template: string
 ): string {
