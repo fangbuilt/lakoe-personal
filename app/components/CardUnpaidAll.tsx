@@ -313,7 +313,7 @@ export default function UnpaidAllCard() {
           </Center>
         </Box>
       ) : (
-        <Box>
+        <Box marginTop={'10px'}>
           {filteredOrders.map((item, index) => (
             // eslint-disable-next-line react/jsx-key
             <Card mb={5} boxShadow={'xs'}>
