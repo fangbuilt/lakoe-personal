@@ -274,5 +274,3 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
     </>
   );
 }
-
-//test02
