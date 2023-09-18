@@ -33,10 +33,10 @@ import CardInShipping from '../components/CardInShipping';
 import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import { UseSearch } from '~/hooks/useSearchOrderUnpaid';
+import { UseSearchProductUnpaid } from '~/hooks/useSearchOrderUnpaid';
 import CardNewOrder from '~/components/CardNewOrder';
 export default function NavOrder() {
-  const { filteredOrders, setSearchQuery } = UseSearch();
+  const { filteredOrders, setSearchQuery } = UseSearchProductUnpaid();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =

@@ -51,13 +51,15 @@ export default function UnpaidAllCard() {
   console.log('setSearchQuery', setSearchQuery);
   console.log('searchQuery', searchQuery);
 
-  // const {  filteredOrdersList,filterByCourier,getSelectedCo  urier,selectedCouriers, setSelectedCouriers  } = useFilterCourier();
-  // const { selectedSrtOption, setSortOption, getSelectedSortOption } = useSortFilter();
-
-  // const formatter = new Intl.NumberFormat('en-ID', {
-  //   style: 'currency',
-  //   currency: 'IDR',
-  // });
+  const {
+    filteredOrdersList,
+    getSelectedCourier,
+    selectedCouriers,
+    toggleCourier,
+    setSelectedCouriers,
+  } = useFilterCourier();
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortFilter();
 
   const defaultItem: Item = {
     status: 'UNPAID',
@@ -68,48 +70,53 @@ export default function UnpaidAllCard() {
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
-      {/* <Box
-        background={'white'}
-        position={'fixed'}
-        top={'205px'}
-        height={'45px'}
-        zIndex={'1000'}
-      >
-        <Box display={'flex'} mx={2} justifyContent={'space-between'}>
-          <Form>
-            <InputGroup mx={3}>
-              <InputLeftElement pointerEvents="none">
-                <Image src={SearchProduct} />
-              </InputLeftElement>
-              <Input
-                type="text"
-                onChange={(e) => setSearchQuery(e.target.value)}
-                value={searchQuery}
-                placeholder="Cari Pesanan"
-                _placeholder={{
-                  opacity: 1,
-                  color: '#909090',
-                  fontSize: '14px',
-                }}
-              />
-            </InputGroup>
-          </Form>
-           <Menu closeOnSelect={false}>
+
+      <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+        <Box
+          display={'flex'}
+          w={'47%'}
+          bg={'white'}
+          px={'3'}
+          gap={2}
+          justifyContent={'space-between'}
+          zIndex={10}
+          position={'fixed'}
+          top={'52'}
+          mt={2}
+        >
+          <InputGroup bg={'white'}>
+            <InputLeftElement pointerEvents="none">
+              <Image src={SearchProduct} />
+            </InputLeftElement>
+            <Input
+              type="text"
+              placeholder="Cari Pesanan"
+              _placeholder={{
+                opacity: 1,
+                color: '#909090',
+                fontSize: '14px',
+              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </InputGroup>
+
+          <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
               variant="outline"
               bgColor={'white'}
               fontSize={'14px'}
-              width={'70%'}
+              width={'100%'}
               color={getSelectedCourier() > 0 ? 'black' : '#909090'}
               fontWeight={'normal'}
-              me={2}
+              // me={2}
             >
               <Text fontSize="14px" textAlign="left">
                 {getSelectedCourier() > 0
                   ? `${getSelectedCourier()} Kurir terpilih`
                   : 'Semua Kurir'}
               </Text>
+
               <Image
                 src={ChevronDownIcon}
                 position={'absolute'}
@@ -122,8 +129,7 @@ export default function UnpaidAllCard() {
             <MenuList>
               <MenuItem>
                 <Checkbox
-                  value="GoSend"
-                  onChange={() => filterByCourier('GoSend')}
+                  onChange={() => toggleCourier('GoSend')}
                   isChecked={selectedCouriers.includes('GoSend')}
                 >
                   GoSend
@@ -131,8 +137,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                 value="GrabExpress"
-                  onChange={() => filterByCourier('GrabExpress')}
+                  onChange={() => toggleCourier('GrabExpress')}
                   isChecked={selectedCouriers.includes('GrabExpress')}
                 >
                   GrabExpress
@@ -140,8 +145,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                 value="AnterAja"
-                  onChange={() => filterByCourier('AnterAja')}
+                  onChange={() => toggleCourier('AnterAja')}
                   isChecked={selectedCouriers.includes('AnterAja')}
                 >
                   AnterAja
@@ -149,8 +153,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                 value="JNE"
-                  onChange={() => filterByCourier('JNE')}
+                  onChange={() => toggleCourier('JNE')}
                   isChecked={selectedCouriers.includes('JNE')}
                 >
                   JNE
@@ -158,8 +161,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                 value="J&T"
-                  onChange={() => filterByCourier('J&T')}
+                  onChange={() => toggleCourier('J&T')}
                   isChecked={selectedCouriers.includes('J&T')}
                 >
                   J&T
@@ -167,8 +169,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                 value="Lion Parcel"
-                  onChange={() => filterByCourier('Lion Parcel')}
+                  onChange={() => toggleCourier('Lion Parcel')}
                   isChecked={selectedCouriers.includes('Lion Parcel')}
                 >
                   Lion Parcel
@@ -176,8 +177,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                 value="Ninja Xpress"
-                  onChange={() => filterByCourier('Ninja Xpress')}
+                  onChange={() => toggleCourier('Ninja Xpress')}
                   isChecked={selectedCouriers.includes('Ninja Xpress')}
                 >
                   Ninja Xpress
@@ -185,8 +185,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                 value="Pos Indonesia"
-                  onChange={() => filterByCourier('Pos Indonesia')}
+                  onChange={() => toggleCourier('Pos Indonesia')}
                   isChecked={selectedCouriers.includes('Pos Indonesia')}
                 >
                   Pos Indonesia
@@ -197,10 +196,10 @@ export default function UnpaidAllCard() {
           <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
-              w={'70%'}
+              w={'100%'}
               variant="outline"
               bgColor={'white'}
-              me={2}
+              // me={2}
             >
               <Image
                 src={ChevronDownIcon}
@@ -225,26 +224,20 @@ export default function UnpaidAllCard() {
             <MenuList>
               <MenuItem
                 onClick={() => setSortOption('Semua')}
-                className={
-                  selectedSortOption === 'Semua' ? 'active' : ''
-                }
+                className={selectedSortOption === 'Semua' ? 'active' : ''}
               >
                 Semua
                 <Image
                   src={Empty}
                   ml={'auto'}
                   display={
-                    selectedSortOption === 'Semua'
-                      ? 'inline-block'
-                      : 'none'
+                    selectedSortOption === 'Semua' ? 'inline-block' : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
                 onClick={() => setSortOption('Paling Baru')}
-                className={
-                  selectedSortOption === 'Paling Baru' ? 'active' : ''
-                }
+                className={selectedSortOption === 'Paling Baru' ? 'active' : ''}
               >
                 Paling Baru
                 <Image
@@ -259,9 +252,7 @@ export default function UnpaidAllCard() {
               </MenuItem>
               <MenuItem
                 onClick={() => setSortOption('Paling Lama')}
-                className={
-                  selectedSortOption === 'Paling Lama' ? 'active' : ''
-                }
+                className={selectedSortOption === 'Paling Lama' ? 'active' : ''}
               >
                 Paling Lama
                 <Image
@@ -277,9 +268,7 @@ export default function UnpaidAllCard() {
               <MenuItem
                 onClick={() => setSortOption('Respon Tercepat')}
                 className={
-                  selectedSortOption === 'Respon Tercepat'
-                    ? 'active'
-                    : ''
+                  selectedSortOption === 'Respon Tercepat' ? 'active' : ''
                 }
               >
                 Respon Tercepat
@@ -296,9 +285,7 @@ export default function UnpaidAllCard() {
               <MenuItem
                 onClick={() => setSortOption('Respon Terlama')}
                 className={
-                  selectedSortOption === 'Respon Terlama'
-                    ? 'active'
-                    : ''
+                  selectedSortOption === 'Respon Terlama' ? 'active' : ''
                 }
               >
                 Respon Terlama
@@ -315,7 +302,7 @@ export default function UnpaidAllCard() {
             </MenuList>
           </Menu>
         </Box>
-      </Box> */}
+      </Box>
 
       {/* CARD START HERE */}
       {filteredOrders.length === 0 ? (
