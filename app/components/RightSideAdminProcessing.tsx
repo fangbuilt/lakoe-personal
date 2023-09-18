@@ -8,8 +8,11 @@ export default function RightSideAdminProcessing() {
         fontSize={'13px'}
         my={'10px'}
         mx={'10px'}
-        border={'1px solid grey'}
         borderRadius={'10px'}
+        boxShadow="base"
+        p="6"
+        rounded="md"
+        bg="white"
       >
         <Box>
           <Text display={'flex'}>
@@ -18,7 +21,7 @@ export default function RightSideAdminProcessing() {
           <Text>Dibuat 6 September 2023 pukul 15:45 </Text>
         </Box>
 
-        <Flex justifyContent={'space-between'} mt={'15px'}>
+        <Flex justifyContent={'space-between'} mt={'10px'}>
           <Box>
             <Text fontWeight={700}>Adira Salahudi</Text>
             <Text fontSize={'12px'}>Dumbways Store</Text>
@@ -28,7 +31,7 @@ export default function RightSideAdminProcessing() {
           </Box>
         </Flex>
 
-        <Box mt={'20px'} fontSize={'12px'}>
+        <Box mt={'10px'} fontSize={'12px'}>
           <Text fontWeight={700}>Informasi Bank</Text>
           <Flex>
             <Text width={'150px'}>Nama Bank</Text>
@@ -44,7 +47,7 @@ export default function RightSideAdminProcessing() {
           </Flex>
         </Box>
 
-        <Box mt={'20px'} fontSize={'12px'}>
+        <Box mt={'10px'} fontSize={'12px'}>
           <Text fontWeight={700}>Rincian</Text>
           <Flex justifyContent={'space-between'}>
             <Flex>
@@ -80,9 +83,9 @@ export default function RightSideAdminProcessing() {
           </Flex>
         </Box>
 
-        <Box mt={'15px'}>
+        <Box mt={'10px'}>
           <Text fontWeight={700}>Bukti Transfer</Text>
-          <Box mt={'15px'}>
+          <Box mt={'10px'}>
             <Input type="file" name="transferProof" id="transferProof" />
             {/* <TagLabel>Upload disini</TagLabel> */}
           </Box>

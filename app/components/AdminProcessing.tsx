@@ -12,6 +12,7 @@ import {
   Th,
   Tbody,
   Td,
+  Input,
 } from '@chakra-ui/react';
 
 import PreviewWithdraw from './PopupPreviewWithdraw';
@@ -22,10 +23,13 @@ export default function AdminProcessing() {
     <>
       <Box
         width={'100%'}
-        mx={'10px'}
+        mr={'10px'}
         padding={'10px'}
         borderRadius={'15px'}
-        border={'1px solid grey'}
+        boxShadow="base"
+        p="6"
+        rounded="md"
+        bg="white"
       >
         <Box>
           <Tabs defaultIndex={2}>
@@ -177,6 +181,12 @@ export default function AdminProcessing() {
             </Box>
           </Tabs>
         </Box>
+
+        {/* Sort By */}
+        <Flex gap={'10px'} margin={'15px'}>
+          <Input placeholder="Urutkan" />
+          <Input placeholder="Filter" />
+        </Flex>
 
         {/* Table */}
         <Box mt={'20px'} display={'flex'} justifyContent={'center'}>

@@ -1,10 +1,11 @@
-import { Box } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { LeftNavigationAdmin } from '~/components/LeftNavigationAdmin';
 import RightSideAdminDeclined from '~/components/RightSideAdminDeclined';
 import RightSideAdminProcessing from '~/components/RightSideAdminProcessing';
 import RightSideAdminRequest from '~/components/RightSideAdminRequest';
 import RightSideAdminSuccess from '~/components/RightSideAdminSuccess';
+
+import { Box } from '@chakra-ui/react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,13 +18,16 @@ export function ImplementGrid({ children }: LayoutProps) {
       // minHeight={"100vh"}
       width={'100%'}
       display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
     >
       <Box width={'20%'}>
         <LeftNavigationAdmin />
       </Box>
 
       <Box width={'55%'} margin={'auto'} justifyContent={'center'}>
-        {children}{' '}
+        {children}
       </Box>
 
       <Box width={'25%'}></Box>
@@ -38,6 +42,9 @@ export function ImplementGridProcess({ children }: LayoutProps) {
       // minHeight={"100vh"}
       width={'100%'}
       display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
     >
       <Box width={'20%'}>
         <LeftNavigationAdmin />
@@ -61,6 +68,9 @@ export function ImplementGridSuccess({ children }: LayoutProps) {
       // minHeight={"100vh"}
       width={'100%'}
       display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
     >
       <Box width={'20%'}>
         <LeftNavigationAdmin />
@@ -68,10 +78,10 @@ export function ImplementGridSuccess({ children }: LayoutProps) {
 
       <Box
         width={'55%'}
-        margin={'auto'}
         justifyContent={'center'}
         display={'flex'}
-        alignContent={'none'}
+        mx={'auto'}
+        my={'0'}
       >
         {children}{' '}
       </Box>
@@ -90,6 +100,9 @@ export function ImplementGridRequest({ children }: LayoutProps) {
       // minHeight={"100vh"}
       width={'100%'}
       display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
     >
       <Box width={'20%'}>
         <LeftNavigationAdmin />
@@ -119,6 +132,9 @@ export function ImplementGridDeclined({ children }: LayoutProps) {
       // minHeight={"100vh"}
       width={'100%'}
       display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
     >
       <Box width={'20%'}>
         <LeftNavigationAdmin />
@@ -129,7 +145,7 @@ export function ImplementGridDeclined({ children }: LayoutProps) {
         margin={'auto'}
         justifyContent={'center'}
         display={'flex'}
-        alignContent={'none'}
+        alignItems={'none'}
       >
         {children}{' '}
       </Box>

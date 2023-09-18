@@ -4,13 +4,15 @@ export default function RightSideAdminRequest() {
   return (
     <>
       <Box
-        // bg={"yellow.300"}
         padding={'10px'}
         fontSize={'13px'}
         my={'10px'}
         mx={'10px'}
-        border={'1px solid grey'}
         borderRadius={'10px'}
+        boxShadow="base"
+        p="6"
+        rounded="md"
+        bg="white"
       >
         <Box>
           <Text display={'flex'}>

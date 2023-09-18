@@ -23,9 +23,18 @@ export default function PreviewWithdraw(props: any) {
 
   return (
     <>
-      <Button onClick={onOpen} bg={'teal'} color={'#fff'} colorScheme="none">
-        <LuZoomIn />
-      </Button>
+      <Flex justifyContent={'center'}>
+        <Text
+          onClick={onOpen}
+          cursor={'pointer'}
+          color={'white'}
+          bg={'teal'}
+          padding={'5px 15px'}
+          borderRadius={'15px'}
+        >
+          <LuZoomIn />
+        </Text>
+      </Flex>
 
       <Modal
         initialFocusRef={initialRef}
@@ -44,7 +53,7 @@ export default function PreviewWithdraw(props: any) {
                 <Text>Dibuat 6 September 2023 pukul 15:45 </Text>
               </Box>
 
-              <Flex justifyContent={'space-between'} mt={'15px'}>
+              <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>Adira Salahudi</Text>
                   <Text fontSize={'12px'}>Dumbways Store</Text>
@@ -115,7 +124,7 @@ export default function PreviewWithdraw(props: any) {
                   <Text> Rp. 980.000</Text>
                 </Flex>
 
-                <Flex gap={'5px'} mt={'15px'}>
+                <Flex gap={'5px'} mt={'10px'}>
                   <Button
                     flex={'50%'}
                     fontSize={'12px'}
