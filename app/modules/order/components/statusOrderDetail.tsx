@@ -51,7 +51,6 @@ import circle from '~/assets/DetailOrderIcon/info-circle.svg';
 import { useState } from 'react';
 import { Form, Link } from '@remix-run/react';
 import getStatusBadge from './statusInvoice';
-import { updateStatusInvoice } from '../order.service';
 
 export default function StatusOrderDetail({
   data,
@@ -82,7 +81,6 @@ export default function StatusOrderDetail({
     handleCopyClick3(data.receiverAddress);
   };
 
-  // INI MODAL
   const [modalText, setModalText] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -104,7 +102,7 @@ export default function StatusOrderDetail({
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //Rino - Puja (desi123321123321@gmail.com)
 
       const mailerData = {
-        email: 'angga.ardiansyah955+012unch@gmail.com',
+        email: 'angga.ardiansyah955+015enya4@gmail.com',
         fields: {
           company: 'ADD MORE BALANCE',
           last_name:
@@ -301,19 +299,6 @@ export default function StatusOrderDetail({
     }
   }
 
-  const updateOrderStatus = async () => {
-    const id = data.id;
-    const newStatus = 'READY_TO_SHIP';
-
-    const validateData = {
-      id,
-      newStatus,
-    };
-
-    await updateStatusInvoice(validateData);
-    onClose();
-    afterpacking();
-  };
   return (
     <>
       <Box display={'flex'} flexDirection={'column'} gap={3}>
@@ -448,7 +433,8 @@ export default function StatusOrderDetail({
                       <StepDescription
                         style={{ fontWeight: '500', fontSize: '12px' }}
                       >
-                        {step.description}
+                        {dateConversion(data.invoiceHistories[index].createdAt)}{' '}
+                        WIB
                       </StepDescription>
                     </Box>
 
@@ -971,7 +957,7 @@ export default function StatusOrderDetail({
                     <Input name="id" type="hidden" value={data.id} />
                     <Button
                       variant="ghost"
-                      onClick={updateOrderStatus}
+                      onClick={afterpacking}
                       type="submit"
                     >
                       Selesai di Packing

@@ -12,10 +12,10 @@ export interface IOrderDetailInvoice {
   createdAt: string;
   courier: IOrderDetailCourier;
   cart: IOrderDetailCart;
-  invoiceHistories: IOrderDetailInvoiceHistory[];
+  invoiceHistories: IOrderDetailInvoiceHistories[];
 }
 
-export interface IOrderDetailInvoiceHistory {
+export interface IOrderDetailInvoiceHistories {
   id: string;
   status: string;
   createdAt: string;

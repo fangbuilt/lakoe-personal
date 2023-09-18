@@ -6,6 +6,7 @@ export async function getInvoiceById(id: any) {
       id,
     },
     include: {
+      invoiceHistories: true,
       courier: true,
       cart: {
         include: {
@@ -33,12 +34,20 @@ export async function getInvoiceById(id: any) {
 
 export async function updateStatusInvoice(data: any) {
   const { id } = data;
-  return await db.invoice.update({
-    data: {
-      status: 'READY_TO_SHIP',
-    },
+
+  await db.invoice.update({
     where: {
       id: id,
+    },
+    data: {
+      status: 'READY_TO_SHIP',
+      invoiceHistories: {
+        create: {
+          status: 'READY_TO_SHIP',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
     },
   });
 }
