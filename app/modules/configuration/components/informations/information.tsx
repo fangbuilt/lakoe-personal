@@ -344,9 +344,8 @@ export function Informations() {
               position={'relative'}
             >
               <Image
-                p={1}
-                w="130px"
-                h="130px"
+                w="100%"
+                h="100%"
                 src={selectedImage} // belum dari data base
                 objectFit={'cover'}
               />
@@ -354,7 +353,7 @@ export function Informations() {
                 hidden
                 type="file"
                 accept="image/*"
-                name="logoAttachment"
+                // name="logoAttachment"
                 onChange={handleImageChange}
               />
               <Button
