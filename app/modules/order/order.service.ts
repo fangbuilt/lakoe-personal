@@ -50,7 +50,11 @@ export async function getInvoiceByStatus() {
             },
             cartItems: {
               include: {
-                product: true,
+                product: {
+                  include: {
+                    attachments: true,
+                  },
+                },
                 variantOption: {
                   include: {
                     variantOptionValues: true,

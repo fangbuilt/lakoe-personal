@@ -320,10 +320,6 @@ export interface IOrderDetailBankAccount {
 export interface IOrderDetailProductAttachment {
   id: string;
   url: string;
-  product: IOrderDetailProduct;
-  productId: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface IOrderDetailConfirmationPayment {

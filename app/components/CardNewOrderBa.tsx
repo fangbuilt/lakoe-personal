@@ -11,8 +11,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
   useDisclosure,
+  Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { UseSearch } from '~/hooks/useSearchOrder copy';
@@ -233,10 +233,8 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                     h={'52px'}
                     display={'inline'}
                     src={`${props.cart.cartItems.map((a) =>
-                      a.product.attachments.map((pi) => pi.url)
+                      a.product.attachments.map((jancok) => jancok.url)
                     )}`}
-                    // src={`${props.cart.cartItems.map((a)=> a.product.attachments.map)}`}
-                    // src={``}
                     mt={3}
                     mx={3}
                   />
@@ -270,7 +268,7 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                       a.variantOption.variantOptionValues.map((b) => b.price)
                     )}{' '}
                     {' * '}
-                    {props.payment.amount}
+                    {/* {props.payment.amount} */}
                   </Text>
                 </Box>
               </Flex>

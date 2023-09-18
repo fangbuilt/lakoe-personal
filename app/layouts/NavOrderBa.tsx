@@ -32,11 +32,11 @@ import { useFilterCourier } from '../hooks/useFilterCourier';
 import { UseSearch } from '../hooks/useSearchOrder';
 
 interface IOrderDetailInvoiceProps {
-  prderDetailInvoice: IOrderDetailInvoice[];
+  orderDetailInvoice: IOrderDetailInvoice[];
 }
 
 export default function NavOrderBa(props: IOrderDetailInvoiceProps) {
-  const { prderDetailInvoice } = props;
+  const { orderDetailInvoice } = props;
   const { filteredOrders, setSearchQuery } = UseSearch();
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
@@ -445,7 +445,7 @@ export default function NavOrderBa(props: IOrderDetailInvoiceProps) {
                       />
                     ))} */}
                     {/* {props.map((data) => ( */}
-                    {prderDetailInvoice.map((a) => (
+                    {orderDetailInvoice.map((a) => (
                       <CardNewOrderBa key={a.id} {...a} />
                     ))}
 
