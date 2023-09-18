@@ -17,11 +17,29 @@ import {
 import { useState } from 'react';
 import { UseSearch } from '~/hooks/useSearchOrder copy';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
+import { db } from '~/libs/prisma/db.server';
 
 export default function CardNewOrderBa(props: IOrderDetailInvoice) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { filteredOrders } = UseSearch();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  async function createCok() {
+    const data = {
+      status: 'NEW_ORDER',
+      invoiceId: props.id,
+    };
+    await db.invoiceHistory.create({ data });
+
+    await db.invoice.update({
+      where: {
+        id: props.id,
+      },
+      data: {
+        status: 'READY_TO_SHIP',
+      },
+    });
+  }
 
   const handleBalanceNotif = async () => {
     try {
@@ -65,6 +83,7 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
   const afterpacking = () => {
     if (systembalance > 50000) {
       handleOrderCourier();
+      createCok();
     } else {
       handleBalanceNotif();
     }
