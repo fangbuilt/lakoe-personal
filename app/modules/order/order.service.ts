@@ -67,6 +67,7 @@ export async function getInvoiceByStatus() {
         },
       },
     });
+
     return getorderdataforbiteship;
   } catch (error: any) {
     // Menentukan tipe data error sebagai 'any'
@@ -74,7 +75,7 @@ export async function getInvoiceByStatus() {
   }
 }
 
-export async function GetInvoiceProductData() {
+export async function getInvoiceProductData() {
   try {
     const dataproductNewOrder = await db.invoice.findMany({
       where: {
@@ -134,6 +135,31 @@ export async function getProductByStoreId(id: any) {
       `Gagal mengambil data produk berdasarkan ID toko: ${error.message}`
     );
   }
+}
+
+export async function getDataProductReadyToShip() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'READY_TO_SHIP',
+    },
+    include: {
+      courier: true,
+      cart: {
+        include: {
+          user: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
 }
 
 export async function getProductByCategoryId(id: any) {

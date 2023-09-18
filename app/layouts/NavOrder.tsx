@@ -1,19 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
+  Flex,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
-  Flex,
 } from '@chakra-ui/react';
-import ScrollBox from '../components/ScrollBox';
-import CardCanceled from '../components/CardCanceled';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
+import type { loader } from '~/routes/order';
+import CardCanceled from '../components/CardCanceled';
+import ScrollBox from '../components/ScrollBox';
 
 export default function NavOrder({ allOrderSevice }: any) {
+  const cardProduct = useLoaderData<typeof loader>();
+  const notificationCount =
+    cardProduct.dataProductReadyToShip.length > 0
+      ? cardProduct.dataProductReadyToShip.length
+      : 0;
   const [activeTab, setActiveTab] = useState(0);
   const handleClickTab = (index: number) => {
     setActiveTab(index);
@@ -133,7 +140,8 @@ export default function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {notificationCount}{' '}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 

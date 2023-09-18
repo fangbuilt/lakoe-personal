@@ -1,13 +1,14 @@
 import { Flex } from '@chakra-ui/react';
-import NavOrderBa from '~/layouts/NavOrderBa';
+import type { ActionArgs } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
+import NavOrderBa from '~/layouts/NavOrderBa';
 import {
+  getDataProductReadyToShip,
   getInvoiceByStatus,
   updateInvoiceStatus,
 } from '~/modules/order/order.service'; // Menghapus impor updateIsActive
-import { useLoaderData } from '@remix-run/react';
-import type { ActionArgs } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
 import CanceledService from '~/modules/order/orderCanceledService';
 
 export async function action({ request }: ActionArgs) {
@@ -25,6 +26,9 @@ export async function action({ request }: ActionArgs) {
 }
 
 export async function loader() {
+  const api_key = process.env.API_LAKOE_TEST;
+  const dataProductReadyToShip = await getDataProductReadyToShip();
+
   const [canceledService] = await Promise.all([
     CanceledService(),
     // ready(),
@@ -35,6 +39,8 @@ export async function loader() {
   return json({
     canceledService,
     dataInvoice,
+    dataProductReadyToShip,
+    api_key,
     // your return order service here !
   });
 }
