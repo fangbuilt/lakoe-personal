@@ -29,7 +29,7 @@ export function useFilterCourier() {
 
   // Fungsi untuk menerpkan filter berdasarkan kurir yang dipilih
 
-  const filterByCourier = (courier: string) => {
+  const toggleCourier = (courier: string) => {
     if (selectedCouriers.includes(courier)) {
       setSelectedCouriers(
         selectedCouriers.filter((selected) => selected !== courier)
@@ -49,9 +49,9 @@ export function useFilterCourier() {
 
   return {
     filteredOrdersList,
-    filterByCourier,
     getSelectedCourier,
     selectedCouriers,
+    toggleCourier,
     setSelectedCouriers,
   };
 }

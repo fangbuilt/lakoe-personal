@@ -51,13 +51,13 @@ export default function UnpaidAllCard() {
   console.log('setSearchQuery', setSearchQuery);
   console.log('searchQuery', searchQuery);
 
-  // const {  filteredOrdersList,filterByCourier,getSelectedCourier,selectedCouriers, setSelectedCouriers  } = useFilterCourier();
+  // const {  filteredOrdersList,filterByCourier,getSelectedCo  urier,selectedCouriers, setSelectedCouriers  } = useFilterCourier();
   // const { selectedSrtOption, setSortOption, getSelectedSortOption } = useSortFilter();
 
-  const formatter = new Intl.NumberFormat('en-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  });
+  // const formatter = new Intl.NumberFormat('en-ID', {
+  //   style: 'currency',
+  //   currency: 'IDR',
+  // });
 
   const defaultItem: Item = {
     status: 'UNPAID',
@@ -68,7 +68,7 @@ export default function UnpaidAllCard() {
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
-      <Box
+      {/* <Box
         background={'white'}
         position={'fixed'}
         top={'205px'}
@@ -94,7 +94,7 @@ export default function UnpaidAllCard() {
               />
             </InputGroup>
           </Form>
-          {/* <Menu closeOnSelect={false}>
+           <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
               variant="outline"
@@ -313,9 +313,9 @@ export default function UnpaidAllCard() {
                 />
               </MenuItem>
             </MenuList>
-          </Menu> */}
+          </Menu>
         </Box>
-      </Box>
+      </Box> */}
 
       {/* CARD START HERE */}
       {filteredOrders.length === 0 ? (
@@ -450,7 +450,8 @@ export default function UnpaidAllCard() {
                           </Text>
                         </Flex>
                         <Text fontWeight={'bold'} fontSize={'14px'}>
-                          {formatter.format(item.price)}
+                          {/* {formatter.format(item.price)} */}
+                          {item.price.toLocaleString('id-ID')}
                         </Text>
                       </Box>
                     </Flex>

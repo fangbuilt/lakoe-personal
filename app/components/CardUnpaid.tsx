@@ -18,18 +18,18 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Image,
+  // Input,
+  // InputGroup,
+  // InputLeftElement,
+  // Image,
 } from '@chakra-ui/react';
 // import { Form, Link } from '@remix-run/react';
-import SearchProduct from '../assets/icon-pack/search-product.svg';
+// import SearchProduct from '../assets/icon-pack/search-product.svg';
 // import type { loader } from '~/routes/order';
 // import type { IMessageTemplates } from '~/interfaces/order';
 import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
 // import UseSearchUnpaid from '~/hooks/useSearchOrderUnpaid';
-import { Form, Link, useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import type { loader } from '~/routes/order';
 import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 
@@ -44,15 +44,15 @@ export default function UnpaidCard() {
   console.log('filteredOrderfilteredOrderfilteredOrder', filteredOrder);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const formatter = new Intl.NumberFormat('en-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  });
+  // const formatter = new Intl.NumberFormat('en-ID', {
+  //   style: 'currency',
+  //   currency: 'IDR',
+  // });
 
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
-      <Box
+      {/* <Box
         background={'white'}
         position={'fixed'}
         top={'205px'}
@@ -78,7 +78,7 @@ export default function UnpaidCard() {
               />
             </InputGroup>
           </Form>
-          {/* <Menu closeOnSelect={false}>
+         <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
               variant="outline"
@@ -297,9 +297,9 @@ export default function UnpaidCard() {
                 />
               </MenuItem>
             </MenuList>
-          </Menu>  */}
+          </Menu>  
         </Box>
-      </Box>
+      </Box> */}
       {/* CARD START HERE */}
       {filteredOrder.map((item, index) => (
         // eslint-disable-next-line react/jsx-key
@@ -419,7 +419,9 @@ export default function UnpaidCard() {
                       </Text>
                     </Flex>
                     <Text fontWeight={'bold'} fontSize={'14px'}>
-                      {formatter.format(item.price)}
+                      {/* {formatter.format(item.price)}
+                       */}
+                      Rp {item.price.toLocaleString('id-ID')}
                     </Text>
                   </Box>
                 </Flex>

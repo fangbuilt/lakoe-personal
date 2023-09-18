@@ -7,6 +7,16 @@ import {
   Tabs,
   Text,
   Flex,
+  InputGroup,
+  InputLeftElement,
+  Image,
+  Input,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Checkbox,
+  Button,
   // Input,
   // InputGroup,
   // InputLeftElement,
@@ -19,35 +29,37 @@ import {
   // Button,
   // Center,
 } from '@chakra-ui/react';
-// import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
-// import SearchProduct from '../assets/icon-pack/search-product.svg';
+import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
+import SearchProduct from '../assets/icon-pack/search-product.svg';
 // import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import ScrollBox from '../components/ScrollBox';
-// import { useFilterCourier } from '../hooks/useFilterCourier';
+import { useFilterCourier } from '../hooks/useFilterCourier';
 import CardUnpaid from '../components/CardUnpaid';
 // import CardReadyToShip from '../components/CardReadyToShip';
 // import CardNewOrder from '../components/CardNewOrder';
 // import CardSuccessOrder from '../components/CardSuccesOrder';
 // import CardInShipping from '../components/CardInShipping';
 // import CardCanceled from '../components/CardCanceled';
-// import { useSortFilter } from '~/hooks/useSortFilter';
-// import Empty from '../assets/icon-pack/empty-dot.svg';
-import { useLoaderData } from '@remix-run/react';
+import { useSortFilter } from '~/hooks/useSortFilter';
+import Empty from '../assets/icon-pack/empty-dot.svg';
+import { Form, useLoaderData } from '@remix-run/react';
 import UnpaidAllCard from '~/components/CardUnpaidAll';
 import type { loader } from '~/routes/order';
+import UseSearchAll from '~/hooks/useSearchOrderAll';
 // import UseSearch from '~/hooks/useSearchOrderUnpaid';
 // import type { Invoice } from '~/interfaces/ProductUnpaid';
 export default function NavOrder() {
   const { unpaidCard } = useLoaderData<typeof loader>();
+  const { filteredOrders, setSearchQuery, searchQuery } = UseSearchAll();
+  const { selectedCouriers, toggleCourier, getSelectedCourier } =
+    useFilterCourier();
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortFilter();
 
-  // const { filteredOrder } = UseSearch();
-  // const { selectedCouriers, toggleCourier, getSelectedCourier } =
-  //   useFilterCourier();
-  // const { selectedSortOption, setSortOption, getSelectedSortOption } =
-  //   useSortFilter();
-
-  // console.log('filteredOrder filteredOrder filteredOrder', filteredOrder);
-
+  console.log('filteredOrders', filteredOrders);
+  function handleSearch() {
+    console.log();
+  }
   // const filteredOrderByCourier = filteredOrder.filter((order) => {
   //   if (selectedCouriers.length === 0) {
   //     return true;
@@ -58,7 +70,7 @@ export default function NavOrder() {
   // );
   // return selectedCouriers.includes(order);
   // });
-  // console.log(filteredOrder);
+  console.log(toggleCourier);
   return (
     <>
       <Box
@@ -207,7 +219,7 @@ export default function NavOrder() {
 
             <Box my={5} paddingBottom={'100px'} background={'white'}>
               <Box mr={5} my={3} width={'100%'}>
-                {/* <Box display={'flex'} mx={2} justifyContent={'space-between'}>
+                <Box display={'flex'} mx={2} justifyContent={'space-between'}>
                   <Form onSubmit={handleSearch}>
                     <InputGroup mx={3}>
                       <InputLeftElement pointerEvents="none">
@@ -223,12 +235,12 @@ export default function NavOrder() {
                           color: '#909090',
                           fontSize: '14px',
                         }}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault(); // Mencegah pengiriman formulir
-                            handleSearch(e);
-                          }
-                        }}
+                        // onKeyPress={(e) => {
+                        //   if (e.key === 'Enter') {
+                        //     e.preventDefault(); // Mencegah pengiriman formulir
+                        //     handleSearch(e);
+                        //   }
+                        // }}
                       />
                     </InputGroup>
                   </Form>
@@ -444,7 +456,7 @@ export default function NavOrder() {
                       </MenuItem>
                     </MenuList>
                   </Menu>
-                </Box> */}
+                </Box>
               </Box>
               <TabPanels>
                 {/* YOUR CARD START IN HERE ! */}

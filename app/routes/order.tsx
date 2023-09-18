@@ -9,7 +9,7 @@ import {
 import { json } from '@remix-run/node';
 
 export async function loader() {
-  //jangan ampai terbalik posisi untuk menampilkan dara load
+  //jangan ampai terbalik posisi untuk menampilkan data load
   const [unpaidCardAll, unpaidCard] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),
