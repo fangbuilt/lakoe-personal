@@ -15,7 +15,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 
-import PreviewWithdraw from './PopupPreviewWithdraw';
+import PreviewWithdraw from './AdminRequestPopup';
 import { Link } from '@remix-run/react';
 
 export default function AdminRequest() {

@@ -3,10 +3,10 @@ import {
   Button,
   Divider,
   Flex,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
   Text,
   useDisclosure,
@@ -15,7 +15,7 @@ import React from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
 
-export default function PreviewWithdraw(props: any) {
+export default function AdminProcessingPopup(props: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -45,7 +45,17 @@ export default function PreviewWithdraw(props: any) {
         <ModalOverlay />
         <ModalContent>
           <ModalBody pt={6} pb={2}>
-            <Box bg={'yellow.300'} padding={'10px'} fontSize={'13px'}>
+            <Box
+              padding={'10px'}
+              fontSize={'13px'}
+              my={'10px'}
+              mx={'10px'}
+              borderRadius={'10px'}
+              boxShadow="base"
+              p="6"
+              rounded="md"
+              bg="white"
+            >
               <Box>
                 <Text display={'flex'}>
                   Nomor Penarikan: <Text fontWeight={700}>123ASD</Text>
@@ -59,11 +69,11 @@ export default function PreviewWithdraw(props: any) {
                   <Text fontSize={'12px'}>Dumbways Store</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>Status: Request</Text>
+                  <Text fontSize={'12px'}>Status: Processing</Text>
                 </Box>
               </Flex>
 
-              <Box mt={'20px'} fontSize={'12px'}>
+              <Box mt={'10px'} fontSize={'12px'}>
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
@@ -77,19 +87,9 @@ export default function PreviewWithdraw(props: any) {
                   <Text width={'150px'}>Nama Pemilik</Text>
                   <Text>: Adira Salahudi</Text>
                 </Flex>
-                <Button
-                  width={'100%'}
-                  textAlign={'center'}
-                  mt={'10px'}
-                  fontSize={'12px'}
-                  colorScheme="teal"
-                  padding={0}
-                >
-                  Check
-                </Button>
               </Box>
 
-              <Box mt={'20px'} fontSize={'12px'}>
+              <Box mt={'10px'} fontSize={'12px'}>
                 <Text fontWeight={700}>Rincian</Text>
                 <Flex justifyContent={'space-between'}>
                   <Flex>
@@ -123,41 +123,42 @@ export default function PreviewWithdraw(props: any) {
                   </Flex>
                   <Text> Rp. 980.000</Text>
                 </Flex>
+              </Box>
 
-                <Flex gap={'5px'} mt={'10px'}>
-                  <Button
-                    flex={'50%'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                  >
-                    Approved
-                  </Button>
-                  <Button
-                    flex={'50%'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                  >
-                    Declined
-                  </Button>
-                </Flex>
+              <Box mt={'10px'}>
+                <Text fontWeight={700}>Bukti Transfer</Text>
+                <Box mt={'10px'}>
+                  <Input type="file" name="transferProof" id="transferProof" />
+                  {/* <TagLabel>Upload disini</TagLabel> */}
+                </Box>
+
+                <Button
+                  width={'100%'}
+                  textAlign={'center'}
+                  mt={'10px'}
+                  fontSize={'12px'}
+                  colorScheme="teal"
+                  padding={0}
+                  onClick={onClose}
+                >
+                  Selesai
+                </Button>
               </Box>
             </Box>
           </ModalBody>
-          <ModalFooter>
+          {/* <ModalFooter>
             <Button
               colorScheme="teal"
               mr={3}
               onClick={onClose}
-              color={'white'}
-              border={'1px solid'}
-              borderColor={'gray.500'}
-              fontSize={'12px'}
+              color={"white"}
+              border={"1px solid"}
+              borderColor={"gray.500"}
+              fontSize={"12px"}
             >
               Close
             </Button>
-          </ModalFooter>
+          </ModalFooter> */}
         </ModalContent>
       </Modal>
     </>

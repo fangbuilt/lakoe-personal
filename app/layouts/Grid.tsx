@@ -2,10 +2,6 @@ import { Box, Flex } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { LeftNavigation } from '~/components/LeftNavigation';
 import { LeftNavigationAdmin } from '~/components/LeftNavigationAdmin';
-import RightSideAdminDeclined from '~/components/RightSideAdminDeclined';
-import RightSideAdminProcessing from '~/components/RightSideAdminProcessing';
-import RightSideAdminRequest from '~/components/RightSideAdminRequest';
-import RightSideAdminSuccess from '~/components/RightSideAdminSuccess';
 
 interface LayoutProps {
   children: ReactNode;
@@ -49,10 +45,10 @@ export function ImplementGrid({ children }: LayoutProps) {
           borderLeftColor={'gray.200'}
         >
           {/* <Flex align={'center'} justify={'center'} px={5} h={'100vh'}>
-            <Heading textAlign={'center'} mb={'7.5vh'}>
-              Test Right Sidebar
-            </Heading>
-          </Flex> */}
+          <Heading textAlign={'center'} mb={'7.5vh'}>
+            Test Right Sidebar
+          </Heading>
+        </Flex> */}
         </Box>
       </Flex>
     </Flex>
@@ -78,9 +74,7 @@ export function ImplementGridProcess({ children }: LayoutProps) {
         {children}{' '}
       </Box>
 
-      <Box width={'25%'}>
-        <RightSideAdminProcessing />
-      </Box>
+      <Box width={'25%'}>{/* <RightSideAdminProcessing /> */}</Box>
     </Box>
   );
 }
@@ -110,9 +104,7 @@ export function ImplementGridSuccess({ children }: LayoutProps) {
         {children}{' '}
       </Box>
 
-      <Box width={'25%'}>
-        <RightSideAdminSuccess />
-      </Box>
+      <Box width={'25%'}>{/* <RightSideAdminSuccess /> */}</Box>
     </Box>
   );
 }
@@ -143,7 +135,8 @@ export function ImplementGridRequest({ children }: LayoutProps) {
       </Box>
 
       <Box width={'25%'}>
-        <RightSideAdminRequest />
+        {/* <RightSideAdminRequest /> */}
+        {/* <PreviewWithdraw /> */}
       </Box>
     </Box>
   );
@@ -174,9 +167,37 @@ export function ImplementGridDeclined({ children }: LayoutProps) {
         {children}{' '}
       </Box>
 
-      <Box width={'25%'}>
-        <RightSideAdminDeclined />
+      <Box width={'25%'}>{/* <RightSideAdminDeclined /> */}</Box>
+    </Box>
+  );
+}
+
+export function ImplementGridAll({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      // minHeight={"100vh"}
+      width={'100%'}
+      display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
+    >
+      <Box width={'20%'}>
+        <LeftNavigationAdmin />
       </Box>
+
+      <Box
+        width={'55%'}
+        margin={'auto'}
+        justifyContent={'center'}
+        display={'flex'}
+        alignItems={'none'}
+      >
+        {children}{' '}
+      </Box>
+
+      <Box width={'25%'}></Box>
     </Box>
   );
 }

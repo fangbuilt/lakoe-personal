@@ -15,8 +15,8 @@ import {
   Input,
 } from '@chakra-ui/react';
 
-import PreviewWithdraw from './PopupPreviewWithdraw';
 import { Link } from '@remix-run/react';
+import AdminProcessingPopup from './AdminProcessingPopup';
 
 export default function AdminProcessing() {
   return (
@@ -228,7 +228,7 @@ export default function AdminProcessing() {
                       borderRadius={'15px'}
                       cursor={'pointer'}
                     >
-                      <PreviewWithdraw />
+                      <AdminProcessingPopup />
                     </Text>
                   </Td>
                 </Tr>

@@ -12,13 +12,37 @@ import {
   Th,
   Tbody,
   Td,
-  Input,
+  Select,
+  FormControl,
+  VStack,
+  FormLabel,
 } from '@chakra-ui/react';
 
-import PreviewWithdraw from './PopupPreviewWithdraw';
+import PreviewWithdraw from './AdminRequestPopup';
 import { Link } from '@remix-run/react';
+import { useState } from 'react';
 
 export default function AdminAll() {
+  interface SelectOption {
+    value: string;
+    label: string;
+  }
+
+  const [selectedOption, setSelectedOption] = useState<string>('');
+
+  const options: SelectOption[] = [
+    { value: 'All', label: 'All' },
+    { value: 'Request', label: 'Request' },
+    { value: 'Processing', label: 'Processing' },
+    { value: 'Success', label: 'Success' },
+    { value: 'Declined', label: 'Declined' },
+  ];
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = event.target.value;
+    setSelectedOption(newValue);
+  };
+
   return (
     <>
       <Box
@@ -183,10 +207,30 @@ export default function AdminAll() {
         </Box>
 
         {/* Sort By */}
-        <Flex gap={'10px'} margin={'15px'}>
+        {/* <Flex gap={"10px"} margin={"15px"}>
           <Input placeholder="Urutkan" />
           <Input placeholder="Filter" />
-        </Flex>
+        </Flex> */}
+
+        <VStack spacing={4} mt={'15px'} mx={5}>
+          <FormControl>
+            <FormLabel>Filter by status</FormLabel>
+            <Select
+              value={selectedOption}
+              onChange={handleSelectChange}
+              // placeholder="Filter by status"
+            >
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <Box>
+            <Text>Status selected: {selectedOption}</Text>
+          </Box>
+        </VStack>
 
         {/* Table */}
         <Box mt={'20px'} display={'flex'} justifyContent={'center'}>
