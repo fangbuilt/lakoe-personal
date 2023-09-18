@@ -1,5 +1,6 @@
 import MailerLite from '@mailerlite/mailerlite-nodejs';
 import type { IPickingUp } from '~/interfaces/mailerLite';
+import { db } from '~/libs/prisma/db.server';
 
 const mailerlite = new MailerLite({
   api_key: process.env.MAILERLITE_API_KEY as string,
@@ -40,4 +41,19 @@ export function UsePickingUp(email: string, name: string, waybill: string) {
     .catch((error) => {
       if (error.response) console.log(error.response.data);
     });
+}
+
+export async function updateInvoiceStatus(invoiceId: string) {
+  await db.invoice.update({
+    where: { id: invoiceId },
+    data: { status: 'IN_TRANSIT' },
+  });
+
+  // Create an invoice history with the status "READY_TO_SHIP"
+  await db.invoiceHistory.create({
+    data: {
+      status: 'READY_TO_SHIP',
+      invoice: { connect: { id: invoiceId } },
+    },
+  });
 }

@@ -32,9 +32,11 @@ import CardReadyToShip from '../components/CardReadyToShip';
 // import CardCanceled from '../components/CardCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
+import { useLoaderData } from '@remix-run/react';
+import type { loader } from '~/routes/order';
 // import { useLoaderData } from '@remix-run/react';
 
-export default function NavOrder({ cardProduct }: any) {
+export default function NavOrder({}: any) {
   // const loaderData =  useLoaderData()
 
   // const { filteredOrders, setSearchQuery } = UseSearch(loaderData);
@@ -42,6 +44,12 @@ export default function NavOrder({ cardProduct }: any) {
     useFilterCourier();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
+
+  const cardProduct = useLoaderData<typeof loader>();
+  const notificationCount =
+    cardProduct.dataProductReadyToShip.length > 0
+      ? cardProduct.dataProductReadyToShip.length
+      : 0;
 
   // const filteredOrdersByCourier = filteredOrders.filter((order) => {
   //   if (selectedCouriers.length === 0) {
@@ -147,7 +155,8 @@ export default function NavOrder({ cardProduct }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {notificationCount}{' '}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 
