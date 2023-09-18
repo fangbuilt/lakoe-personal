@@ -1,28 +1,51 @@
 import { Flex } from '@chakra-ui/react';
-import NavOrder from '~/layouts/NavOrder';
+import NavOrderBa from '~/layouts/NavOrderBa';
 import { ImplementGrid } from '~/layouts/Grid';
-import CanceledService, { ready } from '~/modules/order/orderCanceledService';
+import {
+  getInvoiceByStatus,
+  updateInvoiceStatus,
+} from '~/modules/order/order.service'; // Menghapus impor updateIsActive
 import { useLoaderData } from '@remix-run/react';
-import { json } from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
+import CanceledService from '~/modules/order/orderCanceledService';
+
+export async function action({ request }: ActionArgs) {
+  if (request.method.toLowerCase() === 'patch') {
+    const formData = await request.formData();
+
+    const id = formData.get('id') as string;
+    const price = formData.get('price');
+    const stock = formData.get('stock');
+
+    await updateInvoiceStatus({ id, price, stock });
+  }
+
+  return redirect('/order');
+}
 
 export async function loader() {
-  const [canceledService, readyService] = await Promise.all([
+  const [canceledService] = await Promise.all([
     CanceledService(),
-    ready(),
+    // ready(),
     //your order service here !
   ]);
+  const dataInvoice = await getInvoiceByStatus();
+
   return json({
     canceledService,
-    readyService,
+    dataInvoice,
     // your return order service here !
   });
 }
 export default function Order() {
-  const allOrderServices = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        <NavOrder order={allOrderServices} />
+        {/* <NavOrderBa prderDetailInvoice={data} /> */}
+
+        <NavOrderBa orderDetailInvoice={data} />
       </Flex>
     </ImplementGrid>
   );
