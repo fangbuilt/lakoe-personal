@@ -192,7 +192,7 @@ export default function ModalTracking(props: SendProps) {
                   gap="5"
                   p={"16px"}
                 >
-                  {steps.map((step: any, index: number) => (
+                  {steps.reverse().map((step: any, index: number) => (
                     <Step key={index}>
                       <StepIndicator fontSize={"11px"}>
                         <StepStatus
@@ -204,7 +204,9 @@ export default function ModalTracking(props: SendProps) {
 
                       <Box flexShrink="0">
                         <StepTitle>{step.note}</StepTitle>
-                        <StepDescription>{step.updated_at}</StepDescription>
+                        <StepDescription>
+                          {new Date(step.updated_at).toLocaleString()}
+                        </StepDescription>
                       </Box>
 
                       <StepSeparator />

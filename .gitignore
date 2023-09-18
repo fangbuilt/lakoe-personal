@@ -9,6 +9,7 @@ node_modules
 /build
 /public/build
 .eslintcache
+.env
 
 **/.DS_Store
 
