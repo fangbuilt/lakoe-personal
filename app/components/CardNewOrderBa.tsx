@@ -232,8 +232,8 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                     w={'52px'}
                     h={'52px'}
                     display={'inline'}
-                    src={`${props.cart.cartItems.map(
-                      (a) => a.product.attachments[0].url
+                    src={`${props.cart.cartItems.map((a) =>
+                      a.product.attachments.map((pi) => pi.url)
                     )}`}
                     // src={`${props.cart.cartItems.map((a)=> a.product.attachments.map)}`}
                     // src={``}
