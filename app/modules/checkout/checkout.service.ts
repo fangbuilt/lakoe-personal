@@ -69,5 +69,5 @@ export async function createCheckout(data: any) {
     data: { stock: data.update.stock as number },
   });
 
-  return redirect(`/checkout/transfer/${invoice.id}`);
+  return redirect(`/transfer/${invoice.id}`);
 }

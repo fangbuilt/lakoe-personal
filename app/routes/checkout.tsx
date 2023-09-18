@@ -68,7 +68,7 @@ export default function CheckoutPage() {
                     src={i.attachments[0].url}
                     alt="none"
                   />
-                  <Link to={`/checkout/${i.store?.name}/${i.slug}`}>
+                  <Link to={`/${i.store?.name}/${i.slug}`}>
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
                       {/* <Text mt={1} fontSize={"sm"}>

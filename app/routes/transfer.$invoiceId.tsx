@@ -88,7 +88,7 @@ export default function PayTransfer() {
                   </Box>
                   <Box mt={'20px'}>
                     <Text>Konfirmasikan Pembayaran Anda di:</Text>
-                    <Link to={`/checkout/payment/${invoiceId}`}>
+                    <Link to={`/payment/${invoiceId}`}>
                       <Text display={'inline'} color={'blue'} ms={1}>
                         Konfirmasi Pembayaran
                       </Text>
