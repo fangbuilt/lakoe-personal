@@ -1,22 +1,17 @@
 import { Box, Center, Input } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-function Map() {
+export default function Maps() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
 
   useEffect(() => {
-    let map: google.maps.Map;
-    let marker: google.maps.Marker | null = null;
-    let autocomplete: google.maps.places.Autocomplete;
+    // Fungsi untuk inisialisasi Google Maps API dan Autocomplete
+    const initializeMap = () => {
+      let map: google.maps.Map;
+      let marker: google.maps.Marker | null = null;
+      let autocomplete: google.maps.places.Autocomplete;
 
-    // Buat elemen <script> untuk memuat pustaka Google Maps API
-    const googleMapScript = document.createElement('script');
-    googleMapScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBoh3wL5LQnixnbEAD3dJ4zlX0_hPBZR7s&libraries=places`;
-    googleMapScript.async = true;
-
-    // Tambahkan event listener untuk menangani saat pustaka Google Maps selesai dimuat
-    googleMapScript.onload = () => {
       // Inisialisasi peta
       map = new google.maps.Map(document.getElementById('map')!, {
         center: { lat: -7.797068, lng: 110.370529 },
@@ -64,20 +59,29 @@ function Map() {
       });
     };
 
+    // Buat elemen <script> untuk memuat pustaka Google Maps API
+    const googleMapScript = document.createElement('script');
+    googleMapScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBoh3wL5LQnixnbEAD3dJ4zlX0_hPBZR7s&libraries=places`;
+    googleMapScript.async = true;
+
+    // Tambahkan event listener untuk menangani saat pustaka Google Maps selesai dimuat
+    googleMapScript.onload = initializeMap;
+
     // Tambahkan elemen <script> ke dalam body dokumen
     document.body.appendChild(googleMapScript);
   }, []);
 
   return (
-    <Center m={3}>
-      <Box>
+    <Center>
+      <Box p={2} border={'1px solid #eaeaea'} borderRadius={'10px'}>
         <Input
           p={3}
           w={'100%'}
           id="autocomplete"
           type="text"
           placeholder="Cari alamat..."
-          style={{ margin: '10px' }}
+          mb={'10px'}
+          //bg={"red"}
         />
         <Box id="map" style={{ height: '300px', width: '500px' }}></Box>
         {latitude !== null && longitude !== null && (
@@ -90,5 +94,3 @@ function Map() {
     </Center>
   );
 }
-
-export default Map;
