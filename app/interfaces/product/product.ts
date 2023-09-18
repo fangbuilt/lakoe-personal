@@ -33,4 +33,5 @@ export interface IVariantOptionValue {
 export interface IProductAttachment {
   id: string;
   url: string;
+  // product: IProduct;
 }
