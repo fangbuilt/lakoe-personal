@@ -40,13 +40,13 @@ export async function action({ request }: ActionArgs) {
 
   const actionType = formData.get('actionType');
   const amount = +(formData.get('amount') as string);
-  const bankAccount = formData.get('bankAccount');
+  const bankId = formData.get('bankId');
   const approvedById = formData.get('approvedById');
   const storeId = formData.get('storeId');
-  const bankId = formData.get('bankId');
+  const bankAccount = formData.get('bankAccount');
   const withdrawId = formData.get('withdrawId');
 
-  if (actionType === 'create' && amount && bankAccount && bankId) {
+  if (actionType === 'create' && amount && bankAccount) {
     try {
       const createdWithdraw = await createWithdraw(
         {
@@ -56,7 +56,7 @@ export async function action({ request }: ActionArgs) {
           amount: amount.toString(),
           status: 'REQUEST',
           bankAccount: {
-            connect: { id: bankId },
+            connect: { id: bankAccount },
           },
         },
         bankId as string,
@@ -72,7 +72,6 @@ export async function action({ request }: ActionArgs) {
         },
       });
       if (store) {
-        // Calculate the new credit balance
         const newCredit = store.credit - amount;
 
         await db.store.update({
@@ -111,6 +110,19 @@ export default function Dashboard() {
     }).format(saldo);
   }
 
+  let totalWithdrawAmount = 0;
+  data.forEach((item) => {
+    if (item.bankAccounts && item.bankAccounts.length > 0) {
+      item.bankAccounts.forEach((account) => {
+        if (account.withdraws && account.withdraws.length > 0) {
+          account.withdraws.forEach((withdraw) => {
+            totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+          });
+        }
+      });
+    }
+  });
+
   return (
     <>
       <NavbarDashboard />
@@ -143,7 +155,7 @@ export default function Dashboard() {
                 </Text>
               ))}
               {data.map((item) => (
-                <DashboardPopup bankAccount={item.bankAccount} />
+                <DashboardPopup bankAccount={item.bankAccounts} />
               ))}
             </Box>
             <Box
@@ -161,7 +173,7 @@ export default function Dashboard() {
               </Text>
               <Text fontSize={'13px'}>Penarikan sedang dalam proses</Text>
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#656565'}>
-                Rp.0
+                {formatRupiah(totalWithdrawAmount)}
               </Text>
             </Box>
             <Box

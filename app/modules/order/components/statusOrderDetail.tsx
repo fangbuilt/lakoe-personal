@@ -1,4 +1,9 @@
 import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+} from '@chakra-ui/icons';
+import {
   Box,
   Button,
   Card,
@@ -16,22 +21,17 @@ import {
   Stepper,
   Text,
 } from '@chakra-ui/react';
-import documentIcon from '~/assets/DetailOrderIcon/document.svg';
-import calender from '~/assets/DetailOrderIcon/calendar-2.svg';
+import { BsCircleFill } from 'react-icons/bs';
 import barcode from '~/assets/DetailOrderIcon/barcode.svg';
-import copy from '~/assets/DetailOrderIcon/copy.svg';
-import profile from '~/assets/DetailOrderIcon/profile-circle.svg';
-import whatsapp from '~/assets/DetailOrderIcon/whatsapp.svg';
 import box from '~/assets/DetailOrderIcon/box.svg';
+import calender from '~/assets/DetailOrderIcon/calendar-2.svg';
+import copy from '~/assets/DetailOrderIcon/copy.svg';
+import documentIcon from '~/assets/DetailOrderIcon/document.svg';
+import profile from '~/assets/DetailOrderIcon/profile-circle.svg';
 import truck from '~/assets/DetailOrderIcon/truck-fast.svg';
 import wallet from '~/assets/DetailOrderIcon/wallet.svg';
+import whatsapp from '~/assets/DetailOrderIcon/whatsapp.svg';
 import { useOrderDetalil } from '../hooks/useOrderDetail';
-import { BsCircleFill } from 'react-icons/bs';
-import {
-  ChevronDownIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-} from '@chakra-ui/icons';
 
 export default function StatusOrderDetail() {
   const { isOrderHistoryVisible, toggleOrderHistory, steps, activeStep } =

@@ -1,5 +1,24 @@
 import MailerLite from '@mailerlite/mailerlite-nodejs';
 
+function generateRandomString(lenght: number) {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+
+  for (let i = 0; i < lenght; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+  return result;
+}
+
+function generateRandomEmail(email: string, randomStringLenght: number) {
+  const [username, domain] = email.split('@');
+  const randomString = generateRandomString(randomStringLenght);
+  const randomEmail = `${username}+${randomString}@${domain}`;
+  return randomEmail;
+}
+
 export interface IDroppingOff {
   email: string;
   fields?: object;
@@ -14,14 +33,16 @@ const mailerlite = new MailerLite({
 
 export function WithdrawNotification(
   formattedAmount: string,
-  bankAccount: string
+  bankAccount: string,
+  accountName: string
 ) {
+  const oriEmail = 'rahmatrizkyrifai@gmail.com';
   const params: IDroppingOff = {
-    email: 'muhammadalisyamsi+hdhhh@gmail.com', // The receiver email's - We will get the email from table invoice userId relation to get the email
+    email: generateRandomEmail(oriEmail, 10),
+
     fields: {
       // This is where you can make custom fields variable for email template display
-
-      storename: { bankAccount },
+      storename: { accountName },
       amount: { formattedAmount },
 
       bankaccount: { bankAccount },

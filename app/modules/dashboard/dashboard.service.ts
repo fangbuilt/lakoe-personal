@@ -8,9 +8,9 @@ export async function getStoreData(id: string) {
         id: '50',
       },
       include: {
-        bankAccount: {
+        bankAccounts: {
           include: {
-            withdraw: true,
+            withdraws: true,
           },
         },
       },
@@ -33,16 +33,15 @@ export async function getStore() {
 }
 
 export async function deleteBankList(id: string) {
-  // Unlink related records in the 'withdraw' table
   await db.withdraw.updateMany({
     where: { bankId: id },
     data: { bankId: null || undefined },
   });
 
-  // Now you can safely delete the 'bankAccount' record
-  return await db.bankAccount.delete({
+  await db.bankAccount.delete({
     where: { id: id },
   });
+  return { success: true };
 }
 
 export async function getNameBank(bank: string) {
@@ -98,47 +97,51 @@ export async function createWithdraw(
   storeId: string,
   approvedById: string
 ) {
-  const amount = parseFloat(data.amount);
+  try {
+    const amount = parseFloat(data.amount);
 
-  // Check if the User record with id "10" exists
-  const user = await db.user.findUnique({
-    where: { id: '50' },
-  });
+    const user = await db.user.findUnique({
+      where: { id: '50' },
+    });
 
-  if (!user) {
-    throw new Error('User with id not found.');
+    if (!user) {
+      throw new Error('User with id not found.');
+    }
+
+    const bankAccount = await db.bankAccount.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!bankAccount) {
+      throw new Error('Bank Account Id not found.');
+    }
+
+    const bankId = bankAccount.id;
+
+    const withdraw = await db.withdraw.create({
+      data: {
+        store: {
+          connect: { id: '50' },
+        },
+        amount: amount,
+        status: 'REQUEST',
+        bankAccount: {
+          connect: { id: bankId },
+        },
+        approvedBy: {
+          connect: { id: '1' },
+        },
+      },
+    });
+
+    // console.log("Withdraw created:", withdraw);
+    return withdraw;
+  } catch (error) {
+    console.error('Error creating withdrawal:', error);
+    throw error;
   }
-
-  const bankAccount = await db.bankAccount.findFirst({
-    where: {
-      id: id,
-    },
-  });
-
-  if (!bankAccount) {
-    throw new Error('Bank Account Id not found.');
-  }
-
-  const bankId = bankAccount.id;
-
-  const withdraw = await db.withdraw.create({
-    data: {
-      store: {
-        connect: { id: '50' },
-      },
-      amount: amount,
-      status: 'REQUEST',
-      bankAccount: {
-        connect: { id: bankId },
-      },
-      approvedBy: {
-        connect: { id: '1' },
-      },
-    },
-  });
-
-  console.log('Withdraw created:', withdraw);
-  return withdraw;
 }
 
 export async function deleteWithdraw(id: string) {
