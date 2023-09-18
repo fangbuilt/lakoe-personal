@@ -39,6 +39,7 @@ export async function getInvoiceByStatus() {
         status: 'NEW_ORDER',
       },
       include: {
+        payment: true,
         courier: true,
         cart: {
           include: {

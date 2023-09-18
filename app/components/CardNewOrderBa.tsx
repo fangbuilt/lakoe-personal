@@ -263,12 +263,7 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                     </Text>
                   </Flex>
                   <Text fontWeight={'bold'} fontSize={'14px'}>
-                    Rp{' '}
-                    {props.cart.cartItems.map((a) =>
-                      a.variantOption.variantOptionValues.map((b) => b.price)
-                    )}{' '}
-                    {' * '}
-                    {/* {props.payment.amount} */}
+                    Rp {props.cart.cartItems.map((a) => a.price * a.qty)}
                   </Text>
                 </Box>
               </Flex>
