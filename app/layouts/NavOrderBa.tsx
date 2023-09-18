@@ -29,7 +29,7 @@ import SearchProduct from '../assets/icon-pack/search-product.svg';
 import CardNewOrderBa from '../components/CardNewOrderBa';
 import ScrollBox from '../components/ScrollBox';
 import { useFilterCourier } from '../hooks/useFilterCourier';
-import { UseSearch } from '../hooks/useSearchOrder';
+import { UseSearch } from '../hooks/useSearchOrder copy';
 
 interface IOrderDetailInvoiceProps {
   orderDetailInvoice: IOrderDetailInvoice[];
@@ -445,7 +445,7 @@ export default function NavOrderBa(props: IOrderDetailInvoiceProps) {
                       />
                     ))} */}
                     {/* {props.map((data) => ( */}
-                    {orderDetailInvoice.map((a) => (
+                    {orderDetailInvoice?.map((a) => (
                       <CardNewOrderBa key={a.id} {...a} />
                     ))}
 

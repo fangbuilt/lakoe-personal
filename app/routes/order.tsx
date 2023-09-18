@@ -45,7 +45,7 @@ export default function Order() {
       <Flex align={'center'} justify={'center'} h={'100vh'}>
         {/* <NavOrderBa prderDetailInvoice={data} /> */}
 
-        <NavOrderBa orderDetailInvoice={data} />
+        <NavOrderBa orderDetailInvoice={data.dataInvoice} />
       </Flex>
     </ImplementGrid>
   );
