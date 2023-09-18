@@ -1,6 +1,7 @@
 import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
+// Fetching data store, bankAccount, withdraw
 export async function getStoreData(id: string) {
   return json(
     await db.store.findMany({
@@ -18,6 +19,7 @@ export async function getStoreData(id: string) {
   );
 }
 
+//BankAccount CRUD
 export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
@@ -26,10 +28,6 @@ export async function getBankList(storeId: string) {
       },
     })
   );
-}
-
-export async function getStore() {
-  return json(await db.store.findMany());
 }
 
 export async function deleteBankList(id: string) {
@@ -91,6 +89,19 @@ export async function updateBank(
   }
 }
 
+//Withdraw
+export async function getWithdrawalList() {
+  return await db.withdraw.findMany({
+    include: {
+      store: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+}
+
 export async function createWithdraw(
   data: any,
   id: any,
@@ -149,36 +160,3 @@ export async function deleteWithdraw(id: string) {
     where: { id: id },
   });
 }
-
-// withdrawal logic
-// export async function createWithdrawal(
-//   storeId: string,
-//   amount: number
-// ): Promise<boolean> {
-//   try {
-//     const store = await db.store.findFirst({
-//       where: {
-//         id: "18",
-//       },
-//     });
-
-//     if (store.credit >= amount) {
-//       const newCredit = store.credit - amount;
-
-//       await db.store.update({
-//         where: {
-//           id: "18",
-//         },
-//         data: {
-//           credit: newCredit,
-//         },
-//       });
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   } catch (error) {
-//     console.error("Withdrawal error:", error);
-//     return false;
-//   }
-// }

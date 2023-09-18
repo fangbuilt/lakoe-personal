@@ -123,6 +123,15 @@ export default function Dashboard() {
     }
   });
 
+  let createdAtArray: string[] = [];
+  data.forEach((dataItem) => {
+    dataItem.bankAccounts.forEach((bankAccountItem) => {
+      bankAccountItem.withdraws.forEach((withdrawItem) => {
+        createdAtArray.push(withdrawItem.createdAt);
+      });
+    });
+  });
+
   return (
     <>
       <NavbarDashboard />
@@ -155,7 +164,12 @@ export default function Dashboard() {
                 </Text>
               ))}
               {data.map((item) => (
-                <DashboardPopup bankAccount={item.bankAccounts} />
+                <DashboardPopup
+                  key={item.id}
+                  bankAccount={item.bankAccounts}
+                  storeName={item.name}
+                  createdAt={createdAtArray}
+                />
               ))}
             </Box>
             <Box
