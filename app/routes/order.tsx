@@ -1,13 +1,13 @@
 import { Flex } from "@chakra-ui/react";
 import NavOrder from "~/layouts/NavOrder";
 import { ImplementGrid } from "~/layouts/Grid";
-import { GetDataProductReadyToShip } from "~/modules/order/order.service";
+import { getDataProductReadyToShip } from "~/modules/order/order.service";
 import { useLoaderData } from "@remix-run/react";
 
 export async function loader() {
   const api_key = process.env.API_LAKOE_TEST;
 
-  const dataProductReadyToShip = await GetDataProductReadyToShip();
+  const dataProductReadyToShip = await getDataProductReadyToShip();
 
   return {
     dataProductReadyToShip,
