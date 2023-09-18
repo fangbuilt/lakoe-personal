@@ -27,6 +27,8 @@ export async function action({ request }: ActionArgs) {
   const domain = `lakoe.store/${name}`;
   const logoAttachment = formData.get('logoAttachment');
 
+  console.log('ini gambar', logoAttachment);
+
   if (actionType === 'create' && name && slogan && description) {
     await createStoreInformation({
       name,
@@ -35,7 +37,7 @@ export async function action({ request }: ActionArgs) {
       domain,
       logoAttachment,
     });
-    const redirectURL = `/configuration/store_configuration/ `;
+    const redirectURL = `/configuration/storeConfiguration/ `;
     return redirect(redirectURL);
   }
   return null;

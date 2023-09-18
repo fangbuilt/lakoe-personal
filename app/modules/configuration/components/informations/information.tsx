@@ -109,6 +109,22 @@ export function Informations() {
     }
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        if (event.target) {
+          setSelectedImage(event.target.result as string);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleDeleteImage = () => {
     setSelectedImage(null);
   };
@@ -305,7 +321,12 @@ export function Informations() {
       <Text fontWeight={'semibold'} fontSize={'16px'} mt={3}>
         Logo Toko
       </Text>
-      <Box w="100px" my={3}>
+      <Box
+        w="100px"
+        my={3}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleDrop}
+      >
         {selectedImage ? (
           <>
             <Box
@@ -323,7 +344,9 @@ export function Informations() {
               position={'relative'}
             >
               <Image
-                m={1}
+                p={1}
+                w="130px"
+                h="130px"
                 src={selectedImage} // belum dari data base
                 objectFit={'cover'}
               />
@@ -331,7 +354,7 @@ export function Informations() {
                 hidden
                 type="file"
                 accept="image/*"
-                // name="logoAttachment"
+                name="logoAttachment"
                 onChange={handleImageChange}
               />
               <Button
