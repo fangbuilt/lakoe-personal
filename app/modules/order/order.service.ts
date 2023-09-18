@@ -34,11 +34,7 @@ export async function getInvoiceById(id: any) {
 
 export async function updateStatusInvoice(data: any) {
   const { id } = data;
-
   await db.invoice.update({
-    where: {
-      id: id,
-    },
     data: {
       status: 'READY_TO_SHIP',
       invoiceHistories: {
@@ -48,6 +44,9 @@ export async function updateStatusInvoice(data: any) {
           updatedAt: new Date(),
         },
       },
+    },
+    where: {
+      id: id,
     },
   });
 }
