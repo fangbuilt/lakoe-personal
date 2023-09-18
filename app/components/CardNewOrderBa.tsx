@@ -117,7 +117,7 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
             name: props.cart.cartItems.map((c) => c.product.name),
             image: '',
             description: props.cart.cartItems.map((j) => j.product.description),
-            value: props.payment.amount,
+            value: props.cart.cartItems.map((a) => a.price * a.qty),
             quantity: props.cart.cartItems.map((a) => a.qty),
             height: props.cart.cartItems.map((n) => n.product.height),
             length: props.cart.cartItems.map((c) => c.product.length),
