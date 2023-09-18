@@ -3,7 +3,8 @@ import type { ActionArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
-import NavOrderBa from '~/layouts/NavOrderBa';
+import NavOrder from '~/layouts/NavOrder';
+// import NavOrderBa from '~/layouts/NavOrderBa';
 import {
   getDataProductReadyToShip,
   getInvoiceByStatus,
@@ -49,9 +50,8 @@ export default function Order() {
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        {/* <NavOrderBa prderDetailInvoice={data} /> */}
-
-        <NavOrderBa orderDetailInvoice={data.dataInvoice} />
+        <NavOrder cardProduct={data.dataProductReadyToShip} />
+        {/* <NavOrderBa orderDetailInvoice={data.dataInvoice} /> */}
       </Flex>
     </ImplementGrid>
   );

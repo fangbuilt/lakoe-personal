@@ -18,15 +18,18 @@ import {
   useSteps,
 } from '@chakra-ui/react';
 import { BsCircleFill } from 'react-icons/bs';
-import getBiteshipTracking from '~/hooks/useOrderTracking';
+import useOrderTracking from '~/hooks/useOrderTracking';
 
 interface SendProps {
   isOpen: boolean;
   onClose: () => void;
+  selectedCardId: string;
 }
 
 export default function ModalTracking(props: SendProps) {
-  const { orderTrackingsData, orderMultiTrackingsData } = getBiteshipTracking();
+  const { orderTrackingsData, orderMultiTrackingsData } = useOrderTracking(
+    props.selectedCardId
+  );
   let steps = orderMultiTrackingsData;
 
   const { activeStep } = useSteps({

@@ -14,6 +14,7 @@ import { useState } from 'react';
 import type { loader } from '~/routes/order';
 import CardCanceled from '../components/CardCanceled';
 import ScrollBox from '../components/ScrollBox';
+import CardReadyToShip from '~/components/CardReadyToShip';
 
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
@@ -222,7 +223,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>siap dikirim</h1>
+                    <CardReadyToShip />
                   </TabPanel>
                 </ScrollBox>
 

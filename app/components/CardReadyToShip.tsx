@@ -15,8 +15,9 @@ export function formatCurrency(price: number): string {
   return formattedAmount;
 }
 
-export default function ReadyToShipCard() {
+export default function CardReadyToShip() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [, setSelectedCardId] = useState<string>('');
 
   const cardProduct = useLoaderData<typeof loader>();
 
@@ -55,11 +56,18 @@ export default function ReadyToShipCard() {
                       border={'1px solid #D5D5D5'}
                       borderRadius={'full'}
                       fontSize={'14px'}
-                      onClick={openModal}
+                      onClick={() => {
+                        setSelectedCardId(data.id);
+                        openModal();
+                      }}
                     >
                       Tracking Pengiriman
                     </Button>
-                    <ModalTracking isOpen={modalIsOpen} onClose={closeModal} />
+                    <ModalTracking
+                      isOpen={modalIsOpen}
+                      onClose={closeModal}
+                      selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
+                    />
                     {/*  */}
                   </Box>
                 </Flex>
