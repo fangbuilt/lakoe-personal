@@ -16,8 +16,33 @@ import {
 
 import PreviewWithdraw from './PopupPreviewWithdraw';
 import { Link } from '@remix-run/react';
+import moment from 'moment';
 
-export default function AdminAll() {
+export default function AdminAll({ dataWithdrawal }: any) {
+  const filteredDataRequest = dataWithdrawal.filter(
+    (item: any) => item.status === 'REQUEST'
+  );
+  const filteredDataProcessing = dataWithdrawal.filter(
+    (item: any) => item.status === 'PROCESSING'
+  );
+  const filteredDataSuccess = dataWithdrawal.filter(
+    (item: any) => item.status === 'SUCCESS'
+  );
+  const filteredDataDeclined = dataWithdrawal.filter(
+    (item: any) => item.status === 'DECLINED'
+  );
+  function formatRupiah(amount: number) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
+  }
+
+  const withdrawalCountAll = dataWithdrawal.length;
+  const withdrawalCountByRequest = filteredDataRequest.length;
+  const withdrawalCountByProcessing = filteredDataProcessing.length;
+  const withdrawalCountBySuccess = filteredDataSuccess.length;
+  const withdrawalCountByDeclined = filteredDataDeclined.length;
   return (
     <>
       <Box
@@ -60,7 +85,8 @@ export default function AdminAll() {
                             fontSize={14}
                             marginRight={2}
                           >
-                            1 {/* INSERT YOUR NOTIF DATA HERE */}
+                            {withdrawalCountAll}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -70,7 +96,6 @@ export default function AdminAll() {
                       </Link>
                     </Box>
                   </Box>
-
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
                       <Link to={'/adminRequest'}>
@@ -85,7 +110,8 @@ export default function AdminAll() {
                             fontSize={14}
                             marginRight={2}
                           >
-                            1 {/* INSERT YOUR NOTIF DATA HERE */}
+                            {withdrawalCountByRequest}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -109,7 +135,8 @@ export default function AdminAll() {
                           fontSize={14}
                           marginRight={2}
                         >
-                          1 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {withdrawalCountByProcessing}{' '}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 
@@ -136,7 +163,8 @@ export default function AdminAll() {
                             fontSize={14}
                             marginRight={2}
                           >
-                            1 {/* INSERT YOUR NOTIF DATA HERE */}
+                            {withdrawalCountBySuccess}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
 
@@ -161,7 +189,8 @@ export default function AdminAll() {
                             fontSize={14}
                             marginRight={2}
                           >
-                            1 {/* INSERT YOUR NOTIF DATA HERE */}
+                            {withdrawalCountByDeclined}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -192,36 +221,42 @@ export default function AdminAll() {
                   <Th>Action</Th>
                 </Tr>
               </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>21</Td>
-                  <Td>Dumbways Store</Td>
-                  <Td>5 Sept 2023 15:05</Td>
-                  <Td>Rp. 550.000</Td>
-                  <Td margin={'2px 0'}>
-                    <Text
-                      padding={'5px 15px'}
-                      borderRadius={'15px'}
-                      bg={'yellow'}
-                      textAlign={'center'}
-                    >
-                      Request
-                    </Text>
-                  </Td>
-                  <Td padding={0}>
-                    <Text
-                      //   bg={"none"}
-                      //   colorScheme="none"
-                      color={'black'}
-                      textAlign={'center'}
-                      borderRadius={'15px'}
-                      cursor={'pointer'}
-                    >
-                      <PreviewWithdraw />
-                    </Text>
-                  </Td>
-                </Tr>
-              </Tbody>
+              {dataWithdrawal.map((item: any) => (
+                <Tbody>
+                  <Tr>
+                    <Td>{item.id}</Td>
+                    <Td>{item.store?.name}</Td>
+                    <Td>
+                      {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
+                        'LLLL'
+                      )}
+                    </Td>
+                    <Td>{formatRupiah(item.amount)}</Td>
+                    <Td margin={'2px 0'}>
+                      <Text
+                        padding={'5px 15px'}
+                        borderRadius={'15px'}
+                        bg={'yellow'}
+                        textAlign={'center'}
+                      >
+                        {item.status}
+                      </Text>
+                    </Td>
+                    <Td padding={0}>
+                      <Text
+                        //   bg={"none"}
+                        //   colorScheme="none"
+                        color={'black'}
+                        textAlign={'center'}
+                        borderRadius={'15px'}
+                        cursor={'pointer'}
+                      >
+                        <PreviewWithdraw />
+                      </Text>
+                    </Td>
+                  </Tr>
+                </Tbody>
+              ))}
             </Table>
           </TableContainer>
         </Box>
