@@ -248,7 +248,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                 fontSize={'12px'}
               >
                 {options.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option key={option.label} value={option.value}>
                     {option.label}
                   </option>
                 ))}
@@ -268,7 +268,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                     ID Withdraw
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Seller
+                    Nama Store
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
@@ -290,13 +290,14 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
                     </Td>
+
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.store?.name}
+                    </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
-                    </Td>
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {formatRupiah(item.amount)}

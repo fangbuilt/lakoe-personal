@@ -268,7 +268,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                     ID Withdraw
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Seller
+                    Nama Store
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
@@ -286,17 +286,18 @@ export default function AdminRequest({ dataWithdrawal }: any) {
               </Thead>
               <Tbody>
                 {dataWithdrawal.map((item: any) => (
-                  <Tr>
+                  <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
+                    </Td>
+
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
-                    </Td>
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {formatRupiah(item.amount)}
@@ -323,7 +324,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminRequestPopup />
+                        <AdminRequestPopup withdrawalData={item} />
                       </Text>
                     </Td>
                   </Tr>

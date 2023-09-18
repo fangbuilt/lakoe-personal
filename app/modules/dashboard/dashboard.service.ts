@@ -98,6 +98,7 @@ export async function getWithdrawalList() {
           name: true,
         },
       },
+      bankAccount: true,
     },
   });
 }

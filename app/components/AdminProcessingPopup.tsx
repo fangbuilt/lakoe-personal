@@ -11,15 +11,31 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import moment from 'moment';
 import React from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
 
 export default function AdminProcessingPopup(props: any) {
+  const { withdrawalData } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+
+  function formatRupiah(amount: number) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
+  }
+
+  const transferFee = 10000;
+  const tax = (parseInt(withdrawalData.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(withdrawalData.amount));
+  const withdarwalTotal = formatRupiah(
+    parseInt(withdrawalData.amount) - transferFee - tax
+  );
 
   return (
     <>
@@ -58,18 +74,26 @@ export default function AdminProcessingPopup(props: any) {
             >
               <Box>
                 <Text display={'flex'}>
-                  Nomor Penarikan: <Text fontWeight={700}>123ASD</Text>
+                  Nomor Penarikan:{' '}
+                  <Text fontWeight={700}>{withdrawalData.id}</Text>
                 </Text>
-                <Text>Dibuat 6 September 2023 pukul 15:45 </Text>
+                <Text>
+                  {moment(
+                    withdrawalData.createdAt,
+                    'YYYY-MM-DD HH:mm:ss'
+                  ).format('LLLL')}{' '}
+                </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
-                  <Text fontWeight={700}>Adira Salahudi</Text>
-                  <Text fontSize={'12px'}>Dumbways Store</Text>
+                  <Text fontWeight={700}>
+                    {withdrawalData.bankAccount.accountName}
+                  </Text>
+                  <Text fontSize={'12px'}>{withdrawalData.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>Status: Processing</Text>
+                  <Text fontSize={'12px'}>{withdrawalData.status}</Text>
                 </Box>
               </Flex>
 
@@ -77,15 +101,15 @@ export default function AdminProcessingPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: BNI</Text>
+                  <Text>: {withdrawalData.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: 0460541966</Text>
+                  <Text>: {withdrawalData.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: Adira Salahudi</Text>
+                  <Text>: {withdrawalData.accountName}</Text>
                 </Flex>
               </Box>
 
@@ -96,14 +120,14 @@ export default function AdminProcessingPopup(props: any) {
                     <Text width={'150px'}>Jumlah Penarikan</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 1.000.000</Text>
+                  <Text> {formattedAmount}</Text>
                 </Flex>
                 <Flex justifyContent={'space-between'}>
                   <Flex>
                     <Text width={'150px'}>Biaya Admin</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 10.000</Text>
+                  <Text> {tax}</Text>
                 </Flex>
                 <Text fontSize={'10px'} color={'grey'}>
                   *1% jumlah penarikan
@@ -113,7 +137,7 @@ export default function AdminProcessingPopup(props: any) {
                     <Text width={'150px'}>Biaya Transfer</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 10.000</Text>
+                  <Text> {formatRupiah(transferFee)}</Text>
                 </Flex>
                 <Divider my={'5px'} py={'1px'} bg={'grey'} />
                 <Flex justifyContent={'space-between'}>
@@ -121,7 +145,7 @@ export default function AdminProcessingPopup(props: any) {
                     <Text width={'150px'}>Saldo yang diterima</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 980.000</Text>
+                  <Text> {withdarwalTotal}</Text>
                 </Flex>
               </Box>
 

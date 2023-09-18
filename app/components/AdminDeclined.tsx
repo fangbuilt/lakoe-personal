@@ -273,7 +273,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
                     ID Withdraw
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Seller
+                    Nama Store
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
@@ -291,7 +291,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
               </Thead>
               <Tbody>
                 {filteredDataDeclined.map((item: any) => (
-                  <Tr>
+                  <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
                     </Td>
