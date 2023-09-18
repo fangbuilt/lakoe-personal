@@ -7,50 +7,22 @@ import {
   Tabs,
   Text,
   Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Image,
-  Checkbox,
-  Button,
-  Center,
 } from '@chakra-ui/react';
-import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
-import SearchProduct from '../assets/icon-pack/search-product.svg';
-import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import ScrollBox from '../components/ScrollBox';
-import { UseSearch } from '../hooks/useSearchOrder';
-import { useFilterCourier } from '../hooks/useFilterCourier';
-import CardUnpaid from '../components/CardUnpaid';
-import CardReadyToShip from '../components/CardReadyToShip';
-import CardNewOrder from '../components/CardNewOrder';
-import CardSuccessOrder from '../components/CardSuccesOrder';
-import CardInShipping from '../components/CardInShipping';
 import CardCanceled from '../components/CardCanceled';
-import { useSortFilter } from '~/hooks/useSortFilter';
-import Empty from '../assets/icon-pack/empty-dot.svg';
+import { useState } from 'react';
 
-export default function NavOrder() {
-  const { filteredOrders, setSearchQuery } = UseSearch();
-  const { selectedCouriers, toggleCourier, getSelectedCourier } =
-    useFilterCourier();
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter();
+export default function NavOrder({allOrderSevice}:any) {
 
-  const filteredOrdersByCourier = filteredOrders.filter((order) => {
-    if (selectedCouriers.length === 0) {
-      return true;
-    }
-    return selectedCouriers.includes(order.courier);
-  });
+  const [activeTab, setActiveTab] = useState(0);
+  const handleClickTab = (index: number) => {
+    setActiveTab(index);
+  };
 
   return (
     <>
       <Box
+        key={allOrderSevice}
         background={'whitesmoke'}
         style={{ width: '100%', marginLeft: '-5px', marginRight: '50%' }}
       >
@@ -64,35 +36,39 @@ export default function NavOrder() {
             height: '100%',
             borderRadius: '10px',
           }}
+
         >
-          <Tabs>
+          <Tabs  >
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'20px'}>
                 Daftar Pesanan
               </Text>
             </Box>
 
-            <Box>
+            <Box >
               <Box
                 display={'flex'}
                 overflow={'scroll'}
                 sx={{
-                  '::-webkit-scrollbar': {
+                  '::-webkit-scrollbar': {  // i want displayed scrollbar if user use mouse for scrolling, but if scrollbar not none is a no clear ,
                     display: 'none',
                   },
                 }}
+                mb={"10"}
               >
-                <TabList mx={5}>
-                  <Tab>Semua</Tab>
+                <TabList mx={5}
+
+                 >
+                  <Tab onClick={() => handleClickTab(0)} fontWeight={activeTab === 0 ? "700" : "500"} >Semua</Tab>
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab onClick={() => handleClickTab(1)} fontWeight={activeTab === 1 ? "700" : "500"}  >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
@@ -110,12 +86,12 @@ export default function NavOrder() {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab onClick={() => handleClickTab(2)} fontWeight={activeTab === 2 ? "700" : "500"} >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
@@ -134,12 +110,12 @@ export default function NavOrder() {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab onClick={() => handleClickTab(3)} fontWeight={activeTab === 3 ? "700" : "500"}>
                         {/* NOTIFICATION ORDER  !*/}
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
@@ -157,12 +133,12 @@ export default function NavOrder() {
                   </Box>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab onClick={() => handleClickTab(4)} fontWeight={activeTab === 4 ? "700" : "500"} >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
@@ -179,441 +155,68 @@ export default function NavOrder() {
                   </Box>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab onClick={() => handleClickTab(5)} fontWeight={activeTab === 5 ? "700" : "500"} >
                         <Flex gap={1.5} my={4}>
                           <Text>Pesanan </Text> <Text> Selesai</Text>
                         </Flex>
                       </Tab>
                     </Box>
                   </Box>
-                  <Tab>Dibatalkan</Tab>
+                  <Tab
+                  onClick={() => handleClickTab(6)}
+                  fontWeight={activeTab === 6 ? "700" : "500"}
+                   >Dibatalkan</Tab>
                 </TabList>
               </Box>
-              {/* </Tabs> */}
+
             </Box>
 
             <Box my={5} paddingBottom={'100px'} background={'white'}>
-              <Box mr={5} my={3} width={'100%'}>
-                <Box display={'flex'} mx={2} justifyContent={'space-between'}>
-                  <InputGroup mx={3}>
-                    <InputLeftElement pointerEvents="none">
-                      <Image src={SearchProduct} />
-                    </InputLeftElement>
-                    <Input
-                      type="text"
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Cari Pesanan"
-                      _placeholder={{
-                        opacity: 1,
-                        color: '#909090',
-                        fontSize: '14px',
-                      }}
-                    />
-                  </InputGroup>
 
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      variant="outline"
-                      bgColor={'white'}
-                      fontSize={'14px'}
-                      width={'70%'}
-                      color={getSelectedCourier() > 0 ? 'black' : '#909090'}
-                      fontWeight={'normal'}
-                      me={2}
-                    >
-                      <Text fontSize="14px" textAlign="left">
-                        {getSelectedCourier() > 0
-                          ? `${getSelectedCourier()} Kurir terpilih`
-                          : 'Semua Kurir'}
-                      </Text>
-                      <Image
-                        src={ChevronDownIcon}
-                        position={'absolute'}
-                        fontSize={'2px'}
-                        right={2}
-                        top={3}
-                      />
-                    </MenuButton>
-
-                    <MenuList>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('GoSend')}
-                          isChecked={selectedCouriers.includes('GoSend')}
-                        >
-                          GoSend
-                        </Checkbox>
-                      </MenuItem>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('GrabExpress')}
-                          isChecked={selectedCouriers.includes('GrabExpress')}
-                        >
-                          GrabExpress
-                        </Checkbox>
-                      </MenuItem>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('AnterAja')}
-                          isChecked={selectedCouriers.includes('AnterAja')}
-                        >
-                          AnterAja
-                        </Checkbox>
-                      </MenuItem>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('JNE')}
-                          isChecked={selectedCouriers.includes('JNE')}
-                        >
-                          JNE
-                        </Checkbox>
-                      </MenuItem>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('J&T')}
-                          isChecked={selectedCouriers.includes('J&T')}
-                        >
-                          J&T
-                        </Checkbox>
-                      </MenuItem>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('Lion Parcel')}
-                          isChecked={selectedCouriers.includes('Lion Parcel')}
-                        >
-                          Lion Parcel
-                        </Checkbox>
-                      </MenuItem>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('Ninja Xpress')}
-                          isChecked={selectedCouriers.includes('Ninja Xpress')}
-                        >
-                          Ninja Xpress
-                        </Checkbox>
-                      </MenuItem>
-                      <MenuItem>
-                        <Checkbox
-                          onChange={() => toggleCourier('Pos Indonesia')}
-                          isChecked={selectedCouriers.includes('Pos Indonesia')}
-                        >
-                          Pos Indonesia
-                        </Checkbox>
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      w={'70%'}
-                      variant="outline"
-                      bgColor={'white'}
-                      me={2}
-                    >
-                      <Image
-                        src={ChevronDownIcon}
-                        position={'absolute'}
-                        fontSize={'2px'}
-                        right={2}
-                        top={3}
-                      />
-                      <Text
-                        fontSize={'14px'}
-                        textAlign={'left'}
-                        fontWeight={'normal'}
-                        color={'black'}
-                      >
-                        {getSelectedSortOption() ? (
-                          getSelectedSortOption()
-                        ) : (
-                          <Text color={'#909090'}>Urutkan</Text>
-                        )}
-                      </Text>
-                    </MenuButton>
-                    <MenuList>
-                      <MenuItem
-                        onClick={() => setSortOption('Semua')}
-                        className={
-                          selectedSortOption === 'Semua' ? 'active' : ''
-                        }
-                      >
-                        Semua
-                        <Image
-                          src={Empty}
-                          ml={'auto'}
-                          display={
-                            selectedSortOption === 'Semua'
-                              ? 'inline-block'
-                              : 'none'
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => setSortOption('Paling Baru')}
-                        className={
-                          selectedSortOption === 'Paling Baru' ? 'active' : ''
-                        }
-                      >
-                        Paling Baru
-                        <Image
-                          src={Empty}
-                          ml={'auto'}
-                          display={
-                            selectedSortOption === 'Paling Baru'
-                              ? 'inline-block'
-                              : 'none'
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => setSortOption('Paling Lama')}
-                        className={
-                          selectedSortOption === 'Paling Lama' ? 'active' : ''
-                        }
-                      >
-                        Paling Lama
-                        <Image
-                          src={Empty}
-                          ml={'auto'}
-                          display={
-                            selectedSortOption === 'Paling Lama'
-                              ? 'inline-block'
-                              : 'none'
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => setSortOption('Respon Tercepat')}
-                        className={
-                          selectedSortOption === 'Respon Tercepat'
-                            ? 'active'
-                            : ''
-                        }
-                      >
-                        Respon Tercepat
-                        <Image
-                          src={Empty}
-                          ml={'auto'}
-                          display={
-                            selectedSortOption === 'Respon Tercepat'
-                              ? 'inline-block'
-                              : 'none'
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => setSortOption('Respon Terlama')}
-                        className={
-                          selectedSortOption === 'Respon Terlama'
-                            ? 'active'
-                            : ''
-                        }
-                      >
-                        Respon Terlama
-                        <Image
-                          src={Empty}
-                          ml={'auto'}
-                          display={
-                            selectedSortOption === 'Respon Terlama'
-                              ? 'inline-block'
-                              : 'none'
-                          }
-                        />
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
-                </Box>
-              </Box>
               <TabPanels>
                 {/* YOUR CARD START IN HERE ! */}
-                {/* PASTE YOUR CARD IN HERE DON'T FORGET TO MAP IT*/}
 
                 <ScrollBox>
                   <TabPanel>
                     <h1>Semua</h1>
-                    {/* {filteredOrdersByCourier.map((data, index) => (
-                      <CardUnpaid
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardNewOrder
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardReadyToShip
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardInShipping
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardSuccessOrder
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardCanceled
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardUnpaid
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
+                    <h1>belum bayar</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardNewOrder
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
+                  <h1>pesanan baru</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardReadyToShip
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
+                <h1>siap dikirim</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardInShipping
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
+                <h1>dalam Pengiriman</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {filteredOrdersByCourier.map((data, index) => (
-                      <CardSuccessOrder
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))}
+                  <h1>pesanan selesai</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardCanceled/>
-                    {/* {filteredOrdersByCourier.map((data: any, index: any) => (
-                      <CardCanceled
-                        key={index}
-                        id={data.id}
-                        title={data.titleProduct}
-                        telephone={data.telephone}
-                        invoice={data.invoice}
-                        totalAmount={data.totalAmount}
-                        imageProduct={data.imageProduct}
-                      />
-                    ))} */}
+                    <CardCanceled />
                   </TabPanel>
                 </ScrollBox>
-                {filteredOrdersByCourier.length === 0 && (
-                  <Center>
-                    <Box textAlign="center" mt={5} display={'flex'}>
-                      <Image src={ReceiptSearch} />
-                      <Text fontSize="16px" mt={1}>
-                        Oops, pesanan yang kamu cari tidak ditemukan.
-                        <Text
-                          fontSize={'12px'}
-                          color={'#909090'}
-                          textAlign={'left'}
-                        >
-                          Coba bisa cari dengan kata kunci lain
-                        </Text>
-                      </Text>
-                    </Box>
-                  </Center>
-                )}
 
                 {/* END CARD */}
               </TabPanels>
