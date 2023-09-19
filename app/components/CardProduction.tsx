@@ -35,7 +35,6 @@ const data = [
 // }
 
 export default function CardProducts(props: any) {
-  console.log();
   return (
     <>
       <Box>

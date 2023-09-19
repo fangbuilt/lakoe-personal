@@ -35,11 +35,8 @@ import { useSortFilter } from '~/hooks/useSortFilter';
 import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import {
-  Link,
-  // useLoaderData
-} from '@remix-run/react';
-// import type { loader } from '~/routes/order';
+
+import { Link } from '@remix-run/react';
 import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 
 export default function UnpaidCard() {

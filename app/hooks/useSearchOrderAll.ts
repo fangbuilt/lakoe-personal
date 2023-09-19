@@ -31,7 +31,7 @@ export default function UseSearchAll() {
         // || kurirSearch.indexOf(lowerQuery) !== -1
       );
     });
-    console.log('filtered data:', filtered); // Tambahkan log ini
+    // console.log('filtered data:', filtered); // Tambahkan log ini
     setFilteredOrders(filtered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, unpaidCardAll]);

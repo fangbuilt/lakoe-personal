@@ -2,9 +2,8 @@ import { Flex } from '@chakra-ui/react';
 import NavOrder from '~/layouts/NavOrder';
 import { ImplementGrid } from '~/layouts/Grid';
 
-// import 'dotenv/config';
 import crypto from 'crypto';
-// import { useLoaderData } from '@remix-run/react';
+
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
@@ -31,13 +30,12 @@ export async function action({ request }: ActionArgs) {
         const requestBody = await request.text();
 
         const payloads = JSON.parse(requestBody);
-        console.log('payloads', payloads);
+
         const secretKey = process.env.MOOTA_SECRET as string;
-        console.log('secretKey', secretKey);
+
         const amount = payloads[0].amount as number;
-        console.log('amount', amount);
+
         const signature = request.headers.get('Signature') as string;
-        console.log('signature', signature);
 
         if (verifySignature(secretKey, requestBody, signature)) {
           const MootaOrder = MootaOrderSchema.parse({
@@ -45,7 +43,7 @@ export async function action({ request }: ActionArgs) {
           });
           await MootaOrderStatusUpdate(MootaOrder);
         } else {
-          console.log('verify Signature gagal!');
+          console.log('error verify Signature!');
         }
         return json({ data: requestBody }, 200);
       } catch (error) {
