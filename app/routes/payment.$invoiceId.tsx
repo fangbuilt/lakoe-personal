@@ -12,6 +12,7 @@ import {
   InputRightElement,
   Select,
   Stack,
+  Text,
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
@@ -38,10 +39,9 @@ export const action = async ({ request }: ActionArgs) => {
       amount,
       attachment,
     };
+    console.log(data);
 
     // await db.confirmationPayment.create({ data });
-
-    console.log('data:', data);
   }
 
   return redirect(`/checkout/transfer/confirm`);
@@ -61,7 +61,6 @@ export async function loader({ params }: ActionArgs) {
 
 export default function TransferPayment() {
   const { invoiceId } = useParams();
-  console.log(invoiceId);
 
   const [file] = useState<File | null>(null);
   const item = useLoaderData<typeof loader>();
@@ -71,6 +70,7 @@ export default function TransferPayment() {
       <Box fontSize={'100px'} mt={'10px'}>
         <PiShoppingCartThin />
       </Box>
+
       <Heading fontSize="2xl" textAlign="center">
         KONFIRMASI PEMBAYARAN
       </Heading>
@@ -162,6 +162,9 @@ export default function TransferPayment() {
           </Stack>
         </Form>
       </Container>
+      <Box display={'none'}>
+        <Text>{invoiceId}</Text>
+      </Box>
     </Flex>
   );
 }

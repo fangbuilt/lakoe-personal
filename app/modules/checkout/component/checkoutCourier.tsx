@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Flex,
   Image,
   Input,
@@ -79,8 +80,6 @@ export default function CheckoutCourier(props: any) {
   const valueTotal = totalValue.toLocaleString('id-ID');
   const ValueAfter = total.toLocaleString('id-ID');
 
-  console.log(setPostalCode);
-
   const handleChangeCourier = async (e: any) => {
     const requestBody = {
       origin_postal_code: 12740,
@@ -120,7 +119,6 @@ export default function CheckoutCourier(props: any) {
 
       const data = await response.json();
       setCourierService(data.pricing);
-      console.log(data.pricing);
     } catch (error) {
       console.error('Error calculating shipping cost:', error);
     }
@@ -153,18 +151,12 @@ export default function CheckoutCourier(props: any) {
   const [selectedKecamatan, setSelectedKecamatan] = useState('');
   const [selectedKecamatanName, setSelectedKecamatanName] = useState('');
 
-  console.log({
-    selectedProvinceName,
-    selectedKabupatenName,
-    selectedKecamatanName,
-  });
-
   const fetchProvinsiData = async () => {
     try {
       const response = await fetch(
         'https://api.binderbyte.com/wilayah/provinsi?api_key=0ddfc24514a47d4cf2fbed43a7d4b151ec2944fceb30f8586d94e4501d29a5cd'
       );
-      console.log('data PRovinsi : ', response);
+
       const data = await response.json();
       if (data.code === '200') {
         setProvinsiOption(data.value);
@@ -179,13 +171,13 @@ export default function CheckoutCourier(props: any) {
       const id = selectedProvince.split(',')[0];
       const name = selectedProvince.split(',')[1];
       setSelectedProvinceName(name);
-      console.log('Name Provinsi : ', name);
+
       const response = await fetch(
         `https://api.binderbyte.com/wilayah/kabupaten?api_key=0ddfc24514a47d4cf2fbed43a7d4b151ec2944fceb30f8586d94e4501d29a5cd&id_provinsi=${id}`
       );
       if (response.ok) {
         const data = await response.json();
-        console.log('data Kabupaten: ', data);
+
         setKabupatenOption(data.value);
       }
     } catch (error) {
@@ -198,13 +190,12 @@ export default function CheckoutCourier(props: any) {
       const id = selectedKabupaten.split(',')[0];
       const name = selectedKabupaten.split(',')[1];
       setSelectedKabupatenName(name);
-      console.log('Name Kabupaten : ', name);
+
       const response = await fetch(
         `https://api.binderbyte.com/wilayah/kecamatan?api_key=0ddfc24514a47d4cf2fbed43a7d4b151ec2944fceb30f8586d94e4501d29a5cd&id_kabupaten=${id}`
       );
       if (response.ok) {
         const data = await response.json();
-        console.log('data Kecamatan : ', data);
 
         setKecamatanOption(data.value);
       }
@@ -212,7 +203,6 @@ export default function CheckoutCourier(props: any) {
       console.error('Error fetching kecamatan data:', error);
     }
   };
-  console.log('kecamatan name :', selectedKecamatanName);
 
   useEffect(() => {
     fetchProvinsiData();
@@ -234,9 +224,9 @@ export default function CheckoutCourier(props: any) {
     }
   }, [selectedKabupaten]);
 
-  // const handlePostalCodeChange = (event: any) => {
-  //   setPostalCode(event.target.value);
-  // };
+  const handlePostalCodeChange = (event: any) => {
+    setPostalCode(event.target.value);
+  };
 
   const handleRatesChange = (event: any) => {
     setRates(event.target.value);
@@ -448,7 +438,13 @@ export default function CheckoutCourier(props: any) {
               </Box>
             </Box>
           </Box>
-          {/* <Input
+          <Box>
+            <Button
+              display={'none'}
+              onChange={(e) => handlePostalCodeChange(e)}
+            ></Button>
+          </Box>
+          <Input
             hidden
             name="selectedProvinceName"
             placeholder="Phone Number"
@@ -465,7 +461,7 @@ export default function CheckoutCourier(props: any) {
             name="selectedKecamatanName"
             placeholder="Phone Number"
             value={selectedKecamatanName}
-          /> */}
+          />
         </Box>
       </Box>
     </>

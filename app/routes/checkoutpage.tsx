@@ -28,8 +28,6 @@ export async function loader() {
 export default function CheckoutPage() {
   const item = useLoaderData<typeof loader>();
 
-  // console.log(item);
-
   return (
     <>
       <Box

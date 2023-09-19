@@ -26,8 +26,11 @@ import input from '../utils/dataFake.json';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
-  console.log('data:', data);
-  return getCheckoutDetail(data);
+  const getData = {
+    slug: data.slug,
+    store: data.store?.replace(/-/g, ' '),
+  };
+  return getCheckoutDetail(getData);
 }
 
 export const action = async ({ request }: ActionArgs) => {
@@ -37,15 +40,12 @@ export const action = async ({ request }: ActionArgs) => {
     const name = formData.get('username') as string;
     const telp = formData.get('no-telp') as string;
     const email = formData.get('email') as string;
-    // const address = formData.get("address") as string;
     const province = formData.get('province') as string;
     const district = formData.get('district') as string;
     const village = formData.get('village') as string;
     const description = formData.get('description') as string;
     const courier = formData.get('courier') as string;
     const courierService = +(formData.get('courierService') as string);
-    // const buyway = formData.get("buyway") as string;
-    // const voucher = formData.get("voucher") as string;
 
     const price = +(formData.get('price') as string);
     const storeId = formData.get('storeId') as string;
@@ -59,6 +59,7 @@ export const action = async ({ request }: ActionArgs) => {
     const totalPriceUnique = +(formData.get('totalPriceUnique') as string);
     const variantOptionValueId = formData.get('valueId') as string;
     const stock = +(formData.get('stock') as string);
+    const rates = +(formData.get('rates') as string);
 
     const invoice = {
       price: totalPriceUnique + courierService,
@@ -110,19 +111,19 @@ export const action = async ({ request }: ActionArgs) => {
       availableForProofOfDelivery: false,
       availableForInstantWaybillId: false,
       courierType: courier,
-      courierInsurance: '',
+      courierInsurance: 'false',
       courierName: courier,
       courierCode: courier,
-      courierServiceName: '',
-      courierServiceCode: '',
-      tier: '',
+      courierServiceName: 'Instant',
+      courierServiceCode: 'Instant',
+      tier: 'premium',
       description: '',
       serviceType: '',
       shippingType: 'parcel',
       shipmentDurationRange: '',
       shipmentDurationUnit: '',
-      price: 1,
-      orderId: '',
+      price: rates,
+      orderId: 'orderId-test',
       trackingId: '',
       deliveryDate: '',
       deliveryTime: '',
@@ -132,8 +133,6 @@ export const action = async ({ request }: ActionArgs) => {
       valueId: variantOptionValueId,
       stock: stock,
     };
-
-    console.log('update', update);
 
     const data = {
       invoice,
@@ -146,10 +145,6 @@ export const action = async ({ request }: ActionArgs) => {
       getCourier,
     };
 
-    console.log(data);
-    console.log('id nya :', variantOptionValueId);
-    console.log('stock nya :', stock);
-
     return await createCheckout(data);
   }
   return null;
@@ -158,8 +153,6 @@ export const action = async ({ request }: ActionArgs) => {
 export default function Checkout() {
   const item = useLoaderData<typeof loader>();
   const { slug, store } = useParams();
-  console.log('item slug:', slug);
-  console.log('item store:', store);
 
   const [count, setCount] = useState<number>(1);
 
@@ -177,6 +170,14 @@ export default function Checkout() {
 
   const unique = Math.floor(Math.random() * (200 - 100)) + 100;
 
+  const [selectedOption, setSelectedOption] = useState(0);
+
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const valueInt = parseInt(value);
+    setSelectedOption(valueInt);
+  };
+
   return (
     <>
       <CheckoutDescription
@@ -185,6 +186,10 @@ export default function Checkout() {
         description={item?.description}
       />
       <Box display={'flex'} flexDir={'column'} alignItems={'center'}>
+        <Box display={'none'}>
+          <Text>{store}</Text>
+          <Text>{slug}</Text>
+        </Box>
         <Box
           display={'flex'}
           flexDirection={'column'}
@@ -202,7 +207,8 @@ export default function Checkout() {
                 <Table variant="simple">
                   <Thead>
                     <Tr fontWeight={'bold'}>
-                      <Th width={'80%'}>Pilihan Variasi</Th>
+                      <Th width={'40%'}>Produk</Th>
+                      <Th width={'40%'}>Variasi</Th>
                       <Th minW={'180px'}>Jumlah</Th>
                       <Th>Harga</Th>
                       <Th>Total</Th>
@@ -212,6 +218,7 @@ export default function Checkout() {
                     <Tr>
                       <Td display={'flex'} gap={3} alignItems={'center'}>
                         <Image
+                          objectFit={'cover'}
                           boxSize={'10'}
                           borderRadius={'10%'}
                           src={item?.attachments[0].url}
@@ -220,7 +227,7 @@ export default function Checkout() {
                         <Box>
                           <Text>{item?.name}</Text>
                           <Text color={'gray.600'}>
-                            {(item?.variants[0].variantOptions[0]
+                            {(item?.variants[selectedOption].variantOptions[0]
                               .variantOptionValues[0].stock as number) - count}
                             pcs
                           </Text>
@@ -228,10 +235,41 @@ export default function Checkout() {
                             type="hidden"
                             name="stock"
                             value={
-                              (item?.variants[0].variantOptions[0]
+                              (item?.variants[selectedOption].variantOptions[0]
                                 .variantOptionValues[0].stock as number) - count
                             }
                           />
+                        </Box>
+                      </Td>
+                      <Td>
+                        <Box display={'flex'} flexWrap={'wrap'} gap={2}>
+                          {item?.variants.map((i, o) => (
+                            <Box key={o}>
+                              <Input
+                                type="radio"
+                                id={i.id}
+                                value={o}
+                                defaultChecked={selectedOption === o}
+                                onChange={handleRadioChange}
+                                style={{ display: 'none' }}
+                              />
+                              <label
+                                htmlFor={i.id}
+                                style={{
+                                  border: '1px solid',
+                                  borderRadius: '5px',
+                                  backgroundColor:
+                                    selectedOption === o ? 'white' : '#dcdcdc',
+                                  borderColor:
+                                    selectedOption === o ? '#0091f7' : '#ccc',
+                                  padding: '5px 10px',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                {i.name}
+                              </label>
+                            </Box>
+                          ))}
                         </Box>
                       </Td>
                       <Td>
@@ -247,13 +285,15 @@ export default function Checkout() {
                         </Flex>
                       </Td>
                       <Td>
-                        {item?.variants[0].variantOptions[0].variantOptionValues[0].price.toLocaleString(
+                        {item?.variants[
+                          selectedOption
+                        ].variantOptions[0].variantOptionValues[0].price.toLocaleString(
                           'id-ID'
                         )}
                       </Td>
                       <Td>
                         {(
-                          (item?.variants[0].variantOptions[0]
+                          (item?.variants[selectedOption].variantOptions[0]
                             .variantOptionValues[0].price as number) * count
                         ).toLocaleString('id-ID')}
                       </Td>
@@ -265,10 +305,16 @@ export default function Checkout() {
             <Box>
               <Input
                 type="hidden"
+                name="option"
+                value={selectedOption}
+                required
+              />
+              <Input
+                type="hidden"
                 name="price"
                 value={
-                  item?.variants[0].variantOptions[0].variantOptionValues[0]
-                    .price
+                  item?.variants[selectedOption].variantOptions[0]
+                    .variantOptionValues[0].price
                 }
               />
               <Input type="hidden" name="storeId" value={item?.storeId} />
@@ -277,18 +323,19 @@ export default function Checkout() {
                 type="hidden"
                 name="valueId"
                 value={
-                  item?.variants[0].variantOptions[0].variantOptionValues[0].id
+                  item?.variants[selectedOption].variantOptions[0]
+                    .variantOptionValues[0].id
                 }
               />
               <Input
                 type="hidden"
                 name="variantOptionId"
-                value={item?.variants[0].variantOptions[0].id}
+                value={item?.variants[selectedOption].variantOptions[0].id}
               />
               <Input
                 type="hidden"
                 name="userId"
-                value={item?.store?.users[0].id}
+                value={item?.store?.users[selectedOption].id}
               />
             </Box>
             <Box display={'flex'} flexDir={'column'} gap={3}>
@@ -314,17 +361,17 @@ export default function Checkout() {
                     description={item?.description}
                     unique={unique}
                     total={
-                      (item?.variants[0].variantOptions[0]
+                      (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
                       unique
                     }
                     totalPrice={
-                      (item?.variants[0].variantOptions[0]
+                      (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) * count
                     }
                     totalPriceUnique={
-                      (item?.variants[0].variantOptions[0]
+                      (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
                       unique

@@ -2,11 +2,14 @@ import { redirect } from '@remix-run/node';
 import { db } from '../../libs/prisma/db.server';
 
 export async function getCheckoutDetail(data: any) {
-  return await db.product.findUnique({
+  const product = await db.product.findUnique({
     where: {
       slug: data.slug,
       store: {
-        name: data.store,
+        name: {
+          equals: data.store,
+          mode: 'insensitive',
+        },
       },
     },
     include: {
@@ -27,6 +30,7 @@ export async function getCheckoutDetail(data: any) {
       },
     },
   });
+  return product;
 }
 
 export async function createCheckout(data: any) {
