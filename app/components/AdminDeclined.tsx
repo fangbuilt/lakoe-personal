@@ -328,7 +328,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminDeclinedPopup />
+                        <AdminDeclinedPopup dataWithdrawal={item} />
                       </Text>
                     </Td>
                   </Tr>

@@ -323,7 +323,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminRequestPopup />
+                        <AdminRequestPopup dataWithdrawal={item} />
                       </Text>
                     </Td>
                   </Tr>

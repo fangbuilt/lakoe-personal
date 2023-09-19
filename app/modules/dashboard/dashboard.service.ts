@@ -103,6 +103,22 @@ export async function getWithdrawalList() {
   });
 }
 
+// export async function updateStatusWithdraw(id: string, statusUpdated: string) {
+//   try {
+//     const updatedSStatus = db.withdraw.update({
+//       where: {
+//         id: id,
+//       },
+//       data: {
+//         status: statusUpdated,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("error updating status", error);
+//     throw error;
+//   }
+// }
+
 export async function createWithdraw(
   data: any,
   id: any,

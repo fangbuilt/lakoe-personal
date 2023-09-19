@@ -190,7 +190,7 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product?        @relation(fields: [productId], references: [id])
+  product        Product?        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
@@ -202,7 +202,7 @@ model Variant {
 model VariantOption {
   id                  String               @id @unique @default(uuid())
   name                String
-  variant             Variant?             @relation(fields: [variantId], references: [id])
+  variant             Variant?             @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantId           String
   cartItems           CartItem[]
   variantOptionValues VariantOptionValue[]
@@ -218,7 +218,7 @@ model VariantOptionValue {
   weight          Float
   stock           Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantOptionId String
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())

@@ -17,7 +17,7 @@ import React from 'react';
 import { LuZoomIn } from 'react-icons/lu';
 
 export default function AdminRequestPopup(props: any) {
-  const { withdrawalData } = props;
+  const { dataWithdrawal, onApprove } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   function formatRupiah(amount: number) {
@@ -28,10 +28,10 @@ export default function AdminRequestPopup(props: any) {
   }
 
   const transferFee = 10000;
-  const tax = (parseInt(withdrawalData.amount) * 1) / 100;
-  const formattedAmount = formatRupiah(parseInt(withdrawalData.amount));
+  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
   const withdarwalTotal = formatRupiah(
-    parseInt(withdrawalData.amount) - transferFee - tax
+    parseInt(dataWithdrawal.amount) - transferFee - tax
   );
 
   const initialRef = React.useRef(null);
@@ -39,6 +39,11 @@ export default function AdminRequestPopup(props: any) {
 
   const openModal = () => {
     onOpen();
+  };
+
+  const handleApprove = () => {
+    // Call the onApprove function passed from the parent component to update the status
+    onApprove(dataWithdrawal.id);
   };
 
   return (
@@ -69,11 +74,11 @@ export default function AdminRequestPopup(props: any) {
               <Box>
                 <Text display={'flex'}>
                   Nomor Penarikan:{' '}
-                  <Text fontWeight={700}>{withdrawalData.id}</Text>
+                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                 </Text>
                 <Text>
                   {moment(
-                    withdrawalData.createdAt,
+                    dataWithdrawal.createdAt,
                     'YYYY-MM-DD HH:mm:ss'
                   ).format('LLLL')}
                 </Text>
@@ -82,12 +87,12 @@ export default function AdminRequestPopup(props: any) {
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {withdrawalData.bankAccount.accountName}
+                    {dataWithdrawal.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{withdrawalData.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{withdrawalData.status}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
                 </Box>
               </Flex>
 
@@ -95,15 +100,15 @@ export default function AdminRequestPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: {withdrawalData.bankAccount.bank}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {withdrawalData.bankAccount.accountNumber}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {withdrawalData.bankAccount.accountName}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                 </Flex>
                 <Button
                   width={'100%'}
@@ -158,6 +163,7 @@ export default function AdminRequestPopup(props: any) {
                     fontSize={'12px'}
                     colorScheme="teal"
                     padding={0}
+                    onClick={handleApprove}
                   >
                     Approved
                   </Button>

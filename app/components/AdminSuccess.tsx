@@ -286,7 +286,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
               </Thead>
               <Tbody>
                 {filteredDataSuccess.map((item: any) => (
-                  <Tr>
+                  <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
                     </Td>
@@ -324,7 +324,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminSuccessPopup />
+                        <AdminSuccessPopup dataWithdrawal={item} />
                       </Text>
                     </Td>
                   </Tr>
