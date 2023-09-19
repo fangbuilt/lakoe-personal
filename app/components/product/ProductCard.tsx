@@ -1,7 +1,9 @@
 import { Box, Checkbox, Switch, Text, Image } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 import { useState, type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
+import { db } from '~/libs/prisma/db.server';
 
 interface IProductCardProps {
   product: IProduct;
@@ -10,9 +12,16 @@ interface IProductCardProps {
 
 export default function ProductCard(props: IProductCardProps) {
   const { product, children } = props;
-
   const [isActive, setIsActive] = useState(product.isActive);
-  const handleSwitchChange = () => {
+  const handleSwitchChange = async () => {
+    await db.product.update({
+      where: {
+        id: product.id,
+      },
+      data: {
+        isActive: !isActive,
+      },
+    });
     setIsActive(!isActive);
   };
 
@@ -98,11 +107,14 @@ export default function ProductCard(props: IProductCardProps) {
             gap={10}
           >
             <Checkbox size="lg" />
-            <Switch
-              size="md"
-              isChecked={isActive}
-              onChange={handleSwitchChange}
-            />
+            <Form method="PATCH">
+              <Switch
+                type="submit"
+                size="md"
+                isChecked={isActive}
+                onChange={handleSwitchChange}
+              />
+            </Form>
           </Box>
         </Box>
       </Box>

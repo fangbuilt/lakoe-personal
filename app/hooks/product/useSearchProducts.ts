@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
-import type { IProduct } from '~/interfaces/product/product';
+import useDebounce from './useDebounce';
+import type { IProduct } from '../../interfaces/product/product';
 
-export function useSearchProducts(items: IProduct[]) {
+const useSearchProducts = (initialProducts: IProduct[]) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredProducts, setFilterList] = useState(items);
+  const [searchProducts, setSearchProducts] =
+    useState<IProduct[]>(initialProducts);
+
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   useEffect(() => {
-    const search = items.filter((list) =>
-      list.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredProducts = initialProducts.filter((product) =>
+      product.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
     );
-    setFilterList(search);
-  }, [searchQuery, items]);
+    setSearchProducts(filteredProducts);
+  }, [debouncedSearchQuery, initialProducts]);
 
-  return { searchQuery, setSearchQuery, filteredProducts };
-}
+  return { setSearchQuery, searchProducts };
+};
+
+export default useSearchProducts;

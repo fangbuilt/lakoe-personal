@@ -49,5 +49,3 @@ export default function Product() {
     </ImplementGrid>
   );
 }
-
-// Untuk testing codingan
