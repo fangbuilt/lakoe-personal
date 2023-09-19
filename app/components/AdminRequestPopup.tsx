@@ -3,6 +3,7 @@ import {
   Button,
   Divider,
   Flex,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -11,14 +12,17 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
+import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 
 export default function AdminRequestPopup(props: any) {
-  const { dataWithdrawal, onApprove } = props;
+  const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [statusUpdated, setStatusUpdated] = useState(dataWithdrawal.status);
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -41,9 +45,16 @@ export default function AdminRequestPopup(props: any) {
     onOpen();
   };
 
-  const handleApprove = () => {
-    // Call the onApprove function passed from the parent component to update the status
-    onApprove(dataWithdrawal.id);
+  const handleApproveClick = async () => {
+    try {
+      // Make an API call to update the status
+      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
+      // Update the local status
+      setStatusUpdated('PROCESSING');
+      onClose();
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
   };
 
   return (
@@ -92,7 +103,7 @@ export default function AdminRequestPopup(props: any) {
                   <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
+                  <Text fontSize={'12px'}>{statusUpdated}</Text>
                 </Box>
               </Flex>
 
@@ -156,26 +167,36 @@ export default function AdminRequestPopup(props: any) {
                   </Flex>
                   <Text>{withdarwalTotal}</Text>
                 </Flex>
-
-                <Flex gap={'5px'} mt={'10px'}>
-                  <Button
-                    flex={'50%'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                    onClick={handleApprove}
-                  >
-                    Approved
-                  </Button>
-                  <Button
-                    flex={'50%'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                  >
-                    Declined
-                  </Button>
-                </Flex>
+                <Form method="post">
+                  <Input type="hidden" name="actionType" value="update" />
+                  <Input type="hidden" name="id" value={dataWithdrawal.id} />
+                  <Flex gap={'5px'} mt={'10px'}>
+                    <Button
+                      name="status"
+                      value="PROCESSING"
+                      flex={'50%'}
+                      fontSize={'12px'}
+                      colorScheme="teal"
+                      padding={0}
+                      type="submit"
+                      onClick={handleApproveClick}
+                    >
+                      Approved
+                    </Button>
+                    <Button
+                      name="status"
+                      value="DECLINED"
+                      flex={'50%'}
+                      fontSize={'12px'}
+                      colorScheme="teal"
+                      padding={0}
+                      type="submit"
+                      onClick={handleApproveClick}
+                    >
+                      Declined
+                    </Button>
+                  </Flex>
+                </Form>
               </Box>
             </Box>
           </ModalBody>

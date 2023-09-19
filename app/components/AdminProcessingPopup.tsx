@@ -11,14 +11,17 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
+import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 
 export default function AdminProcessingPopup(props: any) {
   const { withdrawalData } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [statusUpdated, setStatusUpdated] = useState(withdrawalData.status);
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
@@ -36,6 +39,18 @@ export default function AdminProcessingPopup(props: any) {
   const withdarwalTotal = formatRupiah(
     parseInt(withdrawalData.amount) - transferFee - tax
   );
+
+  const handleApproveClick = async () => {
+    try {
+      // Make an API call to update the status
+      await updateStatusWithdraw(withdrawalData.id, 'PROCESSING');
+      // Update the local status
+      setStatusUpdated('PROCESSING');
+      onClose();
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
 
   return (
     <>
@@ -93,7 +108,7 @@ export default function AdminProcessingPopup(props: any) {
                   <Text fontSize={'12px'}>{withdrawalData.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{withdrawalData.status}</Text>
+                  <Text fontSize={'12px'}>{statusUpdated}</Text>
                 </Box>
               </Flex>
 
@@ -101,15 +116,15 @@ export default function AdminProcessingPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: {withdrawalData.bank}</Text>
+                  <Text>: {withdrawalData.bankAccount.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {withdrawalData.accountNumber}</Text>
+                  <Text>: {withdrawalData.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {withdrawalData.accountName}</Text>
+                  <Text>: {withdrawalData.bankAccount.accountName}</Text>
                 </Flex>
               </Box>
 
@@ -127,7 +142,7 @@ export default function AdminProcessingPopup(props: any) {
                     <Text width={'150px'}>Biaya Admin</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> {tax}</Text>
+                  <Text> {formatRupiah(tax)}</Text>
                 </Flex>
                 <Text fontSize={'10px'} color={'grey'}>
                   *1% jumlah penarikan
@@ -148,41 +163,38 @@ export default function AdminProcessingPopup(props: any) {
                   <Text> {withdarwalTotal}</Text>
                 </Flex>
               </Box>
-
-              <Box mt={'10px'}>
-                <Text fontWeight={700}>Bukti Transfer</Text>
+              <Form method="post">
+                <Input type="hidden" name="actionType" value="update" />
+                <Input type="hidden" name="id" value={withdrawalData.id} />
                 <Box mt={'10px'}>
-                  <Input type="file" name="transferProof" id="transferProof" />
-                  {/* <TagLabel>Upload disini</TagLabel> */}
-                </Box>
+                  <Text fontWeight={700}>Bukti Transfer</Text>
+                  <Box mt={'10px'}>
+                    <Input
+                      type="file"
+                      name="transferProof"
+                      id="transferProof"
+                    />
+                    {/* <TagLabel>Upload disini</TagLabel> */}
+                  </Box>
 
-                <Button
-                  width={'100%'}
-                  textAlign={'center'}
-                  mt={'10px'}
-                  fontSize={'12px'}
-                  colorScheme="teal"
-                  padding={0}
-                  onClick={onClose}
-                >
-                  Selesai
-                </Button>
-              </Box>
+                  <Button
+                    width={'100%'}
+                    textAlign={'center'}
+                    mt={'10px'}
+                    fontSize={'12px'}
+                    colorScheme="teal"
+                    padding={0}
+                    onClick={handleApproveClick}
+                    name="status"
+                    value="SUCCESS"
+                    type="submit"
+                  >
+                    Selesai
+                  </Button>
+                </Box>
+              </Form>
             </Box>
           </ModalBody>
-          {/* <ModalFooter>
-            <Button
-              colorScheme="teal"
-              mr={3}
-              onClick={onClose}
-              color={"white"}
-              border={"1px solid"}
-              borderColor={"gray.500"}
-              fontSize={"12px"}
-            >
-              Close
-            </Button>
-          </ModalFooter> */}
         </ModalContent>
       </Modal>
     </>

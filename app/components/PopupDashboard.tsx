@@ -65,8 +65,8 @@ export default function DashboardPopup({
 
     if (isNaN(parsedAmount)) {
       setAlertAmountMessage('Amount harus berupa angka');
-    } else if (parsedAmount < 0) {
-      setAlertAmountMessage('Anda memasukkan jumlah kurang dari 0');
+    } else if (parsedAmount < 10000) {
+      setAlertAmountMessage('Penarikan minimal Rp.100.000');
     } else if (parsedAmount > 250000) {
       setAlertAmountMessage('Jumlah amount melebihi batas maksimal');
     } else {
@@ -202,7 +202,8 @@ export default function DashboardPopup({
                   // }}
                   onChange={(event) => {
                     handleChange(event);
-                    handleAmount(); // Call handleAmount when the input changes
+                    handleAmount();
+                    // handleAmountRupiah();
                   }}
                   type="number"
                   ref={initialRef}
@@ -458,11 +459,7 @@ export default function DashboardPopup({
                               accountName
                             );
                             {
-                              {
-                                {
-                                  onClose();
-                                }
-                              }
+                              onClose();
                             }
                           }}
                         >
