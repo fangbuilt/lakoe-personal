@@ -28,7 +28,7 @@ interface IProductBodyProps {
 
 export default function ProductBody(props: IProductBodyProps) {
   const { product } = props;
-  // const [activeTab, setActiveTab] = useState(0);
+  const [, setActiveTab] = useState(0);
   const { searchProducts, setSearchQuery } = useSearchProducts(product);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
