@@ -1,8 +1,7 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs} from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import { ImplementGrid } from '~/layouts/Grid';
 import StatusOrderDetail from '~/modules/order/components/statusOrderDetail';
 import {
@@ -39,7 +38,8 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function OrderDetailId() {
-  const data = useLoaderData<IOrderDetailInvoice>();
+  // const data = useLoaderData<IOrderDetailInvoice>();
+  const data = useLoaderData();
   return (
     <>
       <ImplementGrid>

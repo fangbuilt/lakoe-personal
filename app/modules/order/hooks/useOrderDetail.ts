@@ -87,7 +87,7 @@ export function formatCurrency(price: number): string {
   return formattedAmount;
 }
 
-export function dateConversion(createdAt: string): string {
+export function dateConversion(createdAt: Date): string {
   const dateObj = new Date(createdAt);
   const year = dateObj.getUTCFullYear();
   const day = String(dateObj.getUTCDate()).padStart(2, '0');
