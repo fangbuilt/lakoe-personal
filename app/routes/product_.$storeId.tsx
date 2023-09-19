@@ -1,21 +1,19 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+import { redirect, type ActionArgs, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import ProductBody from '~/components/product/ProductBody';
 import { ImplementGrid } from '~/layouts/Grid';
 import {
   deleteProduct,
-  getProduct,
+  getProductByStoreId,
   update,
-  updateIsActive,
 } from '~/modules/product/product.service';
 
-export async function loader() {
-  return await getProduct();
+export async function loader({ params }: LoaderArgs) {
+  return await getProductByStoreId(params.storeId);
 }
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request, params }: ActionArgs) {
   if (request.method.toLowerCase() === 'delete') {
     const formData = await request.formData();
     const id = formData.get('id') as string;
@@ -29,19 +27,15 @@ export async function action({ request }: ActionArgs) {
     const id = formData.get('id') as string;
     const price = formData.get('price');
     const stock = formData.get('stock');
-    const isActive =
-      (formData.get('isActive') as string) === 'true' ? true : false;
 
-    console.log('Id Product: ', id);
-    console.log('isActive: ', isActive);
-    if (isActive) {
-      await updateIsActive({ id, isActive });
-    } else {
-      await update({ id, price, stock });
-    }
+    console.log('id', id);
+    console.log('price', price);
+    console.log('stock', stock);
+
+    await update({ id, price, stock });
   }
 
-  return redirect('/product');
+  return redirect(`/product/${params.storeId}`);
 }
 
 export default function Product() {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function useSortFilter() {
+export function useSortProducts() {
   const [selectedSortOption, setSelectedSortOption] = useState<string | null>(
     null
   );
