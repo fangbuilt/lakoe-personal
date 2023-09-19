@@ -1,6 +1,6 @@
 import type { ActionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Biteship } from '~/modules/webhook/biteshipPickingUp';
+import { Biteship } from '~/modules/webhook/biteship.service';
 
 // This is webhook trigger receiver by order status for biteship's webhook
 export const action = async ({ request }: ActionArgs) => {

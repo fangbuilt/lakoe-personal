@@ -4,13 +4,14 @@ import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 // import NavOrder from '~/layouts/NavOrder';
-import NavOrderBa from '~/layouts/NavOrderBa';
+import NavOrder from '~/layouts/NavOrder';
 import {
   getDataProductReadyToShip,
   getInvoiceByStatus,
   updateInvoiceStatus,
 } from '~/modules/order/order.service'; // Menghapus impor updateIsActive
 import CanceledService from '~/modules/order/orderCanceledService';
+import getDataInShipping from '~/modules/order/orderShippingService';
 
 export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'patch') {
@@ -27,7 +28,7 @@ export async function action({ request }: ActionArgs) {
 }
 
 export async function loader() {
-  const api_key = process.env.API_LAKOE_TEST;
+  const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
 
   const [canceledService] = await Promise.all([
@@ -40,18 +41,20 @@ export async function loader() {
   return json({
     canceledService,
     dataInvoice,
+    dataShipping: await getDataInShipping(),
     dataProductReadyToShip,
-    api_key,
+    apiKey,
     // your return order service here !
   });
 }
+
 export default function Order() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        {/* <NavOrder cardProduct={data.dataProductReadyToShip} /> */}
-        <NavOrderBa orderDetailInvoice={data.dataInvoice} />
+        <NavOrder cardProduct={data} />
       </Flex>
     </ImplementGrid>
   );

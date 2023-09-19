@@ -34,6 +34,7 @@
     "framer-motion": "^6.5.1",
     "global": "^4.4.0",
     "google-map-react": "^2.2.1",
+    "date-fns-tz": "^2.0.0",
     "i": "^0.3.7",
     "isbot": "^3.6.8",
     "mailerlite": "^0.4.0",

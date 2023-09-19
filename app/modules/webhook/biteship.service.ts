@@ -1,5 +1,9 @@
 import { db } from '~/libs/prisma/db.server';
-import { updateInvoiceStatus, UsePickingUp } from './usePickingUp';
+import {
+  droppingOff,
+  updateInvoiceStatusInTransit,
+} from './hooks/useDroppingOff';
+import { pickingUp, updateInvoiceStatus } from './hooks/usePickingUp';
 
 export async function getEmail(payload: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -17,14 +21,13 @@ export async function getEmail(payload: any) {
 export async function Biteship(payload: any) {
   try {
     const dataInvoice = await getEmail(payload);
-    // console.log(dataInvoice);
+    console.log(dataInvoice);
 
     if (!dataInvoice) {
       // Handle the case where dataInvoice is null (no matching record)
       console.log(
         'No matching record found for waybill: ' + payload.courier_waybill_id
       );
-      return; // Exit the function or perform appropriate error handling
     }
 
     const email = dataInvoice?.user?.email as string;
@@ -54,7 +57,7 @@ export async function Biteship(payload: any) {
         await updateInvoiceStatus(existingInvoice.id);
       }
 
-      UsePickingUp(email, name, waybill);
+      pickingUp(email, name, waybill);
       console.log('this is payload status: ' + payload.status);
     }
 
@@ -66,7 +69,8 @@ export async function Biteship(payload: any) {
 
     // Courier on the way to recipient's location
     if (payload.status === 'dropping_off') {
-      // UseDroppingOff(email, name, waybill);
+      droppingOff(email, name, waybill);
+      updateInvoiceStatusInTransit(dataInvoice);
       console.log('this is payload status: ' + payload.status);
     }
 

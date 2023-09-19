@@ -143,12 +143,18 @@ export async function getDataProductReadyToShip() {
       status: 'READY_TO_SHIP',
     },
     include: {
+      invoiceHistories: true,
       courier: true,
       cart: {
         include: {
           user: true,
           cartItems: {
             include: {
+              variantOption: {
+                include: {
+                  variantOptionValues: true,
+                },
+              },
               product: {
                 include: {
                   attachments: true,
@@ -188,4 +194,23 @@ export async function getProductByCategoryId(id: any) {
       `Gagal mengambil data produk berdasarkan ID kategori: ${error.message}`
     );
   }
+}
+
+export async function updateStatusInvoice(data: any) {
+  const { id } = data;
+  await db.invoice.update({
+    data: {
+      status: 'READY_TO_SHIP',
+      invoiceHistories: {
+        create: {
+          status: 'READY_TO_SHIP',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+    },
+    where: {
+      id: id,
+    },
+  });
 }
