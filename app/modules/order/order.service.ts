@@ -2,44 +2,6 @@ import type { z } from 'zod';
 import type { MootaOrderSchema } from './order.schema';
 import { db } from '~/libs/prisma/db.server';
 
-export async function MootaOrderStatusUpdate(
-  data: z.infer<typeof MootaOrderSchema>
-) {
-  const existingTransaction = await db.payment.findFirst({
-    where: {
-      amount: data.amount,
-      status: 'UNPAID',
-    },
-  });
-
-  if (existingTransaction) {
-    await db.payment.update({
-      where: {
-        id: existingTransaction.id,
-      },
-      data: {
-        status: 'PAID',
-      },
-    });
-
-    const relatedInvoice = await db.invoice.findFirst({
-      where: {
-        paymentId: existingTransaction.id,
-      },
-    });
-    if (relatedInvoice) {
-      await db.invoice.update({
-        where: {
-          id: relatedInvoice.id,
-        },
-        data: {
-          status: 'NEW_ORDER',
-        },
-      });
-    }
-    console.log('data berhasil ditambahkan');
-  }
-}
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
     where: {
@@ -101,22 +63,49 @@ export async function getAllProductUnpid() {
   });
   return payments;
 }
-export async function getProductUnpid1() {
-  const payments = await db.payment.findMany();
-  console.log('getProductUnpid1getProductUnpid1', payments);
-  return payments;
-}
 
-export async function getProductUnpid3() {
-  try {
-    const payments = await db.product.findMany({
-      select: {
-        name: true,
+export async function MootaOrderStatusUpdate(
+  data: z.infer<typeof MootaOrderSchema>
+) {
+  const existingTransaction = await db.payment.findFirst({
+    where: {
+      amount: data.amount,
+      status: 'UNPAID',
+    },
+  });
+
+  if (existingTransaction) {
+    await db.payment.update({
+      where: {
+        id: existingTransaction.id,
+      },
+      data: {
+        status: 'PAID',
       },
     });
 
-    return console.log('getProductUnpid2getProductUnpid2', payments);
-  } catch (error) {
-    throw new Error(`Failed to get unpaid products: ${error}`);
+    const relatedInvoice = await db.invoice.findFirst({
+      where: {
+        paymentId: existingTransaction.id,
+      },
+    });
+    if (relatedInvoice) {
+      await db.invoice.update({
+        where: {
+          id: relatedInvoice.id,
+        },
+        data: {
+          status: 'NEW_ORDER',
+        },
+      });
+      await db.invoiceHistory.create({
+        data: {
+          status: 'PAID',
+          invoiceId: relatedInvoice.id,
+        },
+      });
+    }
+
+    console.log('Paid Payment ,Good Luck Brother :)!');
   }
 }

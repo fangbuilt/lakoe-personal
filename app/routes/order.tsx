@@ -1,5 +1,4 @@
 import { json, type ActionArgs } from '@remix-run/node';
-import 'dotenv/config';
 import crypto from 'crypto';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 import { Flex } from '@chakra-ui/react';
@@ -30,13 +29,12 @@ export async function action({ request }: ActionArgs) {
         const requestBody = await request.text();
 
         const payloads = JSON.parse(requestBody);
-        console.log('payloads', payloads);
+
         const secretKey = process.env.MOOTA_SECRET as string;
-        console.log('secretKey', secretKey);
+
         const amount = payloads[0].amount as number;
-        console.log('amount', amount);
+
         const signature = request.headers.get('Signature') as string;
-        console.log('signature', signature);
 
         if (verifySignature(secretKey, requestBody, signature)) {
           const MootaOrder = MootaOrderSchema.parse({
@@ -44,7 +42,7 @@ export async function action({ request }: ActionArgs) {
           });
           await MootaOrderStatusUpdate(MootaOrder);
         } else {
-          console.log('verify Signature gagal!');
+          console.log('error verify Signature!');
         }
         return json({ data: requestBody }, 200);
       } catch (error) {

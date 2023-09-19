@@ -79,8 +79,8 @@ async function kirimNotifikasiEmail(
     status: 'active',
   };
   try {
-    const cobaconsole = await mailerlite.subscribers.createOrUpdate(params);
-    console.log('cobaconsole', cobaconsole);
+    await mailerlite.subscribers.createOrUpdate(params);
+
     console.log('Notifikasi email berhasil dikirim ke', email);
   } catch (error) {
     console.error('Gagal mengirim notifikasi email:', error);

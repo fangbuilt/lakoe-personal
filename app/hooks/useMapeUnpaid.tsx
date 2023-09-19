@@ -15,6 +15,6 @@ export default function useMapeUnpaid(data: any) {
     );
     setFilteredOrdersw(filtered);
   }, [data, searchQueryw]);
-  console.log('filteredOrdersfilteredOrdersfilteredOrders', filteredOrdersw);
+  // console.log('filteredOrdersfilteredOrdersfilteredOrders', filteredOrdersw);
   return { filteredOrdersw, setSearchQueryw };
 }

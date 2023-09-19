@@ -47,9 +47,9 @@ export default function UnpaidAllCard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { filteredOrders, setSearchQuery, searchQuery } = UseSearchAll();
 
-  console.log('filteredOrders', filteredOrders);
-  console.log('setSearchQuery', setSearchQuery);
-  console.log('searchQuery', searchQuery);
+  // console.log('filteredOrders', filteredOrders);
+  // console.log('setSearchQuery', setSearchQuery);
+  // console.log('searchQuery', searchQuery);
 
   const {
     filteredOrdersList,
