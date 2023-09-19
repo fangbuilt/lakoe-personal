@@ -92,7 +92,6 @@ export async function getProduct() {
       },
     },
   });
-
   return data;
 }
 
