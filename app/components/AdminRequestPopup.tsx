@@ -81,7 +81,7 @@ export default function AdminRequestPopup(props: any) {
         <ModalOverlay />
         <ModalContent>
           <ModalBody pt={6} pb={2}>
-            <Box bg={'yellow.300'} padding={'10px'} fontSize={'13px'}>
+            <Box padding={'10px'} fontSize={'13px'}>
               <Box>
                 <Text display={'flex'}>
                   Nomor Penarikan:{' '}

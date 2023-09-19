@@ -143,12 +143,9 @@ export default function DashboardPopup({
         <ModalContent>
           <Form method="post">
             <Input type="hidden" name="actionType" value="create" />
-            {/* <Input type="text" name="bankId" value={id} /> */}
-            {/* <Input type="text" name="storeId" /> */}
-            {/* <Input type="text" name="approvedById" /> */}
+
             <ModalHeader display={'flex'} alignItems={'center'}>
               <Text ml={'5px'}>Tarik Credit</Text>
-              {/* <Text ml={"5px"}>{createdWithdrawId}</Text> */}
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
@@ -196,10 +193,6 @@ export default function DashboardPopup({
                 <Input
                   fontSize={'13px'}
                   value={formData.amount}
-                  // onChange={(event) => {
-                  //   handleChange(event);
-                  //   handleAmountChange(event);
-                  // }}
                   onChange={(event) => {
                     handleChange(event);
                     handleAmount();
@@ -227,8 +220,6 @@ export default function DashboardPopup({
               </FormControl>
 
               <FormControl mt={4}>
-                {/* <FormLabel>Tarik Ke:</FormLabel> */}
-                {/* {data === null ? ( */}
                 <Text
                   onClick={handleAddRekeningClick}
                   fontSize={'14px'}
@@ -243,10 +234,6 @@ export default function DashboardPopup({
                   name="bankId"
                   onChange={handleChange}
                   value={formData.bankId}
-                  // onChange={(event) => {
-                  //   handleChange(event);
-                  //   handleBankAccountChange(event);
-                  // }}
                 >
                   <option value={bankAccount.id}>Select Bank Account</option>
                   {bankAccount.map((dataBank: any) => (
@@ -280,10 +267,6 @@ export default function DashboardPopup({
                   name="bankAccount"
                   onChange={handleChange}
                   value={formData.bankAccount}
-                  // onChange={(event) => {
-                  //   handleChange(event);
-                  //   handleBankAccountChange(event);
-                  // }}
                 >
                   <option value="">Confirm Your Bank Account</option>
                   {bankAccount.map((dataBank: any) => (
@@ -309,11 +292,6 @@ export default function DashboardPopup({
                   Password*
                 </FormLabel>
                 <Input
-                  // onChange={(event) => {
-                  //   handleChange(event);
-                  //   handlePasswordChange(event);
-                  // }}
-                  // onChange={handlePasswordChange}
                   fontSize={'13px'}
                   type="password"
                   ref={initialRef}
@@ -332,7 +310,7 @@ export default function DashboardPopup({
               >
                 Batal
               </Button>
-              <div>
+              <Box>
                 <Button
                   type="submit"
                   colorScheme="green"
@@ -458,9 +436,8 @@ export default function DashboardPopup({
                               bankAccountPreview,
                               accountName
                             );
-                            {
-                              onClose();
-                            }
+
+                            onClose();
                           }}
                         >
                           Oke
@@ -469,7 +446,7 @@ export default function DashboardPopup({
                     </ModalContent>
                   </Modal>
                 )}{' '}
-              </div>
+              </Box>
             </ModalFooter>
           </Form>
         </ModalContent>

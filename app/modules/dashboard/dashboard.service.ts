@@ -156,6 +156,7 @@ export async function createWithdraw(
         },
         amount: amount,
         status: 'REQUEST',
+        // attachment: data.attachment,
         bankAccount: {
           connect: { id: bankId },
         },

@@ -73,7 +73,6 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
     <>
       <Box
         width={'100%'}
-        mr={'10px'}
         padding={'10px'}
         borderRadius={'15px'}
         boxShadow="base"
@@ -265,16 +264,16 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    ID Withdraw
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Store
+                    Nomor Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Saldo Penarikan
+                    Seller
+                  </Th>
+                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                    Uang
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -303,15 +302,19 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                       {formatRupiah(item.amount)}
                     </Td>
                     <Td margin={'2px 0'}>
-                      <Text
-                        borderRadius={'15px'}
-                        bg={'grey'}
-                        color={'white'}
-                        px={'5px'}
-                        fontSize={'10px'}
-                        textAlign={'center'}
-                      >
-                        {item.status}
+                      <Text>
+                        {item.status === 'SUCCESS' && (
+                          <Text
+                            bg={'green'}
+                            color={'white'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            SUCCESS
+                          </Text>
+                        )}
                       </Text>
                     </Td>
 

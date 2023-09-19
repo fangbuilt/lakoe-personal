@@ -7,6 +7,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalOverlay,
   Text,
   UnorderedList,
@@ -164,8 +165,9 @@ export default function AdminSuccessPopup(props: any) {
                 >
                   <Link
                     to={
-                      'https://media.istockphoto.com/id/1488332977/photo/wooden-deck-at-the-seaside.webp?b=1&s=170667a&w=0&k=20&c=R47Apouxt_juv7WNuTpnnc3GGd4R5yf05uCwEY7YhNA='
+                      'https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg'
                     }
+                    target="_blank"
                   >
                     <Text fontWeight={'700'} color={'teal'}>
                       Lihat Gambar
@@ -213,6 +215,19 @@ export default function AdminSuccessPopup(props: any) {
               </Box>
             </Box>
           </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="teal"
+              mr={3}
+              onClick={onClose}
+              color={'white'}
+              border={'1px solid'}
+              borderColor={'gray.500'}
+              fontSize={'12px'}
+            >
+              Close
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

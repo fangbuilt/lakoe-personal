@@ -1,9 +1,9 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminProcessing from '~/components/AdminProcessing';
-import { ImplementGridAdminProcess } from '~/layouts/Grid';
+import { ImplementGridAdmin } from '~/layouts/Grid';
 import {
   getWithdrawalList,
   updateStatusWithdraw,
@@ -38,10 +38,10 @@ export async function action({ request }: ActionArgs) {
 export default function DasboardAdminProcessing() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdminProcess>
-      <Flex px={5} h={'100vh'} width={'100%'}>
+    <ImplementGridAdmin>
+      <Flex h={'100vh'} width={'100%'}>
         <AdminProcessing dataWithdrawal={dataWithdrawal} />
       </Flex>
-    </ImplementGridAdminProcess>
+    </ImplementGridAdmin>
   );
 }
