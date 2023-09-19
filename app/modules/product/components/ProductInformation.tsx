@@ -15,20 +15,24 @@ import {
 } from '@chakra-ui/react';
 import useAddProduct from '../hooks/useAddProduct';
 import useNestedOptions from '../hooks/useNestedOptions';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+} from '@chakra-ui/icons';
 
 export function ProductInformation() {
   const {
-    handleClick,
-    handleClick2,
-    handleClick3,
-    // options,
+    handleCategoryClick,
     parentOptions,
-    data,
-    data2,
+    grandParentData,
+    parentData,
     selected,
     toggleOptions,
     openOptions,
+    activeGrandparent,
+    activeParent,
+    activeChild,
   } = useNestedOptions();
 
   const { handleChange } = useAddProduct();
@@ -69,7 +73,7 @@ export function ProductInformation() {
             <InputGroup onClick={toggleOptions} style={{ cursor: 'pointer' }}>
               <Input
                 type="text"
-                fontSize={'sm'}
+                fontSize={'xs'}
                 isReadOnly
                 value={`${selected.grandparent || ''} ${
                   selected.parent ? '>' : ''
@@ -83,47 +87,70 @@ export function ProductInformation() {
             </InputGroup>
 
             {openOptions && (
-              <Grid templateColumns={'repeat(3, 1fr)'} mt={4}>
-                <Stack>
+              <Grid
+                templateColumns={'repeat(3, 1fr)'}
+                mt={4}
+                shadow={'sm'}
+                border={'1px'}
+                borderColor={'gray.200'}
+                px={1}
+                py={2}
+                borderRadius={'md'}
+              >
+                <Stack borderRight={'1px'} borderColor={'gray.200'} pr={1}>
                   {parentOptions.map((option) => (
                     <Button
-                      justifyContent={'left'}
-                      variant={'ghost'}
-                      fontSize={'xs'}
-                      size={'sm'}
-                      onClick={() => handleClick(option.id)}
+                      justifyContent={'space-between'}
+                      variant={
+                        activeGrandparent === option.id ? 'solid' : 'ghost'
+                      }
+                      fontSize={'2xs'}
+                      size={'xs'}
+                      onClick={() =>
+                        handleCategoryClick(option.id, 'grandparent')
+                      }
                       key={option.id}
-                      _focusWithin={{ textColor: 'lakoeCyan' }}
+                      textColor={
+                        activeGrandparent === option.id ? 'lakoeCyan' : 'unset'
+                      }
+                      rightIcon={<ChevronRightIcon />}
                     >
                       {option.name}
                     </Button>
                   ))}
                 </Stack>
 
-                <Stack>
-                  {data.map((option) => (
+                <Stack borderRight={'1px'} borderColor={'gray.200'} px={1}>
+                  {grandParentData.map((option) => (
                     <Button
-                      justifyContent={'left'}
-                      variant={'ghost'}
-                      fontSize={'xs'}
-                      size={'sm'}
-                      onClick={() => handleClick2(option.id)}
+                      justifyContent={'space-between'}
+                      variant={activeParent === option.id ? 'solid' : 'ghost'}
+                      fontSize={'2xs'}
+                      size={'xs'}
+                      onClick={() => handleCategoryClick(option.id, 'parent')}
                       key={option.id}
+                      textColor={
+                        activeParent === option.id ? 'lakoeCyan' : 'unset'
+                      }
+                      rightIcon={<ChevronRightIcon />}
                     >
                       {option.name}
                     </Button>
                   ))}
                 </Stack>
 
-                <Stack>
-                  {data2.map((option) => (
+                <Stack pl={1}>
+                  {parentData.map((option) => (
                     <Button
                       justifyContent={'left'}
-                      variant={'ghost'}
-                      fontSize={'xs'}
-                      size={'sm'}
-                      onClick={() => handleClick3(option.id)}
+                      variant={activeChild === option.id ? 'solid' : 'ghost'}
+                      fontSize={'2xs'}
+                      size={'xs'}
+                      onClick={() => handleCategoryClick(option.id, 'child')}
                       key={option.id}
+                      textColor={
+                        activeChild === option.id ? 'lakoeCyan' : 'unset'
+                      }
                     >
                       {option.name}
                     </Button>
@@ -136,6 +163,7 @@ export function ProductInformation() {
           <VisuallyHiddenInput
             onChange={handleChange}
             value={selected.child || ''}
+            name="category"
           />
         </Stack>
       </CardBody>
