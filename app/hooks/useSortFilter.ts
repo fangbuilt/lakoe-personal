@@ -1,9 +1,7 @@
 import { useState } from 'react';
 
 export function useSortFilter() {
-  const [selectedSortOption, setSelectedSortOption] = useState<string | null>(
-    null
-  );
+  const [selectedSortOption, setSelectedSortOption] = useState<string | null>(null);
 
   const setSortOption = (option: string) => {
     setSelectedSortOption(option);
