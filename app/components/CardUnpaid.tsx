@@ -35,22 +35,24 @@ import { useSortFilter } from '~/hooks/useSortFilter';
 import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import { Link, useLoaderData } from '@remix-run/react';
-import type { loader } from '~/routes/order';
+import {
+  Link,
+  // useLoaderData
+} from '@remix-run/react';
+// import type { loader } from '~/routes/order';
 import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 
 export default function UnpaidCard() {
-  const { unpaidCard } = useLoaderData<typeof loader>();
-  const { filteredOrder, setSearchQuery, searchQuery } =
-    UseSearchProductUnpaid();
-  console.log('unpaidCard', unpaidCard);
+  // const { unpaidCard } = useLoaderData<typeof loader>();
+  const { filteredOrder, setSearchQuery } = UseSearchProductUnpaid();
+  // console.log('unpaidCard', unpaidCard);
   const { getSelectedCourier, selectedCouriers, toggleCourier } =
     useFilterCourier();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
-  console.log('setSearchQuery', setSearchQuery);
-  console.log('searchQuery', searchQuery);
-  console.log('filteredOrderfilteredOrderfilteredOrder', filteredOrder);
+  // console.log('setSearchQuery', setSearchQuery);
+  // console.log('searchQuery', searchQuery);
+  // console.log('filteredOrderfilteredOrderfilteredOrder', filteredOrder);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   // const formatter = new Intl.NumberFormat('en-ID', {

@@ -6,7 +6,7 @@ import type { loader } from '~/routes/order';
 
 export default function UseSearchProductUnpaid() {
   const { unpaidCard } = useLoaderData<typeof loader>();
-  console.log('unpaidCardunpaidCardunpaidCard', unpaidCard);
+  // console.log('unpaidCardunpaidCardunpaidCard', unpaidCard);
   const dataArray = Object.values(unpaidCard);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredOrder, setFilteredOrder] = useState(dataArray);
@@ -26,7 +26,7 @@ export default function UseSearchProductUnpaid() {
         // || kurirSearch.indexOf(lowerQuery) !== -1
       );
     });
-    console.log('filtered data:', filtered);
+    // console.log('filtered data:', filtered);
     setFilteredOrder(filtered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, unpaidCard]);
