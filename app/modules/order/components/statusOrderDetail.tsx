@@ -48,14 +48,139 @@ import {
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import useCopyToClipboard from '../hooks/useCopyToClipboard';
 import circle from '~/assets/DetailOrderIcon/info-circle.svg';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Link } from '@remix-run/react';
 import getStatusBadge from './statusInvoice';
+import ModalInShipping from "~/components/ModalInShipping";
+import { ITracking } from "~/interfaces/order/orderTracking";
+
+export function getStatusLacakButton(status: string) {
+  if (status.toUpperCase() === "NEW_ORDER") {
+    return (
+      <Flex
+        justifyContent={"space-between"}
+        padding={`var(--4, 16px) var(--5, 20px)`}
+        alignItems={"center"}
+        alignSelf={"stretch"}
+        borderRadius={`var(--rounded-lg, 12px)`}
+        background={`var(--gray-50, #FFF)`}
+      >
+        <Box>
+          <Button
+            display={"flex"}
+            height={"40px"}
+            padding={`var(--3, 12px) var(--4, 16px)`}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={`var(--1, 4px)`}
+            borderRadius={`var(--rounded-full, 9999px)`}
+            border={`1px solid var(--red-800, #EA3829)`}
+            background={`var(--gray-50, #FFF)`}
+          >
+            <Text
+              color={`var(--text-red, #EA3829)`}
+              fontSize={"14px"}
+              fontWeight={"600"}
+              lineHeight={"15.5px"}
+            >
+              Tolak Pesanan
+            </Text>
+          </Button>
+        </Box>
+        <Box>
+          <Button
+            display={"flex"}
+            height={"40px"}
+            padding={`var(--3, 12px) var(--4, 16px)`}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={`var(--1, 4px)`}
+            borderRadius={`var(--rounded-full, 9999px)`}
+            background={`var(--cyan-800, #0086B4)`}
+          >
+            <Text
+              color={`var(--text-light, #FFF)`}
+              fontSize={"14px"}
+              fontWeight={"600"}
+              lineHeight={"15.5px"}
+            >
+              Proses Pesanan
+            </Text>
+          </Button>
+        </Box>
+      </Flex>
+    );
+  }
+}
+
+export function getStatusLacakPengiriman(
+  status: string,
+  data: any,
+  dataTracking: ITracking,
+  apiKey: string
+) {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  function openModal() {
+    setModalIsOpen(true);
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
+
+  if (status.toUpperCase() === "IN_TRANSIT") {
+    return (
+      <>
+        <Button
+          fontSize={"14px"}
+          fontWeight={"700"}
+          lineHeight={"20px"}
+          color={"#0086B4"}
+          background={"#FFFFFF)"}
+          colorScheme="#FFFFFF)"
+          w={"120px"}
+          onClick={openModal}
+        >
+          Lacak Pengiriman
+        </Button>
+        {modalIsOpen && (
+          <ModalInShipping
+            isOpen={modalIsOpen}
+            onClose={closeModal}
+            data={dataTracking}
+          />
+        )}
+      </>
+    );
+  }
+
+  if (status.toUpperCase() === "ORDER_COMPLETED") {
+    return (
+      <Button
+        fontSize={"14px"}
+        fontWeight={"700"}
+        lineHeight={"20px"}
+        color={"#0086B4"}
+        background={"#FFFFFF)"}
+        colorScheme="#FFFFFF)"
+        w={"120px"}
+      >
+        Lacak Pengiriman
+      </Button>
+    );
+  }
+  return null;
+}
 
 export default function StatusOrderDetail({
   data,
+  dataTracking,
+  apiKey,
 }: {
   data: IOrderDetailInvoice;
+  dataTracking: ITracking;
+  apiKey: string;
 }) {
   const {
     isOrderHistoryVisible,
@@ -269,39 +394,66 @@ export default function StatusOrderDetail({
     }
   }
 
-  function getStatusLacakPengiriman(status: string) {
-    if (status.toUpperCase() === 'IN_TRANSIT') {
+  function getStatusLacakPengiriman(
+    status: string,
+    data: any,
+    dataTracking: ITracking,
+    apiKey: string
+  ) {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    function openModal() {
+      setModalIsOpen(true);
+    }
+
+    function closeModal() {
+      setModalIsOpen(false);
+    }
+
+    if (status.toUpperCase() === "IN_TRANSIT") {
       return (
-        <Button
-          fontSize={'14px'}
-          fontWeight={'700'}
-          lineHeight={'20px'}
-          color={'#0086B4'}
-          background={'#FFFFFF)'}
-          colorScheme="#FFFFFF)"
-          w={'120px'}
-        >
-          Lacak Pengiriman
-        </Button>
+        <>
+          <Button
+            fontSize={"14px"}
+            fontWeight={"700"}
+            lineHeight={"20px"}
+            color={"#0086B4"}
+            background={"#FFFFFF)"}
+            colorScheme="#FFFFFF)"
+            w={"120px"}
+            onClick={openModal}
+          >
+            Lacak Pengiriman
+          </Button>
+          {modalIsOpen && (
+            <ModalInShipping
+              isOpen={modalIsOpen}
+              onClose={closeModal}
+              data={dataTracking}
+            />
+          )}
+        </>
       );
     }
 
-    if (status.toUpperCase() === 'ORDER_COMPLETED') {
+    if (status.toUpperCase() === "ORDER_COMPLETED") {
       return (
         <Button
-          fontSize={'14px'}
-          fontWeight={'700'}
-          lineHeight={'20px'}
-          color={'#0086B4'}
-          background={'#FFFFFF)'}
+          fontSize={"14px"}
+          fontWeight={"700"}
+          lineHeight={"20px"}
+          color={"#0086B4"}
+          background={"#FFFFFF)"}
           colorScheme="#FFFFFF)"
-          w={'120px'}
+          w={"120px"}
         >
           Lacak Pengiriman
         </Button>
       );
     }
+    return null;
   }
+
 
   return (
     <>
@@ -687,7 +839,12 @@ export default function StatusOrderDetail({
               <Text fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'}>
                 Detail Pengiriman
               </Text>
-              {getStatusLacakPengiriman(data.status)}
+              {getStatusLacakPengiriman(
+                data.status,
+                data,
+                dataTracking,
+                apiKey
+              )}
             </Box>
             <Box display={'flex'}>
               <Box display={'flex'} flexDirection={'column'} width={'192px'}>

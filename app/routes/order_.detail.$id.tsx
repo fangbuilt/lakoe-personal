@@ -1,10 +1,11 @@
-import { Stack } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import { ImplementGrid } from '~/layouts/Grid';
-import StatusOrderDetail from '~/modules/order/components/statusOrderDetail';
-import {
+import { Stack } from "@chakra-ui/react";
+import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { ITracking } from "~/interfaces/order/orderTracking";
+import { IOrderDetailInvoice } from "~/interfaces/orderDetail";
+import { ImplementGrid } from "~/layouts/Grid";
+import StatusOrderDetail from "~/modules/order/components/statusOrderDetail";
+import  {
   getInvoiceById,
   updateStatusInvoice,
 } from '~/modules/order/order.service';
@@ -13,8 +14,9 @@ export async function loader({ params }: LoaderArgs) {
   const { id } = params;
 
   try {
+    const apiKey = process.env.API_KEY_BITESHIP as string;
     const dataCart = await getInvoiceById(id as string);
-    return dataCart;
+    return { dataCart, apiKey };
   } catch (error) {
     console.error('Loader error:', error);
     throw error;
@@ -38,13 +40,21 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function OrderDetailId() {
-  // const data = useLoaderData<IOrderDetailInvoice>();
-  const data = useLoaderData();
+  const { dataCart, apiKey, dataTracking } = useLoaderData<{
+    dataCart: IOrderDetailInvoice;
+    dataTracking: ITracking;
+    apiKey: string;
+  }>();
+
   return (
     <>
       <ImplementGrid>
-        <Stack mt={'7.5vh'} spacing={4}>
-          <StatusOrderDetail data={data} />
+        <Stack mt={"7.5vh"} spacing={4}>
+          <StatusOrderDetail
+            data={dataCart}
+            dataTracking={dataTracking}
+            apiKey={apiKey}
+          />
         </Stack>
       </ImplementGrid>
     </>
