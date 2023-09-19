@@ -1,5 +1,5 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs} from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import type { ITracking } from '~/interfaces/order/orderTracking';
@@ -15,7 +15,7 @@ export async function loader({ params }: LoaderArgs) {
   const { id } = params;
 
   try {
-    const apiKey = process.env.API_KEY_BITESHIP as string;
+    const apiKey = process.env.BITESHIP_API_KEY as string;
     const dataCart = await getInvoiceById(id as string);
     return { dataCart, apiKey };
   } catch (error) {

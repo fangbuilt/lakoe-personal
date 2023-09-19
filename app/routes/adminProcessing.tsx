@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import AdminProcessing from '~/components/AdminProcessing';
-import { ImplementGridAdmin } from '~/layouts/Grid';
+import { ImplementGrid } from '~/layouts/Grid';
 import { getWithdrawalList } from '~/modules/dashboard/dashboard.service';
 
 export async function loader() {
@@ -11,10 +11,10 @@ export async function loader() {
 export default function DasboardAdminProcessing() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdmin>
+    <ImplementGrid>
       <Flex px={5} h={'100vh'} width={'100%'}>
         <AdminProcessing dataWithdrawal={dataWithdrawal} />
       </Flex>
-    </ImplementGridAdmin>
+    </ImplementGrid>
   );
 }

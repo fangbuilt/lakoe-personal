@@ -1,5 +1,37 @@
 import { db } from '~/libs/prisma/db.server';
 
+export async function getInvoiceById(id: any) {
+  const dataInvoice = await db.invoice.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      invoiceHistories: true,
+      courier: true,
+      cart: {
+        include: {
+          user: true,
+          cartItems: {
+            include: {
+              variantOption: {
+                include: {
+                  variantOptionValues: true,
+                },
+              },
+              product: {
+                include: {
+                  attachments: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  return dataInvoice;
+}
+
 export async function updateInvoiceStatus(data: any): Promise<any> {
   try {
     const currentData = await db.invoice.findFirst({

@@ -331,7 +331,7 @@ export default function StatusOrderDetail({
     }
   };
 
-  const stepCount = filterStepsByStatus(data.status).length;
+  const stepCount = filterStepsByStatus(data?.status).length;
   const stepHeight = 65;
 
   const products = data.cart.cartItems.map((cartItem) => {
@@ -504,8 +504,8 @@ export default function StatusOrderDetail({
             src={documentIcon}
           />
           <Box display={'flex'} flexDirection={'column'} gap={3}>
-            {getStatusBadge({ status: data.status })}
-            {getStatusText(data.status)}
+            {getStatusBadge({ status: data?.status })}
+            {getStatusText(data?.status)}
 
             <Text
               color={'#0086B4'}
@@ -534,7 +534,7 @@ export default function StatusOrderDetail({
                 padding={'var(--4, 16px)'}
                 borderRadius={'var(--rounded-lg, 12px)'}
               >
-                {filterStepsByStatus(data.status).map((step, index) => (
+                {filterStepsByStatus(data?.status).map((step, index) => (
                   <Step key={step.id}>
                     <StepIndicator>
                       <StepStatus
@@ -831,7 +831,7 @@ export default function StatusOrderDetail({
               <Text fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'}>
                 Detail Pengiriman
               </Text>
-              {useStatusLacakPengiriman(data.status, dataTracking)}
+              {useStatusLacakPengiriman(data?.status, dataTracking)}
             </Box>
             <Box display={'flex'}>
               <Box display={'flex'} flexDirection={'column'} width={'192px'}>
@@ -1021,7 +1021,7 @@ export default function StatusOrderDetail({
             </Box>
           </Box>
         </Box>
-        {data.status === 'NEW_ORDER' && (
+        {data?.status === 'NEW_ORDER' && (
           <Flex
             justifyContent={'space-between'}
             padding={`var(--4, 16px) var(--5, 20px)`}
