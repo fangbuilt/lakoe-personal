@@ -410,4 +410,3 @@ model BiteshipTrackingLimit {
 
   @@map("biteship_tracking_limits")
 }
-

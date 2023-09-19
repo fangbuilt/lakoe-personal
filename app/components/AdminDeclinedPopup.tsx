@@ -3,6 +3,9 @@ import {
   Button,
   Divider,
   Flex,
+  FormControl,
+  FormLabel,
+  Input,
   ListItem,
   Modal,
   ModalBody,
@@ -13,11 +16,22 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import React from 'react';
+import { Form } from '@remix-run/react';
+import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
+import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 
 export default function AdminDeclinedPopup(props: any) {
+  const [formData, setFormData] = useState({
+    reasonAdminDeclained: '',
+  });
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -128,11 +142,33 @@ export default function AdminDeclinedPopup(props: any) {
               </Box>
 
               <Box mt={'10px'}>
-                <Text fontWeight={700}>Alasan Penolakan</Text>
-                <Text>
-                  Nama pemilik rekening tidak sama dengan pemilik Toko. Silakan
-                  melakukan penarikan uang dengan data yang sesuai.{' '}
-                </Text>
+                <Form>
+                  <FormControl>
+                    <FormLabel fontSize={'12px'} fontWeight={700}>
+                      Alasan Penolakan
+                    </FormLabel>
+                    <Input
+                      type="text"
+                      name="reasondAdminDeclined"
+                      value={formData.reasonAdminDeclained}
+                      fontSize={'10px'}
+                      onChange={(event) => handleChange(event)}
+                    />
+                  </FormControl>
+                  <Button
+                    fontSize={'12px'}
+                    colorScheme="teal"
+                    width={'100%'}
+                    textAlign={'center'}
+                    mt={'10px'}
+                    onClick={() => {
+                      onClose();
+                      AdminDeclinedNotification(formData.reasonAdminDeclained);
+                    }}
+                  >
+                    Send email to Seller
+                  </Button>
+                </Form>
               </Box>
 
               <Box mt={'10px'}>
@@ -157,6 +193,7 @@ export default function AdminDeclinedPopup(props: any) {
           </ModalBody>
           <ModalFooter>
             <Button
+              type="submit"
               colorScheme="teal"
               mr={3}
               onClick={onClose}
@@ -165,7 +202,7 @@ export default function AdminDeclinedPopup(props: any) {
               borderColor={'gray.500'}
               fontSize={'12px'}
             >
-              Close
+              Selesai
             </Button>
           </ModalFooter>
         </ModalContent>

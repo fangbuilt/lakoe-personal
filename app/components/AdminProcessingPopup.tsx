@@ -7,6 +7,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalOverlay,
   Text,
   useDisclosure,
@@ -146,19 +147,19 @@ export default function AdminProcessingPopup(props: any) {
               </Box>
             </Box>
           </ModalBody>
-          {/* <ModalFooter>
+          <ModalFooter>
             <Button
               colorScheme="teal"
               mr={3}
               onClick={onClose}
-              color={"white"}
-              border={"1px solid"}
-              borderColor={"gray.500"}
-              fontSize={"12px"}
+              color={'white'}
+              border={'1px solid'}
+              borderColor={'gray.500'}
+              fontSize={'12px'}
             >
               Close
             </Button>
-          </ModalFooter> */}
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

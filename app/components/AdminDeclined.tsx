@@ -22,11 +22,11 @@ import { Link } from '@remix-run/react';
 import AdminDeclinedPopup from './AdminDeclinedPopup';
 import moment from 'moment';
 import { useState } from 'react';
+import { getStoreData } from '~/modules/dashboard/dashboard.service';
 
-// interface SelectOption {
-//   value: string;
-//   label: string;
-// }
+export async function loader(id: string) {
+  return await getStoreData(id);
+}
 
 export default function AdminDeclined({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
@@ -78,8 +78,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
     <>
       <Box
         width={'100%'}
-        mr={'10px'}
-        padding={'10px'}
+        padding={'20px'}
         borderRadius={'15px'}
         boxShadow="base"
         p="6"
@@ -270,16 +269,16 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    ID Withdraw
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Seller
+                    Nomor Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Saldo Penarikan
+                    Seller
+                  </Th>
+                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                    Uang
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -307,15 +306,19 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
                       {formatRupiah(item.amount)}
                     </Td>
                     <Td margin={'2px 0'}>
-                      <Text
-                        borderRadius={'15px'}
-                        bg={'grey'}
-                        color={'white'}
-                        px={'5px'}
-                        fontSize={'10px'}
-                        textAlign={'center'}
-                      >
-                        {item.status}
+                      <Text>
+                        {item.status === 'DECLINED' && (
+                          <Text
+                            bg={'RED'}
+                            color={'white'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            DECLINED
+                          </Text>
+                        )}
                       </Text>
                     </Td>
 
