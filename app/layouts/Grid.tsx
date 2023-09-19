@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
-import { LeftNavigation } from '~/components/LeftNavigation';
+import { LeftNavigationAdmin } from '~/components/AdminLeftNavigation';
 
 interface LayoutProps {
   children: ReactNode;
@@ -29,7 +29,7 @@ export function ImplementGrid({ children }: LayoutProps) {
           borderRight={'1px'}
           borderRightColor={'gray.200'}
         >
-          <LeftNavigation />
+          <LeftNavigationAdmin />
         </Box>
         <Box width={'50%'} p={5} backgroundColor={'whitesmoke'}>
           {children}
@@ -44,12 +44,146 @@ export function ImplementGrid({ children }: LayoutProps) {
           borderLeftColor={'gray.200'}
         >
           {/* <Flex align={'center'} justify={'center'} px={5} h={'100vh'}>
-            <Heading textAlign={'center'} mb={'7.5vh'}>
-              Test Right Sidebar
-            </Heading>
-          </Flex> */}
+          <Heading textAlign={'center'} mb={'7.5vh'}>
+            Test Right Sidebar
+          </Heading>
+        </Flex> */}
         </Box>
       </Flex>
     </Flex>
+  );
+}
+
+export function ImplementGridAll({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      // minHeight={"100vh"}
+      width={'100%'}
+      display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
+    >
+      <Box width={'20%'}>
+        <LeftNavigationAdmin />
+      </Box>
+
+      <Box
+        width={'80%'}
+        margin={'auto'}
+        justifyContent={'center'}
+        display={'flex'}
+        alignItems={'none'}
+      >
+        {children}{' '}
+      </Box>
+    </Box>
+  );
+}
+
+export function ImplementGridAdminRequest({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      // minHeight={"100vh"}
+      width={'100%'}
+      display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
+    >
+      <Box width={'20%'}>
+        <LeftNavigationAdmin />
+      </Box>
+
+      <Box
+        width={'80%'}
+        margin={'auto'}
+        justifyContent={'center'}
+        display={'flex'}
+        alignContent={'none'}
+      >
+        {children}{' '}
+      </Box>
+    </Box>
+  );
+}
+
+export function ImplementGridAdminProcess({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      // minHeight={"100vh"}
+      width={'100%'}
+      display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
+    >
+      <Box width={'20%'}>
+        <LeftNavigationAdmin />
+      </Box>
+
+      <Box width={'80%'} margin={'auto'} justifyContent={'center'}>
+        {children}{' '}
+      </Box>
+    </Box>
+  );
+}
+
+export function ImplementGridAdminSuccess({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      // minHeight={"100vh"}
+      width={'100%'}
+      display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
+    >
+      <Box width={'20%'}>
+        <LeftNavigationAdmin />
+      </Box>
+
+      <Box
+        width={'80%'}
+        justifyContent={'center'}
+        display={'flex'}
+        mx={'auto'}
+        my={'0'}
+      >
+        {children}{' '}
+      </Box>
+    </Box>
+  );
+}
+
+export function ImplementGridAdminDeclined({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      // minHeight={"100vh"}
+      width={'100%'}
+      display={'flex'}
+      w="100%"
+      h="100%"
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 100%)"
+    >
+      <Box width={'20%'}>
+        <LeftNavigationAdmin />
+      </Box>
+
+      <Box
+        width={'80%'}
+        margin={'auto'}
+        justifyContent={'center'}
+        display={'flex'}
+        alignItems={'none'}
+      >
+        {children}{' '}
+      </Box>
+    </Box>
   );
 }
