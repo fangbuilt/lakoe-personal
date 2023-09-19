@@ -1,15 +1,16 @@
-import { json, type ActionArgs } from '@remix-run/node';
-import crypto from 'crypto';
-import { MootaOrderSchema } from '~/modules/order/order.schema';
 import { Flex } from '@chakra-ui/react';
 import NavOrder from '~/layouts/NavOrder';
 import { ImplementGrid } from '~/layouts/Grid';
+
+import crypto from 'crypto';
 
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getProductUnpid,
 } from '~/modules/order/order.service';
+import { type ActionArgs, json } from '@remix-run/node';
+import { MootaOrderSchema } from '~/modules/order/order.schema';
 
 export async function loader() {
   //jangan ampai terbalik posisi untuk menampilkan data load
@@ -64,6 +65,7 @@ function verifySignature(secretKey: string, data: string, signature: string) {
   console.log('computedSignature', computedSignature);
   return computedSignature === signature;
 }
+
 export default function Order() {
   return (
     <ImplementGrid>
