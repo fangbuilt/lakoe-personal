@@ -1,39 +1,6 @@
 [
   {
-    "id":1,
-    "message": "abcd"
-  },
-  {
-    "id":2,
-    "message": "hello world"
-  },
-  {
-    "id":3,
-    "message": "bani"
-  },
-  {
-    "id":4,
-    "message": "AKU GANTENGGGG"
-  },
-  {
-    "id":5,
-    "message": "sariki love enung halo semuanya kali ini kita akan belajar bahasa typescript yagesya dan tentu nya sangat sangat gampang untuk di pelajari api boong sariki love enung halo semuanya kali ini kita akan belajar bahasa typescript yagesya dan tentu nya sangat sangat gampang untuk di pelajari api boong sariki love enung halo semuanya kali ini kita akan belajar bahasa typescript yagesya dan tentu nya sangat sangat gampang untuk di pelajari api boong"
-  },
-  {
-    "id":6,
-    "message": "sariki love enung"
-  },
-  {
-    "id":7,
-    "message": "sariki love enung"
-  },
-  {
-    "id":8,
-    "message": "sariki love enung"
-  },
-  {
-    "id":9,
-    "message": "sariki love enung"
+    "id": 1,
+    "message": "Halo, Saya tertarik untuk membeli dari Anda. Saya ingin mengonfirmasi beberapa detail terkait pembelian ini. Apakah Anda menerima metode pembayaran tunai (COD - Cash on Delivery)? Jika ya, berikut adalah beberapa pertanyaan tambahan:1. Apakah COD tersedia di lokasi saya? 2. Apakah ada biaya tambahan untuk layanan COD? 3. Bagaimana proses COD berlangsung? 4. Apakah ada jadwal atau waktu tertentu ketika COD tersedia? Saya sangat berminat untuk membeli produk ini dan ingin memastikan semua detailnya sebelum melanjutkan. Terima kasih atas informasinya!"
   }
 ]
-

@@ -12,10 +12,10 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
-import { useFilterProducts } from '~/hooks/product/useFilterProducts';
-import { useSortProducts } from '~/hooks/product/useSortProducts';
-import useSearchProducts from '~/hooks/product/useSearchProducts';
 import useDebounce from '~/hooks/product/useDebounce';
+import { useFilterProducts } from '~/hooks/product/useFilterProducts';
+import useSearchProducts from '~/hooks/product/useSearchProducts';
+import { useSortProducts } from '~/hooks/product/useSortProducts';
 import type { IProduct } from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
