@@ -15,9 +15,12 @@ import type { loader } from '~/routes/order';
 import CardCanceled from '../components/CardCanceled';
 import ScrollBox from '../components/ScrollBox';
 import CardReadyToShip from '~/components/CardReadyToShip';
+import UnpaidAllCard from '~/components/CardUnpaidAll';
+import UnpaidCard from '~/components/CardUnpaid';
 
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
+  const { unpaidCard } = useLoaderData<typeof loader>();
   const notificationCount =
     cardProduct.dataProductReadyToShip.length > 0
       ? cardProduct.dataProductReadyToShip.length
@@ -26,7 +29,7 @@ export default function NavOrder({ allOrderSevice }: any) {
   const handleClickTab = (index: number) => {
     setActiveTab(index);
   };
-
+  // const {unpaidCard} = useLoaderData<typeof loader>()
   return (
     <>
       <Box
@@ -79,6 +82,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                         fontWeight={activeTab === 1 ? '700' : '500'}
                       >
                         {/* NOTIFICATION ORDER */}
+
                         <Text
                           my={4}
                           color={'white'}
@@ -88,7 +92,8 @@ export default function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {unpaidCard.length}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
                         <Flex gap={1.5}>
@@ -205,13 +210,13 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>Semua</h1>
+                    <UnpaidAllCard />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>belum bayar</h1>
+                    <UnpaidCard />
                   </TabPanel>
                 </ScrollBox>
 

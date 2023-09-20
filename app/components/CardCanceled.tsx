@@ -24,7 +24,11 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
- Input, InputGroup, InputLeftElement, Image } from '@chakra-ui/react';
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Image,
+} from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 import { whatsappConfiguration } from '../utils/TemplateMessage';

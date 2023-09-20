@@ -1,5 +1,5 @@
 import { Box, Button, Card, Flex, Img, Text } from "@chakra-ui/react";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import type { loader } from "~/routes/order";
 import ModalTracking from "./orderTrackingModal";
@@ -77,49 +77,50 @@ export default function CardReadyToShip() {
                   {data.invoiceNumber}
                 </Text>
                 <hr />
-
-                <Flex justifyContent={"space-between"}>
-                  <Box display={"flex"} gap={3} w={"80%"}>
-                    {data.cart?.cartItems.map((item, index) => (
-                      <Img
-                        key={index}
-                        w={"52px"}
-                        h={"52px"}
-                        display={"inline"}
-                        borderRadius={"md"}
-                        src={item.product?.attachments[0]?.url}
-                        mt={3}
-                      />
-                    ))}
-                    <Text
-                      mt={4}
-                      id="fm500"
-                      fontSize={"16px"}
-                      textOverflow={"ellipsis"}
-                      overflow={"hidden"}
-                      whiteSpace={"nowrap"}
-                      fontWeight={"700"}
-                    >
-                      {data.cart?.cartItems.map((item) => item.product?.name)}
-                      <Text color={"gray.400"} pb={3} fontWeight={"normal"}>
-                        {data.cart?.cartItems.map((item) => item.qty)} Barang
+                <Link to={"detail/" + data.id}>
+                  <Flex justifyContent={"space-between"}>
+                    <Box display={"flex"} gap={3} w={"80%"}>
+                      {data.cart?.cartItems.map((item, index) => (
+                        <Img
+                          key={index}
+                          w={"52px"}
+                          h={"52px"}
+                          display={"inline"}
+                          borderRadius={"md"}
+                          src={item.product?.attachments[0]?.url}
+                          mt={3}
+                        />
+                      ))}
+                      <Text
+                        mt={4}
+                        id="fm500"
+                        fontSize={"16px"}
+                        textOverflow={"ellipsis"}
+                        overflow={"hidden"}
+                        whiteSpace={"nowrap"}
+                        fontWeight={"700"}
+                      >
+                        {data.cart?.cartItems.map((item) => item.product?.name)}
+                        <Text color={"gray.400"} pb={3} fontWeight={"normal"}>
+                          {data.cart?.cartItems.map((item) => item.qty)} Barang
+                        </Text>
                       </Text>
-                    </Text>
-                  </Box>
-                  <Box mt={4} w={"15%"}>
-                    <Flex gap={1}>
-                      <Text color={"#909090"} fontSize={"14px"}>
-                        Total
+                    </Box>
+                    <Box mt={4} w={"15%"}>
+                      <Flex gap={1}>
+                        <Text color={"#909090"} fontSize={"14px"}>
+                          Total
+                        </Text>
+                        <Text color={"#909090"} fontSize={"14px"}>
+                          Belanja
+                        </Text>
+                      </Flex>
+                      <Text fontWeight={"bold"} fontSize={"14px"}>
+                        {formatCurrency(data.price)}
                       </Text>
-                      <Text color={"#909090"} fontSize={"14px"}>
-                        Belanja
-                      </Text>
-                    </Flex>
-                    <Text fontWeight={"bold"} fontSize={"14px"}>
-                      {formatCurrency(data.price)}
-                    </Text>
-                  </Box>
-                </Flex>
+                    </Box>
+                  </Flex>
+                </Link>
               </Box>
             </Box>
           </Box>

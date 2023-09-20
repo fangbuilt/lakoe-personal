@@ -134,7 +134,7 @@ CREATE TABLE "products" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "minumumOrder" INTEGER NOT NULL,
+    "minimumOrder" INTEGER NOT NULL,
     "length" DOUBLE PRECISION NOT NULL,
     "width" DOUBLE PRECISION NOT NULL,
     "height" DOUBLE PRECISION NOT NULL,

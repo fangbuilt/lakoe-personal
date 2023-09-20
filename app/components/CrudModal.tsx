@@ -18,7 +18,7 @@ import {
 import Edit from '../assets/icon-pack/edit.svg';
 import Trash from '../assets/icon-pack/trash.svg';
 import CloseCircle from '../assets/icon-pack/close-circle.svg';
-import type { ITemplateMessage } from '~/interfaces/TemplateMessage';
+import type { ITemplateMessage } from '~/interfaces/templateMessage';
 
 export function DeleteButton(props: ITemplateMessage) {
   const { isOpen, onOpen, onClose } = useDisclosure();

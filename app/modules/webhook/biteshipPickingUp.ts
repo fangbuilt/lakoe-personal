@@ -1,5 +1,5 @@
 import { db } from '~/libs/prisma/db.server';
-import { updateInvoiceStatus, UsePickingUp } from './usePickingUp';
+import { updateInvoiceStatus } from './hooks/usePickingUp';
 
 export async function getEmail(payload: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -115,3 +115,7 @@ export async function Biteship(payload: any) {
     console.log('error: ' + err);
   }
 }
+function UsePickingUp(email: string, name: string, waybill: string) {
+  throw new Error('Function not implemented.');
+}
+

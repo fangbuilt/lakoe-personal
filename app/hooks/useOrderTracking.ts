@@ -22,7 +22,7 @@ export default function useOrderTracking(trackingId: string) {
           `https://api.biteship.com/v1/trackings/${trackingId}`,
           {
             headers: {
-              authorization: data.api_key,
+              authorization: data.apiKey,
             },
           }
         );

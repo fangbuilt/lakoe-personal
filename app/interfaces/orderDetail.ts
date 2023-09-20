@@ -17,6 +17,16 @@ export interface IOrderDetailUser {
   withdraws: IOrderDetailWithdraw[];
   createdAt: Date;
   updatedAt: Date;
+  receiverName: string;
+  receiverAddress: string;
+  receiverPhone: string;
+  price: number;
+  discount: number;
+  status: string;
+  invoiceNumber: string;
+  waybill: string;
+  courier: IOrderDetailCourier;
+  cart: IOrderDetailCart;
 }
 
 export interface IOrderDetailWithdraw {
@@ -134,7 +144,7 @@ export interface IOrderDetailProduct {
   id: string;
   name: string;
   description: string;
-  minumumOrder: number;
+  minimumOrder: number;
   length: number;
   width: number;
   height: number;
