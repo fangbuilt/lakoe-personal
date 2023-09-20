@@ -4,10 +4,6 @@ import {
   Flex,
   Image,
   Input,
-  Radio,
-  RadioGroup,
-  Select,
-  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -17,9 +13,10 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { redirect, type ActionArgs } from '@remix-run/node';
+import { type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
 import { useState } from 'react';
+import CheckoutCourier from '~/modules/checkout/component/checkoutCourier';
 import CheckoutDescription from '../components/checkoutDescription';
 import {
   createCheckout,
@@ -29,8 +26,11 @@ import input from '../utils/dataFake.json';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
-  console.log('data:', data);
-  return getCheckoutDetail(data);
+  const getData = {
+    slug: data.slug,
+    store: data.store?.replace(/-/g, ' '),
+  };
+  return getCheckoutDetail(getData);
 }
 
 export const action = async ({ request }: ActionArgs) => {
@@ -40,14 +40,12 @@ export const action = async ({ request }: ActionArgs) => {
     const name = formData.get('username') as string;
     const telp = formData.get('no-telp') as string;
     const email = formData.get('email') as string;
-    const address = formData.get('address') as string;
     const province = formData.get('province') as string;
     const district = formData.get('district') as string;
     const village = formData.get('village') as string;
     const description = formData.get('description') as string;
     const courier = formData.get('courier') as string;
-    // const buyway = formData.get("buyway") as string;
-    // const voucher = formData.get("voucher") as string;
+    const courierService = +(formData.get('courierService') as string);
 
     const price = +(formData.get('price') as string);
     const storeId = formData.get('storeId') as string;
@@ -59,14 +57,17 @@ export const action = async ({ request }: ActionArgs) => {
     const variantOptionId = formData.get('variantOptionId') as string;
     const totalPrice = +(formData.get('totalPrice') as string);
     const totalPriceUnique = +(formData.get('totalPriceUnique') as string);
+    const variantOptionValueId = formData.get('valueId') as string;
+    const stock = +(formData.get('stock') as string);
+    const rates = +(formData.get('rates') as string);
 
     const invoice = {
-      price: totalPriceUnique,
+      price: totalPriceUnique + courierService,
       discount: 0,
       status: 'UNPAID',
       receiverLongitude: '',
       receiverLatitude: '',
-      receiverDistrict: address,
+      receiverDistrict: district,
       receiverPhone: telp,
       receiverAddress: village + ' ' + district + ' ' + province,
       receiverName: name,
@@ -76,7 +77,6 @@ export const action = async ({ request }: ActionArgs) => {
       invoiceNumber: '',
       waybill: '',
       mootaTransactionId: '',
-      courierId: courier,
       userId: userId,
     };
 
@@ -101,24 +101,58 @@ export const action = async ({ request }: ActionArgs) => {
 
     const getPayment = {
       bank: payment,
-      amount: price,
+      amount: totalPriceUnique + courierService,
       status: 'UNPAID',
       userId: userId,
     };
-    console.log('price', count);
 
-    const data = { invoice, cart, cartItem, invoiceHistory, getPayment };
+    const getCourier = {
+      availableForCashOnDelivery: false,
+      availableForProofOfDelivery: false,
+      availableForInstantWaybillId: false,
+      courierType: courier,
+      courierInsurance: 'false',
+      courierName: courier,
+      courierCode: courier,
+      courierServiceName: 'Instant',
+      courierServiceCode: 'Instant',
+      tier: 'premium',
+      description: '',
+      serviceType: '',
+      shippingType: 'parcel',
+      shipmentDurationRange: '',
+      shipmentDurationUnit: '',
+      price: rates,
+      orderId: 'orderId-test',
+      trackingId: '',
+      deliveryDate: '',
+      deliveryTime: '',
+    };
 
-    await createCheckout(data);
+    const update = {
+      valueId: variantOptionValueId,
+      stock: stock,
+    };
+
+    const data = {
+      invoice,
+      cart,
+      cartItem,
+      invoiceHistory,
+      getPayment,
+      update,
+      courierService,
+      getCourier,
+    };
+
+    return await createCheckout(data);
   }
-  return redirect(`/checkout/transfer`);
+  return null;
 };
 
 export default function Checkout() {
   const item = useLoaderData<typeof loader>();
   const { slug, store } = useParams();
-  console.log('item slug:', slug);
-  console.log('item store:', store);
 
   const [count, setCount] = useState<number>(1);
 
@@ -136,10 +170,26 @@ export default function Checkout() {
 
   const unique = Math.floor(Math.random() * (200 - 100)) + 100;
 
+  const [selectedOption, setSelectedOption] = useState(0);
+
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const valueInt = parseInt(value);
+    setSelectedOption(valueInt);
+  };
+
   return (
     <>
-      <CheckoutDescription />
+      <CheckoutDescription
+        image={item?.attachments[0].url}
+        name={item?.name}
+        description={item?.description}
+      />
       <Box display={'flex'} flexDir={'column'} alignItems={'center'}>
+        <Box display={'none'}>
+          <Text>{store}</Text>
+          <Text>{slug}</Text>
+        </Box>
         <Box
           display={'flex'}
           flexDirection={'column'}
@@ -157,7 +207,8 @@ export default function Checkout() {
                 <Table variant="simple">
                   <Thead>
                     <Tr fontWeight={'bold'}>
-                      <Th width={'80%'}>Pilihan Variasi</Th>
+                      <Th width={'40%'}>Produk</Th>
+                      <Th width={'40%'}>Variasi</Th>
                       <Th minW={'180px'}>Jumlah</Th>
                       <Th>Harga</Th>
                       <Th>Total</Th>
@@ -167,6 +218,7 @@ export default function Checkout() {
                     <Tr>
                       <Td display={'flex'} gap={3} alignItems={'center'}>
                         <Image
+                          objectFit={'cover'}
                           boxSize={'10'}
                           borderRadius={'10%'}
                           src={item?.attachments[0].url}
@@ -175,10 +227,49 @@ export default function Checkout() {
                         <Box>
                           <Text>{item?.name}</Text>
                           <Text color={'gray.600'}>
-                            {(item?.variants[0].variantOptions[0]
+                            {(item?.variants[selectedOption].variantOptions[0]
                               .variantOptionValues[0].stock as number) - count}
                             pcs
                           </Text>
+                          <Input
+                            type="hidden"
+                            name="stock"
+                            value={
+                              (item?.variants[selectedOption].variantOptions[0]
+                                .variantOptionValues[0].stock as number) - count
+                            }
+                          />
+                        </Box>
+                      </Td>
+                      <Td>
+                        <Box display={'flex'} flexWrap={'wrap'} gap={2}>
+                          {item?.variants.map((i, o) => (
+                            <Box key={o}>
+                              <Input
+                                type="radio"
+                                id={i.id}
+                                value={o}
+                                defaultChecked={selectedOption === o}
+                                onChange={handleRadioChange}
+                                style={{ display: 'none' }}
+                              />
+                              <label
+                                htmlFor={i.id}
+                                style={{
+                                  border: '1px solid',
+                                  borderRadius: '5px',
+                                  backgroundColor:
+                                    selectedOption === o ? 'white' : '#dcdcdc',
+                                  borderColor:
+                                    selectedOption === o ? '#0091f7' : '#ccc',
+                                  padding: '5px 10px',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                {i.name}
+                              </label>
+                            </Box>
+                          ))}
                         </Box>
                       </Td>
                       <Td>
@@ -194,14 +285,17 @@ export default function Checkout() {
                         </Flex>
                       </Td>
                       <Td>
-                        {
-                          item?.variants[0].variantOptions[0]
-                            .variantOptionValues[0].price as number
-                        }
+                        {item?.variants[
+                          selectedOption
+                        ].variantOptions[0].variantOptionValues[0].price.toLocaleString(
+                          'id-ID'
+                        )}
                       </Td>
                       <Td>
-                        {(item?.variants[0].variantOptions[0]
-                          .variantOptionValues[0].price as number) * count}
+                        {(
+                          (item?.variants[selectedOption].variantOptions[0]
+                            .variantOptionValues[0].price as number) * count
+                        ).toLocaleString('id-ID')}
                       </Td>
                     </Tr>
                   </Tbody>
@@ -211,23 +305,37 @@ export default function Checkout() {
             <Box>
               <Input
                 type="hidden"
+                name="option"
+                value={selectedOption}
+                required
+              />
+              <Input
+                type="hidden"
                 name="price"
                 value={
-                  item?.variants[0].variantOptions[0].variantOptionValues[0]
-                    .price
+                  item?.variants[selectedOption].variantOptions[0]
+                    .variantOptionValues[0].price
                 }
               />
               <Input type="hidden" name="storeId" value={item?.storeId} />
               <Input type="hidden" name="productId" value={item?.id} />
               <Input
                 type="hidden"
+                name="valueId"
+                value={
+                  item?.variants[selectedOption].variantOptions[0]
+                    .variantOptionValues[0].id
+                }
+              />
+              <Input
+                type="hidden"
                 name="variantOptionId"
-                value={item?.variants[0].variantOptions[0].id}
+                value={item?.variants[selectedOption].variantOptions[0].id}
               />
               <Input
                 type="hidden"
                 name="userId"
-                value={item?.store?.users[0].id}
+                value={item?.store?.users[selectedOption].id}
               />
             </Box>
             <Box display={'flex'} flexDir={'column'} gap={3}>
@@ -247,133 +355,28 @@ export default function Checkout() {
                     />
                   ))}
                 </Box>
-              </Box>
-              <Box>
-                <Text fontWeight={'bold'}>Pengiriman</Text>
-                <Box display={'flex'} gap={3}>
-                  <Box width={'50%'}>
-                    <Select name="courier" bgColor={'#fcfcfc'}>
-                      <option value="" hidden>
-                        Pilih Kurir
-                      </option>
-                      <option value="1">Grab</option>
-                      <option value="2">JNE</option>
-                      <option value="3">TIKI</option>
-                      <option value="4">ShoopeeExpress</option>
-                      <option value="5">TokopediaExpress</option>
-                    </Select>
-                  </Box>
-                  <Box w={'50%'}>
-                    <Select name="getPackage" bgColor={'#fcfcfc'}>
-                      <option value="" hidden>
-                        Pilih Paket
-                      </option>
-                      <option value="1">Grab</option>
-                      <option value="2">JNE</option>
-                      <option value="3">TIKI</option>
-                      <option value="4">ShoopeeExpress</option>
-                      <option value="5">TokopediaExpress</option>
-                    </Select>
-                  </Box>
-                </Box>
-              </Box>
-              <Box>
-                <Text fontWeight={'bold'}>Metode Pembayaran</Text>
-                <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
-                  <Stack gap={2}>
-                    <Radio value="BCA">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://www.bca.co.id/-/media/Feature/Card/List-Card/Tentang-BCA/Brand-Assets/Logo-BCA/Logo-BCA_Biru.png"
-                          alt="bca icon"
-                        />
-                        BCA
-                      </Flex>
-                    </Radio>
-                    <Radio value="BRI">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/2560px-BRI_2020.svg.png"
-                          alt="bca icon"
-                        />
-                        BRI
-                      </Flex>
-                    </Radio>
-                    <Radio value="Mandiri">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png"
-                          alt=""
-                        />
-                        Mandiri
-                      </Flex>
-                    </Radio>
-                    <Radio value="BNI">
-                      <Flex gap={2} alignItems={'center'}>
-                        <Image
-                          w={'50px'}
-                          src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"
-                          alt=""
-                        />
-                        BNI
-                      </Flex>
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-              </Box>
-              <Box bgColor={'#fcfcfc'} p={3}>
-                <Text color={'gray'} as="ins">
-                  RINCIAN PESANAN
-                </Text>
-                <Text color={'gray'}>{item?.name}</Text>
-                <Text
-                  w={'50%'}
-                  overflow={'hidden'}
-                  textOverflow={'ellipsis'}
-                  whiteSpace={'nowrap'}
-                  color={'gray'}
-                >
-                  {item?.description}
-                </Text>
-                <Box fontWeight={'bold'}>
-                  <Box
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                    borderBottom={'1px'}
-                  >
-                    <Text>Kode Unik</Text>
-                    <Text>{unique}</Text>
-                  </Box>
-                  <Box display={'flex'} justifyContent={'space-between'}>
-                    <Text>Total</Text>
-                    <Text>
-                      {(item?.variants[0].variantOptions[0]
+                <Box mt={3}>
+                  <CheckoutCourier
+                    name={item?.name}
+                    description={item?.description}
+                    unique={unique}
+                    total={
+                      (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
-                        unique}
-                    </Text>
-                    <Input
-                      type="hidden"
-                      name="totalPrice"
-                      value={
-                        (item?.variants[0].variantOptions[0]
-                          .variantOptionValues[0].price as number) * count
-                      }
-                    />
-                    <Input
-                      type="hidden"
-                      name="totalPriceUnique"
-                      value={
-                        (item?.variants[0].variantOptions[0]
-                          .variantOptionValues[0].price as number) *
-                          count +
-                        unique
-                      }
-                    />
-                  </Box>
+                      unique
+                    }
+                    totalPrice={
+                      (item?.variants[selectedOption].variantOptions[0]
+                        .variantOptionValues[0].price as number) * count
+                    }
+                    totalPriceUnique={
+                      (item?.variants[selectedOption].variantOptions[0]
+                        .variantOptionValues[0].price as number) *
+                        count +
+                      unique
+                    }
+                  />
                 </Box>
               </Box>
               <Box>
@@ -388,4 +391,3 @@ export default function Checkout() {
     </>
   );
 }
-// };
