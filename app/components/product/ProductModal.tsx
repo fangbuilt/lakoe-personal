@@ -146,6 +146,7 @@ export default function ProductModal(props: IProduct) {
                 color={'white'}
                 borderRadius={'50px'}
                 type="submit"
+                onClick={onEditPriceClose}
               >
                 Simpan
               </Button>
@@ -199,6 +200,7 @@ export default function ProductModal(props: IProduct) {
                 color={'white'}
                 borderRadius={'50px'}
                 type="submit"
+                onClick={onEditStockClose}
               >
                 Simpan
               </Button>

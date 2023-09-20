@@ -27,8 +27,11 @@ interface IProductBodyProps {
 }
 export default function ProductBody(props: IProductBodyProps) {
   const { product } = props;
-  // const [activeTab, setActiveTab] = useState(0);
-  const { searchProducts, setSearchQuery } = useSearchProducts(product);
+  const [activeTab, setActiveTab] = useState(0);
+  const { searchProducts, setSearchQuery } = useSearchProducts(
+    product,
+    activeTab
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const { selectedCategories, toggleCategory, getSelectedCategoryCount } =
@@ -73,8 +76,8 @@ export default function ProductBody(props: IProductBodyProps) {
             </Link>
           </Box>
         </Box>
-        {/* <Tabs w={"100%"} onChange={(index) => setActiveTab(index)}> */}
-        <Tabs w={'100%'}>
+        <Tabs w={'100%'} onChange={(index) => setActiveTab(index)}>
+          {/* <Tabs w={'100%'}> */}
           <TabList px={1}>
             <Tab>
               <Text fontSize={'16px'}>Semua</Text>

@@ -65,18 +65,11 @@ export async function getProductByCategoryId(id: any) {
 }
 
 export async function deleteProduct(id: string) {
-  // const deleteVariant = db.variant.deleteMany({
-  //   where: {
-  //     productId: id,
-  //   },
-  // });
   const deleteProduct = await db.product.delete({
     where: {
       id,
     },
   });
-  // const trnasaction = await db.$transaction([deleteVariant, deleteProduct]);
-  // console.log("sukses", trnasaction);
   return deleteProduct;
 }
 
