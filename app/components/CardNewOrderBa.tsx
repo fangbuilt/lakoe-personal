@@ -23,6 +23,17 @@ import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import { db } from '~/libs/prisma/db.server';
 import type { loader } from '~/routes/order';
 
+export function formatCurrency(price: number): string {
+  const formattedAmount = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+
+  return formattedAmount;
+}
+
 export default function CardNewOrderBa() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { filteredOrders } = useSearchFilter();
@@ -331,7 +342,13 @@ export default function CardNewOrderBa() {
                       </Text>
                     </Flex>
                     <Text fontWeight={'bold'} fontSize={'14px'}>
-                      Rp {props.cart?.cartItems.map((a) => a.price * a.qty)}
+                      Rp{' '}
+                      {formatCurrency(
+                        props.cart?.cartItems.reduce(
+                          (total, a) => total + a.price * a.qty,
+                          0
+                        ) as number
+                      )}
                     </Text>
                   </Box>
                 </Flex>
