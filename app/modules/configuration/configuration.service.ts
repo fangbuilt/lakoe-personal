@@ -1,4 +1,4 @@
-import { db } from '~/libs/prisma/db.server';
+import { db } from '../../libs/prisma/db.server';
 
 export async function get() {
   return await db.payment.findMany({
@@ -11,4 +11,18 @@ export async function create(data: any) {
     data: data.title,
   });
   return title;
+}
+
+export async function getStore(storeId: string | undefined) {
+  if (typeof storeId === 'string') {
+    const store = await db.store.findUnique({
+      where: {
+        id: storeId,
+      },
+    });
+
+    return store;
+  }
+
+  return null;
 }

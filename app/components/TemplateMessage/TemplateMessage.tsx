@@ -3,7 +3,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Image,
   Input,
   Modal,
   ModalContent,
@@ -14,16 +13,31 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import { useState } from 'react';
-import CircleClose from '~/assets/icon/close-circle.svg';
 
-function TemplateMessage() {
+function TemplateMessage(data: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [value, setValue] = useState('');
 
   const handleChange = (event: any) => {
     setValue(event.target.value);
   };
+
+  const extensions = [StarterKit];
+
+  const editor = useEditor({
+    extensions,
+    content: data.content,
+    onUpdate: ({ editor }) => {
+      data.setContent(editor.getHTML());
+    },
+  });
+
+  if (!editor) {
+    return null;
+  }
 
   const updateState = (value: any) => {
     if (value === 'namaPembeli') {
@@ -55,11 +69,12 @@ function TemplateMessage() {
               >
                 Buat Template Pesan Baru
               </Text>
-              <Button onClick={onClose} variant={'link'}>
-                <Image src={CircleClose} />
-              </Button>
+              <Button onClick={onClose} variant={'link'}></Button>
             </Box>
             <Form method="post">
+              <Box>
+                <Input type="hidden" value={data.storeId} name="storeId" />
+              </Box>
               <Box fontFamily={'Plus Jakarta Sans'} py={3}>
                 <FormControl id="order-id" isRequired mb={5}>
                   <FormLabel>Judul Pesan</FormLabel>
@@ -82,9 +97,8 @@ function TemplateMessage() {
                 >
                   <Button
                     bg={'white'}
-                    name="StoreId"
+                    name="storeId"
                     height={'30px'}
-                    value={'klik saya'}
                     onClick={() => updateState('namaPembeli')}
                     color={'var(--text-dark, #1D1D1D)'}
                     borderRadius={'var(--rounded-full, 9999px)'}
