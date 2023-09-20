@@ -30,12 +30,16 @@ export async function action({ request }: ActionArgs) {
     const price = formData.get('price');
     const stock = formData.get('stock');
     const isActive =
-      (formData.get('isActive') as string) === 'true' ? true : false;
+      (formData.get('isActive') as string) === 'true' ? false : true;
 
-    console.log('Id Product: ', id);
-    console.log('isActive: ', isActive);
-    if (isActive) {
-      await updateIsActive({ id, isActive });
+    console.log('ini isactive', isActive);
+
+    if (!isActive || isActive) {
+      const updateIsActiveId = {
+        id,
+        isActive,
+      };
+      updateIsActive(updateIsActiveId);
     } else {
       await update({ id, price, stock });
     }
@@ -46,6 +50,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function Product() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <ImplementGrid>
       <Stack mt={'7.5vh'} spacing={4}>

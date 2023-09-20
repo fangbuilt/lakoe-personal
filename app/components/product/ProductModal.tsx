@@ -12,10 +12,12 @@ import {
   Modal,
   ModalContent,
   ModalOverlay,
+  Switch,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
+// import { useState } from "react";
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Copy from '~/assets/icon-pack/copy.svg';
 import Edit from '~/assets/icon-pack/edit.svg';
@@ -23,6 +25,7 @@ import Link2 from '~/assets/icon-pack/link-2.svg';
 import More from '~/assets/icon-pack/more.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { IProduct } from '~/interfaces/product/product';
+// import { updateIsActive } from "~/modules/product/product.service";
 
 export default function ProductModal(props: IProduct) {
   const {
@@ -41,6 +44,27 @@ export default function ProductModal(props: IProduct) {
     onClose: onDeleteClose,
   } = useDisclosure();
 
+  // const [status, setStatus] = useState(props.isActive);
+
+  // const handleSwitchChnge = async () => {
+  //   setStatus(!status);
+  //   try {
+  //     // const response = await fetch(`/product`, {
+  //     //   method: "PATCH",
+  //     //   body: JSON.stringify({
+  //     //     id: props.id,
+  //     //     isActive: String(!status),
+  //     //   }),
+  //     // });
+  //     // updateIsActive({
+  //     //   id: props.id,
+  //     //   isActive: !status,
+  //     // });
+  //     console.log("ini data");
+  //   } catch (error) {
+  //     console.error("Gagal mengupdate status:", error);
+  //   }
+  // };
   return (
     <>
       <Box display={'flex'} alignItems={'center'} gap={2}>
@@ -96,6 +120,18 @@ export default function ProductModal(props: IProduct) {
             </MenuItem>
           </MenuList>
         </Menu>
+        <Form method="PATCH">
+          <input type="hidden" value={props.id} name="id" />
+          <Button type="submit" variant={'ghost'}>
+            <Switch
+              size={'md'}
+              isChecked={props.isActive}
+              name="isActive"
+              value={props.isActive.toString()}
+              // onChange={handleSwitchChnge}
+            />
+          </Button>
+        </Form>
       </Box>
 
       {/* Change Price */}

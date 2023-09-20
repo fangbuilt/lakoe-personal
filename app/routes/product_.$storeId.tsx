@@ -7,6 +7,7 @@ import {
   deleteProduct,
   getProductByStoreId,
   update,
+  updateIsActive,
 } from '~/modules/product/product.service';
 
 export async function loader({ params }: LoaderArgs) {
@@ -27,12 +28,20 @@ export async function action({ request, params }: ActionArgs) {
     const id = formData.get('id') as string;
     const price = formData.get('price');
     const stock = formData.get('stock');
+    const isActive =
+      (formData.get('isActive') as string) === 'true' ? false : true;
 
-    console.log('id', id);
-    console.log('price', price);
-    console.log('stock', stock);
+    console.log('ini isactive', isActive);
 
-    await update({ id, price, stock });
+    if (!isActive || isActive) {
+      const updateIsActiveId = {
+        id,
+        isActive,
+      };
+      updateIsActive(updateIsActiveId);
+    } else {
+      await update({ id, price, stock });
+    }
   }
 
   return redirect(`/product/${params.storeId}`);

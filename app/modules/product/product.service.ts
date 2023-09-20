@@ -106,12 +106,14 @@ export async function update(data: any): Promise<any> {
 }
 
 export async function updateIsActive(data: any) {
-  const updateIsActive = await db.product.update({
-    data,
+  const status = await db.product.update({
+    data: {
+      isActive: data.isActive,
+    },
     where: {
       id: data.id,
     },
   });
-  console.log('ini update isActive', updateIsActive);
-  return updateIsActive;
+  console.log('ini data', status);
+  return status;
 }
