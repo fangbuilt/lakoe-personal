@@ -11,6 +11,8 @@ export function UsePickingUp(email: string, name: string, waybill: string) {
   const date = new Date().getTime();
   const username = `${date}`;
 
+
+
   // Split the email address into username and domain
   const atIndex = emailAddress.indexOf('@');
   const usernamePart = emailAddress.slice(0, atIndex);
