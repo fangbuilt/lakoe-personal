@@ -50,10 +50,10 @@ export async function action({ request }: ActionArgs) {
       width: parseFloat(formData.get('width') as string),
       height: parseFloat(formData.get('height') as string),
     };
-    const newProduct = await createProduct(data, '1');
-    return newProduct;
+    await createProduct(data, '1');
+    return redirect('/product');
   }
-  return redirect('/product');
+  return null;
 }
 
 export default function AddProduct() {
