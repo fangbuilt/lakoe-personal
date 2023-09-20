@@ -174,7 +174,7 @@ export async function update(data: any): Promise<any> {
       },
     },
   });
-  // console.log('ini update', update);
+  // console.log("ini update", update);
   return update;
 }
 
@@ -187,6 +187,6 @@ export async function updateIsActive(data: any) {
       id: data.id,
     },
   });
-  // console.log('ini data', status);
+  // console.log("ini status", status);
   return status;
 }

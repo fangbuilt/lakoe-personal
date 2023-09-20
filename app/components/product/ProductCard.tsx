@@ -30,7 +30,7 @@ export default function ProductCard(props: IProductCardProps) {
               objectFit={'cover'}
             />
             <Box>
-              <Box display={'flex'} justifyContent={'space-evenly'}>
+              <Box display={'flex'}>
                 <Text
                   fontSize={'18px'}
                   color={'#1D1D1D'}
@@ -41,7 +41,9 @@ export default function ProductCard(props: IProductCardProps) {
                 >
                   {product.name}
                 </Text>
-                <Checkbox />
+                <Box ms={'65px'}>
+                  <Checkbox />
+                </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'} gap={2} mb={2}>
                 <Text fontSize={'16px'}>

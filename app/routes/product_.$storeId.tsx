@@ -38,7 +38,7 @@ export async function action({ request, params }: ActionArgs) {
         id,
         isActive,
       };
-      updateIsActive(updateIsActiveId);
+      await updateIsActive(updateIsActiveId);
     } else {
       await update({ id, price, stock });
     }

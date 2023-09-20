@@ -33,15 +33,18 @@ export async function action({ request }: ActionArgs) {
       (formData.get('isActive') as string) === 'true' ? false : true;
 
     console.log('ini isactive', isActive);
+    console.log('ini stock', price);
+    console.log('ini stock', stock);
 
-    if (!isActive || isActive) {
-      const updateIsActiveId = {
+    if (price || stock) {
+      const updatePriceStock = {
         id,
-        isActive,
+        price,
+        stock,
       };
-      updateIsActive(updateIsActiveId);
+      await update(updatePriceStock);
     } else {
-      await update({ id, price, stock });
+      await updateIsActive({ id, isActive });
     }
   }
 
