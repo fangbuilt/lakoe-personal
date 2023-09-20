@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Accordion,
   AccordionButton,
@@ -27,35 +28,44 @@ import {
   MenuList,
   Image,
   Checkbox,
+  Center,
 } from '@chakra-ui/react';
-// import { Form, Link } from '@remix-run/react';
+
+import { Form, Link, useLoaderData } from '@remix-run/react';
+import type { loader } from '~/routes/order';
+import React, { useState } from 'react';
+import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
-import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
-import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
+import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
+import type { Item } from '~/type/StatusColorMap';
+import { statusToColor } from '~/type/StatusColorMap';
+import UseSearchAll from '~/hooks/useSearchOrderAll';
+export default function UnpaidAllCard() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { filteredOrders, setSearchQuery, searchQuery } = UseSearchAll();
 
-import { Link } from '@remix-run/react';
-import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
-
-export default function UnpaidCard() {
-  // const { unpaidCard } = useLoaderData<typeof loader>();
-  const { filteredOrder, setSearchQuery } = UseSearchProductUnpaid();
-  // console.log('unpaidCard', unpaidCard);
-  const { getSelectedCourier, selectedCouriers, toggleCourier } =
-    useFilterCourier();
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter();
+  // console.log('filteredOrders', filteredOrders);
   // console.log('setSearchQuery', setSearchQuery);
   // console.log('searchQuery', searchQuery);
-  // console.log('filteredOrderfilteredOrderfilteredOrder', filteredOrder);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  // const formatter = new Intl.NumberFormat('en-ID', {
-  //   style: 'currency',
-  //   currency: 'IDR',
-  // });
+  const {
+    filteredOrdersList,
+    getSelectedCourier,
+    selectedCouriers,
+    toggleCourier,
+    setSelectedCouriers,
+  } = useFilterCourier();
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortFilter();
+
+  const defaultItem: Item = {
+    status: 'UNPAID',
+  };
+
+  const item: Item = defaultItem;
 
   return (
     <>
@@ -295,135 +305,150 @@ export default function UnpaidCard() {
       </Box>
 
       {/* CARD START HERE */}
-      {filteredOrder.map((item, index) => (
-        // eslint-disable-next-line react/jsx-key
-        <Card mb={5} boxShadow={'xs'}>
-          <Box key={index}>
-            <Box mt={5}>
-              <Box>
-                <Flex justifyContent={'space-between'} px={2}>
-                  <Button
-                    bg={'#E8C600'}
-                    color={'white'}
-                    textShadow={'1px 1px 1px gray'}
-                    fontWeight={'bold'}
-                    colorScheme="red.500"
-                    size={'sm'}
-                    pointerEvents={'none'}
-                  >
-                    {item.status}
-                  </Button>
+      {filteredOrders.length === 0 ? (
+        <Box marginTop={'70px'}>
+          <Center>
+            <Image src={SearchProduct} width={'50px'} />
+            <Text>No Data</Text>
+          </Center>
+        </Box>
+      ) : (
+        <Box marginTop={'10px'}>
+          {filteredOrders.map((item, index) => (
+            // eslint-disable-next-line react/jsx-key
+            <Card mb={5} boxShadow={'xs'}>
+              <Box key={index}>
+                <Box mt={5}>
+                  <Box>
+                    <Flex justifyContent={'space-between'} px={2}>
+                      <Button
+                        bg={statusToColor[item.status] || ''}
+                        color={'white'}
+                        textShadow={'1px 1px 1px gray'}
+                        fontWeight={'bold'}
+                        colorScheme="red.500"
+                        size={'sm'}
+                        pointerEvents={'none'}
+                      >
+                        {item.status}
+                      </Button>
 
-                  {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-                  <Button
-                    bg={'transparent'}
-                    border={'1px solid #D5D5D5'}
-                    borderRadius={'full'}
-                    fontSize={'14px'}
-                    onClick={() => {
-                      onOpen();
-                    }}
-                  >
-                    Hubungi Pembeli
-                  </Button>
-                  <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                    <ModalOverlay background={'whiteAlpha.50'} />
-                    <ModalContent>
-                      <ModalHeader>
-                        Send Message ke {item.receiverName}
-                      </ModalHeader>
-                      <ModalCloseButton />
-                      <ModalBody>
-                        <Accordion allowToggle>
-                          {item.cart?.store?.messageTemplates.map(
-                            (itemtemp) => (
-                              <AccordionItem key={itemtemp.id}>
-                                <Text>
-                                  <AccordionButton>
-                                    <Box as="span" flex="1" textAlign="left">
-                                      Pesan {itemtemp.id}
-                                    </Box>
-                                    <AccordionIcon />
-                                  </AccordionButton>
-                                </Text>
-                                <AccordionPanel pb={4}>
-                                  {itemtemp.content}
-                                  <Button
-                                    colorScheme={'whatsapp'}
-                                    float={'right'}
-                                  >
-                                    <Link
-                                      to={createWhatsAppTemplateMessageUnpaid(
-                                        item.receiverPhone ?? '',
-                                        itemtemp.content
-                                      )}
-                                      target="_blank"
-                                    >
-                                      Kirim
-                                    </Link>
-                                  </Button>
-                                </AccordionPanel>
-                              </AccordionItem>
-                            )
-                          )}
-                        </Accordion>
-                      </ModalBody>
-                      <ModalFooter></ModalFooter>
-                    </ModalContent>
-                  </Modal>
-                  {/*  */}
-                </Flex>
-                <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                  {item.invoiceNumber}
-                </Text>
-                <hr />
-                <Flex justifyContent={'space-between'}>
-                  <Box display={'flex'} w={'80%'}>
-                    <Img
-                      w={'52px'}
-                      h={'52px'}
-                      display={'inline'}
-                      src={`${item.cart?.cartItems.map((item) =>
-                        item.product?.attachments.map((item) => item.url)
-                      )}`}
-                      mt={3}
-                    />
-                    <Text
-                      mt={4}
-                      id="fm500"
-                      fontSize={'16px'}
-                      textOverflow={'ellipsis'}
-                      overflow={'hidden'}
-                      whiteSpace={'nowrap'}
-                      fontWeight={'700'}
-                    >
-                      {item.cart?.cartItems.map((item) => item.product?.name)}
-                      <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                        {item.cart?.cartItems.map((item) => item.qty)} Barang
-                      </Text>
-                    </Text>
-                  </Box>
-                  <Box mt={4} w={'15%'}>
-                    <Flex gap={1}>
-                      <Text color={'#909090'} fontSize={'14px'}>
-                        Total
-                      </Text>
-                      <Text color={'#909090'} fontSize={'14px'}>
-                        Belanja
-                      </Text>
+                      {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
+                      <Button
+                        bg={'transparent'}
+                        border={'1px solid #D5D5D5'}
+                        borderRadius={'full'}
+                        fontSize={'14px'}
+                        onClick={onOpen}
+                      >
+                        Hubungi Pembeli
+                      </Button>
+                      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+                        <ModalOverlay bg={'whiteAlpha.100'} />
+                        <ModalContent>
+                          <ModalHeader>
+                            Send Message ke {item.receiverName}
+                          </ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody>
+                            <Accordion allowToggle>
+                              {item.cart?.store?.messageTemplates.map(
+                                (itemtemp) => (
+                                  <AccordionItem key={itemtemp.id}>
+                                    <Text>
+                                      <AccordionButton>
+                                        <Box
+                                          as="span"
+                                          flex="1"
+                                          textAlign="left"
+                                        >
+                                          Pesan {itemtemp.id}
+                                        </Box>
+                                        <AccordionIcon />
+                                      </AccordionButton>
+                                    </Text>
+                                    <AccordionPanel pb={4}>
+                                      {itemtemp.content}
+                                      <Button
+                                        colorScheme={'whatsapp'}
+                                        float={'right'}
+                                      >
+                                        <Link
+                                          to={createWhatsAppTemplateMessageUnpaid(
+                                            item.receiverPhone ?? '',
+                                            itemtemp.content
+                                          )}
+                                          target="_blank"
+                                        >
+                                          Kirim
+                                        </Link>
+                                      </Button>
+                                    </AccordionPanel>
+                                  </AccordionItem>
+                                )
+                              )}
+                            </Accordion>
+                          </ModalBody>
+                          <ModalFooter></ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                      {/*  */}
                     </Flex>
-                    <Text fontWeight={'bold'} fontSize={'14px'}>
-                      {/* {formatter.format(item.price)}
-                       */}
-                      Rp {item.price.toLocaleString('id-ID')}
+                    <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
+                      {item.invoiceNumber}
                     </Text>
+                    <hr />
+                    <Flex justifyContent={'space-between'}>
+                      <Box display={'flex'} w={'80%'}>
+                        <Img
+                          w={'52px'}
+                          h={'52px'}
+                          display={'inline'}
+                          src={`${item.cart?.cartItems.map((item) =>
+                            item.product?.attachments.map((item) => item.url)
+                          )}`}
+                          mt={3}
+                        />
+                        <Text
+                          mt={4}
+                          id="fm500"
+                          fontSize={'16px'}
+                          textOverflow={'ellipsis'}
+                          overflow={'hidden'}
+                          whiteSpace={'nowrap'}
+                          fontWeight={'700'}
+                        >
+                          {item.cart?.cartItems.map(
+                            (item) => item.product?.name
+                          )}
+                          <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                            {item.cart?.cartItems.map((item) => item.qty)}{' '}
+                            Barang
+                          </Text>
+                        </Text>
+                      </Box>
+                      <Box mt={4} w={'15%'}>
+                        <Flex gap={1}>
+                          <Text color={'#909090'} fontSize={'14px'}>
+                            Total
+                          </Text>
+                          <Text color={'#909090'} fontSize={'14px'}>
+                            Belanja
+                          </Text>
+                        </Flex>
+                        <Text fontWeight={'bold'} fontSize={'14px'}>
+                          {/* {formatter.format(item.price)} */}
+                          Rp {item.price.toLocaleString('id-ID')}
+                        </Text>
+                      </Box>
+                    </Flex>
                   </Box>
-                </Flex>
+                </Box>
               </Box>
-            </Box>
-          </Box>
-        </Card>
-      ))}
+            </Card>
+          ))}
+        </Box>
+      )}
 
       {/* END CARD */}
     </>

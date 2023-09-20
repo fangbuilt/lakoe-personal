@@ -13,7 +13,7 @@ const data = [
   {
     id: '1',
     title: ' CREWNECK BASIC-BLACK | sweeter polos hodie polos crewneck - S',
-    quantity: '2',
+    qty: '2',
     price: '190.000',
     invoice: 'INV/20230809/MPL/00003432',
     status: 'Belum dibayar',
@@ -22,8 +22,19 @@ const data = [
     cta: 'Hubungi Penjual',
   },
 ];
+// {
+//   id:
+//   title:
+//   qty:
+//   price:
+//   invoice:
+//   status:
+//   picture:
+
+//   cta:
+// }
+
 export default function CardProducts(props: any) {
-  console.log();
   return (
     <>
       <Box>
@@ -121,7 +132,7 @@ export default function CardProducts(props: any) {
                       color={'#909090'}
                       lineHeight={'16px'}
                     >
-                      {card.quantity} Barang
+                      {card.qty} Barang
                     </Text>
                   </CardBody>
                 </Box>
