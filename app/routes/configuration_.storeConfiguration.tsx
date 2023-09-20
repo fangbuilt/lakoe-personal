@@ -7,8 +7,53 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
+import type { ActionArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
+import createLocation from '~/modules/configuration/configuration.service';
+
+export async function action({ request }: ActionArgs) {
+  //ini adalah action location ===============================================
+  const formData = await request.formData();
+  console.log('ini isi dari formData', formData);
+
+  const actionType = formData.get('actionType');
+  console.log('ini isi dari actionType', actionType);
+
+  const name = formData.get('name');
+  const address = formData.get('address');
+  const latitude = formData.get('latitude');
+  const longtitude = formData.get('longtitude');
+  const cityDistrict = formData.get('cityDistrict');
+  const postalCode = formData.get('postalCode');
+  const isMainLocation = true;
+  console.log('ini isi dari name :', name);
+  console.log('ini isi dari adres :', address);
+  console.log('ini isi dari lat :', latitude);
+  console.log('ini isi dari long :', longtitude);
+  console.log('ini isi dari city :', cityDistrict);
+  console.log('ini isi dari poscode :', postalCode);
+  console.log('ini isi dari isman :', isMainLocation);
+
+  if (actionType === 'create') {
+    console.log('data berhasil masuk!');
+
+    await createLocation({
+      name,
+      address,
+      latitude,
+      longtitude,
+      cityDistrict,
+      postalCode,
+      isMainLocation,
+    });
+    const redirectURL = `/configuration/storeConfiguration `;
+    return redirect(redirectURL);
+  }
+  return null;
+}
+//=======================================================================
 
 export default function StoreConfiguration() {
   return (

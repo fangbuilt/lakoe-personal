@@ -9,7 +9,7 @@ import {
   Image,
   Text,
 } from '@chakra-ui/react';
-import Pinpoint from '../../Maps';
+import Pinpoint from './Maps';
 
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 

@@ -83,11 +83,13 @@ export default function Maps() {
           mb={'10px'}
           //bg={"red"}
         />
-        <Box id="map" style={{ height: '300px', width: '500px' }}></Box>
+        <Box id="map" style={{ height: '300px', width: '400px' }}></Box>
         {latitude !== null && longitude !== null && (
-          <Box>
-            <p>Latitude: {latitude}</p>
-            <p>Longitude: {longitude}</p>
+          <Box width={'400px'}>
+            {/* <Text>Latitude: {latitude}</Text>
+            <Text>Longitude: {longitude}</Text> */}
+            <Input name="latitude" hidden type="text" value={latitude} />
+            <Input name="longtitude" hidden type="text" value={longitude} />
           </Box>
         )}
       </Box>

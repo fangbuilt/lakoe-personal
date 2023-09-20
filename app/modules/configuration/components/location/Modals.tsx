@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Modal,
@@ -14,36 +14,156 @@ import {
   Input,
   Select,
   Textarea,
-  Box,
-  IconButton,
 } from '@chakra-ui/react';
 
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
-import LocationSlash from '~/assets/icon-pack/location-slash.svg';
 import { Form } from '@remix-run/react';
-import Maps from '../../Maps';
+import Maps from './Maps';
 
+//interface modal
 interface CustomModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+//=======================
 
 export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
+  // ini logic modal ==================================================
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
 
-  const openMapModal = () => {
-    setIsMapModalOpen(true);
-    onClose(); // Tutup modal utama
-  };
+  // const openMapModal = () => {
+  //   setIsMapModalOpen(true);
+  //   onClose(); // Tutup modal utama
+  // };
 
   const closeMapModal = () => {
     setIsMapModalOpen(false);
     onClose(); // Tutup modal utama saat menutup modal dalam modal
   };
 
+  //==============================================================================================
+
+  // ini logic select option ==================================================
+  interface Provinsi {
+    id: string;
+    name: string;
+  }
+
+  interface Kabupaten {
+    id: string;
+    name: string;
+  }
+
+  interface Kecmatan {
+    id: string;
+    name: string;
+  }
+
+  // Deklarasikan state untuk menyimpan data provinsi
+  const [provinsiOption, setProvinsiOption] = useState<Provinsi[]>([]);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedProvinceName, setSelectedProvinceName] = useState('');
+
+  const [kabupatenOption, setKabupatenOption] = useState<Kabupaten[]>([]);
+  const [selectedKabupaten, setSelectedKabupaten] = useState('');
+  const [selectedKabupatenName, setSelectedKabupatenName] = useState('');
+
+  const [kecamatanOption, setKecamatanOption] = useState<Kecmatan[]>([]);
+  const [selectedKecamatan, setSelectedKecamatan] = useState('');
+  const [selectedKecamatanName, setSelectedKecamatanName] = useState('');
+
+  const fetchProvinsiData = useCallback(async () => {
+    try {
+      const response = await fetch(
+        'https://api.binderbyte.com/wilayah/provinsi?api_key=0ddfc24514a47d4cf2fbed43a7d4b151ec2944fceb30f8586d94e4501d29a5cd'
+      );
+      console.log('data Provinsi : ', response);
+      console.log('set provinsi :', selectedProvinceName);
+      const data = await response.json();
+      if (data.code === '200') {
+        setProvinsiOption(data.value);
+      }
+    } catch (error) {
+      console.error('Error fetching provinsi data:', error);
+    }
+  }, [selectedProvinceName]);
+
+  const fetchKabupatenData = useCallback(async () => {
+    try {
+      const id = selectedProvince.split(',')[0];
+      const name = selectedProvince.split(',')[1];
+      setSelectedProvinceName(name);
+      console.log('Name Provinsi : ', name);
+      const response = await fetch(
+        `https://api.binderbyte.com/wilayah/kabupaten?api_key=0ddfc24514a47d4cf2fbed43a7d4b151ec2944fceb30f8586d94e4501d29a5cd&id_provinsi=${id}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log('data Kabupaten: ', data);
+        console.log('set kabupaten : ', selectedKabupatenName);
+        setKabupatenOption(data.value);
+      }
+    } catch (error) {
+      console.error('Error fetching kabupaten data:', error);
+    }
+  }, [selectedProvince, selectedKabupatenName]);
+
+  const fetchKecamatanData = useCallback(async () => {
+    try {
+      const id = selectedKabupaten.split(',')[0];
+      const name = selectedKabupaten.split(',')[1];
+      setSelectedKabupatenName(name);
+      console.log('Name Kabupaten : ', name);
+      const response = await fetch(
+        `https://api.binderbyte.com/wilayah/kecamatan?api_key=0ddfc24514a47d4cf2fbed43a7d4b151ec2944fceb30f8586d94e4501d29a5cd&id_kabupaten=${id}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log('data Kecamatan : ', data);
+        console.log('set kabupaten : ', selectedKecamatanName);
+
+        setKecamatanOption(data.value);
+      }
+    } catch (error) {
+      console.error('Error fetching kecamatan data:', error);
+    }
+  }, [selectedKabupaten, selectedKecamatanName]);
+
+  //console.log("kecamatan name :", selectedKecamatanName);
+
+  useEffect(() => {
+    fetchProvinsiData();
+  }, [fetchProvinsiData]);
+
+  useEffect(() => {
+    if (selectedProvince) {
+      fetchKabupatenData();
+    } else {
+      setKabupatenOption([]);
+    }
+  }, [selectedProvince, fetchKabupatenData]);
+
+  useEffect(() => {
+    if (selectedKabupaten) {
+      fetchKecamatanData();
+    } else {
+      setKecamatanOption([]);
+    }
+  }, [selectedKabupaten, fetchKecamatanData]);
+
+  const handleKabupatenChange = (event: any) => {
+    setSelectedKabupaten(event.target.value);
+  };
+
+  const handleKecamatanChange = (event: any) => {
+    setSelectedKecamatan(event.target.value);
+    setSelectedKecamatanName(event.target.value.split(',')[1]);
+  };
+
+  //=======================================================================================
   return (
     <>
       <Modal
@@ -74,46 +194,97 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
             </Button>
           </ModalHeader>
           {/* <ModalCloseButton /> */}
-          <Form>
+          <Form method="post">
             <ModalBody>
+              <Input hidden name="actionType" value="create" />
               <FormControl isRequired>
                 <FormLabel>Nama Lokasi</FormLabel>
-                <Input ref={initialRef} placeholder="Cth. Toko Alamanda" />
+                <Input name="name" placeholder="Cth. Toko Alamanda" />
               </FormControl>
 
               <FormControl mt={4} isRequired>
-                <FormLabel>Kota/Kecamatan</FormLabel>
-                <Select>
-                  <option value="" hidden>
-                    Cari kota / Kecamatan
-                  </option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
+                <FormLabel>provinsi</FormLabel>
+                <Select
+                  name="province"
+                  placeholder="Cari Provinsi"
+                  value={selectedProvince}
+                  onChange={(e) => setSelectedProvince(e.target.value)}
+                >
+                  {provinsiOption.map((option) => (
+                    <option
+                      key={option.id}
+                      value={option.id + ',' + option.name}
+                    >
+                      {option.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl mt={4} isRequired>
+                <FormLabel>kabupaten</FormLabel>
+                <Select
+                  name="kabupaten"
+                  placeholder="Cari kabupaten"
+                  value={selectedKabupaten}
+                  onChange={handleKabupatenChange}
+                >
+                  {kabupatenOption.map((kabupaten) => (
+                    <option
+                      key={kabupaten.id}
+                      value={kabupaten.id + ',' + kabupaten.name}
+                    >
+                      {kabupaten.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl mt={4} isRequired>
+                <FormLabel>kecamatan</FormLabel>
+                <Select
+                  name="cityDistrict"
+                  placeholder="Cari kota / Kecamatan"
+                  value={selectedKecamatan}
+                  onChange={handleKecamatanChange}
+                >
+                  {kecamatanOption.map((kecamatan) => (
+                    <option
+                      key={kecamatan.id}
+                      value={kecamatan.id + ',' + kecamatan.name}
+                    >
+                      {kecamatan.name}
+                    </option>
+                  ))}
                 </Select>
               </FormControl>
 
               <FormControl mt={4} isRequired>
                 <FormLabel>Kode Pos</FormLabel>
-                <Select>
+                <Select name="postalCode">
                   <option value="" hidden color="red">
                     Masukan 5 digit kode pos
                   </option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
+                  <option value="11111">11111</option>
+                  <option value="22222">22222</option>
                 </Select>
               </FormControl>
 
               <FormControl mt={4} isRequired>
                 <FormLabel>Alamat Lengkap</FormLabel>
-                <Textarea placeholder="Tuliskan Alamat lengkap Toko" />
+                <Textarea
+                  name="address"
+                  placeholder="Tuliskan Alamat lengkap Toko"
+                />
               </FormControl>
+
               <FormControl mt={4}>
                 <FormLabel>Pinpoint Lokasi</FormLabel>
                 <Text fontSize={'sm'} color={'grey'} mb={'30px'}>
                   Tandai lokasi untuk mempermudah pemintaan pickup kurir
                 </Text>
-                {/* <Maps /> */}
-                <Box position={'relative'}>
+                <Maps />
+                {/* <Box position={'relative'}>
                   <Button
                     bg={'transparent'}
                     top={'2px'}
@@ -149,15 +320,15 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
                     onClick={openMapModal}
                     aria-label="Tombol Gambar"
                   />
-                </Box>
+                </Box> */}
               </FormControl>
             </ModalBody>
 
             <ModalFooter mt={'30px'}>
-              <Button mr={2} onClick={onClose} borderRadius={'20px'}>
+              <Button mr={2} borderRadius={'20px'}>
                 Batalkan
               </Button>
-              <Button colorScheme="blue" borderRadius={'20px'}>
+              <Button type="submit" colorScheme="blue" borderRadius={'20px'}>
                 Simpan
               </Button>
             </ModalFooter>
