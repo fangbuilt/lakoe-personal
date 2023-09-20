@@ -16,15 +16,20 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import useSearchFilter from '~/hooks/useSearchOrder';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import { db } from '~/libs/prisma/db.server';
+import type { loader } from '~/routes/order';
 
-export default function CardNewOrderBa(props: IOrderDetailInvoice) {
+export default function CardNewOrderBa() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { filteredOrders } = useSearchFilter();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const cardProduct = useLoaderData<typeof loader>();
+
+  const props = cardProduct.dataInvoice;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -70,8 +75,6 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
   const afterpacking = () => {
     if (systembalance > 50000) {
       handleOrderCourier();
-      // CreateHistory();
-      // UpdateInvoice();
     } else {
       handleBalanceNotif();
     }
@@ -211,25 +214,6 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
     }
   };
 
-  async function CreateHistory() {
-    const data = {
-      status: 'NEW_ORDER',
-      invoiceId: props.id,
-    };
-    await db.invoiceHistory.create({ data });
-  }
-
-  async function UpdateInvoice() {
-    const dataUpdate = db.invoice.update({
-      where: {
-        id: props.id,
-      },
-      data: {
-        status: 'READY_TO_SHIP',
-      },
-    });
-  }
-
   const [modalText, setModalText] = useState('');
   return (
     <>
@@ -306,7 +290,7 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                 </Modal>
               </Flex>
               <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                {props.invoiceNumber}
+                {props.map((c) => c.invoiceNumber)}
               </Text>
               <hr />
               <Flex justifyContent={'space-between'}>
@@ -315,8 +299,10 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                     w={'52px'}
                     h={'52px'}
                     display={'inline'}
-                    src={`${props.cart.cartItems.map((a) =>
-                      a.product.attachments.map((jancok) => jancok.url)
+                    src={`${props.map((s) =>
+                      s.cart?.cartItems.map((a) =>
+                        a.product?.attachments.map((jancok) => jancok.url)
+                      )
                     )}`}
                     mt={3}
                     mx={3}
@@ -330,9 +316,12 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                     whiteSpace={'nowrap'}
                     fontWeight={'700'}
                   >
-                    {props.cart.cartItems.map((a) => a.product.name)}
+                    {props.map((c) =>
+                      c.cart?.cartItems.map((a) => a.product?.name)
+                    )}
                     <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                      {props.cart.cartItems.map((a) => a.qty)} Barang
+                      {props.map((aw) => aw.cart?.cartItems.map((a) => a.qty))}{' '}
+                      Barang
                     </Text>
                   </Text>
                 </Box>
@@ -346,7 +335,10 @@ export default function CardNewOrderBa(props: IOrderDetailInvoice) {
                     </Text>
                   </Flex>
                   <Text fontWeight={'bold'} fontSize={'14px'}>
-                    Rp {props.cart.cartItems.map((a) => a.price * a.qty)}
+                    Rp{' '}
+                    {props.map((ay) =>
+                      ay.cart?.cartItems.map((a) => a.price * a.qty)
+                    )}
                   </Text>
                 </Box>
               </Flex>
