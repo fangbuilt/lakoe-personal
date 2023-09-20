@@ -21,6 +21,9 @@ import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import ProductTab from './ProductTab';
 import { useEffect, useState } from 'react';
+import ProductEmpty from './ProductEmpty';
+import ProductEmptyActive from './ProductEmptyActive';
+import ProductEmptyNonActive from './ProductEmptyNonActive';
 
 interface IProductBodyProps {
   product: IProduct[];
@@ -101,64 +104,82 @@ export default function ProductBody(props: IProductBodyProps) {
           />
           <TabPanels>
             <TabPanel>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Text fontSize={'18px'} fontWeight={'bold'}>
-                  {searchProducts.length} Produk
-                </Text>
-                <Box display={'flex'} gap={2}>
-                  <Text fontSize={'14px'}>Pilih Semua</Text>
-                  <Checkbox defaultChecked></Checkbox>
-                </Box>
-              </Box>
-              {searchProducts.map((a) => (
-                <ProductCard key={a.id} product={a}>
-                  <ProductModal {...a} />
-                </ProductCard>
-              ))}
+              {searchProducts.length === 0 ? (
+                <ProductEmpty />
+              ) : (
+                <>
+                  <Box
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                  >
+                    <Text fontSize={'18px'} fontWeight={'bold'}>
+                      {searchProducts.length} Produk
+                    </Text>
+                    <Box display={'flex'} gap={2}>
+                      <Text fontSize={'14px'}>Pilih Semua</Text>
+                      <Checkbox defaultChecked></Checkbox>
+                    </Box>
+                  </Box>
+                  {searchProducts.map((a) => (
+                    <ProductCard key={a.id} product={a}>
+                      <ProductModal {...a} />
+                    </ProductCard>
+                  ))}
+                </>
+              )}
             </TabPanel>
             <TabPanel>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Text fontSize={'18px'} fontWeight={'bold'}>
-                  {searchProducts.length} Produk
-                </Text>
-                <Box display={'flex'} gap={2}>
-                  <Text fontSize={'14px'}>Pilih Semua</Text>
-                  <Checkbox defaultChecked></Checkbox>
-                </Box>
-              </Box>
-              {searchProducts.map((a) => (
-                <ProductCard key={a.id} product={a}>
-                  <ProductModal {...a} />
-                </ProductCard>
-              ))}
+              {searchProducts.length === 0 ? (
+                <ProductEmptyActive />
+              ) : (
+                <>
+                  <Box
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                  >
+                    <Text fontSize={'18px'} fontWeight={'bold'}>
+                      {searchProducts.length} Produk
+                    </Text>
+                    <Box display={'flex'} gap={2}>
+                      <Text fontSize={'14px'}>Pilih Semua</Text>
+                      <Checkbox defaultChecked></Checkbox>
+                    </Box>
+                  </Box>
+                  {searchProducts.map((a) => (
+                    <ProductCard key={a.id} product={a}>
+                      <ProductModal {...a} />
+                    </ProductCard>
+                  ))}
+                </>
+              )}
             </TabPanel>
             <TabPanel>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Text fontSize={'18px'} fontWeight={'bold'}>
-                  {searchProducts.length} Produk
-                </Text>
-                <Box display={'flex'} gap={2}>
-                  <Text fontSize={'14px'}>Pilih Semua</Text>
-                  <Checkbox defaultChecked></Checkbox>
-                </Box>
-              </Box>
-              {searchProducts.map((a) => (
-                <ProductCard key={a.id} product={a}>
-                  <ProductModal {...a} />
-                </ProductCard>
-              ))}
+              {searchProducts.length === 0 ? (
+                <ProductEmptyNonActive />
+              ) : (
+                <>
+                  <Box
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                  >
+                    <Text fontSize={'18px'} fontWeight={'bold'}>
+                      {searchProducts.length} Produk
+                    </Text>
+                    <Box display={'flex'} gap={2}>
+                      <Text fontSize={'14px'}>Pilih Semua</Text>
+                      <Checkbox defaultChecked></Checkbox>
+                    </Box>
+                  </Box>
+                  {searchProducts.map((a) => (
+                    <ProductCard key={a.id} product={a}>
+                      <ProductModal {...a} />
+                    </ProductCard>
+                  ))}
+                </>
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>

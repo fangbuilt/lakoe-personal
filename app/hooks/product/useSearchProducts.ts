@@ -10,7 +10,6 @@ const useSearchProducts = (initialProducts: IProduct[], activeTab: number) => {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   useEffect(() => {
-    // Filter products based on search query and activeTab
     const filteredProducts = initialProducts
       .filter((product) =>
         product.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
@@ -21,7 +20,7 @@ const useSearchProducts = (initialProducts: IProduct[], activeTab: number) => {
         } else if (activeTab === 2) {
           return !product.isActive;
         }
-        return true; // For activeTab === 0 (Semua)
+        return true;
       });
 
     setSearchProducts(filteredProducts);
