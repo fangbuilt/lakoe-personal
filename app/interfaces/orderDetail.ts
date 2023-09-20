@@ -144,7 +144,7 @@ export interface IOrderDetailProduct {
   id: string;
   name: string;
   description: string;
-  minumumOrder: number;
+  minimumOrder: number;
   length: number;
   width: number;
   height: number;
