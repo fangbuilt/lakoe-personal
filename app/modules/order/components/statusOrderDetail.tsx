@@ -118,6 +118,7 @@ export function useStatusLacakPengiriman(
   dataTracking: ITracking
 ) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState<string>("");
 
   function openModal() {
     setModalIsOpen(true);
@@ -138,7 +139,9 @@ export function useStatusLacakPengiriman(
           background={'#FFFFFF)'}
           colorScheme="#FFFFFF)"
           w={'120px'}
-          onClick={openModal}
+          onClick={() => {
+            setSelectedCardId(data.courier?.trackingId as string), openModal();
+          }}
         >
           Lacak Pengiriman
         </Button>
@@ -147,6 +150,7 @@ export function useStatusLacakPengiriman(
             isOpen={modalIsOpen}
             onClose={closeModal}
             data={dataTracking}
+            selectedCardId={selectedCardId}
           />
         )}
       </>
@@ -394,7 +398,7 @@ export default function StatusOrderDetail({
 
   function useStatusLacakPengiriman(status: string, dataTracking: ITracking) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
+    const [selectedCardId, setSelectedCardId] = useState<string>("");
     function openModal() {
       setModalIsOpen(true);
     }
@@ -414,7 +418,9 @@ export default function StatusOrderDetail({
             background={'#FFFFFF)'}
             colorScheme="#FFFFFF)"
             w={'120px'}
-            onClick={openModal}
+            onClick={() => {
+              setSelectedCardId(data.courier?.trackingId as string), openModal();
+            }}
           >
             Lacak Pengiriman
           </Button>
@@ -423,6 +429,7 @@ export default function StatusOrderDetail({
               isOpen={modalIsOpen}
               onClose={closeModal}
               data={dataTracking}
+              selectedCardId={selectedCardId}
             />
           )}
         </>

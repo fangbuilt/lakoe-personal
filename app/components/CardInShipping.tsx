@@ -1,16 +1,24 @@
-import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
-import { useState } from 'react';
-import ModalInShipping from './ModalInShipping';
-import type { ITracking } from '~/interfaces/order/orderTracking';
-import { useLoaderData } from '@remix-run/react';
-import type { loader } from '~/routes/order';
+import { Box, Button, Card, Flex, Img, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import ModalInShipping from "./ModalInShipping";
+import { ITracking } from "~/interfaces/order/orderTracking";
+import { useLoaderData } from "@remix-run/react";
+import { loader } from "~/routes/order";
+import { IOrderDetailCourier } from "~/interfaces/orderDetail";
+import { db } from "~/libs/prisma/db.server";
+import { Link } from "react-router-dom";
 
-export default function CardInShipping(props: ITracking) {
+export default function CardInShipping(props: {
+  dataTracking: ITracking;
+  dataCourier: IOrderDetailCourier;
+}) {
   const data = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState<string>("");
 
   function openModal() {
     setModalIsOpen(true);
+    
   }
 
   function closeModal() {
@@ -22,52 +30,57 @@ export default function CardInShipping(props: ITracking) {
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
 
       {/* CARD START HERE */}
-      <Card mb={5} boxShadow={'xs'}>
+      <Card mb={5} boxShadow={"xs"}>
         {data.dataShipping.map((data, index) => (
           <Box key={data.id}>
             <Box mt={5}>
               <Box>
-                <Flex justifyContent={'space-between'} px={2}>
+                <Flex justifyContent={"space-between"} px={2}>
                   <Button
-                    bg={'#F68511'}
-                    color={'white'}
-                    fontWeight={'bold'}
+                    bg={"#F68511"}
+                    color={"white"}
+                    fontWeight={"bold"}
                     colorScheme="F68511"
-                    size={'sm'}
-                    pointerEvents={'none'}
+                    size={"sm"}
+                    pointerEvents={"none"}
                   >
                     Dalam Pengiriman
                   </Button>
 
                   <Button
-                    bg={'transparent'}
-                    border={'1px solid #D5D5D5'}
-                    borderRadius={'full'}
-                    fontSize={'14px'}
-                    onClick={openModal}
+                    bg={"transparent"}
+                    border={"1px solid #D5D5D5"}
+                    borderRadius={"full"}
+                    fontSize={"14px"}
+                    onClick={() => {
+                      setSelectedCardId(data.courier?.trackingId as string), openModal();
+                    }}
                   >
                     Lihat Rincian Pengiriman
                   </Button>
-                  {modalIsOpen && data.id && (
+                  {modalIsOpen && selectedCardId && (
                     <ModalInShipping
+                      key={data.id}
                       isOpen={modalIsOpen}
                       onClose={closeModal}
-                      data={props}
+                      data={props.dataTracking}
+                      selectedCardId={selectedCardId}
                     />
                   )}
                 </Flex>
-                <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
+                <Text my={1} fontSize={"14px"} color={"gray.400"} px={2}>
                   {data.invoiceNumber}
                 </Text>
                 <hr />
-                <Flex justifyContent={'space-between'}>
-                  <Box display={'flex'} w={'80%'}>
+                <Flex justifyContent={"space-between"}>
+                  <Link to={"detail/" + data.id}>
+                  <Box display={"flex"} w={"80%"}>
                     {data.cart?.cartItems.map((item) => (
                       <Img
                         key={item.id}
-                        w={'52px'}
-                        h={'52px'}
-                        display={'inline'}
+                        w={"52px"}
+                        h={"52px"}
+                        display={"inline"}
                         src={item.product?.attachments[0].url}
                         mt={3}
                       />
@@ -75,30 +88,31 @@ export default function CardInShipping(props: ITracking) {
                     <Text
                       mt={4}
                       id="fm500"
-                      fontSize={'16px'}
-                      textOverflow={'ellipsis'}
-                      overflow={'hidden'}
-                      whiteSpace={'nowrap'}
-                      fontWeight={'700'}
+                      fontSize={"16px"}
+                      textOverflow={"ellipsis"}
+                      overflow={"hidden"}
+                      whiteSpace={"nowrap"}
+                      fontWeight={"700"}
                     >
                       {data.cart?.cartItems.map((item) => (
                         <Box key={item.id}>{item.product?.name}</Box>
                       ))}
-                      <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                      <Text color={"gray.400"} pb={3} fontWeight={"normal"}>
                         {data.cart?.cartItems.map((item) => item.qty)} Barang
                       </Text>
                     </Text>
                   </Box>
-                  <Box mt={4} w={'15%'}>
+                  </Link>
+                  <Box mt={4} w={"15%"}>
                     <Flex gap={1}>
-                      <Text color={'#909090'} fontSize={'14px'}>
+                      <Text color={"#909090"} fontSize={"14px"}>
                         Total
                       </Text>
-                      <Text color={'#909090'} fontSize={'14px'}>
+                      <Text color={"#909090"} fontSize={"14px"}>
                         Belanja
                       </Text>
                     </Flex>
-                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                    <Text fontWeight={"bold"} fontSize={"14px"}>
                       Rp {data.price}
                     </Text>
                   </Box>
