@@ -94,8 +94,17 @@ export function Informations() {
   const handleDeleteImage = () => {
     setSelectedImage(null);
   };
+
   // const handleSaveClick = async () => {
+  //   if (sloganFilled && descriptionFilled && namaTokoFilled) {
+  //     setAlerMessage("informasi Toko Berhasil di simpan");
+  //   } else {
+  //     setAlertMessage("data tidak boleh kosong");
+  //   }
   //   setShowAlert(true);
+  //   setTimeout(() => {
+  //     setShowAlert(false);
+  //   }, 4000);
   // };
 
   return (
