@@ -1,13 +1,13 @@
 // import { createStore } from "./configuration.schema";
 // import type { z } from "zod";
-// import { db } from "~/libs/prisma/db.server";
+import { db } from '~/libs/prisma/db.server';
 
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 export async function createStoreInformation(data: any) {
-  const dataPost = await prisma.store.create({
+  const dataPost = await db.store.create({
     data: {
       name: data.name,
       slogan: data.slogan,
@@ -20,7 +20,7 @@ export async function createStoreInformation(data: any) {
 }
 
 export async function updateStoreInformation(storeId: string, data: any) {
-  const dataUpdate = await prisma.store.update({
+  const dataUpdate = await db.store.update({
     where: { id: storeId },
     data: {
       name: data.name,

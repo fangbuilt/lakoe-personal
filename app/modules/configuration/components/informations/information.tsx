@@ -21,58 +21,24 @@ import TickCircle from '~/assets/icon-pack/tick-circle.svg';
 import CloseCircleRed from '~/assets/icon-pack/close-circle-red.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { ChangeEvent } from 'react';
-import React, { useEffect, useState } from 'react';
-import {
-  createStoreInformation,
-  updateStoreInformation,
-} from '~/modules/configuration/configuration.service';
+import React, { useState } from 'react';
 import { Form } from '@remix-run/react';
 
 export function Informations() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
 
   const [slogan, setSlogan] = useState<string>('');
   const [namaToko, setNamaToko] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [domain, setDomain] = useState<string>('');
-  const [logoAttachment, setlogoAttachment] = useState<string>('');
 
   const [sloganFilled, setSloganFilled] = useState(false);
   const [descriptionFilled, setDescriptionFilled] = useState(false);
   const [namaTokoFilled, setNamaTokoFilled] = useState(false);
-  const [storeId] = useState<string | null>(null);
 
   const characterLimitSlogan = 48;
   const characterLimitNamaToko = 48;
   const characterLimitDescription = 200;
-
-  useEffect(() => {
-    if (storeId) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `/configuration/store_configuration/?id=${storeId}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setNamaToko(data.name);
-            setSlogan(data.slogan);
-            setDescription(data.description);
-            setDomain(data.domain);
-            setlogoAttachment(data.logoAttachment);
-            //data lainnya
-          } else {
-            console.error('Gagal mengambil data toko');
-          }
-        } catch (error) {
-          console.error('Terjadi kesalhan saat mengambil data toko');
-        }
-      };
-      fetchData();
-    }
-  }, [storeId]);
 
   const handleSloganChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
@@ -128,47 +94,9 @@ export function Informations() {
   const handleDeleteImage = () => {
     setSelectedImage(null);
   };
-
   const handleSaveClick = async () => {
-    if (sloganFilled && descriptionFilled && namaTokoFilled) {
-      if (storeId) {
-        // Ini adalah mode update, panggil fungsi update dengan storeId
-        await updateStoreInformation(storeId, {
-          name: namaToko,
-          slogan,
-          description,
-          domain,
-          logoAttachment,
-        });
-        setAlertMessage('Informasi toko berhasil diperbarui');
-      } else {
-        // Ini adalah mode create, panggil fungsi create
-        await createStoreInformation({
-          name: namaToko,
-          slogan,
-          description,
-          domain,
-          logoAttachment,
-        });
-        setAlertMessage('Informasi toko berhasil disimpan');
-      }
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 4000);
-    } else {
-      setAlertMessage('Semua data wajib diisi!');
-      setShowAlert(true);
-    }
+    setShowAlert(true);
   };
-
-  useEffect(() => {
-    if (showAlert) {
-      setSlogan('');
-      setDescription('');
-      setNamaToko('');
-    }
-  }, [showAlert]);
 
   return (
     <TabPanel>
@@ -304,9 +232,7 @@ export function Informations() {
                   : CloseCircleRed
               }
             />
-            <AlertTitle fontWeight={'normal'} fontSize={'13px'}>
-              {alertMessage}
-            </AlertTitle>
+            <AlertTitle fontWeight={'normal'} fontSize={'13px'}></AlertTitle>
             <Button
               fontSize={'13px'}
               colorScheme="none"
@@ -353,7 +279,7 @@ export function Informations() {
                 hidden
                 type="file"
                 accept="image/*"
-                // name="logoAttachment"
+                name="logoAttachment"
                 onChange={handleImageChange}
               />
               <Button

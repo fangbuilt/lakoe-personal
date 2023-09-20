@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Tab,
   TabList,
@@ -12,15 +13,14 @@ import { Informations } from '~/modules/configuration/components/informations/in
 
 import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { createStoreInformation } from '~/modules/configuration/configuration.service';
+import {
+  createStoreInformation,
+  updateStoreInformation,
+} from '~/modules/configuration/configuration.service';
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-  console.log('ini isi dari formData', formData);
-
   const actionType = formData.get('actionType');
-  console.log('ini isi dari actionType', actionType);
-
   const name = formData.get('name');
   const slogan = formData.get('slogan');
   const description = formData.get('description');
@@ -28,17 +28,28 @@ export async function action({ request }: ActionArgs) {
   const logoAttachment = formData.get('logoAttachment');
 
   if (actionType === 'create' && name && slogan && description) {
-    await createStoreInformation({
-      name,
-      slogan,
-      description,
-      domain,
-      logoAttachment,
-    });
+    const storeId = '';
+    if (storeId) {
+      await updateStoreInformation(storeId, {
+        storeId: storeId,
+        name,
+        slogan,
+        description,
+        domain,
+        logoAttachment,
+      });
+    } else {
+      await createStoreInformation({
+        name,
+        slogan,
+        description,
+        domain,
+        logoAttachment,
+      });
+    }
     const redirectURL = `/configuration/storeConfiguration/ `;
     return redirect(redirectURL);
   }
-  return null;
 }
 
 export default function StoreConfiguration() {
