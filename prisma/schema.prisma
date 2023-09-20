@@ -34,6 +34,17 @@ model User {
   @@map("users")
 }
 
+model AttachmentAdmin {
+  id         String    @id @unique @default(uuid())
+  attachment String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
+  withdrawId String
+
+  @@map("attachments_admin")
+}
+
 model Withdraw {
   id           String         @id @unique @default(uuid())
   amount       Float
@@ -44,7 +55,6 @@ model Withdraw {
   bankId       String
   approvedBy   User?          @relation(fields: [approvedById], references: [id])
   approvedById String
-  attachment String
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @default(now())
   adminDecline AdminDecline[]
@@ -193,7 +203,7 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product        @relation(fields: [productId], references: [id])
+  product        Product         @relation(fields: [productId], references: [id])
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
