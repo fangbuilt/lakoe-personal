@@ -4,7 +4,20 @@ import type { ReactNode } from 'react';
 interface LayoutProps {
   children: ReactNode;
 }
-
+// const vendorPrefixScrollBar = {
+//   '::-webkit-scrollbar': {
+//     display: 'none',
+//   },
+//   '::-moz-scrollbar': {
+//     display: 'none',
+//   },
+//   '::-ms-scrollbar': {
+//     display: 'none',
+//   },
+//   '::-o-scrollbar': {
+//     display: 'none',
+//   },
+// };
 export default function ScrollBox({ children }: LayoutProps) {
   return (
     <>

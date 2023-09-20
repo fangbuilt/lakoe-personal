@@ -30,7 +30,8 @@ export async function action({ request }: ActionArgs) {
 
   const formData = await parseMultipartFormData(request, uploadHandler);
 
-  const imageUrl = formData.get('image') as string;
+  const imageUrl = formData.get('mainPhoto') as string;
+  const imageUrl2 = formData.get('photo2') as string;
 
   console.log('image', imageUrl);
 
@@ -39,6 +40,7 @@ export async function action({ request }: ActionArgs) {
       name: formData.get('name'),
       description: formData.get('description'),
       url: imageUrl,
+      url2: imageUrl2,
       minumumOrder: Number(formData.get('min_order')),
       price: parseFloat(formData.get('price') as string),
       stock: parseInt(formData.get('stock') as string),
