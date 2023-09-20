@@ -1,9 +1,7 @@
 import { Box, Checkbox, Image, Text } from '@chakra-ui/react';
-// import { Form } from "@remix-run/react";
 import { type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
-// import { updateIsActive } from "~/modules/product/product.service";
 
 interface IProductCardProps {
   product: IProduct;

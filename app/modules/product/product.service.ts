@@ -18,6 +18,7 @@ export async function getProduct() {
       },
     },
   });
+  // console.log("ini", data);
   return data;
 }
 
@@ -25,9 +26,6 @@ export async function getProductByStoreId(id: any) {
   const data = await db.product.findMany({
     where: {
       storeId: id,
-    },
-    orderBy: {
-      createdAt: 'desc',
     },
     include: {
       attachments: true,
@@ -102,6 +100,7 @@ export async function update(data: any): Promise<any> {
       },
     },
   });
+  console.log('ini update', update);
   return update;
 }
 
