@@ -19,7 +19,7 @@ export interface IBiteshipTracking {
   };
   history: {
     note: string;
-    updated_at: Date;
+    updated_at: string;
     status: string;
   };
   link: string | null;

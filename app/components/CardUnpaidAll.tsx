@@ -438,7 +438,7 @@ export default function UnpaidAllCard() {
                         </Flex>
                         <Text fontWeight={'bold'} fontSize={'14px'}>
                           {/* {formatter.format(item.price)} */}
-                          {item.price.toLocaleString('id-ID')}
+                          Rp {item.price.toLocaleString('id-ID')}
                         </Text>
                       </Box>
                     </Flex>

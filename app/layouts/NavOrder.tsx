@@ -1,26 +1,39 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
+  Flex,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
-  Flex,
 } from '@chakra-ui/react';
-
-import ScrollBox from '../components/ScrollBox';
-import CardUnpaid from '../components/CardUnpaid';
 import { useLoaderData } from '@remix-run/react';
-import UnpaidAllCard from '~/components/CardUnpaidAll';
+import { useState } from 'react';
 import type { loader } from '~/routes/order';
+import CardCanceled from '../components/CardCanceled';
+import ScrollBox from '../components/ScrollBox';
+import CardReadyToShip from '~/components/CardReadyToShip';
+import UnpaidAllCard from '~/components/CardUnpaidAll';
+import UnpaidCard from '~/components/CardUnpaid';
 
-export default function NavOrder() {
+export default function NavOrder({ allOrderSevice }: any) {
+  const cardProduct = useLoaderData<typeof loader>();
   const { unpaidCard } = useLoaderData<typeof loader>();
-
+  const notificationCount =
+    cardProduct.dataProductReadyToShip.length > 0
+      ? cardProduct.dataProductReadyToShip.length
+      : 0;
+  const [activeTab, setActiveTab] = useState(0);
+  const handleClickTab = (index: number) => {
+    setActiveTab(index);
+  };
+  // const {unpaidCard} = useLoaderData<typeof loader>()
   return (
     <>
       <Box
+        key={allOrderSevice}
         background={'whitesmoke'}
         style={{ width: '100%', marginLeft: '-5px', marginRight: '50%' }}
       >
@@ -48,22 +61,32 @@ export default function NavOrder() {
                 overflow={'scroll'}
                 sx={{
                   '::-webkit-scrollbar': {
+                    // i want displayed scrollbar if user use mouse for scrolling, but if scrollbar not none is a no clear ,
                     display: 'none',
                   },
                 }}
+                mb={'10'}
               >
                 <TabList mx={5}>
-                  <Tab>Semua</Tab>
+                  <Tab
+                    onClick={() => handleClickTab(0)}
+                    fontWeight={activeTab === 0 ? '700' : '500'}
+                  >
+                    Semua
+                  </Tab>
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab
+                        onClick={() => handleClickTab(1)}
+                        fontWeight={activeTab === 1 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER */}
 
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
@@ -82,12 +105,15 @@ export default function NavOrder() {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab
+                        onClick={() => handleClickTab(2)}
+                        fontWeight={activeTab === 2 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
@@ -106,18 +132,22 @@ export default function NavOrder() {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab
+                        onClick={() => handleClickTab(3)}
+                        fontWeight={activeTab === 3 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER  !*/}
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {notificationCount}{' '}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 
@@ -129,12 +159,15 @@ export default function NavOrder() {
                   </Box>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab
+                        onClick={() => handleClickTab(4)}
+                        fontWeight={activeTab === 4 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
                           color={'white'}
-                          bg={'cyan.400'}
+                          bg={'#0086B4'}
                           borderRadius={'full'}
                           boxSize={'24px'}
                           fontSize={14}
@@ -151,114 +184,71 @@ export default function NavOrder() {
                   </Box>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab>
+                      <Tab
+                        onClick={() => handleClickTab(5)}
+                        fontWeight={activeTab === 5 ? '700' : '500'}
+                      >
                         <Flex gap={1.5} my={4}>
                           <Text>Pesanan </Text> <Text> Selesai</Text>
                         </Flex>
                       </Tab>
                     </Box>
                   </Box>
-                  <Tab>Dibatalkan</Tab>
+                  <Tab
+                    onClick={() => handleClickTab(6)}
+                    fontWeight={activeTab === 6 ? '700' : '500'}
+                  >
+                    Dibatalkan
+                  </Tab>
                 </TabList>
               </Box>
-              {/* </Tabs> */}
             </Box>
 
             <Box my={5} paddingBottom={'100px'} background={'white'}>
               <TabPanels>
                 {/* YOUR CARD START IN HERE ! */}
-                {/* PASTE YOUR CARD IN HERE DON'T FORGET TO MAP IT*/}
 
                 <ScrollBox>
                   <TabPanel>
                     <UnpaidAllCard />
-
-                    {/*  
-                      {filteredOrderByCourier.map((data, index) => (
-               
-                    <CardNewOrder/>
-                    ))} 
-
-                    {filteredOrderByCourier.map((data, index) => (
-                      <CardReadyToShip />
-                        
-                    ))}
-                    {filteredOrderByCourier.map((data, index) => (
-                      <CardInShipping />
-                    ))}
-                    {filteredOrderByCourier.map((data, index) => (
-                      <CardSuccessOrder  />
-                    ))}
-                    {filteredOrderByCourier.map((data, index) => (
-                      <CardCanceled  />
-                    ))} */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardUnpaid
-                    // filteredOrderByCourier={filteredOrderByCourier}
-                    />
+                    <UnpaidCard />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {/* {filteredOrderByCourier.map((data, index) => (
-                      <CardNewOrder/>
-                    ))} */}
+                    <h1>pesanan baru</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {/* {filteredOrderByCourier.map((data, index) => (
-                      <CardReadyToShip/>
-                    ))} */}
+                    <CardReadyToShip />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {/* {filteredOrderByCourier.map((data, index) => (
-                      <CardInShipping />
-                    ))} */}
+                    <h1>dalam Pengiriman</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {/* {filteredOrderByCourier.map((data, index) => (
-                      <CardSuccessOrder />
-                    ))} */}
+                    <h1>pesanan selesai</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    {/* {filteredOrderByCourier.map((data: any, index: any) => (
-                      <CardCanceled  />
-                    ))} */}
+                    <CardCanceled />
                   </TabPanel>
                 </ScrollBox>
-                {/* {filteredOrderByCourier.length === 0 && (
-                  <Center>
-                    <Box textAlign="center" mt={5} display={'flex'}>
-                      <Image src={ReceiptSearch} />
-                      <Text fontSize="16px" mt={1}>
-                        Oops, pesanan yang kamu cari tidak ditemukan.
-                        <Text
-                          fontSize={'12px'}
-                          color={'#909090'}
-                          textAlign={'left'}
-                        >
-                          Coba bisa cari dengan kata kunci lain
-                        </Text>
-                      </Text>
-                    </Box>
-                  </Center>
-                )} */}
 
                 {/* END CARD */}
               </TabPanels>
