@@ -94,9 +94,9 @@ export function Informations() {
   const handleDeleteImage = () => {
     setSelectedImage(null);
   };
-  const handleSaveClick = async () => {
-    setShowAlert(true);
-  };
+  // const handleSaveClick = async () => {
+  //   setShowAlert(true);
+  // };
 
   return (
     <TabPanel>
@@ -198,7 +198,7 @@ export function Informations() {
             color={'white'}
             borderRadius={'full'}
             bg={'#0086B4'}
-            onClick={handleSaveClick}
+            // onClick={handleSaveClick}
           >
             Simpan
           </Button>
