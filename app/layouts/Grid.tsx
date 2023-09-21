@@ -1,5 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
+import { LeftNavigationAdmin } from '~/components/AdminLeftNavigation';
 import { LeftNavigation } from '~/components/LeftNavigation';
 
 interface LayoutProps {
@@ -51,5 +52,29 @@ export function ImplementGrid({ children }: LayoutProps) {
         </Box>
       </Flex>
     </Flex>
+  );
+}
+
+export function ImplementGridAdmin({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      display={'flex'}
+      bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 )"
+    >
+      <Box width={'20%'} padding={'1%'}>
+        <LeftNavigationAdmin />
+      </Box>
+
+      <Box
+        width={'80%'}
+        padding={'1%'}
+        justifyContent={'center'}
+        display={'flex'}
+        alignItems={'none'}
+      >
+        {children}{' '}
+      </Box>
+    </Box>
   );
 }

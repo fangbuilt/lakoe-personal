@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
+  Card,
   Flex,
+  Stack,
   Tab,
   TabList,
   TabPanel,
@@ -17,10 +19,32 @@ import createLocation, {
   getAllDataLocation,
   createStoreInformation,
   updateStoreInformation,
+  getMessages,
+  updateMessage,
+  deleteMessage,
+  createMessage,
+  getStoreid,
 } from '~/modules/configuration/configuration.service';
 
-export async function loader() {
-  return await getAllDataLocation();
+import {
+  DeleteButton,
+  UpdateButton,
+  CreateButton,
+} from '~/modules/configuration/components/CrudModal';
+
+import { useLoaderData } from '@remix-run/react';
+import Scroll from '~/modules/configuration/components/Scroll';
+
+export async function loader({ params }: ActionArgs) {
+  const getLocationData = await getAllDataLocation();
+
+  //console.log("ini getdata:", getLocationData);
+
+  const messages = await getMessages();
+  const { storeId } = params;
+  const store_id = await getStoreid(storeId);
+
+  return { messages, store_id, getLocationData };
 }
 
 export async function action({ request }: ActionArgs) {
@@ -65,7 +89,7 @@ export async function action({ request }: ActionArgs) {
       postalCode,
       isMainLocation,
     });
-    const redirectURL = `/configuration/storeConfiguration `;
+    const redirectURL = `/configuration/storeConfiguration/1 `;
 
     return redirect(redirectURL);
   }
@@ -92,14 +116,35 @@ export async function action({ request }: ActionArgs) {
         logoAttachment,
       });
     }
-    const redirectURL = `/configuration/storeConfiguration/ `;
+    const redirectURL = `/configuration/storeConfiguration/1 `;
     return redirect(redirectURL);
+  }
+
+  //==================================================================
+
+  const action = formData.get('action');
+
+  if (action === 'create') {
+    const name = formData.get('name') as string;
+    const storeId = formData.get('storeId') as string;
+    const content = formData.get('content') as string;
+
+    await createMessage(name, storeId, content);
+  } else if (action === 'delete') {
+    const id = formData.get('id') as string;
+    await deleteMessage(id);
+  } else if (action === 'update') {
+    const id = formData.get('id') as string;
+    const updatedName = formData.get('updatedName') as string;
+    const updatedContent = formData.get('updatedContent') as string;
+
+    await updateMessage(id, updatedName, updatedContent);
   }
 
   return null;
 }
-
 export default function StoreConfiguration() {
+  const data = useLoaderData<typeof loader>();
   return (
     <ImplementGrid>
       <Flex h={'105vh'} mt={5}>
@@ -139,7 +184,58 @@ export default function StoreConfiguration() {
             <Locations />
 
             <TabPanel>
-              <Text>hi</Text>
+              <Flex
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                mb={'16px'}
+              >
+                <Text fontWeight={'bold'} fontSize={'16px'}>
+                  Daftar Template Pesan
+                </Text>
+                <CreateButton storeId={data.store_id?.id} />
+              </Flex>
+              <Scroll>
+                <Stack spacing="2">
+                  {data.messages.map((data, id) => (
+                    <Card
+                      key={id}
+                      borderRadius={'lg'}
+                      p={3}
+                      pb={2}
+                      variant={'outline'}
+                    >
+                      <Flex
+                        justifyContent={'space-between'}
+                        alignItems={'center'}
+                        mb={2}
+                      >
+                        <Text fontWeight={'bold'} fontSize={'14px'}>
+                          {data.name}
+                        </Text>
+                        <Flex gap={3}>
+                          <UpdateButton
+                            id={data.id}
+                            name={data.name}
+                            content={data.content}
+                          />
+                          <DeleteButton
+                            id={data.id}
+                            name={data.name}
+                            content={data.content}
+                          />
+                        </Flex>
+                      </Flex>
+                      <Text fontSize={'13px'}>
+                        {data.content && (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: data.content }}
+                          />
+                        )}
+                      </Text>
+                    </Card>
+                  ))}
+                </Stack>
+              </Scroll>
             </TabPanel>
           </TabPanels>
         </Tabs>

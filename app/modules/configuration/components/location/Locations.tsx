@@ -17,7 +17,7 @@ import LocationSlash from '~/assets/icon-pack/location-slash.svg';
 import React, { useState } from 'react';
 import { ModalCreateLocation, ModalDelete } from './Modals';
 import { useLoaderData } from '@remix-run/react';
-import type { loader } from '~/routes/configuration_.storeConfiguration';
+import type { loader } from '~/routes/configuration_.storeConfiguration_.$storeId';
 
 export default function Locations() {
   // ini logic modal
@@ -41,7 +41,7 @@ export default function Locations() {
   };
 
   //get data location dari db
-  const dataLocation = useLoaderData<typeof loader>();
+  const newData = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -217,7 +217,7 @@ export default function Locations() {
           </Table>
         </TableContainer> */}
         <Box>
-          {dataLocation.map((data) => (
+          {newData.getLocationData.map((data) => (
             <TableContainer
               key={data.id}
               border={'1px'}
