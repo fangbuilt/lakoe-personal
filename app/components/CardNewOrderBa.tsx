@@ -12,15 +12,13 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import useSearchFilter from '~/hooks/useSearchOrder';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
-import { db } from '~/libs/prisma/db.server';
 import type { loader } from '~/routes/order';
 
 export function formatCurrency(price: number): string {
