@@ -20,15 +20,11 @@ import Trash from '../../../assets/icon-pack/trash.svg';
 import CloseCircle from '../../../assets/icon-pack/close-circle.svg';
 import type { ITemplateMessage } from '~/interfaces/TemplateMessage';
 import { Form } from '@remix-run/react';
-import React from 'react';
-// import { useState } from 'react';
-// import Tiptap from '../hooks/Tiptap'
-import Newapp from '../hooks/Newtiptap';
+import React, { useState } from 'react';
+import Tiptap from '../hooks/Nextiptap';
 
 export function DeleteButton(props: ITemplateMessage) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const id = props.id;
-  console.log(id);
 
   return (
     <Box>
@@ -77,12 +73,6 @@ export function DeleteButton(props: ITemplateMessage) {
                 <Text as={'b'}>{props.name}</Text>?
               </Text>
             </HStack>
-            {/* <Text>
-            <Highlight
-              query="Pesan Konfirmasi Pesanan"
-              styles={{ fontWeight: 'bold' }}
-            >Apakah kamu yakin untuk menghapus Pesan Konfirmasi Pesanan?</Highlight>
-          </Text> */}
             <Text>
               Sebab, kamu tidak akan dapat mengembalikan template pesan yang
             </Text>
@@ -118,82 +108,10 @@ export function DeleteButton(props: ITemplateMessage) {
 
 export function UpdateButton(props: ITemplateMessage) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const id = props.id;
-  console.log(id);
 
   const [title, setTitle] = React.useState(props.name);
-  const handleInputChange = (event) => setTitle(event.target.value);
-  const [value, setValue] = React.useState(props.content);
-  const handleChange = (event) => setValue(event.target.value);
-
-  // const App = () => {
-  //   return (
-  //     <div className='App'>
-  //       <Tiptap />
-  //     </div>
-  //   )
-  // }
-  // const [state, newState] = useState('cobaa')
-  // let error = <strong>{state}</strong>
-  // const [myState, setMyState] = React.useState(props.content)
-  // const custom = <Text>Nama Customer</Text>
-  // const styleCustom = custom as string
-  // const custom = useState(() => Page1)
-  // const baru = <Text>nama produk</Text>
-
-  // function Page1() {
-  //   return <p>Hello world!</p>
-  // }
-
-  // function Page2() {
-  //   return <p>Hello world!</p>
-  // }
-
-  // const components = {
-  //   'page1': Page1,
-  //   'page2': Page2,
-  // }
-
-  // let [page, setPage] = useState('page1')
-
-  // let [Page, setPage] = useState({Page: Page1})
-  // function myComponent() {
-  //   return(
-  //     return <Text>Nama Customer</Text>
-  //   )
-  // }
-
-  // const [additionalText, setAdditionalText] = useState('');
-
-  // const handleAddComponent = () => {
-  //   setAdditionalText('<Text>This is additional text.</Text>');
-  // };
-  // const text = [<strong>not</strong>]
-
-  function updateState(value) {
-    if (value === 'customer') {
-      setValue((prevState) => prevState + '[Nama Customer]');
-      // setValue((prevState) => prevState + additionalText )
-      // setMyState((prevState) => prevState + "Nama Customer")
-    } else if (value === 'produk') {
-      setValue((prevState) => prevState + '[Nama Produk]');
-    } else if (value === 'toko') {
-      setValue((prevState) => prevState + '[Nama Toko]');
-    }
-  }
-
-  // function renderStyledText(value) {
-  //   const parts = value.split('customerbaru');
-  //   return (
-  //     <>
-  //       {parts[0]}
-  //       <Text as="span" color="red" fontWeight="bold">
-  //         customerbaru
-  //       </Text>
-  //       {parts[1]}
-  //     </>
-  //   );
-  // }
+  const handleInputChange = (event: any) => setTitle(event.target.value);
+  const [newContent, setNewcontent] = React.useState(props.content);
 
   return (
     <>
@@ -216,7 +134,7 @@ export function UpdateButton(props: ITemplateMessage) {
       >
         <ModalOverlay />
         <ModalContent pl={6} pr={6}>
-          <Form method="post">
+          <Form method="patch">
             <Flex
               pt={4}
               justifyContent={'space-between'}
@@ -244,56 +162,12 @@ export function UpdateButton(props: ITemplateMessage) {
                 onChange={handleInputChange}
                 value={title}
               />
-              {/* <Input name="updatedMessage" onChange={handleInputChange} value={title} /> */}
             </FormControl>
             <FormControl isRequired mt={6}>
               <FormLabel fontWeight={'normal'}>Detail Isi Pesan</FormLabel>
-              {/* <Button onClick={handleAddComponent} fontWeight={'normal'} fontSize="md" size={'sm'} variant={'outline'} borderRadius={'full'} mr={1}>Nama Customer</Button> */}
-              <Button
-                onClick={() => updateState('customer')}
-                fontWeight={'normal'}
-                fontSize="md"
-                size={'sm'}
-                variant={'outline'}
-                borderRadius={'full'}
-                mr={1}
-              >
-                Nama Customer
-              </Button>
-              <Button
-                onClick={() => updateState('produk')}
-                fontWeight={'normal'}
-                fontSize="md"
-                size={'sm'}
-                variant={'outline'}
-                borderRadius={'full'}
-                mr={1}
-              >
-                Nama Produk
-              </Button>
-              <Button
-                onClick={() => updateState('toko')}
-                fontWeight={'normal'}
-                fontSize="md"
-                size={'sm'}
-                variant={'outline'}
-                borderRadius={'full'}
-                mr={1}
-              >
-                Nama Toko
-              </Button>
-              <Textarea
-                my={2}
-                height={'150px'}
-                onChange={handleChange}
-                value={value}
-                name="updatedContent"
-              />
-              {/* <Textarea mt={2} height={'150px'} onChange={handleChange} value={error} name="updatedContent"/> */}
-              {/* {renderStyledText(value)} */}
-              {/* <Textarea mt={2} height={'150px'} onChange={handleChange} value={value} name="updatedMessage"/> */}
+              <Input hidden name="updatedContent" value={newContent} />
+              <Tiptap content={newContent} setContent={setNewcontent} />
             </FormControl>
-            <Newapp />
             <Flex justifyContent={'flex-end'} pb={4} mt={'37px'}>
               <Button
                 variant="outline"
@@ -316,7 +190,6 @@ export function UpdateButton(props: ITemplateMessage) {
               >
                 Simpan
               </Button>
-              {/* <Button color={'whiteAlpha.900'} width={'100px'} borderRadius={'full'} colorScheme="blue" onClick={()=> console.log(value)} type="submit" value='update' name="action">Simpan</Button> */}
             </Flex>
           </Form>
         </ModalContent>
@@ -325,8 +198,23 @@ export function UpdateButton(props: ITemplateMessage) {
   );
 }
 
-export function AddButon() {
+export function CreateButton(data: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [value, setValue] = useState('');
+
+  const handleChange = (event: any) => {
+    setValue(event.target.value);
+  };
+
+  const updateState = (value: any) => {
+    if (value === 'namaPembeli') {
+      setValue((prevState) => prevState + '[Nama Pembeli]');
+    } else if (value === 'namaProduk') {
+      setValue((prevState) => prevState + '[Nama Produk]');
+    } else if (value === 'namaToko') {
+      setValue((prevState) => prevState + '[Nama Toko]');
+    }
+  };
 
   return (
     <>
@@ -340,13 +228,7 @@ export function AddButon() {
       >
         Buat Template
       </Button>
-      <Modal
-        closeOnOverlayClick={false}
-        size={'lg'}
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered
-      >
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent px={5} py={4}>
           <Box
@@ -372,85 +254,108 @@ export function AddButon() {
               <Image w={'30px'} src={CloseCircle} />
             </Button>
           </Box>
-          <Box fontFamily={'Plus Jakarta Sans'} py={3}>
-            <FormControl id="order-id" isRequired mb={5}>
-              <FormLabel>Judul Pesan</FormLabel>
-              <Input type="text" placeholder="Pesanan Konfirmasi Pengiriman" />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Detail Isi Pesanan</FormLabel>
-            </FormControl>
-
-            <Box
-              alignItems={'flex-start'}
-              display={'flex'}
-              maxW={'fit-content'}
-              borderRadius={'50%'}
-              gap={'3'}
-            >
-              <Button
-                borderRadius={'var(--rounded-full, 9999px)'}
-                bg={'white'}
-                border={'1px solid var(--gray-300, #D5D5D5)'}
-                color={'var(--text-dark, #1D1D1D)'}
-                height={'30px'}
-              >
-                <Text color={'gray.500'} fontSize={'14px'}>
-                  Nama Pembeli
-                </Text>
-              </Button>
-              <Button
-                borderRadius={'50px'}
-                bg={'white'}
-                border={'1px solid var(--gray-300, #D5D5D5)'}
-                height={'30px'}
-              >
-                <Text fontSize={'14px'} color={'gray.500'}>
-                  Nama Produk
-                </Text>
-              </Button>
-              <Button
-                borderRadius={'50px'}
-                bg={'white'}
-                border={'1px solid var(--gray-300, #D5D5D5)'}
-                height={'30px'}
-              >
-                <Text fontSize={'14px'} color={'gray.500'}>
-                  Nama Toko
-                </Text>
-              </Button>
+          <Form method="post">
+            <Box>
+              <Input type="hidden" value={data.storeId} name="storeId" />
             </Box>
-            <Box mt={'10px'}>
-              <Textarea
-                height={'150px'}
-                color={'gray.500'}
-                placeholder="Tuliskan Pesanmu"
-              ></Textarea>
-            </Box>
-          </Box>
+            <Box fontFamily={'Plus Jakarta Sans'} py={3}>
+              <FormControl id="order-id" isRequired mb={5}>
+                <FormLabel>Judul Pesan</FormLabel>
+                <Input
+                  name="name"
+                  type="text"
+                  placeholder=" Pesanan Konfirmasi Pengiriman"
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Detail Isi Pesanan</FormLabel>
+              </FormControl>
 
-          <ModalFooter gap={'3'}>
-            <Button
-              height={'40px'}
-              width={'103px'}
-              variant="ghost"
-              onClick={onClose}
-              gap={'var(--1, 4px)'}
-              borderRadius={'50px'}
-              border={'1px solid var(--gray-300, #D5D5D5)'}
-            >
-              Batalkan
-            </Button>
-            <Button
-              onClick={onClose}
-              height={'40px'}
-              width={'103px'}
-              colorScheme="blue"
-              borderRadius={'50px'}
-            >
-              Simpan
-            </Button>
-          </ModalFooter>
+              <Box
+                alignItems={'flex-start'}
+                display={'flex'}
+                maxW={'fit-content'}
+                borderRadius={'50%'}
+                gap={'3'}
+              >
+                <Button
+                  bg={'white'}
+                  name="storeId"
+                  height={'30px'}
+                  onClick={() => updateState('namaPembeli')}
+                  color={'var(--text-dark, #1D1D1D)'}
+                  borderRadius={'var(--rounded-full, 9999px)'}
+                  border={'1px solid var(--gray-300, #D5D5D5)'}
+                >
+                  <Text color={'gray.500'} fontSize={'14px'}>
+                    Nama Pembeli
+                  </Text>
+                </Button>
+                <Button
+                  name="storeId"
+                  value={'ProdukName'}
+                  bg={'white'}
+                  height={'30px'}
+                  borderRadius={'50px'}
+                  onClick={() => updateState('namaProduk')}
+                  border={'1px solid var(--gray-300, #D5D5D5)'}
+                >
+                  <Text fontSize={'14px'} color={'gray.500'}>
+                    Nama Produk
+                  </Text>
+                </Button>
+                <Button
+                  name="storeId"
+                  value={'namaToko'}
+                  borderRadius={'50px'}
+                  bg={'white'}
+                  onClick={() => updateState('namaToko')}
+                  border={'1px solid var(--gray-300, #D5D5D5)'}
+                  height={'30px'}
+                >
+                  <Text fontSize={'14px'} color={'gray.500'}>
+                    Nama Toko
+                  </Text>
+                </Button>
+              </Box>
+              <Box mt={'10px'}>
+                <Textarea
+                  name="content"
+                  value={value}
+                  height={'150px'}
+                  color={'gray.500'}
+                  placeholder="Tuliskan Pesanmu"
+                  onChange={handleChange}
+                />
+              </Box>
+            </Box>
+
+            <ModalFooter gap={'3'}>
+              <Button
+                height={'40px'}
+                width={'103px'}
+                variant="ghost"
+                onClick={onClose}
+                gap={'var(--1, 4px)'}
+                borderRadius={'50px'}
+                border={'1px solid var(--gray-300, #D5D5D5)'}
+              >
+                Batalkan
+              </Button>
+              <Button
+                type="submit"
+                onClick={onClose}
+                height={'40px'}
+                width={'103px'}
+                colorScheme="blue"
+                borderRadius={'50px'}
+                value="create"
+                name="action"
+              >
+                Simpan
+              </Button>
+            </ModalFooter>
+          </Form>
         </ModalContent>
       </Modal>
     </>

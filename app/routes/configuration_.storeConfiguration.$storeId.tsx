@@ -43,23 +43,26 @@ import React from 'react';
 import {
   DeleteButton,
   UpdateButton,
-  AddButon,
+  CreateButton,
 } from '~/modules/configuration/components/CrudModal';
-// import data from '../utils/fakeDataTM.json';
 import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+// import { redirect } from '@remix-run/node';
 import {
   getMessages,
-  updateMesage,
-  deleteMesage,
-  createMesage,
+  updateMessage,
+  deleteMessage,
+  createMessage,
+  getStoreid,
 } from '~/modules/configuration/configuration.service';
 import { useLoaderData } from '@remix-run/react';
+import Scroll from '~/modules/configuration/components/Scroll';
 
-export async function loader() {
+export async function loader({ params }: ActionArgs) {
   const messages = await getMessages();
+  const { storeId } = params;
+  const store_id = await getStoreid(storeId);
 
-  return messages;
+  return { messages, store_id };
 }
 
 export async function action({ request }: ActionArgs) {
@@ -67,21 +70,24 @@ export async function action({ request }: ActionArgs) {
   const action = formData.get('action');
 
   if (action === 'create') {
-    const message = formData.get('message');
-    await createMesage({
-      message: message as string,
-    });
+    const name = formData.get('name') as string;
+    const storeId = formData.get('storeId') as string;
+    const content = formData.get('content') as string;
+
+    await createMessage(name, storeId, content);
   } else if (action === 'delete') {
     const id = formData.get('id') as string;
-    await deleteMesage(id);
+    await deleteMessage(id);
   } else if (action === 'update') {
     const id = formData.get('id') as string;
-    const updatedName = formData.get('updatedName');
-    const updatedContent = formData.get('updatedContent');
-    await updateMesage(id, updatedName, updatedContent);
+    const updatedName = formData.get('updatedName') as string;
+    const updatedContent = formData.get('updatedContent') as string;
+
+    await updateMessage(id, updatedName, updatedContent);
   }
 
-  return redirect('/configuration/store_configuration');
+  return null;
+  // return redirect('/configuration/storeConfiguration');
 }
 
 export default function StoreConfiguration() {
@@ -490,7 +496,7 @@ export default function StoreConfiguration() {
               </Modal>
             </TabPanel>
 
-            {/* INI BAGIAN MIKHAEL */}
+            {/* INI BAGIAN MIKHAEL DAN HELEN */}
             <TabPanel>
               <Flex
                 justifyContent={'space-between'}
@@ -500,59 +506,50 @@ export default function StoreConfiguration() {
                 <Text fontWeight={'bold'} fontSize={'16px'}>
                   Daftar Template Pesan
                 </Text>
-                <AddButon />
+                <CreateButton storeId={data.store_id?.id} />
               </Flex>
-              <Stack spacing="2">
-                {data.map((data, id) => (
-                  <Card
-                    key={id}
-                    borderRadius={'lg'}
-                    p={3}
-                    pb={2}
-                    variant={'outline'}
-                  >
-                    <Flex
-                      justifyContent={'space-between'}
-                      alignItems={'center'}
-                      mb={2}
+              <Scroll>
+                <Stack spacing="2">
+                  {data.messages.map((data, id) => (
+                    <Card
+                      key={id}
+                      borderRadius={'lg'}
+                      p={3}
+                      pb={2}
+                      variant={'outline'}
                     >
-                      <Text fontWeight={'bold'} fontSize={'14px'}>
-                        {data.name}
+                      <Flex
+                        justifyContent={'space-between'}
+                        alignItems={'center'}
+                        mb={2}
+                      >
+                        <Text fontWeight={'bold'} fontSize={'14px'}>
+                          {data.name}
+                        </Text>
+                        <Flex gap={3}>
+                          <UpdateButton
+                            id={data.id}
+                            name={data.name}
+                            content={data.content}
+                          />
+                          <DeleteButton
+                            id={data.id}
+                            name={data.name}
+                            content={data.content}
+                          />
+                        </Flex>
+                      </Flex>
+                      <Text fontSize={'13px'}>
+                        {data.content && (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: data.content }}
+                          />
+                        )}
                       </Text>
-                      <Flex gap={3}>
-                        <UpdateButton
-                          id={data.id}
-                          name={data.name}
-                          content={data.content}
-                        />
-                        <DeleteButton
-                          id={data.id}
-                          name={data.name}
-                          content={data.content}
-                        />
-                      </Flex>
-                    </Flex>
-                    <Text fontSize={'13px'}>{data.content}</Text>
-                  </Card>
-                ))}
-                {/* <Card borderRadius={'lg'} p={3} pb={2} variant={'outline'}>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} mb={2}>
-                      <Text fontWeight={'bold'} fontSize={'14px'}>Pesan Konfirmasi Pesanan</Text>
-                      <Flex gap={3}>
-                        <UpdateButton />
-                        <DeleteButton />
-                      </Flex>
-                    </Flex>
-                    <Text fontSize={'13px'}>Halo! Terima kasih telah berbelanja di Fesyen Store. Berikut rincian pesanan Anda:</Text>
-                    <Box>
-                      <UnorderedList fontSize={'13px'} ml={'26px'}>
-                        <ListItem>Nama Produk: 5 [Nama Produk]</ListItem>
-                        <ListItem>Jumlah: [Jumlah]</ListItem>
-                        <ListItem>Total Harga: [Total Harga] Mohon konfirmasi pesanan Anda. Terima kasih!</ListItem>
-                      </UnorderedList>
-                    </Box>
-                </Card> */}
-              </Stack>
+                    </Card>
+                  ))}
+                </Stack>
+              </Scroll>
             </TabPanel>
           </TabPanels>
         </Tabs>
