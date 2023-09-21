@@ -1,8 +1,5 @@
-import type {
-  CSS as StitchesCss} from '@stitches/react';
-import {
-  createStitches as createCss,
-} from '@stitches/react';
+import type { CSS as StitchesCss } from '@stitches/react';
+import { createStitches as createCss } from '@stitches/react';
 export type { VariantProps as StitchesVariants } from '@stitches/react';
 
 const stitches = createCss({

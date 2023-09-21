@@ -20,7 +20,6 @@ import UnpaidCard from '~/components/CardUnpaid';
 import CardInShipping from '~/components/CardInShipping';
 import CardNewOrderBa from '~/components/CardNewOrderBa';
 
-
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
   const { unpaidCard } = useLoaderData<typeof loader>();
@@ -237,7 +236,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardInShipping/>
+                    <CardInShipping />
                   </TabPanel>
                 </ScrollBox>
 
