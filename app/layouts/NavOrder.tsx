@@ -9,10 +9,9 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import ScrollBox from '../components/ScrollBox';
-import CardCanceled from '../components/CardCanceled';
+import CardCanceled from '../components/order/CardCanceled';
 import { useState } from 'react';
-
-export default function NavOrder({allOrderSevice}:any) {
+export default function NavOrder({order}:any) {
 
   const [activeTab, setActiveTab] = useState(0);
   const handleClickTab = (index: number) => {
@@ -22,7 +21,6 @@ export default function NavOrder({allOrderSevice}:any) {
   return (
     <>
       <Box
-        key={allOrderSevice}
         background={'whitesmoke'}
         style={{ width: '100%', marginLeft: '-5px', marginRight: '50%' }}
       >
@@ -214,7 +212,11 @@ export default function NavOrder({allOrderSevice}:any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardCanceled />
+
+                    {/* {order.map((item:any)=>( */}
+
+                    <CardCanceled  />
+                    {/* // ))} */}
                   </TabPanel>
                 </ScrollBox>
 

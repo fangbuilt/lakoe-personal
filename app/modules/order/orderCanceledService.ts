@@ -4,6 +4,7 @@ export default async function CanceledService() {
   return await db.invoice.findMany({
     where: {
       status: "ORDER_CANCELLED",
+
     },
     include: {
       courier: true,
@@ -30,11 +31,9 @@ export default async function CanceledService() {
     },
   });
 }
+export async function whatsappTemplateDb(){
+  
+  return await db.messageTemplate.findMany({
 
-export async function ready() {
-  return await db.invoice.findMany({
-    where: {
-      status: "ORDER_CANCELLED",
-    },
   })
 }

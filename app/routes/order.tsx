@@ -1,20 +1,20 @@
 import { Flex } from "@chakra-ui/react";
 import NavOrder from "~/layouts/NavOrder";
 import { ImplementGrid } from "~/layouts/Grid";
-import CanceledService, { ready } from "~/modules/order/orderCanceledService";
+import CanceledService, {whatsappTemplateDb} from "~/modules/order/orderCanceledService";
 import { useLoaderData } from "@remix-run/react";
 import {  json } from "@remix-run/node";
 
 
 export async function loader (){
-  const [canceledService,readyService] = await Promise.all([
+  const [canceledService,whatsappDb] = await Promise.all([
        CanceledService(),
-       ready()
+       whatsappTemplateDb(),
        //your order service here !
   ]);
   return json({
     canceledService,
-    readyService
+    whatsappDb
     // your return order service here !
   });
 };

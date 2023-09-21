@@ -26,26 +26,25 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Link } from "@remix-run/react";
-import Empty from "../assets/icon-pack/empty-dot.svg";
-import { whatsappConfiguration } from "../utils/TemplateMessage";
-import ChevronDownIcon from "../assets/icon-pack/arrow-dropdown.svg";
+import Empty from "../../assets/icon-pack/empty-dot.svg";
+import { whatsappConfiguration } from "../../utils/TemplateMessage";
+import ChevronDownIcon from "../../assets/icon-pack/arrow-dropdown.svg";
 import { Input, InputGroup, InputLeftElement, Image } from "@chakra-ui/react";
-import SearchProduct from "../assets/icon-pack/search-product.svg";
+import SearchProduct from "../../assets/icon-pack/search-product.svg";
 import { useFilterCourier } from "~/hooks/useFilterCourier";
 import { useSortFilter } from "~/hooks/useSortFilter";
-import ReceiptSearch from "../assets/icon-pack/receipt-search.svg";
+import receiptSearch from "../../assets/icon-pack/receipt-search.svg"
 import searchFilter from "~/hooks/useSearchOrder";
 
-export default function CardCenceled() {
-
-  function formatCurrency (price: number): string {
+export default function CardSuccesOrder() {
+  function formatCurrency(price: number): string {
     return price.toLocaleString("id-ID", {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
-  };
+  }
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // modal
   const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
@@ -293,7 +292,7 @@ export default function CardCenceled() {
         <Box marginTop={"70px"}>
           <Center>
             <Box textAlign="center" mt={5} display={"flex"}>
-              <Image src={ReceiptSearch} />
+              <Image src={receiptSearch} />
               <Text fontSize="16px" mt={1}>
                 Oops, pesanan yang kamu cari tidak ditemukan.
                 <Text fontSize={"12px"} color={"#909090"} textAlign={"left"}>
@@ -307,20 +306,19 @@ export default function CardCenceled() {
         <Box>
           {filteredOrders.map((data) => (
             <Card mb={5} mt={5} boxShadow={"xs"}>
-
               <Box key={data.id}>
                 <Box mt={5}>
                   <Box>
                     <Flex justifyContent={"space-between"} px={2}>
                       <Button
-                        bg={"#EA3829"}
-                        color={"white"}
+                        bg={"#E6E6E6"}
+                        color={"#1D1D1D"}
                         fontWeight={"bold"}
-                        colorScheme="red.500"
+                        colorScheme="#E6E6E6"
                         size={"sm"}
                         pointerEvents={"none"}
                       >
-                        {data.status === "ORDER_CANCELLED" ? "Dibatalkan" : ""}
+                        {data.status === "ORDER_CANCELLED" ? "Pesnanan Selesai" : ""}
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
@@ -334,14 +332,14 @@ export default function CardCenceled() {
                         onClick={onOpen}
                         py={4}
                       >
-                        Hubungi Pembeli
+                        Kabari Pembeli
                       </Button>
 
                       <Modal onClose={onClose} isOpen={isOpen} isCentered>
                         <ModalOverlay bg={"whiteAlpha.50"} />
                         <ModalContent>
                           <ModalHeader>
-                            Send Message To {data.receiverName}{" "}
+                            Send Message To {data.user?.name}{" "}
                           </ModalHeader>
                           <ModalCloseButton />
                           <ModalBody>
@@ -356,13 +354,13 @@ export default function CardCenceled() {
                                           flex="1"
                                           textAlign="left"
                                         >
-                                          Template Message {item.id}
+                                         {item.name}
                                         </Box>
                                         <AccordionIcon />
                                       </AccordionButton>
                                     </Text>
                                     <AccordionPanel pb={4}>
-                                      {item.content} hehe
+                                      {item.content}
                                       <Button
                                         colorScheme={"whatsapp"}
                                         float={"right"}
@@ -390,57 +388,61 @@ export default function CardCenceled() {
                       INV/{data.invoiceNumber}
                     </Text>
                     <hr />
-
-                    <Flex justifyContent={"space-between"}>
-                      <Box display={"flex"} gap={3} w={"80%"}>
-                        <Img
-                          w={"52px"}
-                          h={"52px"}
-                          display={"inline"}
-                          borderRadius={"md"}
-                          src={
-                            data.cart?.cartItems[0]?.product?.attachments[0]
-                              ?.url
-                          }
-                          mt={3}
-                          ms={2}
-                        />
-                        <Text
-                          mt={4}
-                          id="fm500"
-                          fontSize={"16px"}
-                          textOverflow={"ellipsis"}
-                          overflow={"hidden"}
-                          whiteSpace={"nowrap"}
-                          fontWeight={"700"}
-                        >
-                          {data.cart?.cartItems.map(
-                            (item) => item.product?.name
-                          )}
-                          <Text color={"gray.400"} pb={3} fontWeight={"normal"}>
-                            {data.cart?.cartItems.map((item) => item.qty)}{" "}
-                            Barang
+                    <Link to={"/order/detail/1"}>
+                      <Flex justifyContent={"space-between"}>
+                        <Box display={"flex"} gap={3} w={"80%"}>
+                          <Img
+                            w={"52px"}
+                            h={"52px"}
+                            display={"inline"}
+                            borderRadius={"md"}
+                            src={
+                              data.cart?.cartItems[0]?.product?.attachments[0]
+                                ?.url
+                            }
+                            mt={3}
+                            ms={2}
+                          />
+                          <Text
+                            mt={4}
+                            id="fm500"
+                            fontSize={"16px"}
+                            textOverflow={"ellipsis"}
+                            overflow={"hidden"}
+                            whiteSpace={"nowrap"}
+                            fontWeight={"700"}
+                          >
+                            {data.cart?.cartItems.map(
+                              (item) => item.product?.name
+                            )}
+                            <Text
+                              color={"gray.400"}
+                              pb={3}
+                              fontWeight={"normal"}
+                            >
+                              {data.cart?.cartItems.map((item) => item.qty)}{" "}
+                              Barang
+                            </Text>
                           </Text>
-                        </Text>
-                      </Box>
-                      <Box mt={4} w={"18%"}>
-                        <Flex gap={1}>
-                          <Text color={"#909090"} fontSize={"14px"}>
-                            Total
+                        </Box>
+                        <Box mt={4} w={"18%"}>
+                          <Flex gap={1}>
+                            <Text color={"#909090"} fontSize={"14px"}>
+                              Total
+                            </Text>
+                            <Text color={"#909090"} fontSize={"14px"}>
+                              Belanja
+                            </Text>
+                          </Flex>
+                          <Text fontWeight={"bold"} fontSize={"14px"}>
+                            {formatCurrency(data.price)}
                           </Text>
-                          <Text color={"#909090"} fontSize={"14px"}>
-                            Belanja
-                          </Text>
-                        </Flex>
-                        <Text fontWeight={"bold"} fontSize={"14px"}>
-                          {formatCurrency(data.price)}
-                        </Text>
-                      </Box>
-                    </Flex>
+                        </Box>
+                      </Flex>
+                    </Link>
                   </Box>
                 </Box>
               </Box>
-
             </Card>
           ))}
         </Box>
