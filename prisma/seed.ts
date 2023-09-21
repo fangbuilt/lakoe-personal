@@ -444,7 +444,7 @@ async function main() {
         status: faker.helpers.arrayElement([
           'REQUEST',
           'APPROVED',
-          'PROGRESSING',
+          'PROCESSING',
           'SUCCESS',
           'DECLINED',
         ]),
