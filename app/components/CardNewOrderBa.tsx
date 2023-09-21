@@ -101,6 +101,7 @@ export default function CardNewOrderBa() {
         'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
+        // shipper_contact_name: props[0].cart?.store?.users[0].name,
         shipper_contact_name: selectedProps?.cart?.store?.users[0].name,
         shipper_contact_phone: selectedProps?.cart?.store?.users[0].phone,
         shipper_contact_email: selectedProps?.cart?.store?.users[0].email,
@@ -109,27 +110,30 @@ export default function CardNewOrderBa() {
         origin_contact_phone: selectedProps?.cart?.store?.users[0].phone,
         origin_address: selectedProps?.cart?.store?.locations[0].address,
         origin_note: selectedProps?.cart?.store?.locations[0].addressNote,
+
         origin_coordinate: {
           latitude: -6.2253114,
           longitude: 106.7993735,
         },
-        origin_postal_code: '53371',
-        destination_contact_name: 'bambang suhaedi',
-        destination_contact_phone: '082121232425',
-        destination_contact_email: 'suhaedi@bambangstore.com',
+        origin_postal_code: '12440',
+        destination_contact_name: 'aguswandi',
+        destination_contact_phone: '69696969',
+        destination_contact_email: 'agusw@andi.com',
         destination_address:
-          'jl Haji Erwin Blok Hj No.01 Rt00/Rw00, Kel. Kabah, Kec. Mekkah, Kabupaten Madinah',
-        destination_postal_code: '15234',
-        destination_note: 'antarkan sampai tempat tujuan',
+          'jl kasan misin No10, Rt01/Rw02, Kel. Cinangka, Kec. Cilandak, Kab. Bengkulu',
+        destination_postal_code: '14470',
+        destination_note:
+          'antar sampai tujuan dan jangan diturunkan ditengah jalan',
         destination_cash_proof_of_delivery: true,
         destination_coordinate: {
           latitude: -6.28927,
           longitude: 106.77492000000007,
         },
-        courier_company: 'Grab',
+        courier_company: 'grab',
+
         courier_type: 'instant',
-        courier_insurance: 100000,
-        delivery_type: 'grab',
+        courier_insurance: true,
+        delivery_type: 'later',
         delivery_date: '2024-09-24',
         delivery_time: '12:00',
         order_note: 'satukan semua pesanan kedalam satu packaging',
@@ -137,9 +141,9 @@ export default function CardNewOrderBa() {
         items: [
           {
             id: 1,
-            name: 'test 01',
+            name: 'Tester #03',
             image: '',
-            description: 'hahahahahahahaha',
+            description: 'Nasi Padang enak',
             value: 99000,
             quantity: 2,
             height: 10,
@@ -232,7 +236,7 @@ export default function CardNewOrderBa() {
         requestOptions
       );
       const responseDataBITESHIP = await responsebiteship.json();
-      console.log('response biteship', responseDataBITESHIP);
+
       alert(responseDataBITESHIP);
     } catch (error) {
       alert(error);
@@ -267,7 +271,6 @@ export default function CardNewOrderBa() {
                     fontSize={'14px'}
                     onClick={() => {
                       setModalText('Apakah sudah di pack dan siap dikirim?');
-                      console.log('data props', props);
                       setSelectedProps(props);
                       onOpen();
                     }}
