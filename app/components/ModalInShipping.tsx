@@ -22,29 +22,29 @@ import {
 import { BsCircleFill } from "react-icons/bs";
 import copy from "~/assets/DetailOrderIcon/copy.svg";
 import { useEffect, useState } from "react";
-import { useRevalidator } from "@remix-run/react";
+import { useLoaderData, useRevalidator } from "@remix-run/react";
 import { format } from "date-fns-tz";
 import { ITracking } from "~/interfaces/order/orderTracking";
 import { UseBiteshipTrack } from "~/hooks/useBiteshipTrack";
 import { IOrderDetailCourier } from "~/interfaces/orderDetail";
 import { db } from "~/libs/prisma/db.server";
 
-
 export default function ModalInShipping(props: {
   isOpen: boolean;
   onClose: () => void;
   data: ITracking;
   selectedCardId: string;
-  // revalidator: any;
 }) {
   console.log("select", props.selectedCardId);
   const { trackingInfoArray, trackingInfo } = UseBiteshipTrack(
     props.selectedCardId
   );
 
-
   const steps = trackingInfoArray;
   console.log("step", steps);
+
+  const stepCount = steps.length;
+  const stepHeight = 65;
 
   const { activeStep } = useSteps({
     index: 1,
@@ -54,12 +54,10 @@ export default function ModalInShipping(props: {
   const toast = useToast();
   const [_, setCopied] = useState(false);
 
-  useEffect(() => {
-    steps;
-  }, []);
+ 
 
   const handleCopyClick = () => {
-    const textToCopy = props.data.waybill_id as string;
+    const textToCopy = props.data?.waybill_id as string;
     navigator.clipboard.writeText(textToCopy).then(() => {
       setCopied(true);
 
@@ -233,22 +231,56 @@ export default function ModalInShipping(props: {
               >
                 <Stepper
                   size={"sm"}
-                  border={"1px solid #E6E6E6"}
-                  borderRadius={"12px"}
                   index={activeStep}
                   orientation="vertical"
-                  // height="110%"
                   width={"100%"}
-                  gap="5"
-                  p={"16px"}
+                  height={`${stepCount * stepHeight}px`}
+                  gap="0"
+                  border={"1px solid #E6E6E6"}
+                  padding={"var(--4, 16px)"}
+                  borderRadius={"var(--rounded-lg, 12px)"}
                 >
                   {steps.reverse().map((step: any, index: number) => (
                     <Step key={index}>
-                      <StepIndicator fontSize={"11px"}>
+                      <StepIndicator>
                         <StepStatus
-                          complete={<BsCircleFill />}
-                          incomplete={<BsCircleFill color="gray" />}
-                          active={<BsCircleFill color="gray" />}
+                          complete={
+                            <div
+                              style={{
+                                background:
+                                  index === 0 ? "#C5F8FF" : "transparent",
+                                borderRadius: "50%",
+                                padding: "7px",
+                                display: "inline-block",
+                              }}
+                            >
+                              <BsCircleFill size={"12px"} color="#0086B4" />
+                            </div>
+                          }
+                          incomplete={
+                            <div
+                              style={{
+                                background: "#F8F8F8",
+                                borderRadius: "50%",
+                                padding: "7px",
+                                display: "inline-block",
+                              }}
+                            >
+                              <BsCircleFill size={"12px"} color="#D5D5D5" />
+                            </div>
+                          }
+                          active={
+                            <div
+                              style={{
+                                background: "#F8F8F8",
+                                borderRadius: "50%",
+                                padding: "7px",
+                                display: "inline-block",
+                              }}
+                            >
+                              <BsCircleFill size={"12px"} color="#D5D5D5" />
+                            </div>
+                          }
                         />
                       </StepIndicator>
                       <Box flexShrink="0">
@@ -261,8 +293,7 @@ export default function ModalInShipping(props: {
                           )}
                         </StepDescription>
                       </Box>
-
-                      <StepSeparator />
+                      <StepSeparator style={{ background: "#E6E6E6" }} />
                     </Step>
                   ))}
                 </Stepper>

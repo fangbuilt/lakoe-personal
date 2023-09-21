@@ -235,7 +235,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardInShipping dataTracking={undefined} dataCourier={undefined}/>
+                    <CardInShipping/>
                   </TabPanel>
                 </ScrollBox>
 

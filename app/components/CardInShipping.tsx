@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 
 export default function CardInShipping(props: {
   dataTracking: ITracking;
-  dataCourier: IOrderDetailCourier;
 }) {
   const data = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -27,11 +26,8 @@ export default function CardInShipping(props: {
 
   return (
     <>
-      {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
-
-      {/* CARD START HERE */}
       <Card mb={5} boxShadow={"xs"}>
-        {data.dataShipping.map((data, index) => (
+        {data.dataShipping.map((data) => (
           <Box key={data.id}>
             <Box mt={5}>
               <Box>
@@ -58,7 +54,7 @@ export default function CardInShipping(props: {
                   >
                     Lihat Rincian Pengiriman
                   </Button>
-                  {modalIsOpen && selectedCardId && (
+                  {modalIsOpen && (
                     <ModalInShipping
                       key={data.id}
                       isOpen={modalIsOpen}
@@ -122,8 +118,6 @@ export default function CardInShipping(props: {
           </Box>
         ))}
       </Card>
-
-      {/* END CARD */}
     </>
   );
 }
