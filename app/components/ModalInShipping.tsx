@@ -35,13 +35,11 @@ export default function ModalInShipping(props: {
   data: ITracking;
   selectedCardId: string;
 }) {
-  console.log("select", props.selectedCardId);
   const { trackingInfoArray, trackingInfo } = UseBiteshipTrack(
     props.selectedCardId
   );
 
   const steps = trackingInfoArray;
-  console.log("step", steps);
 
   const stepCount = steps.length;
   const stepHeight = 65;

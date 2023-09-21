@@ -89,6 +89,7 @@ export default function CardInShipping(props: {
                       overflow={"hidden"}
                       whiteSpace={"nowrap"}
                       fontWeight={"700"}
+                      ml={2}
                     >
                       {data.cart?.cartItems.map((item) => (
                         <Box key={item.id}>{item.product?.name}</Box>
