@@ -1,10 +1,14 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useLoaderData } from '@remix-run/react';
-import type { ITracking } from '~/interfaces/order/orderTracking';
-import type { loader } from '~/routes/order';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useLoaderData } from "@remix-run/react";
+import { ITracking } from "~/interfaces/order/orderTracking";
+import { loader } from "~/routes/order";
+import { db } from "~/libs/prisma/db.server";
+import getDataInShipping from "~/modules/order/orderShippingService";
 
-export function UseBiteshipTrack() {
+
+
+export function UseBiteshipTrack(trackingNumber: string) {
   const data = useLoaderData<typeof loader>();
 
   const [trackingInfoArray, setTrackingInfoArray] = useState<ITracking[]>([]);
@@ -13,8 +17,9 @@ export function UseBiteshipTrack() {
 
   const fetchData = async () => {
     try {
+
       const response = await axios.get(
-        'https://api.biteship.com/v1/trackings/Roi50pFE5PWwkU7UMYgYlb5I',
+        `https://api.biteship.com/v1/trackings/${trackingNumber}`,
         {
           headers: {
             authorization: data.apiKey,
@@ -24,6 +29,7 @@ export function UseBiteshipTrack() {
 
       setTrackingInfo(response.data);
       setTrackingInfoArray(response.data.history);
+      // }
     } catch (err) {
       setError(null);
     }
