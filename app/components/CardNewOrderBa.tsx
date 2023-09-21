@@ -98,67 +98,29 @@ export default function CardNewOrderBa() {
       const apiKey =
         'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
-      // const dataforBiteShip = {
-      //   shipper_contact_name: props.cart.store.users[0].name,
-      //   shipper_contact_phone: props.cart.store.users[0].phone,
-      //   shipper_contact_email: props.cart.store.users[0].email,
-      //   shipper_organization: props.cart.store.name,
-      //   origin_contact_name: props.cart.store.users[0].name,
-      //   origin_contact_phone: props.cart.store.users[0].phone,
-      //   origin_address: props.cart.store.locations[0].address,
-      //   origin_note: props.cart.store.locations[0].addressNote,
-      //   origin_coordinate: {
-      //     latitude: parseFloat(props.cart.store.locations[0].latitude) //GAGAL PARSING
-      //     longitude: parseFloat(props.cart.store.locations[0].longtitude) //GAGAL PARSING
-      //   },
-      //   origin_postal_code: props.cart.store.locations[0].postalCode,
-      //   destination_contact_name: props.receiverName,
-      //   destination_contact_phone: props.receiverPhone,
-      //   destination_contact_email: props.receiverEmail,
-      //   destination_address: props.receiverAddress,
-      //   destination_postal_code: props.receiverPostalCode,
-      //   destination_note: props.receiverAddressNote,
-      //   destination_cash_proof_of_delivery:
-      //     props.courier.availableForProofOfDelivery,
-      //   destination_coordinate: {
-      //     latitude: parseFloat(props.receiverLatitude) //GAGAL PARSING
-      //     longitude: parseFloat(props.receiverLongitude) //GAGAL PARSING
-      //   },
-      //   courier_company:props.courier.courierName,
-      //   courier_type: 'instant', //error mapping
-      //   courier_insurance: props.courier.courierInsurance,
-      //   delivery_type: 'later', //error mapping
-      //   delivery_date: '2024-09-24', //error mapping
-      //   delivery_time: '12:00', //error mapping, sumpah
-      //   order_note: props.courier.description,
-      //   metadata: {},
-      //   items: [
-      //     {
-      //       id: props.cart.cartItems[0].product.id,
-      //       name: props.cart.cartItems[0].product.name,
-      //       image: '',
-      //       description: props.cart.cartItems[0].product.description,
-      //       value: props.cart.cartItems[0].qty * props.cart.cartItems[0].price,
-      //       quantity: props.cart.cartItems[0].qty,
-      //       height: props.cart.cartItems[0].product.height,
-      //       length: props.cart.cartItems[0].product.length,
-      //       weight:
-      //         props.cart.cartItems[0].variantOption.variantOptionValues[0]
-      //           .weight,
-      //       width: props.cart.cartItems[0].product.width,
-      //     },
-      //   ],
-      // };
-
       const dataforBiteShip = {
-        shipper_contact_name: 'John Doe Suhaedi',
-        shipper_contact_phone: '0341331690',
-        shipper_contact_email: 'john.doe@Suhaedi.com',
-        shipper_organization: 'Suhaedi Store Indonesia',
-        origin_contact_name: 'John Doe Suhaedi',
-        origin_contact_phone: '0341331690',
-        origin_address: 'Jl Haji Erwin No.33 Rt01/Rw02, Singkawang, Pontianak',
-        origin_note: 'Antarkan ke jl Hj Erwin yang berlokasi di ChinaTown',
+        shipper_contact_name: props.map((a) =>
+          a.cart?.store?.users.map((cok) => cok.name)
+        ),
+        shipper_contact_phone: props.map((a) =>
+          a.cart?.store?.users.map((cok) => cok.phone)
+        ),
+        shipper_contact_email: props.map((a) =>
+          a.cart?.store?.users.map((cok) => cok.email)
+        ),
+        shipper_organization: props.map((a) => a.cart?.store?.name),
+        origin_contact_name: props.map((a) =>
+          a.cart?.store?.users.map((cok) => cok.name)
+        ),
+        origin_contact_phone: props.map((a) =>
+          a.cart?.store?.users.map((cok) => cok.phone)
+        ),
+        origin_address: props.map((a) =>
+          a.cart?.store?.locations.map((jan) => jan.address)
+        ),
+        origin_note: props.map((awesome) =>
+          awesome.cart?.store?.locations.map((cool) => cool.addressNote)
+        ),
         origin_coordinate: {
           latitude: -6.2253114,
           longitude: 106.7993735,
@@ -201,6 +163,72 @@ export default function CardNewOrderBa() {
           },
         ],
       };
+
+      // const dataforBiteShip = {
+      //   shipper_contact_name: props.map((a) =>
+      //     a.cart?.store?.users.map((cok) => cok.name)
+      //   ),
+      //   shipper_contact_phone: props.map((a) =>
+      //     a.cart?.store?.users.map((cok) => cok.phone)
+      //   ),
+      //   shipper_contact_email: props.map((a) =>
+      //     a.cart?.store?.users.map((cok) => cok.email)
+      //   ),
+      //   shipper_organization: props.map((a) => a.cart?.store?.name),
+      //   origin_contact_name: props.map((a) =>
+      //     a.cart?.store?.users.map((cok) => cok.name)
+      //   ),
+      //   origin_contact_phone: props.map((a) =>
+      //     a.cart?.store?.users.map((cok) => cok.phone)
+      //   ),
+      //   origin_address: props.map((a) =>
+      //     a.cart?.store?.locations.map((jan) => jan.address)
+      //   ),
+      //   origin_note: props.map((awesome) =>
+      //     awesome.cart?.store?.locations.map((cool) => cool.addressNote)
+      //   ),
+      //   origin_coordinate: {
+      //     latitude: -6.2253114,
+      //     longitude: 106.7993735,
+      //   },
+      //   origin_postal_code: "12440",
+      //   destination_contact_name: "aguswandi",
+      //   destination_contact_phone: "69696969",
+      //   destination_contact_email: "agusw@andi.com",
+      //   destination_address:
+      //     "jl kasan misin No10, Rt01/Rw02, Kel. Cinangka, Kec. Cilandak, Kab. Bengkulu",
+      //   destination_postal_code: "14470",
+      //   destination_note:
+      //     "antar sampai tujuan dan jangan diturunkan ditengah jalan",
+      //   destination_cash_proof_of_delivery: true,
+      //   destination_coordinate: {
+      //     latitude: -6.28927,
+      //     longitude: 106.77492000000007,
+      //   },
+      //   courier_company: "Grab",
+      //   courier_type: "instant",
+      //   courier_insurance: true,
+      //   delivery_type: "later",
+      //   delivery_date: "2024-09-24",
+      //   delivery_time: "12:00",
+      //   order_note: "satukan semua pesanan kedalam satu packaging",
+      //   metadata: {},
+      //   items: [
+      //     {
+      //       id: 1,
+      //       name: "jaket cihuahua",
+      //       image: "",
+      //       description:
+      //         "jaket yang cocok untuk kucing anda yang ingin di cosplay menjadi cihuahua",
+      //       value: 99000,
+      //       quantity: 2,
+      //       height: 10,
+      //       length: 20,
+      //       weight: 0.5,
+      //       width: 15,
+      //     },
+      //   ],
+      // };
 
       const orderDataJSON = JSON.stringify(dataforBiteShip);
 
