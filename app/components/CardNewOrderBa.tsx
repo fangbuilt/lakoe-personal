@@ -342,7 +342,6 @@ export default function CardNewOrderBa() {
                       </Text>
                     </Flex>
                     <Text fontWeight={'bold'} fontSize={'14px'}>
-                      Rp{' '}
                       {formatCurrency(
                         props.cart?.cartItems.reduce(
                           (total, a) => total + a.price * a.qty,
