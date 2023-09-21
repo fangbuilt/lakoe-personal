@@ -110,7 +110,7 @@ export function Informations() {
   return (
     <TabPanel>
       <Text fontWeight={'semibold'} fontSize={'16px'} mb={3}>
-        Informasi Toko
+        Informasi Toko Tes
       </Text>
       <Form method="post">
         <Input hidden name="actionType" value="create" />
