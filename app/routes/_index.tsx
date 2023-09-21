@@ -22,6 +22,8 @@ export default function Index() {
       <>server: {data}</>
       {new Date().getDate()}
       <h1>Welcome to Lakoe store!</h1>
+      <h1>{data}</h1>
+      <h1>{new Date().getDate()}</h1>
       <Link to={'/posts'}>
         <Button colorScheme="linkedin">Go to Lakoe Store!</Button>
       </Link>

@@ -11,56 +11,8 @@ type CategoryNames = {
   parent: string | null;
   child: string | null;
 };
+
 export default function useNestedOptions() {
-  const [data, setData] = useState<Category[]>(
-    Array<{
-      id: number;
-      parentId: number | null;
-      name: string;
-    }>
-  );
-
-  const [data2, setData2] = useState<Category[]>(
-    Array<{
-      id: number;
-      parentId: number | null;
-      name: string;
-    }>
-  );
-
-  const [selected, setSelected] = useState<CategoryNames>({
-    grandparent: null,
-    parent: null,
-    child: null,
-  });
-
-  const handleClick = (parentId: number) => {
-    const newData = options.filter((option) => option.parentId === parentId);
-    setData2([]);
-    setData(newData);
-
-    const grandparent =
-      options.find((option) => option.id === parentId)?.name || null;
-    setSelected({
-      grandparent,
-      parent: null,
-      child: null,
-    });
-  };
-
-  const handleClick2 = (parentId: number) => {
-    const newData = options.filter((option) => option.parentId === parentId);
-    setData2(newData);
-
-    const parent =
-      options.find((option) => option.id === parentId)?.name || null;
-    setSelected((prevState) => ({
-      ...prevState,
-      parent,
-      child: null,
-    }));
-  };
-
   const options = [
     {
       id: 1,
@@ -649,15 +601,78 @@ export default function useNestedOptions() {
     },
   ];
 
+  const initialSelected: CategoryNames = {
+    grandparent: null,
+    parent: null,
+    child: null,
+  };
+
+  const [grandParentData, setGrandParentData] = useState<Category[]>([]);
+  const [parentData, setParentData] = useState<Category[]>([]);
+  const [childData, setChildData] = useState<Category[]>([]);
+  const [selected, setSelected] = useState<CategoryNames>(initialSelected);
+  const [activeGrandparent, setActiveGrandparent] = useState<number | null>(
+    null
+  );
+  const [activeParent, setActiveParent] = useState<number | null>(null);
+  const [activeChild, setActiveChild] = useState<number | null>(null);
+  const [value, setValue] = useState<string | null>(null);
+  const [openOptions, setOpenOptions] = useState(false);
+
+  const handleCategoryClick = (id: number, type: keyof CategoryNames) => {
+    if (type === 'grandparent') {
+      setActiveGrandparent(id);
+      setActiveParent(id);
+      setActiveChild(null);
+      const newCategoryData = options.filter(
+        (option) => option.parentId === id
+      );
+      setParentData([]);
+      setGrandParentData(newCategoryData);
+    } else if (type === 'parent') {
+      setActiveParent(id);
+      setActiveChild(null);
+      const newCategoryData = options.filter(
+        (option) => option.parentId === id
+      );
+      setParentData(newCategoryData);
+    } else if (type === 'child') {
+      setActiveChild(id);
+      const newCategoryData = options.filter(
+        (option) => option.parentId === id
+      );
+      setChildData(newCategoryData);
+      setValue(options.find((option) => option.id === id)?.name || null);
+      setOpenOptions(false);
+    }
+
+    const categoryName =
+      options.find((option) => option.id === id)?.name || null;
+    setSelected((prevState) => ({
+      ...prevState,
+      [type]: categoryName,
+    }));
+  };
+
+  const toggleOptions = () => {
+    setOpenOptions(!openOptions);
+  };
+
   const parentOptions = options.filter((option) => option.parentId === null);
 
   return {
-    handleClick,
-    handleClick2,
+    handleCategoryClick,
     options,
     parentOptions,
-    data,
-    data2,
+    grandParentData,
+    parentData,
+    childData,
     selected,
+    toggleOptions,
+    openOptions,
+    value,
+    activeGrandparent,
+    activeParent,
+    activeChild,
   };
 }

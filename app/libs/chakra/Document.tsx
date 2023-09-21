@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { withEmotionCache } from '@emotion/react';
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import {

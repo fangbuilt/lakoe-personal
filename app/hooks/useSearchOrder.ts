@@ -1,17 +1,25 @@
-import data from '../utils/dummy.json';
+import { useLoaderData } from '@remix-run/react';
 import { useState, useEffect } from 'react';
+import type { loader } from '~/routes/order';
 
-export function UseSearch() {
+export default function useSearchFilter() {
+  const { canceledService } = useLoaderData<typeof loader>();
+  const [filteredOrders, setFilteredOrders] = useState(canceledService);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredOrders, setFilteredOrders] = useState(data);
   useEffect(() => {
-    const filtered = data.filter(
-      (order) =>
-        order.titleProduct.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        order.invoice.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const toLowerCase = searchQuery.toLowerCase();
+    const filtered = canceledService.filter((order) => {
+      const productNames =
+        order.cart?.cartItems.map((item: any) =>
+          item.product?.name.toLowerCase()
+        ) || [];
+      const invoiceNumber = order.invoiceNumber.toLowerCase();
+      return (
+        productNames.some((item) => item.includes(toLowerCase)) ||
+        invoiceNumber.includes(toLowerCase)
+      );
+    });
     setFilteredOrders(filtered);
-  }, [searchQuery]);
-
-  return { filteredOrders, setSearchQuery };
+  }, [searchQuery, canceledService]);
+  return { filteredOrders, setSearchQuery, searchQuery };
 }
