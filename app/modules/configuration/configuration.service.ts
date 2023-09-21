@@ -1,3 +1,4 @@
+import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
 export default async function createLocation(data: any) {
@@ -24,4 +25,8 @@ export default async function createLocation(data: any) {
   } catch (error) {
     console.log('error service', error);
   }
+}
+
+export async function getAllDataLocation() {
+  return json(await db.location.findMany());
 }

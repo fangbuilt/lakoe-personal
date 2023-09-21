@@ -14,6 +14,11 @@ import {
   Input,
   Select,
   Textarea,
+  Alert,
+  AlertIcon,
+  //AlertTitle,
+  CloseButton,
+  //Box,
 } from '@chakra-ui/react';
 
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
@@ -28,7 +33,6 @@ interface CustomModalProps {
 //=======================
 
 export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
-  // ini logic modal ==================================================
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -43,8 +47,6 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
     setIsMapModalOpen(false);
     onClose(); // Tutup modal utama saat menutup modal dalam modal
   };
-
-  //==============================================================================================
 
   // ini logic select option ==================================================
   interface Provinsi {
@@ -164,6 +166,11 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
   };
 
   //=======================================================================================
+
+  //ini untuk alert ===============================================================
+  const [showAlert, setShowAlert] = useState(false);
+
+  //======================================================================================
   return (
     <>
       <Modal
@@ -193,6 +200,7 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
               <Image w={'30px'} src={CloseCircle} />
             </Button>
           </ModalHeader>
+
           {/* <ModalCloseButton /> */}
           <Form method="post">
             <ModalBody>
@@ -203,7 +211,7 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
               </FormControl>
 
               <FormControl mt={4} isRequired>
-                <FormLabel>provinsi</FormLabel>
+                <FormLabel>Provinsi</FormLabel>
                 <Select
                   name="province"
                   placeholder="Cari Provinsi"
@@ -222,7 +230,7 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
               </FormControl>
 
               <FormControl mt={4} isRequired>
-                <FormLabel>kabupaten</FormLabel>
+                <FormLabel>Kabupaten</FormLabel>
                 <Select
                   name="kabupaten"
                   placeholder="Cari kabupaten"
@@ -241,10 +249,10 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
               </FormControl>
 
               <FormControl mt={4} isRequired>
-                <FormLabel>kecamatan</FormLabel>
+                <FormLabel>Kecamatan</FormLabel>
                 <Select
                   name="cityDistrict"
-                  placeholder="Cari kota / Kecamatan"
+                  placeholder="Cari Kecamatan"
                   value={selectedKecamatan}
                   onChange={handleKecamatanChange}
                 >
@@ -328,11 +336,36 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
               <Button mr={2} borderRadius={'20px'}>
                 Batalkan
               </Button>
-              <Button type="submit" colorScheme="blue" borderRadius={'20px'}>
+              <Button
+                type="submit"
+                colorScheme="blue"
+                borderRadius={'20px'}
+                onClick={() => {
+                  // Simulasikan penyimpanan data (Anda dapat menggantinya dengan logika penyimpanan aktual Anda)
+                  // Setelah data disimpan, tampilkan alert
+                  setShowAlert(true);
+                }}
+              >
                 Simpan
               </Button>
             </ModalFooter>
           </Form>
+          {showAlert && (
+            <Alert status="success" mt={4}>
+              <AlertIcon />
+              Data telah berhasil disimpan.
+              <CloseButton
+                onClick={() => {
+                  setShowAlert(false);
+                  // Opsional, Anda dapat merefresh halaman di sini
+                  window.location.reload();
+                }}
+                position="absolute"
+                right="8px"
+                top="8px"
+              />
+            </Alert>
+          )}
         </ModalContent>
       </Modal>
 
@@ -450,7 +483,8 @@ export function ModalDelete({ isOpen, onClose }: CustomModalProps) {
           <Button
             borderRadius="20px"
             colorScheme="blue"
-            onClick={() => alert('Tombol Khusus Modal 2')}
+            //onClick={() => alert("Tombol Khusus Modal 2")}
+            onClick={onClose}
           >
             Ya, Hapus
           </Button>

@@ -11,7 +11,13 @@ import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
-import createLocation from '~/modules/configuration/configuration.service';
+import createLocation, {
+  getAllDataLocation,
+} from '~/modules/configuration/configuration.service';
+
+export async function loader() {
+  return await getAllDataLocation();
+}
 
 export async function action({ request }: ActionArgs) {
   //ini adalah action location ===============================================
@@ -49,6 +55,7 @@ export async function action({ request }: ActionArgs) {
       isMainLocation,
     });
     const redirectURL = `/configuration/storeConfiguration `;
+
     return redirect(redirectURL);
   }
   return null;
