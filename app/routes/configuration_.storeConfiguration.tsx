@@ -12,12 +12,12 @@ import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
+import { Informations } from '~/modules/configuration/components/informations/information';
 import createLocation, {
   getAllDataLocation,
-
   createStoreInformation,
-  updateStoreInformation} from '~/modules/configuration/configuration.service';
-import { Informations } from '~/modules/configuration/components/informations/information';
+  updateStoreInformation,
+} from '~/modules/configuration/configuration.service';
 
 export async function loader() {
   return await getAllDataLocation();
@@ -53,7 +53,7 @@ export async function action({ request }: ActionArgs) {
   const domain = `lakoe.store/${name}`;
   const logoAttachment = formData.get('logoAttachment');
 
-  if (actionType === 'create') {
+  if (actionType === 'createlocation') {
     console.log('data berhasil masuk!');
 
     await createLocation({
@@ -72,12 +72,12 @@ export async function action({ request }: ActionArgs) {
 
   //=======================================================================
 
-  if (actionType === 'create' && nameStore && slogan && description) {
+  if (actionType === 'createinformation') {
     const storeId = '';
     if (storeId) {
       await updateStoreInformation(storeId, {
         storeId: storeId,
-        nameStore,
+        name: nameStore,
         slogan,
         description,
         domain,
@@ -85,7 +85,7 @@ export async function action({ request }: ActionArgs) {
       });
     } else {
       await createStoreInformation({
-        nameStore,
+        name: nameStore,
         slogan,
         description,
         domain,

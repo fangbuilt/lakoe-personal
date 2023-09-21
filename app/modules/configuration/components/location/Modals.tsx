@@ -204,7 +204,7 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
           {/* <ModalCloseButton /> */}
           <Form method="post">
             <ModalBody>
-              <Input hidden name="actionType" value="create" />
+              <Input hidden name="actionType" value="createlocation" />
               <FormControl isRequired>
                 <FormLabel>Nama Lokasi</FormLabel>
                 <Input name="name" placeholder="Cth. Toko Alamanda" />

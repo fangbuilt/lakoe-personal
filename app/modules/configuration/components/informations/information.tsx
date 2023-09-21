@@ -104,7 +104,7 @@ export function Informations() {
         Informasi Toko
       </Text>
       <Form method="post">
-        <Input hidden name="actionType" value="create" />
+        <Input hidden name="actionType" value="createinformation" />
         <FormControl>
           <Grid
             h="150px"
