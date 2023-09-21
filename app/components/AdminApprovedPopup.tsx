@@ -121,16 +121,16 @@ export default function AdminApprovedPopup(props: any) {
                   <Text width={'150px'}>Nama Pemilik</Text>
                   <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                 </Flex>
-                <Button
-                  width={'100%'}
-                  textAlign={'center'}
-                  mt={'10px'}
-                  fontSize={'12px'}
+                {/* <Button
+                  width={"100%"}
+                  textAlign={"center"}
+                  mt={"10px"}
+                  fontSize={"12px"}
                   colorScheme="teal"
                   padding={0}
                 >
                   Check
-                </Button>
+                </Button> */}
               </Box>
 
               <Box mt={'20px'} fontSize={'12px'}>
@@ -174,7 +174,7 @@ export default function AdminApprovedPopup(props: any) {
                     <Button
                       name="status"
                       value="PROCESSING"
-                      flex={'50%'}
+                      flex={'100%'}
                       fontSize={'12px'}
                       colorScheme="teal"
                       padding={0}
@@ -183,7 +183,7 @@ export default function AdminApprovedPopup(props: any) {
                     >
                       Processing
                     </Button>
-                    <Button
+                    {/* <Button
                       name="status"
                       value="DECLINED"
                       flex={'50%'}
@@ -194,7 +194,7 @@ export default function AdminApprovedPopup(props: any) {
                       onClick={handleApproveClick}
                     >
                       Declined
-                    </Button>
+                    </Button> */}
                   </Flex>
                 </Form>
               </Box>
