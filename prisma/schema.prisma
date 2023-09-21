@@ -34,18 +34,31 @@ model User {
   @@map("users")
 }
 
+model AttachmentAdmin {
+  id         String    @id @unique @default(uuid())
+  attachment String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
+  withdrawId String
+
+  @@map("attachments_admin")
+}
+
 model Withdraw {
-  id           String       @id @unique @default(uuid())
-  amount       Float
-  status       String
-  store        Store?       @relation(fields: [storeId], references: [id])
-  storeId      String
-  bankAccount  BankAccount? @relation(fields: [bankId], references: [id])
-  bankId       String
-  approvedBy   User?        @relation(fields: [approvedById], references: [id])
-  approvedById String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now())
+  id              String            @id @unique @default(uuid())
+  amount          Float
+  status          String
+  store           Store?            @relation(fields: [storeId], references: [id])
+  storeId         String
+  bankAccount     BankAccount?      @relation(fields: [bankId], references: [id])
+  bankId          String
+  approvedBy      User?             @relation(fields: [approvedById], references: [id])
+  approvedById    String
+  attachmentAdmin AttachmentAdmin[]
+  adminDecline    AdminDecline[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
 
   @@map("withdraws")
 }
@@ -89,6 +102,7 @@ model Store {
   carts             Cart[]
   bankAccounts      BankAccount[]
   withdraws         Withdraw[]
+  adminDecline      AdminDecline[]
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @default(now())
 
@@ -167,7 +181,7 @@ model Product {
   id           String              @id @unique @default(uuid())
   name         String
   description  String
-  minumumOrder Int
+  minimumOrder Int
   length       Float
   width        Float
   height       Float
@@ -190,7 +204,7 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product?        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product        Product         @relation(fields: [productId], references: [id])
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
@@ -202,7 +216,7 @@ model Variant {
 model VariantOption {
   id                  String               @id @unique @default(uuid())
   name                String
-  variant             Variant?             @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variant             Variant?             @relation(fields: [variantId], references: [id])
   variantId           String
   cartItems           CartItem[]
   variantOptionValues VariantOptionValue[]
@@ -218,7 +232,7 @@ model VariantOptionValue {
   weight          Float
   stock           Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
   variantOptionId String
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())
@@ -409,4 +423,17 @@ model BiteshipTrackingLimit {
   updatedAt      DateTime @default(now())
 
   @@map("biteship_tracking_limits")
+}
+
+model AdminDecline {
+  id         String    @id @unique @default(uuid())
+  reason     String
+  store      Store?    @relation(fields: [storeId], references: [id])
+  storeId    String
+  withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
+  withdrawId String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+
+  @@map("admin_decline")
 }

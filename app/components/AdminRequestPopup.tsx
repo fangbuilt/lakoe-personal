@@ -48,9 +48,9 @@ export default function AdminRequestPopup(props: any) {
   const handleApproveClick = async () => {
     try {
       // Make an API call to update the status
-      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
+      await updateStatusWithdraw(dataWithdrawal.id, 'APPROVED');
       // Update the local status
-      setStatusUpdated('PROCESSING');
+      setStatusUpdated('APPROVED');
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -173,7 +173,7 @@ export default function AdminRequestPopup(props: any) {
                   <Flex gap={'5px'} mt={'10px'}>
                     <Button
                       name="status"
-                      value="PROCESSING"
+                      value="APPROVED"
                       flex={'50%'}
                       fontSize={'12px'}
                       colorScheme="teal"
