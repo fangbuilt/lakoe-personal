@@ -39,6 +39,7 @@ export default function CardNewOrderBa() {
   const { filteredOrders } = useSearchFilter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cardProduct = useLoaderData<typeof loader>();
+  const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
 
   const props = cardProduct.dataInvoice;
 
@@ -99,61 +100,44 @@ export default function CardNewOrderBa() {
         'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
-        shipper_contact_name: props.map((a) =>
-          a.cart?.store?.users.map((cok) => cok.name)
-        ),
-        shipper_contact_phone: props.map((a) =>
-          a.cart?.store?.users.map((cok) => cok.phone)
-        ),
-        shipper_contact_email: props.map((a) =>
-          a.cart?.store?.users.map((cok) => cok.email)
-        ),
-        shipper_organization: props.map((a) => a.cart?.store?.name),
-        origin_contact_name: props.map((a) =>
-          a.cart?.store?.users.map((cok) => cok.name)
-        ),
-        origin_contact_phone: props.map((a) =>
-          a.cart?.store?.users.map((cok) => cok.phone)
-        ),
-        origin_address: props.map((a) =>
-          a.cart?.store?.locations.map((jan) => jan.address)
-        ),
-        origin_note: props.map((awesome) =>
-          awesome.cart?.store?.locations.map((cool) => cool.addressNote)
-        ),
+        shipper_contact_name: selectedProps?.cart?.store?.users[0].name,
+        shipper_contact_phone: selectedProps?.cart?.store?.users[0].phone,
+        shipper_contact_email: selectedProps?.cart?.store?.users[0].email,
+        shipper_organization: selectedProps?.cart?.store?.name,
+        origin_contact_name: selectedProps?.cart?.store?.users[0].name,
+        origin_contact_phone: selectedProps?.cart?.store?.users[0].phone,
+        origin_address: selectedProps?.cart?.store?.locations[0].address,
+        origin_note: selectedProps?.cart?.store?.locations[0].addressNote,
         origin_coordinate: {
           latitude: -6.2253114,
           longitude: 106.7993735,
         },
-        origin_postal_code: '12440',
-        destination_contact_name: 'aguswandi',
-        destination_contact_phone: '69696969',
-        destination_contact_email: 'agusw@andi.com',
-        destination_address:
-          'jl kasan misin No10, Rt01/Rw02, Kel. Cinangka, Kec. Cilandak, Kab. Bengkulu',
-        destination_postal_code: '14470',
-        destination_note:
-          'antar sampai tujuan dan jangan diturunkan ditengah jalan',
+        origin_postal_code: '53371',
+        destination_contact_name: selectedProps?.receiverName,
+        destination_contact_phone: selectedProps?.receiverPhone,
+        destination_contact_email: selectedProps?.receiverEmail,
+        destination_address: selectedProps?.receiverAddress,
+        destination_postal_code: selectedProps?.receiverPostalCode,
+        destination_note: selectedProps?.receiverAddressNote,
         destination_cash_proof_of_delivery: true,
         destination_coordinate: {
           latitude: -6.28927,
           longitude: 106.77492000000007,
         },
-        courier_company: 'Grab',
-        courier_type: 'instant',
-        courier_insurance: true,
-        delivery_type: 'later',
-        delivery_date: '2024-09-24',
-        delivery_time: '12:00',
-        order_note: 'satukan semua pesanan kedalam satu packaging',
+        courier_company: selectedProps?.courier?.courierName,
+        courier_type: selectedProps?.courier?.courierType,
+        courier_insurance: selectedProps?.courier?.courierInsurance,
+        delivery_type: selectedProps?.courier?.shippingType,
+        delivery_date: selectedProps?.courier?.deliveryDate,
+        delivery_time: selectedProps?.courier?.deliveryTime,
+        order_note: selectedProps?.courier?.description,
         metadata: {},
         items: [
           {
             id: 1,
-            name: 'jaket cihuahua',
+            name: 'haha baru lagi',
             image: '',
-            description:
-              'jaket yang cocok untuk kucing anda yang ingin di cosplay menjadi cihuahua',
+            description: 'hahahahahahahaha',
             value: 99000,
             quantity: 2,
             height: 10,
@@ -246,7 +230,7 @@ export default function CardNewOrderBa() {
         requestOptions
       );
       const responseDataBITESHIP = await responsebiteship.json();
-
+      console.log('response biteship', responseDataBITESHIP);
       alert(responseDataBITESHIP);
     } catch (error) {
       alert(error);
@@ -281,6 +265,8 @@ export default function CardNewOrderBa() {
                     fontSize={'14px'}
                     onClick={() => {
                       setModalText('Apakah sudah di pack dan siap dikirim?');
+                      console.log('data props', props);
+                      setSelectedProps(props);
                       onOpen();
                     }}
                   >
