@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
@@ -16,7 +17,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import useSearchFilter from '~/hooks/useSearchOrder';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
@@ -39,6 +40,7 @@ export default function CardNewOrderBa() {
   const { filteredOrders } = useSearchFilter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cardProduct = useLoaderData<typeof loader>();
+  const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
 
   const props = cardProduct.dataInvoice;
 
@@ -52,7 +54,7 @@ export default function CardNewOrderBa() {
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const mailerData = {
-        email: 'miswaripujaayu+123qowiej@gmail.com',
+        email: 'LakoeWeb+01@blondmail.com',
         fields: {
           company: 'ADD MORE BALANCE', //company berperan sebagai "title" dalam mailerlite
           last_name:
@@ -76,12 +78,13 @@ export default function CardNewOrderBa() {
       );
       const responseData = await response.json();
       console.log('Data Email :', responseData);
+      alert('System sedang terkendala, cobalah beberapa saat lagi');
     } catch (error) {
       alert(error);
     }
   };
 
-  const systembalance = 100000; //saldo LAKOE
+  const systembalance = 123; //saldo LAKOE
 
   const afterpacking = () => {
     if (systembalance > 50000) {
@@ -99,25 +102,25 @@ export default function CardNewOrderBa() {
         'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
-        shipper_contact_name: props[0].cart?.store?.users[0].name,
-        shipper_contact_phone: props[0].cart?.store?.users[0].phone,
-        shipper_contact_email: props[0].cart?.store?.users[0].email,
-        shipper_organization: props[0].cart?.store?.name,
-        origin_contact_name: props[0].cart?.store?.users[0].name,
-        origin_contact_phone: props[0].cart?.store?.users[0].phone,
-        origin_address: props[0].cart?.store?.locations[0].address,
-        origin_note: props[0].cart?.store?.locations[0].addressNote,
+        // shipper_contact_name: props[0].cart?.store?.users[0].name,
+        shipper_contact_name: selectedProps?.cart?.store?.users[0].name,
+        shipper_contact_phone: selectedProps?.cart?.store?.users[0].phone,
+        shipper_contact_email: selectedProps?.cart?.store?.users[0].email,
+        shipper_organization: selectedProps?.cart?.store.name,
+        origin_contact_name: selectedProps?.cart?.store?.users[0].name,
+        origin_contact_phone: selectedProps?.cart?.store?.users[0].phone,
+        origin_address: selectedProps?.cart?.store?.locations[0].address,
+        origin_note: selectedProps?.cart?.store?.locations[0].addressNote,
 
         origin_coordinate: {
           latitude: -6.2253114,
           longitude: 106.7993735,
         },
         origin_postal_code: '12440',
-        destination_contact_name: 'aguswandi',
-        destination_contact_phone: '69696969',
-        destination_contact_email: 'agusw@andi.com',
-        destination_address:
-          'jl kasan misin No10, Rt01/Rw02, Kel. Cinangka, Kec. Cilandak, Kab. Bengkulu',
+        destination_contact_name: selectedProps?.receiverName,
+        destination_contact_phone: selectedProps?.receiverPhone,
+        destination_contact_email: selectedProps?.receiverEmail,
+        destination_address: selectedProps?.receiverAddress,
         destination_postal_code: '14470',
         destination_note:
           'antar sampai tujuan dan jangan diturunkan ditengah jalan',
@@ -138,11 +141,10 @@ export default function CardNewOrderBa() {
         items: [
           {
             id: 1,
-            name: 'jaket cihuahua',
+            name: selectedProps?.cart.cartItems[0].product.name,
             image: '',
-            description:
-              'jaket yang cocok untuk kucing anda yang ingin di cosplay menjadi cihuahua',
-            value: 99000,
+            description: selectedProps?.cart.cartItems[0].product.description,
+            value: selectedProps?.cart.cartItems[0].price,
             quantity: 2,
             height: 10,
             length: 20,
@@ -235,7 +237,9 @@ export default function CardNewOrderBa() {
       );
       const responseDataBITESHIP = await responsebiteship.json();
 
-      alert(responseDataBITESHIP);
+      alert(
+        'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
+      );
     } catch (error) {
       alert(error);
     }
@@ -269,6 +273,7 @@ export default function CardNewOrderBa() {
                     fontSize={'14px'}
                     onClick={() => {
                       setModalText('Apakah sudah di pack dan siap dikirim?');
+                      setSelectedProps(props);
                       onOpen();
                     }}
                   >
@@ -333,19 +338,21 @@ export default function CardNewOrderBa() {
                       mt={3}
                       mx={3}
                     />
-                    <Text
-                      mt={4}
-                      id="fm500"
-                      fontSize={'16px'}
-                      textOverflow={'ellipsis'}
-                      overflow={'hidden'}
-                      whiteSpace={'nowrap'}
-                      fontWeight={'700'}
-                    >
-                      {props.cart?.cartItems.map((a) => a.product?.name)}
-                      <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                        {props.cart?.cartItems.map((a) => a.qty)} Barang
+                    <Link to={`/order/detail/${props.id}`}>
+                      <Text
+                        mt={4}
+                        id="fm500"
+                        fontSize={'16px'}
+                        textOverflow={'ellipsis'}
+                        overflow={'hidden'}
+                        whiteSpace={'nowrap'}
+                        fontWeight={'700'}
+                      >
+                        {props.cart?.cartItems.map((a) => a.product?.name)}
                       </Text>
+                    </Link>
+                    <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                      {props.cart?.cartItems.map((a) => a.qty)} Barang
                     </Text>
                   </Box>
                   <Box mt={4} w={'15%'}>
@@ -357,13 +364,16 @@ export default function CardNewOrderBa() {
                         Belanja
                       </Text>
                     </Flex>
-                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                    {/* <Text fontWeight={'bold'} fontSize={'14px'}>
                       {formatCurrency(
                         props.cart?.cartItems.reduce(
                           (total, a) => total + a.price * a.qty,
                           0
                         ) as number
                       )}
+                    </Text> */}
+                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                      Rp {props.cart?.cartItems.map((a) => a.price)}
                     </Text>
                   </Box>
                 </Flex>
