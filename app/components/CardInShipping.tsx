@@ -9,7 +9,7 @@ import { db } from "~/libs/prisma/db.server";
 import { Link } from "react-router-dom";
 
 export default function CardInShipping(props: {
-  dataTracking: ITracking;
+  dataTracking: ITracking
 }) {
   const data = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
