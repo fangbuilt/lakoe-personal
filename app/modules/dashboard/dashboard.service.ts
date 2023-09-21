@@ -93,11 +93,7 @@ export async function updateBank(
 export async function getWithdrawalList() {
   return await db.withdraw.findMany({
     include: {
-      store: {
-        select: {
-          name: true,
-        },
-      },
+      store: true,
       bankAccount: true,
     },
   });
@@ -130,7 +126,7 @@ export async function createWithdraw(
     const amount = parseFloat(data.amount);
 
     const user = await db.user.findUnique({
-      where: { id: '50' },
+      where: { id: '5' },
     });
 
     if (!user) {
@@ -178,4 +174,49 @@ export async function deleteWithdraw(id: string) {
   return await db.withdraw.delete({
     where: { id: id },
   });
+}
+
+export async function createDeclinedReason(data: any, id: string) {
+  const withdraw = await db.withdraw.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!withdraw) {
+    throw new Error('withdraw Id not found.');
+  }
+
+  const withdrawId = withdraw.id;
+
+  const store = await db.store.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!store) {
+    throw new Error('store Id not found.');
+  }
+
+  const storeId = store.id;
+
+  const createReason = await db.adminDecline.create({
+    data: {
+      withdraw: {
+        connect: {
+          id: withdrawId,
+        },
+      },
+      store: {
+        connect: {
+          id: storeId,
+        },
+      },
+      reason: data.reason,
+    },
+  });
+  console.log('this is reason declined:', createReason);
+
+  return createReason;
 }

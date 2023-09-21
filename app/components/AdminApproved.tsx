@@ -13,22 +13,17 @@ import {
   Tbody,
   Td,
   Input,
+  VStack,
   FormControl,
   Select,
-  VStack,
 } from '@chakra-ui/react';
 
 import { Link } from '@remix-run/react';
-import AdminDeclinedPopup from './AdminDeclinedPopup';
 import moment from 'moment';
 import { useState } from 'react';
-import { getStoreData } from '~/modules/dashboard/dashboard.service';
+import AdminApprovedPopup from './AdminApprovedPopup';
 
-export async function loader(id: string) {
-  return await getStoreData(id);
-}
-
-export default function AdminDeclined({ dataWithdrawal }: any) {
+export default function AdminApproved({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
     (item: any) => item.status === 'REQUEST'
   );
@@ -82,7 +77,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
     <>
       <Box
         width={'100%'}
-        padding={'20px'}
+        padding={'10px'}
         borderRadius={'15px'}
         boxShadow="base"
         p="6"
@@ -90,7 +85,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
         bg="white"
       >
         <Box>
-          <Tabs defaultIndex={5}>
+          <Tabs defaultIndex={2}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
                 Daftar Penarikan Dana
@@ -319,7 +314,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredDataDeclined.map((item: any) => (
+                {filteredDataApproved.map((item: any) => (
                   <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
@@ -337,16 +332,16 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
                     </Td>
                     <Td margin={'2px 0'}>
                       <Text>
-                        {item.status === 'DECLINED' && (
+                        {item.status === 'APPROVED' && (
                           <Text
-                            bg={'RED'}
+                            bg={'blue.600'}
                             color={'white'}
                             borderRadius={'15px'}
                             px={'5px'}
                             fontSize={'10px'}
                             textAlign={'center'}
                           >
-                            DECLINED
+                            APPROVED
                           </Text>
                         )}
                       </Text>
@@ -361,7 +356,7 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminDeclinedPopup dataWithdrawal={item} />
+                        <AdminApprovedPopup dataWithdrawal={item} />
                       </Text>
                     </Td>
                   </Tr>

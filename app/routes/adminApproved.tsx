@@ -1,8 +1,8 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import AdminAll from '~/components/AdminAll';
+import AdminApproved from '~/components/AdminApproved';
 import { ImplementGridAdmin } from '~/layouts/Grid';
 import {
   getWithdrawalList,
@@ -12,7 +12,6 @@ import {
 export async function loader() {
   return await getWithdrawalList();
 }
-
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const id = formData.get('id');
@@ -32,15 +31,15 @@ export async function action({ request }: ActionArgs) {
       throw error;
     }
   }
-  return redirect('/adminProcessing');
+  return redirect('/dashboardAdmin');
 }
 
-export default function DashboardAdmin() {
+export default function DasboardAdminRequest() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
     <ImplementGridAdmin>
       <Flex h={'100vh'} width={'100%'}>
-        <AdminAll dataWithdrawal={dataWithdrawal} />
+        <AdminApproved dataWithdrawal={dataWithdrawal} />
       </Flex>
     </ImplementGridAdmin>
   );
