@@ -22,11 +22,8 @@ import { Link } from '@remix-run/react';
 import moment from 'moment';
 import { useState } from 'react';
 import AdminRequestPopup from './AdminRequestPopup';
-import AdminSuccessPopup from './AdminSuccessPopup';
-import AdminProcessingPopup from './AdminProcessingPopup';
-import AdminDeclinedPopup from './AdminDeclinedPopup';
 
-export default function AdminRequest({ dataWithdrawal }: any) {
+export default function AdminApproved({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
     (item: any) => item.status === 'REQUEST'
   );
@@ -82,10 +79,9 @@ export default function AdminRequest({ dataWithdrawal }: any) {
         p="6"
         rounded="md"
         bg="white"
-        overflow={'auto'}
       >
         <Box>
-          <Tabs defaultIndex={0}>
+          <Tabs defaultIndex={1}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
                 Daftar Penarikan Dana
@@ -268,16 +264,16 @@ export default function AdminRequest({ dataWithdrawal }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    ID Withdraw
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Store
+                    Nomor Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Saldo Penarikan
+                    Seller
+                  </Th>
+                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                    Uang
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -288,14 +284,10 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {dataWithdrawal.map((item: any) => (
+                {filteredDataRequest.map((item: any) => (
                   <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
-                    </Td>
-
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {item.store?.name}
@@ -322,122 +314,20 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                             REQUEST
                           </Text>
                         )}
-
-                        {item.status === 'APPROVED' && (
-                          <Text
-                            bg={'blue.600'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            APPROVED
-                          </Text>
-                        )}
-
-                        {item.status === 'PROCESSING' && (
-                          <Text
-                            bg={'teal'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            PROCESSING
-                          </Text>
-                        )}
-
-                        {item.status === 'SUCCESS' && (
-                          <Text
-                            bg={'green'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            SUCCESS
-                          </Text>
-                        )}
-
-                        {item.status === 'DECLINED' && (
-                          <Text
-                            bg={'RED'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            DECLINED
-                          </Text>
-                        )}
                       </Text>
                     </Td>
 
                     <Td padding={'5px'}>
-                      {item.status === 'REQUEST' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminRequestPopup dataWithdrawal={item} />
-                        </Text>
-                      )}
-                      {item.status === 'APPROVED' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminProcessingPopup withdrawalData={item} />
-                        </Text>
-                      )}
-                      {item.status === 'PROCESSING' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminProcessingPopup withdrawalData={item} />
-                        </Text>
-                      )}
-                      {item.status === 'SUCCESS' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminSuccessPopup dataWithdrawal={item} />
-                        </Text>
-                      )}
-                      {item.status === 'DECLINED' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminDeclinedPopup dataWithdrawal={item} />
-                        </Text>
-                      )}
+                      <Text
+                        color={'black'}
+                        textAlign={'center'}
+                        borderRadius={'15px'}
+                        cursor={'pointer'}
+                        px={'5px'}
+                        fontSize={'10px'}
+                      >
+                        <AdminRequestPopup dataWithdrawal={item} />
+                      </Text>
                     </Td>
                   </Tr>
                 ))}
