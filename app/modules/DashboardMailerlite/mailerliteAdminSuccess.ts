@@ -38,6 +38,10 @@ export function AdminSuccessNotification() {
 
     fields: {
       // This is where you can make custom fields variable for email template display
+      storename: 'Dumbways Store',
+      amount: 'Rp 150.000,00',
+      bankaccount: 'BNI - Dumbways Store - 0460541966',
+
       // We must add field first in our MailerLite dashboard for it to work
     },
     groups: ['99887760059401662'], // This is where you need to categorize which group it should go for email automation trigger
