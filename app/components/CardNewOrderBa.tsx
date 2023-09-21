@@ -17,7 +17,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import useSearchFilter from '~/hooks/useSearchOrder';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
@@ -105,7 +105,7 @@ export default function CardNewOrderBa() {
         shipper_contact_name: selectedProps?.cart?.store?.users[0].name,
         shipper_contact_phone: selectedProps?.cart?.store?.users[0].phone,
         shipper_contact_email: selectedProps?.cart?.store?.users[0].email,
-        shipper_organization: 'agus store indonesia',
+        shipper_organization: selectedProps?.cart?.store.name,
         origin_contact_name: selectedProps?.cart?.store?.users[0].name,
         origin_contact_phone: selectedProps?.cart?.store?.users[0].phone,
         origin_address: selectedProps?.cart?.store?.locations[0].address,
@@ -116,11 +116,10 @@ export default function CardNewOrderBa() {
           longitude: 106.7993735,
         },
         origin_postal_code: '12440',
-        destination_contact_name: 'aguswandi',
-        destination_contact_phone: '69696969',
-        destination_contact_email: 'agusw@andi.com',
-        destination_address:
-          'jl kasan misin No10, Rt01/Rw02, Kel. Cinangka, Kec. Cilandak, Kab. Bengkulu',
+        destination_contact_name: selectedProps?.receiverName,
+        destination_contact_phone: selectedProps?.receiverPhone,
+        destination_contact_email: selectedProps?.receiverEmail,
+        destination_address: selectedProps?.receiverAddress,
         destination_postal_code: '14470',
         destination_note:
           'antar sampai tujuan dan jangan diturunkan ditengah jalan',
@@ -141,10 +140,10 @@ export default function CardNewOrderBa() {
         items: [
           {
             id: 1,
-            name: 'Tester #03',
+            name: selectedProps?.cart.cartItems[0].product.name,
             image: '',
-            description: 'Nasi Padang enak',
-            value: 99000,
+            description: selectedProps?.cart.cartItems[0].product.description,
+            value: selectedProps?.cart.cartItems[0].price,
             quantity: 2,
             height: 10,
             length: 20,
@@ -336,19 +335,21 @@ export default function CardNewOrderBa() {
                       mt={3}
                       mx={3}
                     />
-                    <Text
-                      mt={4}
-                      id="fm500"
-                      fontSize={'16px'}
-                      textOverflow={'ellipsis'}
-                      overflow={'hidden'}
-                      whiteSpace={'nowrap'}
-                      fontWeight={'700'}
-                    >
-                      {props.cart?.cartItems.map((a) => a.product?.name)}
-                      <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                        {props.cart?.cartItems.map((a) => a.qty)} Barang
+                    <Link to={`/order/detail/${props.id}`}>
+                      <Text
+                        mt={4}
+                        id="fm500"
+                        fontSize={'16px'}
+                        textOverflow={'ellipsis'}
+                        overflow={'hidden'}
+                        whiteSpace={'nowrap'}
+                        fontWeight={'700'}
+                      >
+                        {props.cart?.cartItems.map((a) => a.product?.name)}
                       </Text>
+                    </Link>
+                    <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                      {props.cart?.cartItems.map((a) => a.qty)} Barang
                     </Text>
                   </Box>
                   <Box mt={4} w={'15%'}>
@@ -360,13 +361,16 @@ export default function CardNewOrderBa() {
                         Belanja
                       </Text>
                     </Flex>
-                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                    {/* <Text fontWeight={'bold'} fontSize={'14px'}>
                       {formatCurrency(
                         props.cart?.cartItems.reduce(
                           (total, a) => total + a.price * a.qty,
                           0
                         ) as number
                       )}
+                    </Text> */}
+                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                      Rp {props.cart?.cartItems.map((a) => a.price)}
                     </Text>
                   </Box>
                 </Flex>
