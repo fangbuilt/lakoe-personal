@@ -2,10 +2,6 @@
 // import type { z } from "zod";
 import { db } from '~/libs/prisma/db.server';
 
-// import { PrismaClient } from '@prisma/client';
-
-// const prisma = new PrismaClient();
-
 export async function createStoreInformation(data: any) {
   const dataPost = await db.store.create({
     data: {

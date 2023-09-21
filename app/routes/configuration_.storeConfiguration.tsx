@@ -50,7 +50,6 @@ export async function action({ request }: ActionArgs) {
     const redirectURL = `/configuration/storeConfiguration/ `;
     return redirect(redirectURL);
   }
-  return null;
 }
 
 export default function StoreConfiguration() {
