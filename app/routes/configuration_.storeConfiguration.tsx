@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Flex,
   Tab,
@@ -13,7 +14,10 @@ import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
 import createLocation, {
   getAllDataLocation,
-} from '~/modules/configuration/configuration.service';
+
+  createStoreInformation,
+  updateStoreInformation} from '~/modules/configuration/configuration.service';
+import { Informations } from '~/modules/configuration/components/informations/information';
 
 export async function loader() {
   return await getAllDataLocation();
@@ -42,6 +46,13 @@ export async function action({ request }: ActionArgs) {
   console.log('ini isi dari poscode :', postalCode);
   console.log('ini isi dari isman :', isMainLocation);
 
+  //ini action rifki===========================
+  const nameStore = formData.get('namestore');
+  const slogan = formData.get('slogan');
+  const description = formData.get('description');
+  const domain = `lakoe.store/${name}`;
+  const logoAttachment = formData.get('logoAttachment');
+
   if (actionType === 'create') {
     console.log('data berhasil masuk!');
 
@@ -58,9 +69,35 @@ export async function action({ request }: ActionArgs) {
 
     return redirect(redirectURL);
   }
+
+  //=======================================================================
+
+  if (actionType === 'create' && nameStore && slogan && description) {
+    const storeId = '';
+    if (storeId) {
+      await updateStoreInformation(storeId, {
+        storeId: storeId,
+        nameStore,
+        slogan,
+        description,
+        domain,
+        logoAttachment,
+      });
+    } else {
+      await createStoreInformation({
+        nameStore,
+        slogan,
+        description,
+        domain,
+        logoAttachment,
+      });
+    }
+    const redirectURL = `/configuration/storeConfiguration/ `;
+    return redirect(redirectURL);
+  }
+
   return null;
 }
-//=======================================================================
 
 export default function StoreConfiguration() {
   return (
@@ -97,15 +134,10 @@ export default function StoreConfiguration() {
           </TabList>
 
           <TabPanels>
-            {/* INI BAGIAN rifki */}
-            <TabPanel>
-              <p>information</p>
-            </TabPanel>
+            <Informations />
 
-            {/* INI BAGIAN BAGZA */}
             <Locations />
 
-            {/* INI BAGIAN bani */}
             <TabPanel>
               <Text>hi</Text>
             </TabPanel>
