@@ -113,64 +113,6 @@ export function getStatusLacakButton(status: string) {
   }
 }
 
-export function useStatusLacakPengiriman(
-  status: string,
-  dataTracking: ITracking
-) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  function openModal() {
-    setModalIsOpen(true);
-  }
-
-  function closeModal() {
-    setModalIsOpen(false);
-  }
-
-  if (status.toUpperCase() === 'IN_TRANSIT') {
-    return (
-      <>
-        <Button
-          fontSize={'14px'}
-          fontWeight={'700'}
-          lineHeight={'20px'}
-          color={'#0086B4'}
-          background={'#FFFFFF)'}
-          colorScheme="#FFFFFF)"
-          w={'120px'}
-          onClick={openModal}
-        >
-          Lacak Pengiriman
-        </Button>
-        {modalIsOpen && (
-          <ModalInShipping
-            isOpen={modalIsOpen}
-            onClose={closeModal}
-            data={dataTracking}
-          />
-        )}
-      </>
-    );
-  }
-
-  if (status.toUpperCase() === 'ORDER_COMPLETED') {
-    return (
-      <Button
-        fontSize={'14px'}
-        fontWeight={'700'}
-        lineHeight={'20px'}
-        color={'#0086B4'}
-        background={'#FFFFFF)'}
-        colorScheme="#FFFFFF)"
-        w={'120px'}
-      >
-        Lacak Pengiriman
-      </Button>
-    );
-  }
-  return null;
-}
-
 export default function StatusOrderDetail({
   data,
   dataTracking,
@@ -187,21 +129,27 @@ export default function StatusOrderDetail({
     filterStepsByStatus,
   } = useOrderDetail();
 
-  const { toastStyle } = useCopyToClipboard();
-  const { isCopied: isCopied1, handleCopyClick: handleCopyClick1 } =
-    useCopyToClipboard();
-  const { isCopied: isCopied2, handleCopyClick: handleCopyClick2 } =
-    useCopyToClipboard();
-  const { isCopied: isCopied3, handleCopyClick: handleCopyClick3 } =
-    useCopyToClipboard();
+  const {
+    toastStyle,
+    isCopied1,
+    isCopied2,
+    isCopied3,
+    setIsCopied1,
+    setIsCopied2,
+    setIsCopied3,
+    handleCopyClick,
+  } = useCopyToClipboard();
+
   const handleCopyInvoiceClick = () => {
-    handleCopyClick1(data.invoiceNumber);
+    handleCopyClick(data.invoiceNumber, setIsCopied1);
   };
+
   const handleCopyResiClick = () => {
-    handleCopyClick2(data.waybill);
+    handleCopyClick(data.waybill, setIsCopied2);
   };
+
   const handleCopyAddressClick = () => {
-    handleCopyClick3(data.receiverAddress);
+    handleCopyClick(data.receiverAddress, setIsCopied3);
   };
 
   const [modalText, setModalText] = useState('');
@@ -467,7 +415,9 @@ export default function StatusOrderDetail({
                 <Image src={circle} />
                 <Text>Nomor Invoice berhasil disalin</Text>
               </Box>
-              <Text>OK</Text>
+              <Text onClick={() => setIsCopied1(false)} cursor={'pointer'}>
+                OK
+              </Text>
             </Box>
           )}
           {isCopied2 && (
@@ -476,7 +426,9 @@ export default function StatusOrderDetail({
                 <Image src={circle} />
                 <Text>Nomor Resi berhasil disalin</Text>
               </Box>
-              <Text>OK</Text>
+              <Text onClick={() => setIsCopied2(false)} cursor={'pointer'}>
+                OK
+              </Text>
             </Box>
           )}
           {isCopied3 && (
@@ -485,7 +437,9 @@ export default function StatusOrderDetail({
                 <Image src={circle} />
                 <Text>Alamat berhasil disalin</Text>
               </Box>
-              <Text>OK</Text>
+              <Text onClick={() => setIsCopied3(false)} cursor={'pointer'}>
+                OK
+              </Text>
             </Box>
           )}
         </Flex>
@@ -644,6 +598,7 @@ export default function StatusOrderDetail({
                 justifyContent={'center'}
                 alignItems={'center'}
                 src={copy}
+                // onClick={handleCopyInvoiceClick}
                 onClick={handleCopyInvoiceClick}
                 style={{ cursor: 'pointer' }}
                 color={'gray.900'}
