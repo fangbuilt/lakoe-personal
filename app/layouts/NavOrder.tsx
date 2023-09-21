@@ -18,6 +18,8 @@ import CardReadyToShip from '~/components/CardReadyToShip';
 import UnpaidAllCard from '~/components/CardUnpaidAll';
 import UnpaidCard from '~/components/CardUnpaid';
 import CardInShipping from '~/components/CardInShipping';
+import CardNewOrderBa from '~/components/CardNewOrderBa';
+
 
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
@@ -223,7 +225,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>pesanan baru</h1>
+                    <CardNewOrderBa />
                   </TabPanel>
                 </ScrollBox>
 
