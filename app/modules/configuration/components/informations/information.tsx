@@ -94,23 +94,14 @@ export function Informations() {
   const handleDeleteImage = () => {
     setSelectedImage(null);
   };
-
-  // const handleSaveClick = async () => {
-  //   if (sloganFilled && descriptionFilled && namaTokoFilled) {
-  //     setAlerMessage("informasi Toko Berhasil di simpan");
-  //   } else {
-  //     setAlertMessage("data tidak boleh kosong");
-  //   }
-  //   setShowAlert(true);
-  //   setTimeout(() => {
-  //     setShowAlert(false);
-  //   }, 4000);
-  // };
+  const handleSaveClick = async () => {
+    setShowAlert(true);
+  };
 
   return (
     <TabPanel>
       <Text fontWeight={'semibold'} fontSize={'16px'} mb={3}>
-        Informasi Toko Tes
+        Informasi Toko
       </Text>
       <Form method="post">
         <Input hidden name="actionType" value="create" />
@@ -207,7 +198,7 @@ export function Informations() {
             color={'white'}
             borderRadius={'full'}
             bg={'#0086B4'}
-            // onClick={handleSaveClick}
+            onClick={handleSaveClick}
           >
             Simpan
           </Button>
