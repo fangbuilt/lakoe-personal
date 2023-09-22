@@ -7,6 +7,7 @@ import {
   getDataProductReadyToShip,
   getInvoiceByStatus,
   updateInvoiceStatus,
+  getTemplateMessage,
 } from '~/modules/order/order.service';
 import { type ActionArgs, json, redirect } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
@@ -19,55 +20,23 @@ import NavOrder from '~/layouts/NavOrder';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
 
-// export async function action({ request }: ActionArgs) {
-//   if (request.method.toLowerCase() === 'patch') {
-//     const formData = await request.formData();
-
-//     const id = formData.get('id') as string;
-//     const price = formData.get('price');
-//     const stock = formData.get('stock');
-
-//     await updateInvoiceStatus({ id, price, stock });
-//   }
-
-//   return redirect('/order');
-// }
-
-// export async function loader() {
-//   const apiKey = process.env.BITESHIP_API_KEY;
-//   const dataProductReadyToShip = await getDataProductReadyToShip();
-
-//   const [canceledService] = await Promise.all([
-//     CanceledService(),
-//     // ready(),
-//     //your order service here !
-//   ]);
-//   const dataInvoice = await getInvoiceByStatus();
-
-//   return json({
-//     canceledService,
-//     dataInvoice,
-//     dataShipping: await getDataInShipping(),
-//     dataProductReadyToShip,
-//     apiKey,
-//     // your return order service here !
-//   });
-// }
-
 export async function loader() {
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-  ]);
+  const [unpaidCardAll, unpaidCard, canceledService, getTemplateMessages] =
+    await Promise.all([
+      getAllProductUnpid(),
+      getProductUnpid(),
+      CanceledService(),
+      getTemplateMessage(),
+    ]);
   const dataInvoice = await getInvoiceByStatus();
   return json({
     unpaidCardAll,
     unpaidCard,
     canceledService,
+    getTemplateMessages,
     dataInvoice,
     dataShipping: await getDataInShipping(),
     dataProductReadyToShip,

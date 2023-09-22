@@ -40,13 +40,17 @@ import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
-import type { Item } from '~/type/StatusColorMap';
-import { statusToColor } from '~/type/StatusColorMap';
+import type { Item, ItemName, ItemSend } from '~/type/StatusColorMap';
+import {
+  statusToColor,
+  statusToSendBuyer,
+  statusNameButton,
+} from '~/type/StatusColorMap';
 import UseSearchAll from '~/hooks/useSearchOrderAll';
 export default function UnpaidAllCard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { filteredOrders, setSearchQuery, searchQuery } = UseSearchAll();
-
+  const { getTemplateMessages } = useLoaderData<typeof loader>();
   // console.log('filteredOrders', filteredOrders);
   // console.log('setSearchQuery', setSearchQuery);
   // console.log('searchQuery', searchQuery);
@@ -61,17 +65,29 @@ export default function UnpaidAllCard() {
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
 
+  //Button color
   const defaultItem: Item = {
     status: 'UNPAID',
   };
-
   const item: Item = defaultItem;
+  //button send Template
+  const defaultItemSend: ItemSend = {
+    status: 'UNPAID',
+  };
+  const itemSend: ItemSend = defaultItemSend;
+  //button status
+  const defaultItemName: ItemName = {
+    status: 'UNPAID',
+  };
+  const itemName: ItemName = defaultItemName;
+
+  console.log('filteredOrders', filteredOrders);
 
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
 
-      <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+      {/* <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
           w={'47%'}
@@ -302,7 +318,7 @@ export default function UnpaidAllCard() {
             </MenuList>
           </Menu>
         </Box>
-      </Box>
+      </Box> */}
 
       {/* CARD START HERE */}
       {filteredOrders.length === 0 ? (
@@ -330,7 +346,8 @@ export default function UnpaidAllCard() {
                         size={'sm'}
                         pointerEvents={'none'}
                       >
-                        {item.status}
+                        {/* {item.status} */}
+                        {statusNameButton[item.status] || ''}
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
@@ -340,8 +357,9 @@ export default function UnpaidAllCard() {
                         borderRadius={'full'}
                         fontSize={'14px'}
                         onClick={onOpen}
+                        value={statusToSendBuyer[item.status] || ''}
                       >
-                        Hubungi Pembeli
+                        {statusToSendBuyer[item.status] || ''}
                       </Button>
                       <Modal onClose={onClose} isOpen={isOpen} isCentered>
                         <ModalOverlay bg={'whiteAlpha.100'} />
@@ -352,41 +370,35 @@ export default function UnpaidAllCard() {
                           <ModalCloseButton />
                           <ModalBody>
                             <Accordion allowToggle>
-                              {item.cart?.store?.messageTemplates.map(
-                                (itemtemp) => (
-                                  <AccordionItem key={itemtemp.id}>
-                                    <Text>
-                                      <AccordionButton>
-                                        <Box
-                                          as="span"
-                                          flex="1"
-                                          textAlign="left"
-                                        >
-                                          Pesan {itemtemp.id}
-                                        </Box>
-                                        <AccordionIcon />
-                                      </AccordionButton>
-                                    </Text>
-                                    <AccordionPanel pb={4}>
-                                      {itemtemp.content}
-                                      <Button
-                                        colorScheme={'whatsapp'}
-                                        float={'right'}
+                              {getTemplateMessages.map((itemtemp) => (
+                                <AccordionItem key={itemtemp.id}>
+                                  <Text>
+                                    <AccordionButton>
+                                      <Box as="span" flex="1" textAlign="left">
+                                        {itemtemp.name}
+                                      </Box>
+                                      <AccordionIcon />
+                                    </AccordionButton>
+                                  </Text>
+                                  <AccordionPanel pb={4}>
+                                    {itemtemp.content}
+                                    <Button
+                                      colorScheme={'whatsapp'}
+                                      float={'right'}
+                                    >
+                                      <Link
+                                        to={createWhatsAppTemplateMessageUnpaid(
+                                          item.receiverPhone ?? '',
+                                          itemtemp.content
+                                        )}
+                                        target="_blank"
                                       >
-                                        <Link
-                                          to={createWhatsAppTemplateMessageUnpaid(
-                                            item.receiverPhone ?? '',
-                                            itemtemp.content
-                                          )}
-                                          target="_blank"
-                                        >
-                                          Kirim
-                                        </Link>
-                                      </Button>
-                                    </AccordionPanel>
-                                  </AccordionItem>
-                                )
-                              )}
+                                        Kirim
+                                      </Link>
+                                    </Button>
+                                  </AccordionPanel>
+                                </AccordionItem>
+                              ))}
                             </Accordion>
                           </ModalBody>
                           <ModalFooter></ModalFooter>
@@ -424,6 +436,7 @@ export default function UnpaidAllCard() {
                           <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
                             {item.cart?.cartItems.map((item) => item.qty)}{' '}
                             Barang
+                            {/* desk {item.cart?.cartItems.map((item) =>item.product.description)} */}
                           </Text>
                         </Text>
                       </Box>

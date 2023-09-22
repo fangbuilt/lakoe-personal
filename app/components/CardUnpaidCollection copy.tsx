@@ -1,23 +1,7 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
-  Card,
-  Flex,
-  Img,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
-  useDisclosure,
   Input,
   InputGroup,
   InputLeftElement,
@@ -27,36 +11,62 @@ import {
   MenuList,
   Image,
   Checkbox,
-  Center,
 } from '@chakra-ui/react';
-// import { Form, Link } from '@remix-run/react';
+
+import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
+import Empty from '../assets/icon-pack/empty-dot.svg';
+
+import UnpaidCard from './CardUnpaid';
+import CardReadyToShip from './CardReadyToShip';
+import CardCanceled from './CardCanceled';
+import { useLoaderData } from '@remix-run/react';
+import type { loader } from '~/routes/order';
+import React, { useState, useEffect } from 'react';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
-import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
-import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
-import Empty from '../assets/icon-pack/empty-dot.svg';
-import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+// import searchFilter from '~/hooks/useSearchOrder';
+const CardUnpaidCollection = () => {
+  // Menggunakan destructuring untuk mendapatkan data yang diperlukan
+  const { unpaidCard, canceledService, getTemplateMessages } =
+    useLoaderData<typeof loader>();
 
-import { Link, useLoaderData } from '@remix-run/react';
-import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
-import type { loader } from '~/routes/order';
+  // Menggabungkan data dari variabel ke dalam objek
+  const object2 = { data: unpaidCard };
+  const object3 = { data: canceledService };
+  const object4 = { data: getTemplateMessages };
 
-export default function UnpaidCard(props: any) {
-  console.log('props UnpaidCard ssssssssssss', props);
-  const { filteredOrder, setSearchQuery } = UseSearchProductUnpaid();
-  const { getSelectedCourier, selectedCouriers, toggleCourier } =
+  // Membuat array yang berisi objek-objek tersebut
+  const arrayOfObjects: Array<{ data: any }> = [object2, object3, object4];
+
+  // Mengambil data dari array objek
+  const dataCollection = arrayOfObjects.map((item) => item.data);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredOrders, setFilteredOrders] = useState(dataCollection);
+
+  // Destructuring hook yang diperlukan
+  const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
-  const { getTemplateMessages } = useLoaderData<typeof loader>();
+  console.log('dataCollection', dataCollection);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  useEffect(() => {
+    const lowerQuery = searchQuery.toLowerCase();
+    const filtered = dataCollection.filter((items) => {
+      const productName =
+        items.cart?.cartItems
+          .map((item: any) => item.product?.name?.toLowerCase())
+          .flat() || [];
 
+      // Logika untuk filter berdasarkan searchQuery
+      return productName.some((name: any) => name && name.includes(lowerQuery));
+    });
+    setFilteredOrders(filtered);
+  }, [searchQuery]);
   return (
     <>
-      {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
-
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
@@ -289,159 +299,18 @@ export default function UnpaidCard(props: any) {
           </Menu>
         </Box>
       </Box>
-
-      {/* CARD START HERE */}
-      {filteredOrder.length === 0 ? (
-        <Box marginTop={'70px'}>
-          <Center>
-            <Box textAlign="center" mt={5} display={'flex'}>
-              <Image src={ReceiptSearch} />
-              <Text fontSize="16px" mt={1}>
-                Oops, pesanan yang kamu cari tidak ditemukan.
-                <Text fontSize={'12px'} color={'#909090'} textAlign={'left'}>
-                  Coba bisa cari dengan kata kunci lain
-                </Text>
-              </Text>
-            </Box>
-          </Center>
-        </Box>
-      ) : (
-        <Box>
-          {filteredOrder.map((item, index) => (
-            // eslint-disable-next-line react/jsx-key
-            <Card mb={5} boxShadow={'xs'}>
-              <Box key={index}>
-                <Box mt={5}>
-                  <Box>
-                    <Flex justifyContent={'space-between'} px={2}>
-                      <Button
-                        bg={'#E8C600'}
-                        color={'white'}
-                        textShadow={'1px 1px 1px gray'}
-                        fontWeight={'bold'}
-                        colorScheme="red.500"
-                        size={'sm'}
-                        pointerEvents={'none'}
-                      >
-                        {item.status === 'UNPAID'
-                          ? 'Belom Dibayar'
-                          : 'Belum Dibayar'}
-                      </Button>
-
-                      {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-                      <Button
-                        bg={'transparent'}
-                        border={'1px solid #D5D5D5'}
-                        borderRadius={'full'}
-                        fontSize={'14px'}
-                        onClick={() => {
-                          onOpen();
-                        }}
-                      >
-                        Hubungi Pembeli
-                      </Button>
-                      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                        <ModalOverlay background={'whiteAlpha.50'} />
-                        <ModalContent>
-                          <ModalHeader>
-                            Send Message ke {item.receiverName}
-                          </ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <Accordion allowToggle>
-                              {getTemplateMessages.map((itemtemp) => (
-                                <AccordionItem key={itemtemp.id}>
-                                  <Text>
-                                    <AccordionButton>
-                                      <Box as="span" flex="1" textAlign="left">
-                                        Pesan {itemtemp.name}
-                                      </Box>
-                                      <AccordionIcon />
-                                    </AccordionButton>
-                                  </Text>
-                                  <AccordionPanel pb={4}>
-                                    {itemtemp.content}
-                                    <Button
-                                      colorScheme={'whatsapp'}
-                                      float={'right'}
-                                    >
-                                      <Link
-                                        to={createWhatsAppTemplateMessageUnpaid(
-                                          item.receiverPhone ?? '',
-                                          itemtemp.content
-                                        )}
-                                        target="_blank"
-                                      >
-                                        Kirim
-                                      </Link>
-                                    </Button>
-                                  </AccordionPanel>
-                                </AccordionItem>
-                              ))}
-                            </Accordion>
-                          </ModalBody>
-                          <ModalFooter></ModalFooter>
-                        </ModalContent>
-                      </Modal>
-                      {/*  */}
-                    </Flex>
-                    <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                      {item.invoiceNumber}
-                    </Text>
-                    <hr />
-                    <Flex justifyContent={'space-between'}>
-                      <Box display={'flex'} w={'80%'}>
-                        <Img
-                          w={'52px'}
-                          h={'52px'}
-                          display={'inline'}
-                          src={`${item.cart?.cartItems.map((item) =>
-                            item.product?.attachments.map((item) => item.url)
-                          )}`}
-                          mt={3}
-                        />
-                        <Text
-                          mt={4}
-                          id="fm500"
-                          fontSize={'16px'}
-                          textOverflow={'ellipsis'}
-                          overflow={'hidden'}
-                          whiteSpace={'nowrap'}
-                          fontWeight={'700'}
-                        >
-                          {item.cart?.cartItems.map(
-                            (item) => item.product?.name
-                          )}
-                          <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                            {item.cart?.cartItems.map((item) => item.qty)}{' '}
-                            Barang
-                          </Text>
-                        </Text>
-                      </Box>
-                      <Box mt={4} w={'15%'}>
-                        <Flex gap={1}>
-                          <Text color={'#909090'} fontSize={'14px'}>
-                            Total
-                          </Text>
-                          <Text color={'#909090'} fontSize={'14px'}>
-                            Belanja
-                          </Text>
-                        </Flex>
-                        <Text fontWeight={'bold'} fontSize={'14px'}>
-                          {/* {formatter.format(item.price)}
-                           */}
-                          Rp {item.price.toLocaleString('id-ID')}
-                        </Text>
-                      </Box>
-                    </Flex>
-                  </Box>
-                </Box>
-              </Box>
-            </Card>
-          ))}
-        </Box>
-      )}
-      {/* END CARD */}
+      {filteredOrders.map((item) => (
+        <div key={item.id}>
+          <UnpaidCard filteredOrders={item} />
+          <CardReadyToShip filteredOrders={item} />
+          <CardCanceled filteredOrders={item} />
+        </div>
+      ))}
+      {/* <UnpaidCard filteredOrders={filteredOrders} />
+      <CardReadyToShip filteredOrders={filteredOrders} />
+      <CardCanceled filteredOrders={filteredOrders} /> */}
     </>
   );
-}
+};
+
+export default CardUnpaidCollection;
