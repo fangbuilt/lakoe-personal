@@ -16,12 +16,13 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { json } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData, useSubmit } from '@remix-run/react';
 import { useState } from 'react';
 import useSearchFilter from '~/hooks/useSearchOrder';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import type { loader } from '~/routes/order';
+import { db } from '~/libs/prisma/db.server';
+import { ActionArgs } from '@remix-run/node';
 
 export function formatCurrency(price: number): string {
   const formattedAmount = new Intl.NumberFormat('id-ID', {
@@ -36,32 +37,28 @@ export function formatCurrency(price: number): string {
 
 export default function CardNewOrderBa() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { filteredOrders } = useSearchFilter();
+  // const { filteredOrders } = useSearchFilter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cardProduct = useLoaderData<typeof loader>();
   const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
+  const submit = useSubmit();
 
   const props = cardProduct.dataInvoice;
 
   async function updateInvoiceAndHistoryStatusReadyToShip() {
     try {
-      await db.invoiceHistory.create({
-        data: {
-          status: 'READY_TO_SHIP',
-          invoiceId: selectedProps?.id,
-        },
-      });
+      if (!selectedProps?.id) {
+        return console.log('Order ID not found!');
+      }
 
-      await db.invoice.update({
-        where: {
-          id: selectedProps?.id,
-        },
-        data: {
+      submit(
+        {
+          id: selectedProps.id,
           status: 'READY_TO_SHIP',
+          actionType: 'updateInvoiceAndHistoryStatusReadyToShip',
         },
-      });
-
-      console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
+        { method: 'POST' }
+      );
     } catch (error) {
       console.error('Terjadi kesalahan:', error);
       throw error;

@@ -1,21 +1,22 @@
 import crypto from 'crypto';
 
+import { json, redirect, type ActionArgs } from '@remix-run/node';
+import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
-  getProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
+  getProductUnpid,
   updateInvoiceStatus,
 } from '~/modules/order/order.service';
-import { type ActionArgs, json, redirect } from '@remix-run/node';
-import { MootaOrderSchema } from '~/modules/order/order.schema';
 
 import { Flex } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import NavOrder from '~/layouts/NavOrder';
 
+import { db } from '~/libs/prisma/db.server';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
 
@@ -77,6 +78,36 @@ export async function loader() {
 
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
+
+  const formData = await request.formData();
+  const id = formData.get('id') as string;
+  const status = formData.get('status') as string;
+  const actionType = formData.get('actionType') as string;
+
+  console.log('yg kamu cari', id, actionType, status);
+
+  if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
+    console.log('masuk sini');
+
+    await db.invoiceHistory.create({
+      data: {
+        status: status,
+        invoiceId: id,
+      },
+    });
+
+    await db.invoice.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+      },
+    });
+
+    // alert
+    console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
+  }
 
   if (isMootaIP(requestIP)) {
     if (request.method === 'POST') {
