@@ -8,7 +8,11 @@ export async function GetUnpid() {
   });
   return datash;
 }
-export async function GetUnpidUsers() {
+export async function GetUnpidUsers1() {
   const unpid = await db.user.findMany();
+  return unpid;
+}
+export async function GetUnpidData() {
+  const unpid = await db.invoice.findMany();
   return unpid;
 }

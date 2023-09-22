@@ -1,29 +1,55 @@
 import {
   Box,
   Button,
+  Checkbox,
   Image,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
-  InputGroup,
-  InputLeftElement,
-  Checkbox,
 } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
+import { Link } from '@remix-run/react';
+import { useEffect, useState } from 'react';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
-import BoxSearch from '~/assets/icon-pack/box-search.svg';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import useDebounce from '~/hooks/product/useDebounce';
+import { useFilterProducts } from '~/hooks/product/useFilterProducts';
+import useSearchProducts from '~/hooks/product/useSearchProducts';
+import { useSortProducts } from '~/hooks/product/useSortProducts';
+import type { IProduct } from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
+import ProductModal from './ProductModal';
+import ProductTab from './ProductTab';
 
-export default function ProductBody() {
+interface IProductBodyProps {
+  product: IProduct[];
+}
+
+export default function ProductBody(props: IProductBodyProps) {
+  const { product } = props;
+  const [, setActiveTab] = useState(0);
+  const { searchProducts, setSearchQuery } = useSearchProducts(product);
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const { selectedCategories, toggleCategory, getSelectedCategoryCount } =
+    useFilterProducts();
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortProducts();
+
+  // const filteredProducts =
+  //   activeTab === 1
+  //     ? product.filter((a) => a.isActive)
+  //     : activeTab === 2
+  //       ? product.filter((a) => !a.isActive)
+  //       : product;
+
+  // console.log('props product body',props)
+
+  useEffect(() => {
+    setSearchQuery(debouncedSearchTerm);
+  }, [debouncedSearchTerm, setSearchQuery]);
+
   return (
     <>
       <Box w={'100%'} bgColor={'white'} borderRadius={10}>
@@ -36,19 +62,21 @@ export default function ProductBody() {
             <Text fontWeight={'bold'} fontSize={'20px'}>
               Daftar Produk
             </Text>
-            <Button
-              borderRadius={20}
-              bgColor={'#0086B4'}
-              fontSize={'14px'}
-              color={'white'}
-              colorScheme={'#0086B4'}
-            >
-              <Image src={AddCircle} />
-              Tambah Produk
-            </Button>
+            <Link to={'/product/add'}>
+              <Button
+                borderRadius={20}
+                bgColor={'#0086B4'}
+                fontSize={'14px'}
+                color={'white'}
+                colorScheme={'#0086B4'}
+              >
+                <Image src={AddCircle} />
+                Tambah Produk
+              </Button>
+            </Link>
           </Box>
         </Box>
-        <Tabs defaultIndex={1}>
+        <Tabs w={'100%'} onChange={(index) => setActiveTab(index)}>
           <TabList px={1}>
             <Tab>
               <Text fontSize={'16px'}>Semua</Text>
@@ -60,77 +88,16 @@ export default function ProductBody() {
               <Text fontSize={'16px'}>Nonaktif</Text>
             </Tab>
           </TabList>
-          <Box px={5} py={3} display={'flex'} gap={2}>
-            <Form method="POST">
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<Image src={BoxSearch} />}
-                />
-                <Input
-                  variant="outline"
-                  placeholder="Cari Produk"
-                  w={'200px'}
-                />
-              </InputGroup>
-            </Form>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                variant="outline"
-                bgColor={'white'}
-                w={'240px'}
-                fontSize={'14px'}
-              >
-                Semua Kategori
-              </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <Checkbox defaultChecked>Audio, Kamera & Elektronik</Checkbox>
-                </MenuItem>
-                <MenuItem>
-                  <Checkbox defaultChecked>Buku</Checkbox>
-                </MenuItem>
-                <MenuItem>
-                  <Checkbox defaultChecked>Dapur</Checkbox>
-                </MenuItem>
-                <MenuItem>
-                  <Checkbox defaultChecked>Fashion Anak & Bayi</Checkbox>
-                </MenuItem>
-                <MenuItem>
-                  <Checkbox defaultChecked>Fashion Muslim</Checkbox>
-                </MenuItem>
-                <MenuItem>
-                  <Checkbox defaultChecked>Fashion Pria</Checkbox>
-                </MenuItem>
-                <MenuItem>
-                  <Checkbox defaultChecked>Fashion Wanita</Checkbox>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                w={'240px'}
-                variant="outline"
-                bgColor={'white'}
-                fontSize={'14px'}
-              >
-                Urutkan
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Terkahir Diubah</MenuItem>
-                <MenuItem>Terlaris</MenuItem>
-                <MenuItem>Kurang Diminati</MenuItem>
-                <MenuItem>Harga Tertinggi</MenuItem>
-                <MenuItem>Harga Terendah</MenuItem>
-                <MenuItem>Stok Terbanyak</MenuItem>
-                <MenuItem>Stok Tersedikit</MenuItem>
-              </MenuList>
-            </Menu>
-          </Box>
+          <ProductTab
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategories={selectedCategories}
+            toggleCategory={toggleCategory}
+            getSelectedCategoryCount={getSelectedCategoryCount}
+            selectedSortOption={selectedSortOption}
+            setSortOption={setSortOption}
+            getSelectedSortOption={getSelectedSortOption}
+          />
           <TabPanels>
             <TabPanel>
               <Box
@@ -139,16 +106,18 @@ export default function ProductBody() {
                 justifyContent={'space-between'}
               >
                 <Text fontSize={'18px'} fontWeight={'bold'}>
-                  5 Produk
+                  {searchProducts.length} Produk
                 </Text>
                 <Box display={'flex'} gap={2}>
                   <Text fontSize={'14px'}>Pilih Semua</Text>
                   <Checkbox defaultChecked></Checkbox>
                 </Box>
               </Box>
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              {searchProducts.map((a) => (
+                <ProductCard key={a.id} product={a}>
+                  <ProductModal {...a} />
+                </ProductCard>
+              ))}
             </TabPanel>
             <TabPanel>
               <Box
@@ -157,14 +126,18 @@ export default function ProductBody() {
                 justifyContent={'space-between'}
               >
                 <Text fontSize={'18px'} fontWeight={'bold'}>
-                  5 Produk
+                  {searchProducts.length} Produk
                 </Text>
                 <Box display={'flex'} gap={2}>
                   <Text fontSize={'14px'}>Pilih Semua</Text>
                   <Checkbox defaultChecked></Checkbox>
                 </Box>
               </Box>
-              <ProductCard />
+              {searchProducts.map((a) => (
+                <ProductCard key={a.id} product={a}>
+                  <ProductModal {...a} />
+                </ProductCard>
+              ))}
             </TabPanel>
             <TabPanel>
               <Box
@@ -173,14 +146,18 @@ export default function ProductBody() {
                 justifyContent={'space-between'}
               >
                 <Text fontSize={'18px'} fontWeight={'bold'}>
-                  0 Produk
+                  {searchProducts.length} Produk
                 </Text>
                 <Box display={'flex'} gap={2}>
                   <Text fontSize={'14px'}>Pilih Semua</Text>
                   <Checkbox defaultChecked></Checkbox>
                 </Box>
               </Box>
-              {/* <ProductCard /> */}
+              {searchProducts.map((a) => (
+                <ProductCard key={a.id} product={a}>
+                  <ProductModal {...a} />
+                </ProductCard>
+              ))}
             </TabPanel>
           </TabPanels>
         </Tabs>

@@ -1,22 +1,42 @@
-import { Flex } from '@chakra-ui/react';
-import NavOrder from '~/layouts/NavOrder';
-import { ImplementGrid } from '~/layouts/Grid';
-
 import crypto from 'crypto';
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getProductUnpid,
+  getDataProductReadyToShip,
+  getInvoiceByStatus,
+  updateInvoiceStatus,
 } from '~/modules/order/order.service';
-import { type ActionArgs, json } from '@remix-run/node';
+import { type ActionArgs, json, redirect } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 
+import { Flex } from '@chakra-ui/react';
+import { useLoaderData } from '@remix-run/react';
+import { ImplementGrid } from '~/layouts/Grid';
+import NavOrder from '~/layouts/NavOrder';
+
+import CanceledService from '~/modules/order/orderCanceledService';
+import getDataInShipping from '~/modules/order/orderShippingService';
+
 export async function loader() {
-  const [unpaidCardAll, unpaidCard] = await Promise.all([
+  const apiKey = process.env.BITESHIP_API_KEY;
+  const dataProductReadyToShip = await getDataProductReadyToShip();
+  //jangan sampai terbalik posisi untuk menampilkan data load
+  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),
+    CanceledService(),
   ]);
-  return json({ unpaidCardAll, unpaidCard });
+  const dataInvoice = await getInvoiceByStatus();
+  return json({
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    dataInvoice,
+    dataShipping: await getDataInShipping(),
+    dataProductReadyToShip,
+    apiKey,
+  });
 }
 
 export async function action({ request }: ActionArgs) {
@@ -51,6 +71,17 @@ export async function action({ request }: ActionArgs) {
       }
     }
   }
+
+  if (request.method.toLowerCase() === 'patch') {
+    const formData = await request.formData();
+
+    const id = formData.get('id') as string;
+    const price = formData.get('price');
+    const stock = formData.get('stock');
+
+    await updateInvoiceStatus({ id, price, stock });
+  }
+  return redirect('/order');
 }
 
 function isMootaIP(requestIP: string) {
@@ -64,10 +95,12 @@ function verifySignature(secretKey: string, data: string, signature: string) {
 }
 
 export default function Order() {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        <NavOrder />
+        <NavOrder cardProduct={data} />
       </Flex>
     </ImplementGrid>
   );

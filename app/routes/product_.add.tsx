@@ -31,9 +31,8 @@ export async function action({ request }: ActionArgs) {
   const formData = await parseMultipartFormData(request, uploadHandler);
 
   const imageUrl = formData.get('image') as string;
-  const categori = formData.get('category') as string;
 
-  console.log('imag', imageUrl);
+  console.log('image', imageUrl);
 
   if (request.method.toLowerCase() === 'post') {
     const data = {
@@ -45,17 +44,16 @@ export async function action({ request }: ActionArgs) {
       stock: parseInt(formData.get('stock') as string),
       sku: formData.get('sku'),
       slug: formData.get('url'),
-      category: categori,
+      category: formData.get('category') as string,
       weight: parseInt(formData.get('weight') as string),
       length: parseFloat(formData.get('length') as string),
       width: parseFloat(formData.get('width') as string),
       height: parseFloat(formData.get('height') as string),
     };
     const newProduct = await createProduct(data, '1');
-
     return newProduct;
   }
-  return redirect('/product/add');
+  return redirect('/product');
 }
 
 export default function AddProduct() {

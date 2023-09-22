@@ -26,6 +26,7 @@ import {
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
+import { handleClick } from './productUnpaid4';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
@@ -110,6 +111,8 @@ export const action = async ({ request }: ActionArgs) => {
     const data = { invoice, cart, cartItem, invoiceHistory, getPayment };
 
     await createCheckout(data);
+
+    handleClick(telp, name, email);
   }
   return redirect(`/checkout/transfer`);
 };
