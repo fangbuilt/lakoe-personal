@@ -175,13 +175,13 @@ export default function AdminDeclinedPopup(props: any) {
                   <FormControl>
                     <Input type="hidden" name="actionType" value="create" />
                     <Input
-                      type="text"
+                      type="hidden"
                       name="withdrawId"
                       value={formData.withdrawId}
                       display={'none'}
                     />
                     <Input
-                      type="text"
+                      type="hidden"
                       name="storeId"
                       value={formData.storeId}
                       display={'none'}
@@ -190,6 +190,7 @@ export default function AdminDeclinedPopup(props: any) {
                       Alasan Penolakan
                     </FormLabel>
                     <Input
+                      placeholder="Reason of declined..."
                       type="text"
                       name="reason"
                       fontSize="10px"

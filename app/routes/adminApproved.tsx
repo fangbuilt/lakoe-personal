@@ -23,15 +23,14 @@ export async function action({ request }: ActionArgs) {
       const updateStatus = await updateStatusWithdraw(
         id as string,
         status as string
-      ); // Pass both id and status
+      );
       console.log('Status updated successfully:', updateStatus);
-      // Handle success
     } catch (error) {
       console.error('Error updating status:', error);
       throw error;
     }
   }
-  return redirect('/dashboardAdmin');
+  return redirect('/adminProcessing');
 }
 
 export default function DasboardAdminRequest() {

@@ -36,7 +36,7 @@ export function WithdrawNotification(
   bankAccount: string,
   accountName: string
 ) {
-  const oriEmail = 'muhammadalisyamsi@gmail.com';
+  const oriEmail = 'rahmatrizkyrifai@gmail.com';
   const params: IDroppingOff = {
     email: generateRandomEmail(oriEmail, 10),
 

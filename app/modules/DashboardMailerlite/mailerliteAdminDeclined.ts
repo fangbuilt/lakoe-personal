@@ -32,7 +32,7 @@ const mailerlite = new MailerLite({
 });
 
 export function AdminDeclinedNotification(reasonAdminDeclined: string) {
-  const oriEmail = 'muhammadalisyamsi@gmail.com';
+  const oriEmail = 'rahmatrizkyrifai@gmail.com';
   const params: IDroppingOff = {
     email: generateRandomEmail(oriEmail, 10),
 

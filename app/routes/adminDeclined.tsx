@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminDeclined from '~/components/AdminDeclined';
@@ -25,14 +25,10 @@ export async function action({ request }: ActionArgs) {
     try {
       const createReasonResult = await createDeclinedReason(
         {
-          withdraw: {
-            connect: { id: withdrawId },
-          },
-          store: {
-            connect: { id: storeId },
-          },
+          reason: reason as string,
         },
-        reason as string
+        withdrawId as string,
+        storeId as string
       );
       console.log('This is the declined reason', createReasonResult);
     } catch (error) {
