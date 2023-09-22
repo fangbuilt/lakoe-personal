@@ -74,14 +74,6 @@ export const action = async ({ request }: ActionArgs) => {
       return false;
     }
 
-    if (!courier) {
-      const messageElement = document.getElementById('message');
-      if (messageElement) {
-        messageElement.textContent = 'Mohon pilih kurir';
-      }
-      return false;
-    }
-
     const invoice = {
       price: totalPriceUnique + courierService,
       discount: 0,
@@ -206,6 +198,15 @@ export default function Checkout() {
     setSelectedOption(valueInt);
   };
 
+  const limit = item?.variants[selectedOption].variantOptions[0]
+    .variantOptionValues[0].stock as number;
+
+  if (count <= 0) {
+    setCount(1);
+  } else if (count > limit) {
+    setCount(limit);
+  }
+
   return (
     <>
       <CheckoutDescription
@@ -238,8 +239,8 @@ export default function Checkout() {
                 <Table variant="simple">
                   <Thead>
                     <Tr fontWeight={'bold'}>
-                      <Th width={'30%'}>Produk</Th>
-                      <Th width={'30%'}>Variasi</Th>
+                      <Th width={'40%'}>Produk</Th>
+                      <Th width={'40%'}>Variasi</Th>
                       <Th minW={'180px'}>Jumlah</Th>
                       <Th>Harga</Th>
                       <Th>Total</Th>
@@ -269,6 +270,7 @@ export default function Checkout() {
                               (item?.variants[selectedOption].variantOptions[0]
                                 .variantOptionValues[0].stock as number) - count
                             }
+                            readOnly
                           />
                         </Box>
                       </Td>
@@ -350,8 +352,13 @@ export default function Checkout() {
                     .variantOptionValues[0].price
                 }
               />
-              <Input type="hidden" name="storeId" value={item?.storeId} />
-              <Input type="hidden" name="productId" value={item?.id} />
+              <Input
+                type="hidden"
+                name="storeId"
+                value={item?.storeId}
+                readOnly
+              />
+              <Input type="hidden" name="productId" value={item?.id} readOnly />
               <Input
                 type="hidden"
                 name="valueId"
