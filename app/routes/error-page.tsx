@@ -9,11 +9,16 @@ export default function ErrooPage() {
         alignItems={'center'}
         mt={'100px'}
       >
-        <Card display={'flex'} flexDir={'column'} alignItems={'center'}>
+        <Card
+          boxShadow={'dark-lg'}
+          p={'20px'}
+          display={'flex'}
+          flexDir={'column'}
+          alignItems={'center'}
+        >
           <Image
             boxSize={'200px'}
             src="https://www.pngmart.com/files/19/Sad-Emoji-PNG-File.png"
-            alt="sad emoji"
           />
           <Text textAlign={'center'} fontWeight={'bold'} fontSize={'4xl'}>
             We Have Error
