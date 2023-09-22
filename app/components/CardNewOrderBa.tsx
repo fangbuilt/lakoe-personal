@@ -37,7 +37,6 @@ export function formatCurrency(price: number): string {
 
 export default function CardNewOrderBa() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const { filteredOrders } = useSearchFilter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cardProduct = useLoaderData<typeof loader>();
   const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
