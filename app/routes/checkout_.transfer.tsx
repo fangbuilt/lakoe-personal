@@ -9,11 +9,26 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import data from '../utils/dummy.json';
+// import type { ITransfer } from '~/interfaces/Transfer';
 
 export default function PayTransfer() {
+  // export default function Transfer(props: ITransfer) {
+  // const price = props.totalPrice;
+  // const { onCopy, hasCopied } = useClipboard(`${price}`);
+  // const bank = props.bank;
   const price = data.map((item) => item.price);
   const tagPrice = data.map((item) => item.tagPrice);
   const { onCopy, hasCopied } = useClipboard(`${price} ${tagPrice}`);
+
+  // let bankAccount;
+
+  // if (bank === 'BCA') {
+  //   bankAccount = '8812733';
+  // } else if (bank === 'BNI') {
+  //   bankAccount = '7234798';
+  // } else if (bank === 'Mandiri') {
+  //   bankAccount = '3858098';
+  // }
 
   return (
     <>
@@ -37,11 +52,13 @@ export default function PayTransfer() {
                   >
                     Terimakasih Sudah Melakukan Order {item.titleProduct} di
                     Lakoe
+                    {/* Terimakasih Sudah Melakukan Order {props.productName} di Lakoe */}
                   </Heading>
                   <Text textAlign={'center'} mt={'24px'}>
                     Untuk menyelesaikan proses order, silahkan transfer sejumlah
                   </Text>
                   <Center textAlign={'center'} mt={'24px'} color={'green.400'}>
+                    {/* <Heading>Rp{props.totalPrice}</Heading> */}
                     <Heading>Rp{item.price}.</Heading>
                     <Heading color={'orange.400'}>{item.tagPrice}</Heading>
                   </Center>
@@ -56,8 +73,9 @@ export default function PayTransfer() {
                     >
                       <Text fontWeight={'bold'}>Penting!</Text>
                       <Text>
-                        Mohon Trtansfer sesuai sampai dengan 3 digit karakter
+                        Mohon Transfer sesuai sampai dengan 3 digit terakhir
                       </Text>
+                      {/* Mohon Transfer sesuai sampai dengan 3 digit karakter */}
                     </Box>
                   </Center>
                   <Box textAlign={'center'} mt={5}>
@@ -67,8 +85,11 @@ export default function PayTransfer() {
                     <Text mt={5}>ke bank berikut ini ya kak:</Text>
                     <Box lineHeight={'9'}>
                       <Text>Rek. {item.payment} </Text>
+                      {/* <Text>Rek. {props.bank} </Text> */}
                       <Text>{item.noPayment}</Text>
-                      <Text>A.n {item.accountName}</Text>
+                      {/* <Text>{bankAccount}</Text> */}
+                      <Text>A.n PT.LAKOE INDONESIA</Text>
+                      {/* <Text>A.n {item.accountName}</Text> */}
                     </Box>
                     <Box mt={'20px'}>
                       <Text>Konfirmasikan Pembayaran Anda di:</Text>

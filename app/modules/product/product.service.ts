@@ -1,4 +1,3 @@
-// import { z } from "zod";
 import { db } from '~/libs/prisma/db.server';
 
 export async function createProduct(data: any, storeId: any) {
@@ -8,7 +7,7 @@ export async function createProduct(data: any, storeId: any) {
         name: data.name,
         slug: data.slug,
         description: data.description,
-        minumumOrder: data.minumumOrder,
+        minimumOrder: data.minimumOrder,
         length: data.length,
         width: data.width,
         height: data.height,
@@ -25,6 +24,18 @@ export async function createProduct(data: any, storeId: any) {
             {
               url: data.url,
             },
+            {
+              url: data.url2,
+            },
+            // {
+            //   url: data.url3,
+            // },
+            // {
+            //   url: data.url4,
+            // },
+            // {
+            //   url: data.url5
+            // }
           ],
         },
 
@@ -73,4 +84,121 @@ export async function createProduct(data: any, storeId: any) {
   } catch (error: any) {
     throw new Error(error);
   }
+}
+
+export async function getProduct() {
+  const data = await db.product.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  // console.log("ini", data);
+  return data;
+}
+
+export async function getProductByStoreId(id: any) {
+  const data = await db.product.findMany({
+    where: {
+      storeId: id,
+    },
+    include: {
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return data;
+}
+
+export async function getProductByCategoryId(id: any) {
+  const data = await db.product.findMany({
+    where: {
+      categoryId: id,
+    },
+    include: {
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return data;
+}
+
+export async function deleteProduct(id: string) {
+  const deleteProduct = await db.product.delete({
+    where: {
+      id,
+    },
+  });
+  return deleteProduct;
+}
+
+export async function update(data: any): Promise<any> {
+  const currentData = await db.variantOptionValue.findFirst({
+    where: {
+      variantOption: {
+        variant: {
+          id: data.id,
+        },
+      },
+    },
+  });
+  const newData = {
+    price: data.price ? parseFloat(data.price) : currentData?.price,
+    stock: data.stock ? parseInt(data.stock) : currentData?.stock,
+  };
+
+  const update = await db.variantOptionValue.updateMany({
+    data: newData,
+    where: {
+      variantOption: {
+        variant: {
+          product: {
+            id: data.id,
+          },
+        },
+      },
+    },
+  });
+  // console.log("ini update", update);
+  return update;
+}
+
+export async function updateIsActive(data: any) {
+  const status = await db.product.update({
+    data: {
+      isActive: data.isActive,
+    },
+    where: {
+      id: data.id,
+    },
+  });
+  // console.log("ini status", status);
+  return status;
 }

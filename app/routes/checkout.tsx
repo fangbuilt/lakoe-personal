@@ -26,11 +26,10 @@ export async function loader() {
 
 export default function CheckoutPage() {
   const item = useLoaderData<typeof loader>();
-  // console.log(item);
+
   return (
     <>
       <Box
-        m={'10%'}
         display={'flex'}
         flexDirection={'column'}
         justifyContent={'center'}
@@ -52,26 +51,34 @@ export default function CheckoutPage() {
                 borderRadius="lg"
                 overflow="hidden"
                 p={5}
+                _hover={{
+                  bg: 'gray.100',
+                  cursor: 'pointer',
+                  transition: '0.5s',
+                  transform: 'scale(1.1)',
+                }}
               >
                 <Stack align={'start'} spacing={2}>
-                  {/* <Image borderRadius={'10px'} src={i.[0]} alt="" /> */}
                   <Image
                     borderRadius={'10px'}
                     src={i.attachments[0].url}
                     alt="none"
                   />
-                  <Link to={`/checkout/${i.store?.name}/${i.slug}`}>
+                  <Link
+                    to={`/${i.store?.name.replace(/ /g, '-').toLowerCase()}/${
+                      i.slug
+                    }`}
+                  >
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
-                      {/* <Text mt={1} fontSize={"sm"}>
-                        {i.description}
-                      </Text> */}
-                      <Text>{i.id}</Text>
-                      {/* <Text>{i.attachments[0].url}</Text> */}
+                      <Text>
+                        Rp.
+                        {i.variants[0].variantOptions[0].variantOptionValues[0].price.toLocaleString(
+                          'id-ID'
+                        )}
+                      </Text>
                       <Text>slug :{i.slug}</Text>
-                      <Text fontWeight={'bold'}>Rp.50.000</Text>
                       <Text>{i.store?.name}</Text>
-                      {/* <Text>{i.store?.locations[0].address}</Text> */}
                     </Box>
                   </Link>
                 </Stack>
@@ -79,26 +86,6 @@ export default function CheckoutPage() {
             </Box>
           ))}
         </Flex>
-        {/* <Box display={"flex"} flexDir={"column"} gap={3}>
-          {item.map((i, o) => (
-            <>
-              <Card border={"1px"} p={4}>
-                <Box display={"flex"} gap={3}>
-                  <Image
-                    boxSize={"10"}
-                    borderRadius={"10%"}
-                    src={i.attachments[0]}
-                    alt=""
-                  />
-                  <Link to={`/checkout/form/${i.id}`}>
-                    <Text>{i.name}</Text>
-                    <Text>{i.description}</Text>
-                  </Link>
-                </Box>
-              </Card>
-            </>
-          ))}
-        </Box> */}
       </Box>
     </>
   );

@@ -104,7 +104,7 @@ export function Informations() {
         Informasi Toko
       </Text>
       <Form method="post">
-        <Input hidden name="actionType" value="create" />
+        <Input hidden name="actionType" value="createinformation" />
         <FormControl>
           <Grid
             h="150px"
@@ -170,7 +170,7 @@ export function Informations() {
                 fontSize={'13px'}
                 placeholder="Buat Nama Toko"
                 value={namaToko}
-                name="name"
+                name="namestore"
                 onChange={handleTokoFilled}
                 maxLength={characterLimitNamaToko}
               />
