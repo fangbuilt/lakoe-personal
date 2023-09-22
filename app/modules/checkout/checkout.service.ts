@@ -1,11 +1,15 @@
+import { redirect } from '@remix-run/node';
 import { db } from '../../libs/prisma/db.server';
 
 export async function getCheckoutDetail(data: any) {
-  return await db.product.findUnique({
+  const product = await db.product.findUnique({
     where: {
       slug: data.slug,
       store: {
-        name: data.store,
+        name: {
+          equals: data.store,
+          mode: 'insensitive',
+        },
       },
     },
     include: {
@@ -26,6 +30,7 @@ export async function getCheckoutDetail(data: any) {
       },
     },
   });
+  return product;
 }
 
 export async function createCheckout(data: any) {
@@ -37,6 +42,10 @@ export async function createCheckout(data: any) {
     data: data.cart,
   });
 
+  const courier = await db.courier.create({
+    data: data.getCourier,
+  });
+
   await db.cartItem.create({
     data: {
       ...data.cartItem,
@@ -45,12 +54,24 @@ export async function createCheckout(data: any) {
   });
 
   const invoice = await db.invoice.create({
-    data: { ...data.invoice, cartId: cart.id, paymentId: payment.id },
+    data: {
+      ...data.invoice,
+      cartId: cart.id,
+      paymentId: payment.id,
+      courierId: courier.id,
+    },
   });
 
   await db.invoiceHistory.create({
     data: { ...data.invoiceHistory, invoiceId: invoice.id },
   });
 
-  return null;
+  await db.variantOptionValue.update({
+    where: {
+      id: data.update.valueId as string,
+    },
+    data: { stock: data.update.stock as number },
+  });
+
+  return redirect(`/transfer/${invoice.id}`);
 }

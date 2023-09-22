@@ -45,10 +45,10 @@ export function ImplementGrid({ children }: LayoutProps) {
           borderLeftColor={'gray.200'}
         >
           {/* <Flex align={'center'} justify={'center'} px={5} h={'100vh'}>
-          <Heading textAlign={'center'} mb={'7.5vh'}>
-            Test Right Sidebar
-          </Heading>
-        </Flex> */}
+            <Heading textAlign={'center'} mb={'7.5vh'}>
+              Test Right Sidebar
+            </Heading>
+          </Flex> */}
         </Box>
       </Flex>
     </Flex>
