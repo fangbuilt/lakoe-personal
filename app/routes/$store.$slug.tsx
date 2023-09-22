@@ -30,6 +30,8 @@ export async function loader({ params }: ActionArgs) {
     slug: data.slug,
     store: data.store?.replace(/-/g, ' '),
   };
+
+  // const detail =
   return getCheckoutDetail(getData);
 }
 
@@ -60,6 +62,25 @@ export const action = async ({ request }: ActionArgs) => {
     const variantOptionValueId = formData.get('valueId') as string;
     const stock = +(formData.get('stock') as string);
     const rates = +(formData.get('rates') as string);
+
+    if (!courier) {
+      console.log('Please select courier');
+      return false;
+    } else if (!courierService) {
+      console.log('Please select courier service');
+      return false;
+    } else if (!payment) {
+      console.log('Please select payment');
+      return false;
+    }
+
+    if (!courier) {
+      const messageElement = document.getElementById('message');
+      if (messageElement) {
+        messageElement.textContent = 'Mohon pilih kurir';
+      }
+      return false;
+    }
 
     const invoice = {
       price: totalPriceUnique + courierService,
@@ -145,13 +166,22 @@ export const action = async ({ request }: ActionArgs) => {
       getCourier,
     };
 
+    console.log('data : ', data);
+
+    // return redirect("/checkout");
     return await createCheckout(data);
   }
   return null;
 };
 
 export default function Checkout() {
-  const item = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+
+  const item =
+    typeof data === 'object' && 'product' in data ? data.product : null;
+  const getUnique = 'unique' in data ? data.unique : null;
+  const uniqueNumber = getUnique as number;
+
   const { slug, store } = useParams();
 
   const [count, setCount] = useState<number>(1);
@@ -167,8 +197,6 @@ export default function Checkout() {
   const handleChange = (e: any) => {
     setCount(e.target.value);
   };
-
-  const unique = Math.floor(Math.random() * (200 - 100)) + 100;
 
   const [selectedOption, setSelectedOption] = useState(0);
 
@@ -197,18 +225,21 @@ export default function Checkout() {
           m={3}
           p={3}
           bgColor={'#dcdcdc'}
+          w={'90%'}
         >
           <Form method="post">
             <Box>
               <TableContainer>
                 <Box>
+                  <div id="message"></div>
+                  {/* <Text id="message"></Text> */}
                   <Text>Produk Dipesan</Text>
                 </Box>
                 <Table variant="simple">
                   <Thead>
                     <Tr fontWeight={'bold'}>
-                      <Th width={'40%'}>Produk</Th>
-                      <Th width={'40%'}>Variasi</Th>
+                      <Th width={'30%'}>Produk</Th>
+                      <Th width={'30%'}>Variasi</Th>
                       <Th minW={'180px'}>Jumlah</Th>
                       <Th>Harga</Th>
                       <Th>Total</Th>
@@ -307,11 +338,13 @@ export default function Checkout() {
                 type="hidden"
                 name="option"
                 value={selectedOption}
+                readOnly
                 required
               />
               <Input
                 type="hidden"
                 name="price"
+                readOnly
                 value={
                   item?.variants[selectedOption].variantOptions[0]
                     .variantOptionValues[0].price
@@ -322,6 +355,7 @@ export default function Checkout() {
               <Input
                 type="hidden"
                 name="valueId"
+                readOnly
                 value={
                   item?.variants[selectedOption].variantOptions[0]
                     .variantOptionValues[0].id
@@ -330,11 +364,13 @@ export default function Checkout() {
               <Input
                 type="hidden"
                 name="variantOptionId"
+                readOnly
                 value={item?.variants[selectedOption].variantOptions[0].id}
               />
               <Input
                 type="hidden"
                 name="userId"
+                readOnly
                 value={item?.store?.users[selectedOption].id}
               />
             </Box>
@@ -359,12 +395,12 @@ export default function Checkout() {
                   <CheckoutCourier
                     name={item?.name}
                     description={item?.description}
-                    unique={unique}
+                    unique={getUnique}
                     total={
                       (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
-                      unique
+                      uniqueNumber
                     }
                     totalPrice={
                       (item?.variants[selectedOption].variantOptions[0]
@@ -374,7 +410,7 @@ export default function Checkout() {
                       (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
-                      unique
+                      uniqueNumber
                     }
                   />
                 </Box>
