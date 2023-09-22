@@ -79,6 +79,11 @@ export default function CheckoutPage() {
                       </Text>
                       <Text>slug :{i.slug}</Text>
                       <Text>{i.store?.name}</Text>
+                      <Text>
+                        {i.variants[0].variantOptions[0].variantOptionValues[0]
+                          .stock + ' '}
+                        pcs
+                      </Text>
                     </Box>
                   </Link>
                 </Stack>
