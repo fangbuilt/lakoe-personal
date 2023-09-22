@@ -25,14 +25,10 @@ export async function action({ request }: ActionArgs) {
     try {
       const createReasonResult = await createDeclinedReason(
         {
-          withdraw: {
-            connect: { id: withdrawId },
-          },
-          store: {
-            connect: { id: storeId },
-          },
+          reason: reason as string,
         },
-        reason as string
+        withdrawId as string,
+        storeId as string
       );
       console.log('This is the declined reason', createReasonResult);
     } catch (error) {

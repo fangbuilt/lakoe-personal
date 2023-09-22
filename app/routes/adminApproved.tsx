@@ -30,7 +30,7 @@ export async function action({ request }: ActionArgs) {
       throw error;
     }
   }
-  return redirect('/dashboardAdmin');
+  return redirect('/adminProcessing');
 }
 
 export default function DasboardAdminRequest() {

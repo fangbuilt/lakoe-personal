@@ -52,6 +52,7 @@ export default function DashboardPopup({
     bankId: '',
     amount: '',
     bankAccount: '',
+    password: '',
   });
 
   const handleChange = (e: any) => {

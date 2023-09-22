@@ -184,7 +184,11 @@ export default function AdminSuccessPopup(props: any) {
                   colorScheme="teal"
                   padding={0}
                   onClick={() => {
-                    AdminSuccessNotification();
+                    AdminSuccessNotification(
+                      dataWithdrawal.store.name,
+                      formattedAmount,
+                      dataWithdrawal.bankAccount
+                    );
 
                     onClose();
                   }}

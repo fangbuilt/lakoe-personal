@@ -121,6 +121,8 @@ export default function Dashboard() {
               withdraw.status !== 'DECLINED'
             ) {
               totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+            } else if (withdraw.status === 'DECLINED') {
+              item.credit += parseFloat(withdraw.amount.toString());
             }
           });
         }

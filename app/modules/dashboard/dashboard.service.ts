@@ -11,13 +11,33 @@ export async function getStoreData(id: string) {
       include: {
         bankAccounts: {
           include: {
-            withdraws: true,
+            withdraws: {
+              where: {
+                storeId: '50',
+              },
+            },
           },
         },
       },
     })
   );
 }
+
+// export async function updateCreditStore(data: any, creditUpdate: number) {
+//   try {
+//     const updateCredit = db.store.update({
+//       where: {
+//         id: "50",
+//       },
+//       data: {
+//         credit: data.creditUpdate,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Error updating credit:", error);
+//     throw error;
+//   }
+// }
 
 //BankAccount CRUD
 export async function getBankList(storeId: string) {
@@ -176,31 +196,11 @@ export async function deleteWithdraw(id: string) {
   });
 }
 
-export async function createDeclinedReason(data: any, id: string) {
-  const withdraw = await db.withdraw.findUnique({
-    where: {
-      id: id,
-    },
-  });
-
-  if (!withdraw) {
-    throw new Error('withdraw Id not found.');
-  }
-
-  const withdrawId = withdraw.id;
-
-  const store = await db.store.findUnique({
-    where: {
-      id: id,
-    },
-  });
-
-  if (!store) {
-    throw new Error('store Id not found.');
-  }
-
-  const storeId = store.id;
-
+export async function createDeclinedReason(
+  data: any,
+  withdrawId: string,
+  storeId: string
+) {
   const createReason = await db.adminDecline.create({
     data: {
       withdraw: {
@@ -219,4 +219,29 @@ export async function createDeclinedReason(data: any, id: string) {
   console.log('this is reason declined:', createReason);
 
   return createReason;
+}
+
+export async function createAttachmentAdmin(
+  attachmentUrl: string,
+  withdrawId: string
+) {
+  try {
+    const createAttachment = await db.attachmentAdmin.create({
+      data: {
+        withdraw: {
+          connect: {
+            id: withdrawId,
+          },
+        },
+        attachment: attachmentUrl,
+      },
+    });
+
+    console.log('Attachment creation success:', createAttachment);
+
+    return createAttachment;
+  } catch (error) {
+    console.error('Error creating attachment:', error);
+    throw error;
+  }
 }
