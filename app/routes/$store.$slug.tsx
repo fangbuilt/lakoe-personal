@@ -146,10 +146,11 @@ export const action = async ({ request }: ActionArgs) => {
       getCourier,
     };
 
-    return await createCheckout(data);
-    await createCheckout(data);
+    // await createCheckout(data);
 
     handleClick(telp, name, email);
+
+    return await createCheckout(data);
   }
   return null;
 };

@@ -80,6 +80,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
+      store: true,
       attachments: true,
       variants: {
         include: {

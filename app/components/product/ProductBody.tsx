@@ -17,16 +17,11 @@ import useDebounce from '~/hooks/product/useDebounce';
 import { useFilterProducts } from '~/hooks/product/useFilterProducts';
 import useSearchProducts from '~/hooks/product/useSearchProducts';
 import { useSortProducts } from '~/hooks/product/useSortProducts';
-import type { IProduct } from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import ProductTab from './ProductTab';
 
-interface IProductBodyProps {
-  product: IProduct[];
-}
-
-export default function ProductBody(props: IProductBodyProps) {
+export default function ProductBody(props: any) {
   const { product } = props;
   const [, setActiveTab] = useState(0);
   const { searchProducts, setSearchQuery } = useSearchProducts(product);
