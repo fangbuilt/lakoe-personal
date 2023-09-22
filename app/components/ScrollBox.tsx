@@ -22,7 +22,7 @@ export default function ScrollBox({ children }: LayoutProps) {
   return (
     <>
       <Box
-        style={{ overflowY: 'auto', maxHeight: '400px' }}
+        style={{ overflowY: 'auto', maxHeight: '700px' }}
         sx={{ '::-webkit-scrollbar': { display: 'none' } }}
       >
         {children}

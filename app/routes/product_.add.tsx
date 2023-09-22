@@ -39,7 +39,7 @@ export async function action({ request }: ActionArgs) {
       name: formData.get('name'),
       description: formData.get('description'),
       url: imageUrl,
-      minumumOrder: Number(formData.get('min_order')),
+      minimumOrder: Number(formData.get('min_order')),
       price: parseFloat(formData.get('price') as string),
       stock: parseInt(formData.get('stock') as string),
       sku: formData.get('sku'),

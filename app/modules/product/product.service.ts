@@ -7,7 +7,7 @@ export async function createProduct(data: any, storeId: any) {
         name: data.name,
         slug: data.slug,
         description: data.description,
-        minumumOrder: data.minumumOrder,
+        minimumOrder: data.minimumOrder,
         length: data.length,
         width: data.width,
         height: data.height,
