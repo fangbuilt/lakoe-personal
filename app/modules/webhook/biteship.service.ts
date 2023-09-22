@@ -1,8 +1,9 @@
 import { db } from '~/libs/prisma/db.server';
 import {
-  UseDroppingOff,
-  UpdateInvoiceStatusInTransit,
+  droppingOff,
+  updateInvoiceStatusInTransit,
 } from './hooks/useDroppingOff';
+import { pickingUp, updateInvoiceStatus } from './hooks/usePickingUp';
 
 export async function getEmail(payload: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -27,8 +28,11 @@ export async function Biteship(payload: any) {
       console.log(
         'No matching record found for waybill: ' + payload.courier_waybill_id
       );
-      return; // Exit the function or perform appropriate error handling
     }
+
+    const email = dataInvoice?.user?.email as string;
+    const name = dataInvoice?.user?.name as string;
+    const waybill = dataInvoice?.waybill as string;
 
     // The courier was informed
     if (payload.status === 'allocated') {
@@ -39,6 +43,21 @@ export async function Biteship(payload: any) {
     // Courier picks up goods
     if (payload.status === 'picking_up') {
       // Handle 'picking_up' status
+
+      const existingInvoice = await db.invoice.findFirst({
+        where: {
+          waybill: payload.courier_waybill_id,
+        },
+      });
+      if (!existingInvoice) {
+        console.log(
+          'invoice not found for waybill' + payload.courier_waybill_id
+        );
+      } else {
+        await updateInvoiceStatus(existingInvoice.id);
+      }
+
+      pickingUp(email, name, waybill);
       console.log('this is payload status: ' + payload.status);
     }
 
@@ -50,12 +69,8 @@ export async function Biteship(payload: any) {
 
     // Courier on the way to recipient's location
     if (payload.status === 'dropping_off') {
-      UseDroppingOff(
-        dataInvoice?.receiverEmail,
-        dataInvoice.receiverName,
-        dataInvoice?.waybill
-      );
-      UpdateInvoiceStatusInTransit(dataInvoice);
+      droppingOff(email, name, waybill);
+      updateInvoiceStatusInTransit(dataInvoice);
       console.log('this is payload status: ' + payload.status);
     }
 

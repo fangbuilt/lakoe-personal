@@ -27,7 +27,6 @@ export interface IOrderDetailUser {
   waybill: string;
   courier: IOrderDetailCourier;
   cart: IOrderDetailCart;
-
 }
 
 export interface IOrderDetailWithdraw {
@@ -354,4 +353,3 @@ export interface IOrderDetailBiteshipTrackingLimit {
   createdAt: Date;
   updatedAt: Date;
 }
-

@@ -1,3 +1,5 @@
+.env
+
 node_modules
 
 /.cache
@@ -8,11 +10,8 @@ node_modules
 /api/metafile.*
 /build
 /public/build
-.env
 .eslintcache
 
 **/.DS_Store
 
 package-lock.json
-.DS_Store
-

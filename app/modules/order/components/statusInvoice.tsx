@@ -1,4 +1,4 @@
-import { Badge, Text } from "@chakra-ui/react";
+import { Badge, Text } from '@chakra-ui/react';
 
 interface StatusBadgeProps {
   status: string;
@@ -10,66 +10,66 @@ function getStatusBadge({ status }: StatusBadgeProps) {
     text: string;
     color: string;
   } = {
-    background: "",
-    text: "",
-    color: "",
+    background: '',
+    text: '',
+    color: '',
   };
 
-  if (status.toUpperCase() === "UNPAID") {
+  if (status.toUpperCase() === 'UNPAID') {
     badgeProps = {
-      background: "var(--yellow-400, #E8C600)",
+      background: 'var(--yellow-400, #E8C600)',
       color: `var(--text-dark, #1D1D1D)`,
-      text: "Belum Dibayar",
+      text: 'Belum Dibayar',
     };
-  } else if (status.toUpperCase() === "NEW_ORDER") {
+  } else if (status.toUpperCase() === 'NEW_ORDER') {
     badgeProps = {
-      background: "var(--green-800, #008F5D)",
+      background: 'var(--green-800, #008F5D)',
       color: `var(--text-light, #FFF)`,
-      text: "Pesanan Baru",
+      text: 'Pesanan Baru',
     };
-  } else if (status.toUpperCase() === "READY_TO_SHIP") {
+  } else if (status.toUpperCase() === 'READY_TO_SHIP') {
     badgeProps = {
-      background: "var(--blue-800, #147AF3)",
+      background: 'var(--blue-800, #147AF3)',
       color: `var(--text-light, #FFF)`,
-      text: "Siap Dikirim",
+      text: 'Siap Dikirim',
     };
-  } else if (status.toUpperCase() === "IN_TRANSIT") {
+  } else if (status.toUpperCase() === 'IN_TRANSIT') {
     badgeProps = {
-      background: "var(--orange-600, #F68511)",
+      background: 'var(--orange-600, #F68511)',
       color: `var(--text-light, #FFF)`,
-      text: "Dalam Pengiriman",
+      text: 'Dalam Pengiriman',
     };
-  } else if (status.toUpperCase() === "ORDER_COMPLETED") {
+  } else if (status.toUpperCase() === 'ORDER_COMPLETED') {
     badgeProps = {
-      background: "var(--gray-200, #E6E6E6)",
+      background: 'var(--gray-200, #E6E6E6)',
       color: `var(--text-dark, #1D1D1D)`,
-      text: "Pesanan Selesai",
+      text: 'Pesanan Selesai',
     };
-  } else if (status.toUpperCase() === "ORDER_CANCELLED") {
+  } else if (status.toUpperCase() === 'ORDER_CANCELLED') {
     badgeProps = {
-      background: "var(--red-800, #EA3829)",
+      background: 'var(--red-800, #EA3829)',
       color: `var(--text-light, #FFF)`,
-      text: "Dibatalkan",
+      text: 'Dibatalkan',
     };
   }
 
   return (
     <Badge
-      display={"flex"}
-      height={"24px"}
+      display={'flex'}
+      height={'24px'}
       padding={`var(--1, 4px) var(--2, 8px)`}
-      justifyContent={"center"}
-      alignItems={"center"}
+      justifyContent={'center'}
+      alignItems={'center'}
       gap={`var(--1, 4px)`}
       borderRadius={`var(--rounded, 4px)`}
       background={badgeProps.background}
-      width={"150px"}
+      width={'150px'}
     >
       <Text
         color={badgeProps.color}
-        textAlign={"center"}
-        fontSize={"14px"}
-        fontWeight={"600"}
+        textAlign={'center'}
+        fontSize={'14px'}
+        fontWeight={'600'}
       >
         {badgeProps.text}
       </Text>

@@ -1,12 +1,12 @@
 import MailerLite from '@mailerlite/mailerlite-nodejs';
-import type { IDroppingOff } from '~/interfaces/mailerlite';
+import type { IMailerLite } from '~/interfaces/mailerlite';
 import { db } from '~/libs/prisma/db.server';
 
 const mailerlite = new MailerLite({
-  api_key: process.env.LAKOE_MAILERLITE_API_KEY as string,
+  api_key: process.env.MAILERLITE_API_KEY as string,
 });
 
-export function UseDroppingOff(email: string, name: string, waybill: string) {
+export function droppingOff(email?: string, name?: string, waybill?: string) {
   const emailAddress = `${email}`;
   const date = new Date().getTime();
   const username = `${date}`;
@@ -21,7 +21,7 @@ export function UseDroppingOff(email: string, name: string, waybill: string) {
 
   console.log(newEmailAddress); // Output: john.doe-johndoe-example.com
 
-  const params: IDroppingOff = {
+  const params: IMailerLite = {
     email: `${newEmailAddress}`, // The receiver email's - We will get the email from table invoice userId relation to get the email
     fields: {
       // This is where you can make custom fields variable for email template display
@@ -43,13 +43,13 @@ export function UseDroppingOff(email: string, name: string, waybill: string) {
     });
 }
 
-export async function UpdateInvoiceStatusInTransit(dataInvoice: any) {
+export async function updateInvoiceStatusInTransit(dataInvoice: any) {
   await db.invoice.update({
     where: {
       id: dataInvoice.id,
     },
     data: {
-      status: 'ORDER_COMPLETED',
+      status: 'IN_TRANSIT',
     },
   });
 
