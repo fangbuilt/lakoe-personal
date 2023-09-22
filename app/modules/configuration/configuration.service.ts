@@ -29,6 +29,12 @@ export default async function createLocation(data: any) {
 export async function getAllDataLocation() {
   return await db.location.findMany();
 }
+
+export async function deleteLocation(id: any) {
+  return await db.location.delete({
+    where: { id },
+  });
+}
 //====================================================
 export async function createStoreInformation(data: any) {
   const dataPost = await db.store.create({

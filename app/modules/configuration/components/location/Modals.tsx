@@ -1,28 +1,30 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Image,
-  FormControl,
-  Text,
-  FormLabel,
-  Input,
-  Select,
-  Textarea,
   Alert,
   AlertIcon,
-  //AlertTitle,
-  CloseButton,
-  //Box,
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Image,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  Text,
+  Textarea,
+  useDisclosure,
 } from '@chakra-ui/react';
+import type { ChangeEvent} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import { Form } from '@remix-run/react';
+import CloseCircle from '~/assets/icon-pack/close-circle.svg';
+import Trash from '~/assets/icon-pack/trash.svg';
+import type { ILocation } from '~/interfaces/Location';
 import Maps from './Maps';
 
 //interface modal
@@ -170,6 +172,26 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
   //ini untuk alert ===============================================================
   const [showAlert, setShowAlert] = useState(false);
 
+  // untuk huurf kapital di awal
+  const [name, setName] = useState<string>('');
+
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    // Mengubah huruf pertama menjadi huruf kapital
+    const capitalizedInput =
+      inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+    setName(capitalizedInput);
+  };
+
+  const [address, setAddress] = useState<string>('');
+
+  const handleTextareaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const inputValue = event.target.value;
+    // Mengubah huruf pertama menjadi huruf kapital
+    const capitalizedInput =
+      inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+    setAddress(capitalizedInput);
+  };
   //======================================================================================
   return (
     <>
@@ -207,7 +229,12 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
               <Input hidden name="actionType" value="createlocation" />
               <FormControl isRequired>
                 <FormLabel>Nama Lokasi</FormLabel>
-                <Input name="name" placeholder="Cth. Toko Alamanda" />
+                <Input
+                  name="name"
+                  value={name}
+                  onChange={handleNameChange}
+                  placeholder="Cth. Toko Alamanda"
+                />
               </FormControl>
 
               <FormControl mt={4} isRequired>
@@ -283,6 +310,8 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
                 <Textarea
                   name="address"
                   placeholder="Tuliskan Alamat lengkap Toko"
+                  value={address}
+                  onChange={handleTextareaChange}
                 />
               </FormControl>
 
@@ -354,7 +383,7 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
             <Alert status="success" mt={4}>
               <AlertIcon />
               Data telah berhasil disimpan.
-              <CloseButton
+              <Button
                 onClick={() => {
                   setShowAlert(false);
                   // Opsional, Anda dapat merefresh halaman di sini
@@ -363,7 +392,14 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
                 position="absolute"
                 right="8px"
                 top="8px"
-              />
+                borderRadius={'full'}
+                bg={'green.500'}
+                size={'sm'}
+                color={'white'}
+                colorScheme="green"
+              >
+                OK!
+              </Button>
             </Alert>
           )}
         </ModalContent>
@@ -420,77 +456,6 @@ export function ModalCreateLocation({ isOpen, onClose }: CustomModalProps) {
         </ModalContent>
       </Modal>
     </>
-  );
-}
-
-export function ModalDelete({ isOpen, onClose }: CustomModalProps) {
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size={'xl'}>
-      {/* <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Modal Title</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text>hi</Text>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button variant="ghost">Secondary Action</Button>
-        </ModalFooter>
-      </ModalContent> */}
-
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader
-          display={'flex'}
-          flexDirection={'row'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-        >
-          <Text>Hapus Alamat</Text>
-          <Button
-            onClick={onClose}
-            p={'0px'}
-            colorScheme="none"
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'end'}
-            alignItems={'center'}
-          >
-            <Image w={'30px'} src={CloseCircle} />
-          </Button>
-        </ModalHeader>
-        {/* <ModalCloseButton /> */}
-        <ModalBody>
-          Apakah kamu yakin untuk menghapus
-          <span style={{ fontWeight: 'bold' }}> Rumah?</span> <br /> Kamu tidak
-          akan dapat mengembalikan alamat yang sudah dihapus.
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            borderRadius="20px"
-            colorScheme="white"
-            color={'black'}
-            border={'1px solid #aeaeae'}
-            mr={3}
-            onClick={onClose}
-          >
-            Batalkan
-          </Button>
-          <Button
-            borderRadius="20px"
-            colorScheme="blue"
-            //onClick={() => alert("Tombol Khusus Modal 2")}
-            onClick={onClose}
-          >
-            Ya, Hapus
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
   );
 }
 
@@ -553,5 +518,142 @@ export function ModalMaps({ isOpen, onClose }: CustomModalProps) {
         </ModalFooter>
       </ModalContent>
     </Modal>
+  );
+}
+
+export function DeleteButton(props: ILocation) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <Box>
+      <Button
+        borderRadius={'full'}
+        bg={'white'}
+        border={'1px solid #aeaeae'}
+        p={'0px'}
+        me={'7px'}
+        size={'sm'}
+        onClick={onOpen}
+      >
+        <Image w={'15px'} src={Trash} />
+      </Button>
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={isOpen}
+        size={'xl'}
+        onClose={onClose}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <Form method="post">
+            <Input hidden name="id" value={props.id} />
+            <Input hidden name="actionType" value="deletelocation" />
+            <ModalHeader
+              display={'flex'}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+            >
+              <Text>Hapus Alamat</Text>
+              <Button
+                onClick={onClose}
+                p={'0px'}
+                colorScheme="none"
+                display={'flex'}
+                flexDirection={'row'}
+                justifyContent={'end'}
+                alignItems={'center'}
+              >
+                <Image w={'30px'} src={CloseCircle} />
+              </Button>
+            </ModalHeader>
+            {/* <ModalCloseButton /> */}
+            <ModalBody>
+              Apakah kamu yakin untuk menghapus
+              <span style={{ fontWeight: 'bold' }}>
+                {' '}
+                {props.name}{' '}
+              </span> <br /> Kamu tidak akan dapat mengembalikan alamat yang
+              sudah dihapus.
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                borderRadius="20px"
+                colorScheme="white"
+                color={'black'}
+                border={'1px solid #aeaeae'}
+                mr={3}
+                onClick={onClose}
+              >
+                Batalkan
+              </Button>
+              <Button
+                type="submit"
+                borderRadius="20px"
+                colorScheme="blue"
+                //onClick={() => alert("Tombol Khusus Modal 2")}
+                onClick={onClose}
+              >
+                Ya, Hapus
+              </Button>
+            </ModalFooter>
+            {/* <Box>
+              <Flex
+                pt={4}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                mb={3}
+              >
+                <Text fontSize={"xl"} fontWeight={"medium"}>
+                  Hapus Template Pesan
+                </Text>
+                <Button
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"end"}
+                  onClick={onClose}
+                  variant={"link"}
+                >
+                  <Image w={"30px"} src={CloseCircle} />
+                </Button>
+              </Flex>
+              <HStack spacing="3px">
+                <Text>Apakah kamu yakin untuk menghapus</Text>
+                <Text display={"flex"}>
+                  <Text as={"b"}>{props.name}</Text>?
+                </Text>
+              </HStack>
+              <Text>
+                Sebab, kamu tidak akan dapat mengembalikan template pesan yang
+              </Text>
+              <Text>sudah dihapus.</Text>
+              <Input hidden name="id" value={props.id} />
+              <Flex justifyContent={"flex-end"} pb={4} mt={5}>
+                <Button
+                  variant={"outline"}
+                  borderRadius={"full"}
+                  mr={2}
+                  onClick={onClose}
+                >
+                  Batalkan
+                </Button>
+                <Button
+                  type="submit"
+                  value="delete"
+                  name="action"
+                  colorScheme="blue"
+                  color={"whiteAlpha.900"}
+                  borderRadius={"full"}
+                  onClick={onClose}
+                >
+                  Ya, Hapus
+                </Button>
+              </Flex>
+            </Box> */}
+          </Form>
+        </ModalContent>
+      </Modal>
+    </Box>
   );
 }

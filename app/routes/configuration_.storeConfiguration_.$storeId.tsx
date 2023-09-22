@@ -24,6 +24,7 @@ import createLocation, {
   deleteMessage,
   createMessage,
   getStoreid,
+  deleteLocation,
 } from '~/modules/configuration/configuration.service';
 
 import {
@@ -92,6 +93,9 @@ export async function action({ request }: ActionArgs) {
     const redirectURL = `/configuration/storeConfiguration/1 `;
 
     return redirect(redirectURL);
+  } else if (actionType === 'deletelocation') {
+    const id = formData.get('id') as string;
+    await deleteLocation(id);
   }
 
   //=======================================================================
