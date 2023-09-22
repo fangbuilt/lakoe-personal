@@ -6,6 +6,7 @@ import {
   getDataProductReadyToShip,
   getInvoiceByStatus,
   updateInvoiceStatus,
+  getTemplateMessage,
 } from '~/modules/order/order.service';
 import { type ActionArgs, json, redirect } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
@@ -21,17 +22,20 @@ import getDataInShipping from '~/modules/order/orderShippingService';
 export async function loader() {
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
-  //jangan sampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-  ]);
+  //jangan ampai terbalik posisi untuk menampilkan data load
+  const [unpaidCardAll, unpaidCard, canceledService, getTemplateMessages] =
+    await Promise.all([
+      getAllProductUnpid(),
+      getProductUnpid(),
+      CanceledService(),
+      getTemplateMessage(),
+    ]);
   const dataInvoice = await getInvoiceByStatus();
   return json({
     unpaidCardAll,
     unpaidCard,
     canceledService,
+    getTemplateMessages,
     dataInvoice,
     dataShipping: await getDataInShipping(),
     dataProductReadyToShip,

@@ -204,7 +204,7 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product?        @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction )
+  product        Product         @relation(fields: [productId], references: [id])
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())

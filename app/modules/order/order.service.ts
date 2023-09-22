@@ -378,3 +378,7 @@ export async function updateStatusInvoice(data: any) {
     },
   });
 }
+
+export async function getTemplateMessage() {
+  return await db.messageTemplate.findMany();
+}

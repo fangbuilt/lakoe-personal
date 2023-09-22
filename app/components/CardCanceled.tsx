@@ -39,7 +39,8 @@ import { useSortFilter } from '~/hooks/useSortFilter';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import searchFilter from '~/hooks/useSearchOrder';
 
-export default function CardCenceled() {
+export default function CardCenceled(props: any) {
+  console.log('props CardCanceled', props);
   function formatCurrency(price: number): string {
     return price.toLocaleString('id-ID', {
       style: 'currency',
@@ -349,7 +350,7 @@ export default function CardCenceled() {
                             <Accordion allowToggle>
                               {data.cart?.store?.messageTemplates.map(
                                 (item) => (
-                                  <AccordionItem key={item.id}>
+                                  <AccordionItem key={item.name}>
                                     <Text>
                                       <AccordionButton>
                                         <Box
@@ -363,7 +364,7 @@ export default function CardCenceled() {
                                       </AccordionButton>
                                     </Text>
                                     <AccordionPanel pb={4}>
-                                      {item.content} hehe
+                                      {item.content}
                                       <Button
                                         colorScheme={'whatsapp'}
                                         float={'right'}

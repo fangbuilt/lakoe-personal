@@ -26,13 +26,18 @@ import {
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
-import { handleClick } from './productUnpaid4';
+import { handleClick, handleClickSeller } from './productUnpaid4';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
   console.log('data:', data);
-  return getCheckoutDetail(data);
+  const datasGetCheckoutDetail = await getCheckoutDetail(data);
+  console.log('datasGetCheckoutDetail:', datasGetCheckoutDetail);
+  // globalData = datasGetCheckoutDetail;
+  return datasGetCheckoutDetail;
 }
+// let globalData;
+// console.log('globalData', globalData);
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
@@ -41,6 +46,8 @@ export const action = async ({ request }: ActionArgs) => {
     const name = formData.get('username') as string;
     const telp = formData.get('no-telp') as string;
     const email = formData.get('email') as string;
+    const emailSeller = formData.get('emailSeller') as string;
+    const nameStore = formData.get('nameStore') as string;
     const address = formData.get('address') as string;
     const province = formData.get('province') as string;
     const district = formData.get('district') as string;
@@ -112,7 +119,13 @@ export const action = async ({ request }: ActionArgs) => {
 
     await createCheckout(data);
 
-    handleClick(telp, name, email);
+    const totalPriceSendEmail = `Rp ${totalPriceUnique.toLocaleString(
+      'id-ID'
+    )}`;
+    console.log('datasGetCheckoutDetail');
+    handleClick(name, email, totalPriceSendEmail);
+    handleClickSeller(emailSeller, name, totalPriceSendEmail, nameStore);
+    // sendDynamicEmail(telp, name, email);
   }
   return redirect(`/checkout/transfer`);
 };
@@ -184,6 +197,16 @@ export default function Checkout() {
                           </Text>
                         </Box>
                       </Td>
+                      <Input
+                        type="hidden"
+                        name="emailSeller"
+                        value={item?.store?.users.map((item) => item.email)}
+                      />
+                      <Input
+                        type="hidden"
+                        name="nameStore"
+                        value={item?.store?.users.map((item) => item.name)}
+                      />
                       <Td>
                         <Flex alignItems="center">
                           <Button onClick={handleDecrement}>-</Button>
