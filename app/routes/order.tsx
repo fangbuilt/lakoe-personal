@@ -121,7 +121,7 @@ export async function action({ request }: ActionArgs) {
 }
 
 function isMootaIP(requestIP: string) {
-  const allowedIPs = process.env.ALLOWED_IPS?.split(',') || [];
+  const allowedIPs = process.env.ALLOWED_IPS?.split(',') ?? [];
   return allowedIPs.includes(requestIP);
 }
 function verifySignature(secretKey: string, data: string, signature: string) {
