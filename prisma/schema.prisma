@@ -91,7 +91,7 @@ model Store {
   slogan            String?
   description       String
   domain            String
-  logoAttachment    String?
+  logoAttachment     String?
   bannerAttachment  String?
   users             User[]
   storesDecorations StoreDecoration[]
@@ -164,9 +164,9 @@ model Location {
   addressNote    String?
   latitude       String
   longtitude     String
-  postalCode     String
+  postalCode     String?
   cityDistrict   String
-  isMainLocation Boolean
+  isMainLocation Boolean?
   store          Store?   @relation(fields: [storeId], references: [id])
   storeId        String
   profile        Profile? @relation(fields: [profileId], references: [id])
