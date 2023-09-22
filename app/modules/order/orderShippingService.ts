@@ -6,6 +6,7 @@ export default async function getDataInShipping() {
       status: 'IN_TRANSIT',
     },
     include: {
+      courier: true,
       cart: {
         include: {
           cartItems: {
