@@ -145,6 +145,7 @@ export async function createWithdraw(
 
     const bankId = bankAccount.id;
 
+    const now = new Date();
     const withdraw = await db.withdraw.create({
       data: {
         store: {
@@ -159,6 +160,7 @@ export async function createWithdraw(
         approvedBy: {
           connect: { id: '1' },
         },
+        updatedAt: now,
       },
     });
 

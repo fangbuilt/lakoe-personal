@@ -39,8 +39,8 @@ export function AdminSuccessNotification() {
     fields: {
       // This is where you can make custom fields variable for email template display
       storename: 'Dumbways Store',
-      amount: 'Rp 150.000,00',
-      bankaccount: 'BNI - Dumbways Store - 0460541966',
+      amount: 'Rp 450.000,00',
+      bankaccount: 'BNI - Maudi Ayunan - 0460541966',
 
       // We must add field first in our MailerLite dashboard for it to work
     },

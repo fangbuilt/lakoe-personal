@@ -189,7 +189,7 @@ export default function AdminSuccessPopup(props: any) {
                     onClose();
                   }}
                 >
-                  Selesai
+                  Send email to Seller
                 </Button>
               </Box>
 

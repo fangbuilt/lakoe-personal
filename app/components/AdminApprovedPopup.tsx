@@ -174,7 +174,7 @@ export default function AdminApprovedPopup(props: any) {
                     <Button
                       name="status"
                       value="PROCESSING"
-                      flex={'100%'}
+                      flex={'50%'}
                       fontSize={'12px'}
                       colorScheme="teal"
                       padding={0}
@@ -183,7 +183,7 @@ export default function AdminApprovedPopup(props: any) {
                     >
                       Processing
                     </Button>
-                    {/* <Button
+                    <Button
                       name="status"
                       value="DECLINED"
                       flex={'50%'}
@@ -194,7 +194,7 @@ export default function AdminApprovedPopup(props: any) {
                       onClick={handleApproveClick}
                     >
                       Declined
-                    </Button> */}
+                    </Button>
                   </Flex>
                 </Form>
               </Box>

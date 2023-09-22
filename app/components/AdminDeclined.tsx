@@ -82,12 +82,13 @@ export default function AdminDeclined({ dataWithdrawal }: any) {
     <>
       <Box
         width={'100%'}
-        padding={'20px'}
+        padding={'10px'}
         borderRadius={'15px'}
         boxShadow="base"
         p="6"
         rounded="md"
         bg="white"
+        overflow={'auto'}
       >
         <Box>
           <Tabs defaultIndex={5}>
