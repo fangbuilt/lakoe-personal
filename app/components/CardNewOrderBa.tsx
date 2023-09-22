@@ -170,7 +170,7 @@ export default function CardNewOrderBa() {
             image: '',
             description: selectedProps?.cart.cartItems[0].product.description,
             value: selectedProps?.price,
-            quantity: 2,
+            quantity: selectedProps?.cart.cartItems[0].qty,
             height: 10,
             length: 20,
             weight: 0.5,
