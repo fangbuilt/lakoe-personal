@@ -18,53 +18,27 @@ import CloseCircle from '~/assets/icon-pack/button-icons/close-circle.svg';
 import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
 // import useAddProduct from '../hooks/useAddProduct';
 import { useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 
-interface Photo {
-  label: string;
-  name: string;
-  image: File | null; // Menggunakan File | null
-}
+// interface Photo {
+//   label: string;
+//   name: string;
+//   image: File | null; // Menggunakan File | null
+// }
+
 export function ProductDetail() {
-  const [photos, setPhotos] = useState<Photo[]>([
+  const [photos, setPhotos] = useState([
     { label: 'Foto Utama', name: 'mainPhoto', image: null },
-    // { label: 'Foto 2', name: 'photo2', image: null },
+    { label: 'Foto 2', name: 'photo2', image: null },
     // { label: 'Foto 3', name: 'photo3', image: null },
     // { label: 'Foto 4', name: 'photo4', image: null },
     // { label: 'Foto 5', name: 'photo5', image: null },
   ]);
 
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const handleImageUpload = async (name: string, files: File[]) => {
-    try {
-      const formData = new FormData();
-      files.forEach((file: File) => {
-        formData.append('image', file);
-      });
-
-      const response = await axios.post(
-        'http://localhost:3000/product/add',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-
-      console.log('yayayayaya');
-      const imageUrls = response.data.map((data: any) => data.secure_url);
-
-      setUploadedImages((prevImages) => [...prevImages, ...imageUrls]);
-
-      console.log('inniniinini', uploadedImages);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
-
+  const handleImagePreview = (name: string, image: any) => {
     const updatedPhotos = photos.map((photo) => {
       if (photo.name === name) {
-        return { ...photo, image: files[0] };
+        return { ...photo, image };
       }
       return photo;
     });
@@ -105,19 +79,18 @@ export function ProductDetail() {
                   <FormLabel>Foto Produk</FormLabel>
                 )}
                 <Dropzone
-                  multiple={true}
                   onDrop={(acceptedFiles) => {
-                    handleImageUpload('image', acceptedFiles);
+                    handleImagePreview(photo.name, acceptedFiles[0]);
                   }}
                 >
                   {({ getRootProps, getInputProps }) => (
                     <section>
                       <div {...getRootProps()}>
                         <input
-                          {...getInputProps()}
-                          // type="file"
-                          // accept="image/*"
-                          multiple
+                          // {...getInputProps()}
+                          name={photo.name}
+                          type="file"
+                          accept="image/*"
                         />
 
                         {photo.image ? (

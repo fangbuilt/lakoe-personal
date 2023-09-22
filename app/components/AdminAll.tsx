@@ -22,6 +22,9 @@ import { Link } from '@remix-run/react';
 import moment from 'moment';
 import { useState } from 'react';
 import AdminRequestPopup from './AdminRequestPopup';
+import AdminSuccessPopup from './AdminSuccessPopup';
+import AdminProcessingPopup from './AdminProcessingPopup';
+import AdminDeclinedPopup from './AdminDeclinedPopup';
 
 export default function AdminRequest({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
@@ -73,13 +76,13 @@ export default function AdminRequest({ dataWithdrawal }: any) {
     <>
       <Box
         width={'100%'}
-        mr={'10px'}
         padding={'10px'}
         borderRadius={'15px'}
         boxShadow="base"
         p="6"
         rounded="md"
         bg="white"
+        overflow={'auto'}
       >
         <Box>
           <Tabs defaultIndex={0}>
@@ -295,6 +298,9 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.store?.name}
+                    </Td>
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
@@ -303,29 +309,110 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       {formatRupiah(item.amount)}
                     </Td>
                     <Td margin={'2px 0'}>
-                      <Text
-                        borderRadius={'15px'}
-                        bg={'grey'}
-                        color={'white'}
-                        px={'5px'}
-                        fontSize={'10px'}
-                        textAlign={'center'}
-                      >
-                        {item.status}
+                      <Text>
+                        {item.status === 'REQUEST' && (
+                          <Text
+                            bg={'Yellow'}
+                            color={'black'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            REQUEST
+                          </Text>
+                        )}
+
+                        {item.status === 'PROCESSING' && (
+                          <Text
+                            bg={'teal'}
+                            color={'white'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            PROCESSING
+                          </Text>
+                        )}
+
+                        {item.status === 'SUCCESS' && (
+                          <Text
+                            bg={'green'}
+                            color={'white'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            SUCCESS
+                          </Text>
+                        )}
+
+                        {item.status === 'DECLINED' && (
+                          <Text
+                            bg={'RED'}
+                            color={'white'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            DECLINED
+                          </Text>
+                        )}
                       </Text>
                     </Td>
 
                     <Td padding={'5px'}>
-                      <Text
-                        color={'black'}
-                        textAlign={'center'}
-                        borderRadius={'15px'}
-                        cursor={'pointer'}
-                        px={'5px'}
-                        fontSize={'10px'}
-                      >
-                        <AdminRequestPopup withdrawalData={item} />
-                      </Text>
+                      {item.status === 'REQUEST' && (
+                        <Text
+                          color={'black'}
+                          textAlign={'center'}
+                          borderRadius={'15px'}
+                          cursor={'pointer'}
+                          px={'5px'}
+                          fontSize={'10px'}
+                        >
+                          <AdminRequestPopup dataWithdrawal={item} />
+                        </Text>
+                      )}
+                      {item.status === 'PROCESSING' && (
+                        <Text
+                          color={'black'}
+                          textAlign={'center'}
+                          borderRadius={'15px'}
+                          cursor={'pointer'}
+                          px={'5px'}
+                          fontSize={'10px'}
+                        >
+                          <AdminProcessingPopup withdrawalData={item} />
+                        </Text>
+                      )}
+                      {item.status === 'SUCCESS' && (
+                        <Text
+                          color={'black'}
+                          textAlign={'center'}
+                          borderRadius={'15px'}
+                          cursor={'pointer'}
+                          px={'5px'}
+                          fontSize={'10px'}
+                        >
+                          <AdminSuccessPopup dataWithdrawal={item} />
+                        </Text>
+                      )}
+                      {item.status === 'DECLINED' && (
+                        <Text
+                          color={'black'}
+                          textAlign={'center'}
+                          borderRadius={'15px'}
+                          cursor={'pointer'}
+                          px={'5px'}
+                          fontSize={'10px'}
+                        >
+                          <AdminDeclinedPopup dataWithdrawal={item} />
+                        </Text>
+                      )}
                     </Td>
                   </Tr>
                 ))}

@@ -3,6 +3,7 @@ import {
   Button,
   Divider,
   Flex,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -11,14 +12,17 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
+import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 
 export default function AdminRequestPopup(props: any) {
-  const { withdrawalData } = props;
+  const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [statusUpdated, setStatusUpdated] = useState(dataWithdrawal.status);
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -28,10 +32,10 @@ export default function AdminRequestPopup(props: any) {
   }
 
   const transferFee = 10000;
-  const tax = (parseInt(withdrawalData.amount) * 1) / 100;
-  const formattedAmount = formatRupiah(parseInt(withdrawalData.amount));
+  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
   const withdarwalTotal = formatRupiah(
-    parseInt(withdrawalData.amount) - transferFee - tax
+    parseInt(dataWithdrawal.amount) - transferFee - tax
   );
 
   const initialRef = React.useRef(null);
@@ -39,6 +43,18 @@ export default function AdminRequestPopup(props: any) {
 
   const openModal = () => {
     onOpen();
+  };
+
+  const handleApproveClick = async () => {
+    try {
+      // Make an API call to update the status
+      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
+      // Update the local status
+      setStatusUpdated('PROCESSING');
+      onClose();
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
   };
 
   return (
@@ -65,15 +81,15 @@ export default function AdminRequestPopup(props: any) {
         <ModalOverlay />
         <ModalContent>
           <ModalBody pt={6} pb={2}>
-            <Box bg={'yellow.300'} padding={'10px'} fontSize={'13px'}>
+            <Box padding={'10px'} fontSize={'13px'}>
               <Box>
                 <Text display={'flex'}>
                   Nomor Penarikan:{' '}
-                  <Text fontWeight={700}>{withdrawalData.id}</Text>
+                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                 </Text>
                 <Text>
                   {moment(
-                    withdrawalData.createdAt,
+                    dataWithdrawal.createdAt,
                     'YYYY-MM-DD HH:mm:ss'
                   ).format('LLLL')}
                 </Text>
@@ -82,12 +98,12 @@ export default function AdminRequestPopup(props: any) {
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {withdrawalData.bankAccount.accountName}
+                    {dataWithdrawal.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{withdrawalData.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{withdrawalData.status}</Text>
+                  <Text fontSize={'12px'}>{statusUpdated}</Text>
                 </Box>
               </Flex>
 
@@ -95,15 +111,15 @@ export default function AdminRequestPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: {withdrawalData.bankAccount.bank}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {withdrawalData.bankAccount.accountNumber}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {withdrawalData.bankAccount.accountName}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                 </Flex>
                 <Button
                   width={'100%'}
@@ -151,25 +167,36 @@ export default function AdminRequestPopup(props: any) {
                   </Flex>
                   <Text>{withdarwalTotal}</Text>
                 </Flex>
-
-                <Flex gap={'5px'} mt={'10px'}>
-                  <Button
-                    flex={'50%'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                  >
-                    Approved
-                  </Button>
-                  <Button
-                    flex={'50%'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                  >
-                    Declined
-                  </Button>
-                </Flex>
+                <Form method="post">
+                  <Input type="hidden" name="actionType" value="update" />
+                  <Input type="hidden" name="id" value={dataWithdrawal.id} />
+                  <Flex gap={'5px'} mt={'10px'}>
+                    <Button
+                      name="status"
+                      value="PROCESSING"
+                      flex={'50%'}
+                      fontSize={'12px'}
+                      colorScheme="teal"
+                      padding={0}
+                      type="submit"
+                      onClick={handleApproveClick}
+                    >
+                      Approved
+                    </Button>
+                    <Button
+                      name="status"
+                      value="DECLINED"
+                      flex={'50%'}
+                      fontSize={'12px'}
+                      colorScheme="teal"
+                      padding={0}
+                      type="submit"
+                      onClick={handleApproveClick}
+                    >
+                      Declined
+                    </Button>
+                  </Flex>
+                </Form>
               </Box>
             </Box>
           </ModalBody>
