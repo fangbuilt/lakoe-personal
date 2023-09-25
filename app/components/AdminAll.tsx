@@ -24,8 +24,8 @@ import { useState } from 'react';
 import AdminRequestPopup from './AdminRequestPopup';
 import AdminSuccessPopup from './AdminSuccessPopup';
 import AdminProcessingPopup from './AdminProcessingPopup';
-import AdminDeclinedPopup from './AdminDeclinedPopup';
 import AdminApprovedPopup from './AdminApprovedPopup';
+import { AiFillCloseCircle } from 'react-icons/ai';
 
 export default function AdminRequest({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
@@ -455,14 +455,15 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       )}
                       {item.status === 'DECLINED' && (
                         <Text
-                          color={'black'}
+                          color={'red'}
                           textAlign={'center'}
                           borderRadius={'15px'}
                           cursor={'pointer'}
                           px={'5px'}
-                          fontSize={'10px'}
+                          fontSize={'20px'}
+                          ml={5}
                         >
-                          <AdminDeclinedPopup dataWithdrawal={item} />
+                          <AiFillCloseCircle />
                         </Text>
                       )}
                     </Td>

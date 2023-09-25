@@ -6,11 +6,11 @@ import AdminDeclined from '~/components/AdminDeclined';
 import { ImplementGridAdmin } from '~/layouts/Grid';
 import {
   createDeclinedReason,
-  getWithdrawalList,
+  getReasonDeclined,
 } from '~/modules/dashboard/dashboard.service';
 
 export async function loader() {
-  return await getWithdrawalList();
+  return await getReasonDeclined();
 }
 
 export async function action({ request }: ActionArgs) {
@@ -40,11 +40,11 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function DasboardAdminDeclined() {
-  const dataWithdrawal = useLoaderData<typeof loader>();
+  const dataDeclined = useLoaderData<typeof loader>();
   return (
     <ImplementGridAdmin>
       <Flex h={'100vh'} width={'100%'} bg={'yellow'}>
-        <AdminDeclined dataWithdrawal={dataWithdrawal} />
+        <AdminDeclined dataDeclined={dataDeclined} />
       </Flex>
     </ImplementGridAdmin>
   );

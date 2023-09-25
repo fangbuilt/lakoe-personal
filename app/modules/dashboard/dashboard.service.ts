@@ -6,14 +6,14 @@ export async function getStoreData(id: string) {
   return json(
     await db.store.findMany({
       where: {
-        id: '50',
+        id: '4',
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '50',
+                storeId: '4',
               },
             },
           },
@@ -23,28 +23,12 @@ export async function getStoreData(id: string) {
   );
 }
 
-// export async function updateCreditStore(data: any, creditUpdate: number) {
-//   try {
-//     const updateCredit = db.store.update({
-//       where: {
-//         id: "50",
-//       },
-//       data: {
-//         credit: data.creditUpdate,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Error updating credit:", error);
-//     throw error;
-//   }
-// }
-
 //BankAccount CRUD
 export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '50',
+        storeId: '4',
       },
     })
   );
@@ -74,7 +58,7 @@ export async function createBank(data: any) {
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '50' },
+        connect: { id: '4' },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -111,12 +95,14 @@ export async function updateBank(
 
 //Withdraw
 export async function getWithdrawalList() {
-  return await db.withdraw.findMany({
+  const withdrawalList = await db.withdraw.findMany({
     include: {
       store: true,
       bankAccount: true,
     },
   });
+
+  return withdrawalList;
 }
 
 export async function updateStatusWithdraw(id: string, statusUpdated: string) {
@@ -168,7 +154,7 @@ export async function createWithdraw(
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '50' },
+          connect: { id: '4' },
         },
         amount: amount,
         status: 'REQUEST',
@@ -182,7 +168,6 @@ export async function createWithdraw(
       },
     });
 
-    // console.log("Withdraw created:", withdraw);
     return withdraw;
   } catch (error) {
     console.error('Error creating withdrawal:', error);
@@ -244,4 +229,17 @@ export async function createAttachmentAdmin(
     console.error('Error creating attachment:', error);
     throw error;
   }
+}
+
+// adminDecline
+
+export async function getReasonDeclined() {
+  const reasonDeclinedList = await db.adminDecline.findMany({
+    include: {
+      store: true,
+      withdraw: true,
+    },
+  });
+
+  return reasonDeclinedList;
 }

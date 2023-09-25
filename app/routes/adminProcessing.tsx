@@ -1,6 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
-import { redirect ,
+import {
+  redirect,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   json,
