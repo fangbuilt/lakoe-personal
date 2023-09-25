@@ -24,6 +24,18 @@ export async function createProduct(data: any, storeId: any) {
             {
               url: data.url,
             },
+            {
+              url: data.url2,
+            },
+            // {
+            //   url: data.url3,
+            // },
+            // {
+            //   url: data.url4,
+            // },
+            // {
+            //   url: data.url5
+            // }
           ],
         },
 
@@ -92,6 +104,7 @@ export async function getProduct() {
       },
     },
   });
+  // console.log("ini", data);
   return data;
 }
 
@@ -99,9 +112,6 @@ export async function getProductByStoreId(id: any) {
   const data = await db.product.findMany({
     where: {
       storeId: id,
-    },
-    orderBy: {
-      createdAt: 'desc',
     },
     include: {
       attachments: true,
@@ -176,16 +186,19 @@ export async function update(data: any): Promise<any> {
       },
     },
   });
+  // console.log("ini update", update);
   return update;
 }
 
 export async function updateIsActive(data: any) {
-  const updateIsActive = await db.product.update({
-    data,
+  const status = await db.product.update({
+    data: {
+      isActive: data.isActive,
+    },
     where: {
       id: data.id,
     },
   });
-  console.log('ini update isActive', updateIsActive);
-  return updateIsActive;
+  // console.log("ini status", status);
+  return status;
 }

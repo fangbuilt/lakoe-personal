@@ -1,9 +1,7 @@
-import { Box, Checkbox, Image, Switch, Text } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
-import { useState, type ReactNode } from 'react';
+import { Box, Checkbox, Image, Text } from '@chakra-ui/react';
+import { type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
-import { updateIsActive } from '~/modules/product/product.service';
 
 interface IProductCardProps {
   product: IProduct;
@@ -12,38 +10,6 @@ interface IProductCardProps {
 
 export default function ProductCard(props: IProductCardProps) {
   const { product, children } = props;
-
-  const [isActive, setIsActive] = useState(product.isActive);
-
-  const handleSwitchChange = async (e: any) => {
-    e.preventDefault();
-    const newData = {
-      id: product.id,
-      isActive: !isActive,
-    };
-    console.log('ini target', newData);
-    try {
-      const response = await fetch(`/producttt/${newData.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newData),
-      });
-      if (response.ok) {
-        const updateStatus = await updateIsActive(newData);
-        if (updateStatus) {
-          setIsActive(!isActive);
-        } else {
-          console.error('failed to update product status');
-        }
-      } else {
-        console.error('failed to update product status');
-      }
-    } catch (error) {
-      console.error('failed to update product status', error);
-    }
-  };
 
   return (
     <>
@@ -57,23 +23,28 @@ export default function ProductCard(props: IProductCardProps) {
         <Box display={'flex'} gap={3}>
           <Box display={'flex'} gap={3}>
             <Image
-              src={product.attachments[0].url}
+              src={product.attachments[0]?.url}
               w={'100px'}
               h={'100px'}
               borderRadius={'8px'}
               objectFit={'cover'}
             />
             <Box>
-              <Text
-                fontSize={'18px'}
-                color={'#1D1D1D'}
-                w={'375px'}
-                whiteSpace={'nowrap'}
-                overflow={'hidden'}
-                textOverflow={'ellipsis'}
-              >
-                {product.name}
-              </Text>
+              <Box display={'flex'}>
+                <Text
+                  fontSize={'18px'}
+                  color={'#1D1D1D'}
+                  w={'375px'}
+                  whiteSpace={'nowrap'}
+                  overflow={'hidden'}
+                  textOverflow={'ellipsis'}
+                >
+                  {product.name}
+                </Text>
+                <Box ms={'65px'}>
+                  <Checkbox />
+                </Box>
+              </Box>
               <Box display={'flex'} alignItems={'center'} gap={2} mb={2}>
                 <Text fontSize={'16px'}>
                   Rp
@@ -125,17 +96,7 @@ export default function ProductCard(props: IProductCardProps) {
             flexDirection={'column'}
             py={1}
             gap={10}
-          >
-            <Checkbox size="lg" />
-            <Form method="PATCH">
-              <Switch
-                size="md"
-                isChecked={isActive}
-                name="isActive"
-                onChange={handleSwitchChange}
-              />
-            </Form>
-          </Box>
+          ></Box>
         </Box>
       </Box>
     </>
