@@ -79,10 +79,27 @@ export async function MootaOrderStatusUpdate(
     },
   });
 
-  if (existingTransaction) {
+  const matchingConfirmationPayment = await db.confirmationPayment.findFirst({
+    where: {
+      amount: data.amount,
+    },
+    include: {
+      invoice: {
+        select: {
+          paymentId: true,
+        },
+      },
+    },
+  });
+
+  if (existingTransaction || matchingConfirmationPayment) {
+    const invoiceId = existingTransaction
+      ? existingTransaction.id
+      : matchingConfirmationPayment?.invoice?.paymentId;
+
     await db.payment.update({
       where: {
-        id: existingTransaction.id,
+        id: invoiceId,
       },
       data: {
         status: 'PAID',
@@ -91,7 +108,7 @@ export async function MootaOrderStatusUpdate(
 
     const relatedInvoice = await db.invoice.findFirst({
       where: {
-        paymentId: existingTransaction.id,
+        paymentId: invoiceId,
       },
     });
     if (relatedInvoice) {
@@ -105,13 +122,13 @@ export async function MootaOrderStatusUpdate(
       });
       await db.invoiceHistory.create({
         data: {
-          status: 'PAID',
+          status: 'PAYMENT_COMPLETED',
           invoiceId: relatedInvoice.id,
         },
       });
     }
 
-    console.log('Paid Payment ,Good Luck Brother :)!');
+    console.log('Paid Payment ,Good Luck Brother :) !');
   }
 }
 

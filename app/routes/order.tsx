@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
@@ -102,7 +101,6 @@ function isMootaIP(requestIP: string) {
 function verifySignature(secretKey: string, data: string, signature: string) {
   const hmac = crypto.createHmac('sha256', secretKey);
   const computedSignature = hmac.update(data).digest('hex');
-  console.log('computedSignature', computedSignature);
   return computedSignature === signature;
 }
 
