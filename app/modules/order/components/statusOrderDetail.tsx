@@ -113,64 +113,6 @@ export function getStatusLacakButton(status: string) {
   }
 }
 
-export function useStatusLacakPengiriman(
-  status: string,
-  dataTracking: ITracking
-) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  function openModal() {
-    setModalIsOpen(true);
-  }
-
-  function closeModal() {
-    setModalIsOpen(false);
-  }
-
-  if (status.toUpperCase() === 'IN_TRANSIT') {
-    return (
-      <>
-        <Button
-          fontSize={'14px'}
-          fontWeight={'700'}
-          lineHeight={'20px'}
-          color={'#0086B4'}
-          background={'#FFFFFF)'}
-          colorScheme="#FFFFFF)"
-          w={'120px'}
-          onClick={openModal}
-        >
-          Lacak Pengiriman
-        </Button>
-        {modalIsOpen && (
-          <ModalInShipping
-            isOpen={modalIsOpen}
-            onClose={closeModal}
-            data={dataTracking}
-          />
-        )}
-      </>
-    );
-  }
-
-  if (status.toUpperCase() === 'ORDER_COMPLETED') {
-    return (
-      <Button
-        fontSize={'14px'}
-        fontWeight={'700'}
-        lineHeight={'20px'}
-        color={'#0086B4'}
-        background={'#FFFFFF)'}
-        colorScheme="#FFFFFF)"
-        w={'120px'}
-      >
-        Lacak Pengiriman
-      </Button>
-    );
-  }
-  return null;
-}
-
 export default function StatusOrderDetail({
   data,
   dataTracking,
@@ -394,7 +336,7 @@ export default function StatusOrderDetail({
 
   function useStatusLacakPengiriman(status: string, dataTracking: ITracking) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
+    const [selectedCardId, setSelectedCardId] = useState<string>('');
     function openModal() {
       setModalIsOpen(true);
     }
@@ -414,7 +356,10 @@ export default function StatusOrderDetail({
             background={'#FFFFFF)'}
             colorScheme="#FFFFFF)"
             w={'120px'}
-            onClick={openModal}
+            onClick={() => {
+              setSelectedCardId(data.courier?.trackingId as string);
+              openModal();
+            }}
           >
             Lacak Pengiriman
           </Button>
@@ -423,6 +368,7 @@ export default function StatusOrderDetail({
               isOpen={modalIsOpen}
               onClose={closeModal}
               data={dataTracking}
+              selectedCardId={selectedCardId}
             />
           )}
         </>
