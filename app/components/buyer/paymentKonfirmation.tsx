@@ -12,35 +12,30 @@
 //   InputRightElement,
 //   Select,
 //   Stack,
+//   Text,
 // } from "@chakra-ui/react";
-// import { ActionArgs } from "@remix-run/node";
-// import { Form } from "@remix-run/react";
+// import { Form, useLoaderData, useParams } from "@remix-run/react";
 // import { useState } from "react";
 // import { PiShoppingCartThin } from "react-icons/pi";
-// import { db } from "~/libs/prisma/db.server";
+// import { loader } from "~/routes/configurationTemplateMessage_.$storeId";
 
-// export async function loader({ params }: ActionArgs) {
-//   const data = params;
-//   return await db.invoice.findUnique({
-//     where: {
-//       id: data.invoiceId as string,
-//     },
-//   });
-// }
-// function PaymentConfirmation() {
+// function TransferPayment() {
+//   const { invoiceId } = useParams();
 //   const [file] = useState<File | null>(null);
+//   const item = useLoaderData<typeof loader>();
 
 //   return (
 //     <Flex direction="column" align="center">
 //       <Box fontSize={"100px"} mt={"10px"}>
 //         <PiShoppingCartThin />
 //       </Box>
+
 //       <Heading fontSize="2xl" textAlign="center">
 //         KONFIRMASI PEMBAYARAN
 //       </Heading>
 
 //       <Container
-//         width={"80%"}
+//         width={"500px"}
 //         bg={"whiteAlpha.50"}
 //         p={10}
 //         mt={"3%"}
@@ -52,14 +47,21 @@
 //           <Stack spacing={4}>
 //             <FormControl id="invoiceId" isRequired>
 //               <FormLabel>Order ID</FormLabel>
-//               <Input name="invoiceId" type="text" placeholder="invoiceId" />
+//               <Input
+//                 name="invoiceId"
+//                 value={item?.id}
+//                 type="readOnly"
+//                 // placeholder={item?.id}
+//               />
 //             </FormControl>
 //             <FormControl id="invoice" isRequired>
 //               <FormLabel>Atas Nama Rekening</FormLabel>
 //               <Input
 //                 name="invoice"
 //                 type="text"
-//                 placeholder="Pemilik Rekening"
+//                 value={item?.name}
+
+//                 // placeholder={item?.receiverName}
 //               />
 //             </FormControl>
 //             <FormControl id="bank" isRequired>
@@ -68,10 +70,10 @@
 //                 <option value="" hidden>
 //                   Pilihan Bank
 //                 </option>
-//                 <option value="Bank BRI">Bank BRI</option>
-//                 <option value="Bank BCA">Bank BCA</option>
-//                 <option value="Bank BNI">Bank BNI</option>
-//                 <option value="Bank BNI">Bank MANDIRI</option>
+//                 <option>PT. Bank Mandiri (Persero) Tbk</option>
+//                 <option>PT. Bank Rakyat Indonesia (Persero) Tbk</option>
+//                 <option>PT. Bank Syariah Indonesia Tbk</option>
+//                 <option>PT. Bank Mega Tbk</option>
 //               </Select>
 //             </FormControl>
 //             <FormControl id="transfer-date" isRequired>
@@ -97,6 +99,7 @@
 //               <FormLabel>Bukti Transfer</FormLabel>
 //               <Box position={"relative"} mb={5} alignItems={"center"}>
 //                 <Input
+//                   id="file-input"
 //                   name="attachment"
 //                   position={"absolute"}
 //                   p={1}
@@ -120,8 +123,11 @@
 //           </Stack>
 //         </Form>
 //       </Container>
+//       <Box display={"none"}>
+//         <Text>{invoiceId} </Text>
+//       </Box>
 //     </Flex>
 //   );
 // }
 
-// export default PaymentConfirmation;
+// export default TransferPayment;

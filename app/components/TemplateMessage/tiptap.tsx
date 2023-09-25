@@ -1,4 +1,4 @@
-import { useEditor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 const extensions = [StarterKit];
@@ -17,28 +17,61 @@ const Tiptap = (data: any) => {
   }
 
   return (
-    // <>
-    {
-      /* <button style={{border: '1px ridge', padding:'3px 12px', marginRight:'5px', borderRadius:'16px'}}
-        onClick={() => editor.chain().focus().insertContent('[<strong>Nama Customer</strong>]').run()}
+    <>
+      <button
+        style={{
+          border: '1px ridge',
+          padding: '3px 12px',
+          marginRight: '5px',
+          borderRadius: '16px',
+        }}
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent('[<strong>Nama Customer</strong>]')
+            .run()
+        }
       >
-        Nama Pembeli
+        Nama Customer
       </button>
-      <button style={{border: '1px ridge', padding:'3px 12px', marginRight:'5px', borderRadius:'16px'}}
-        onClick={() => editor.chain().focus().insertContent('[<strong>Nama Produk</strong>]').run()}
+      <button
+        style={{
+          border: '1px ridge',
+          padding: '3px 12px',
+          marginRight: '5px',
+          borderRadius: '16px',
+        }}
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent('[<strong>Nama Produk</strong>]')
+            .run()
+        }
       >
         Nama Produk
       </button>
-      <button style={{border: '1px ridge', padding:'3px 12px', marginRight:'5px', borderRadius:'16px'}}
-        onClick={() => editor.chain().focus().insertContent('[<strong>Nama Toko</strong>]').run()}
+      <button
+        style={{
+          border: '1px ridge',
+          padding: '3px 12px',
+          marginRight: '5px',
+          borderRadius: '16px',
+        }}
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent('[<strong>Nama Toko</strong>]')
+            .run()
+        }
       >
         Nama Toko
       </button>
 
-      <EditorContent editor={editor} /> */
-    }
-
-    // </>
+      <EditorContent editor={editor} />
+    </>
   );
 };
 

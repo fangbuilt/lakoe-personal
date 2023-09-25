@@ -2,7 +2,8 @@ import { Container, Text } from '@chakra-ui/react';
 import { type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { db } from '../libs/prisma/db.server';
-import TemplateMessage from '~/components/TemplateMessage/TemplateMessage';
+import TemplateMessage from '../components/TemplateMessage/TemplateMessage';
+import React from 'react';
 
 export async function loader({ params }: ActionArgs) {
   const { storeId } = params;
