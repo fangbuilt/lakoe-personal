@@ -56,20 +56,20 @@ export default function CardSuccesOrder() {
   return (
     <>
       {/* start filter */}
-      <Box width={"100%"} display={"flex"} justifyContent={"center"}>
+      <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
-          display={"flex"}
-          w={"47%"}
-          bg={"white"}
-          px={"3"}
+          display={'flex'}
+          w={'47%'}
+          bg={'white'}
+          px={'3'}
           gap={2}
-          justifyContent={"space-between"}
+          justifyContent={'space-between'}
           zIndex={10}
-          position={"fixed"}
-          top={"52"}
+          position={'fixed'}
+          top={'52'}
           mt={2}
         >
-          <InputGroup bg={"white"}>
+          <InputGroup bg={'white'}>
             <InputLeftElement pointerEvents="none">
               <Image src={SearchProduct} />
             </InputLeftElement>
@@ -78,8 +78,8 @@ export default function CardSuccesOrder() {
               placeholder="Cari Pesanan"
               _placeholder={{
                 opacity: 1,
-                color: "#909090",
-                fontSize: "14px",
+                color: '#909090',
+                fontSize: '14px',
               }}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -89,22 +89,22 @@ export default function CardSuccesOrder() {
             <MenuButton
               as={Button}
               variant="outline"
-              bgColor={"white"}
-              fontSize={"14px"}
-              width={"100%"}
-              color={getSelectedCourier() > 0 ? "black" : "#909090"}
-              fontWeight={"normal"}
+              bgColor={'white'}
+              fontSize={'14px'}
+              width={'100%'}
+              color={getSelectedCourier() > 0 ? 'black' : '#909090'}
+              fontWeight={'normal'}
             >
               <Text fontSize="14px" textAlign="left">
                 {getSelectedCourier() > 0
                   ? `${getSelectedCourier()} Kurir terpilih`
-                  : "Semua Kurir"}
+                  : 'Semua Kurir'}
               </Text>
 
               <Image
                 src={ChevronDownIcon}
-                position={"absolute"}
-                fontSize={"2px"}
+                position={'absolute'}
+                fontSize={'2px'}
                 right={2}
                 top={3}
               />
@@ -113,64 +113,64 @@ export default function CardSuccesOrder() {
             <MenuList>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("GoSend")}
-                  isChecked={selectedCouriers.includes("GoSend")}
+                  onChange={() => toggleCourier('GoSend')}
+                  isChecked={selectedCouriers.includes('GoSend')}
                 >
                   GoSend
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("GrabExpress")}
-                  isChecked={selectedCouriers.includes("GrabExpress")}
+                  onChange={() => toggleCourier('GrabExpress')}
+                  isChecked={selectedCouriers.includes('GrabExpress')}
                 >
                   GrabExpress
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("AnterAja")}
-                  isChecked={selectedCouriers.includes("AnterAja")}
+                  onChange={() => toggleCourier('AnterAja')}
+                  isChecked={selectedCouriers.includes('AnterAja')}
                 >
                   AnterAja
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("JNE")}
-                  isChecked={selectedCouriers.includes("JNE")}
+                  onChange={() => toggleCourier('JNE')}
+                  isChecked={selectedCouriers.includes('JNE')}
                 >
                   JNE
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("J&T")}
-                  isChecked={selectedCouriers.includes("J&T")}
+                  onChange={() => toggleCourier('J&T')}
+                  isChecked={selectedCouriers.includes('J&T')}
                 >
                   J&T
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("Lion Parcel")}
-                  isChecked={selectedCouriers.includes("Lion Parcel")}
+                  onChange={() => toggleCourier('Lion Parcel')}
+                  isChecked={selectedCouriers.includes('Lion Parcel')}
                 >
                   Lion Parcel
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("Ninja Xpress")}
-                  isChecked={selectedCouriers.includes("Ninja Xpress")}
+                  onChange={() => toggleCourier('Ninja Xpress')}
+                  isChecked={selectedCouriers.includes('Ninja Xpress')}
                 >
                   Ninja Xpress
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("Pos Indonesia")}
-                  isChecked={selectedCouriers.includes("Pos Indonesia")}
+                  onChange={() => toggleCourier('Pos Indonesia')}
+                  isChecked={selectedCouriers.includes('Pos Indonesia')}
                 >
                   Pos Indonesia
                 </Checkbox>
@@ -181,106 +181,106 @@ export default function CardSuccesOrder() {
           <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
-              w={"100%"}
+              w={'100%'}
               variant="outline"
-              bgColor={"white"}
+              bgColor={'white'}
               // me={2}
             >
               <Image
                 src={ChevronDownIcon}
-                position={"absolute"}
-                fontSize={"2px"}
+                position={'absolute'}
+                fontSize={'2px'}
                 right={2}
                 top={3}
               />
               <Text
-                fontSize={"14px"}
-                textAlign={"left"}
-                fontWeight={"normal"}
-                color={"black"}
+                fontSize={'14px'}
+                textAlign={'left'}
+                fontWeight={'normal'}
+                color={'black'}
               >
                 {getSelectedSortOption() ? (
                   getSelectedSortOption()
                 ) : (
-                  <Text color={"#909090"}>Urutkan</Text>
+                  <Text color={'#909090'}>Urutkan</Text>
                 )}
               </Text>
             </MenuButton>
             <MenuList>
               <MenuItem
-                onClick={() => setSortOption("Semua")}
-                className={selectedSortOption === "Semua" ? "active" : ""}
+                onClick={() => setSortOption('Semua')}
+                className={selectedSortOption === 'Semua' ? 'active' : ''}
               >
                 Semua
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Semua" ? "inline-block" : "none"
+                    selectedSortOption === 'Semua' ? 'inline-block' : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Paling Baru")}
-                className={selectedSortOption === "Paling Baru" ? "active" : ""}
+                onClick={() => setSortOption('Paling Baru')}
+                className={selectedSortOption === 'Paling Baru' ? 'active' : ''}
               >
                 Paling Baru
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Paling Baru"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Paling Baru'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Paling Lama")}
-                className={selectedSortOption === "Paling Lama" ? "active" : ""}
+                onClick={() => setSortOption('Paling Lama')}
+                className={selectedSortOption === 'Paling Lama' ? 'active' : ''}
               >
                 Paling Lama
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Paling Lama"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Paling Lama'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Respon Tercepat")}
+                onClick={() => setSortOption('Respon Tercepat')}
                 className={
-                  selectedSortOption === "Respon Tercepat" ? "active" : ""
+                  selectedSortOption === 'Respon Tercepat' ? 'active' : ''
                 }
               >
                 Respon Tercepat
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Respon Tercepat"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Respon Tercepat'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Respon Terlama")}
+                onClick={() => setSortOption('Respon Terlama')}
                 className={
-                  selectedSortOption === "Respon Terlama" ? "active" : ""
+                  selectedSortOption === 'Respon Terlama' ? 'active' : ''
                 }
               >
                 Respon Terlama
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Respon Terlama"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Respon Terlama'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
@@ -289,13 +289,13 @@ export default function CardSuccesOrder() {
         </Box>
       </Box>
       {filteredOrders.length === 0 ? (
-        <Box marginTop={"70px"}>
+        <Box marginTop={'70px'}>
           <Center>
             <Box textAlign="center" mt={5} display={"flex"}>
               <Image src={receiptSearch} />
               <Text fontSize="16px" mt={1}>
                 Oops, pesanan yang kamu cari tidak ditemukan.
-                <Text fontSize={"12px"} color={"#909090"} textAlign={"left"}>
+                <Text fontSize={'12px'} color={'#909090'} textAlign={'left'}>
                   Coba bisa cari dengan kata kunci lain
                 </Text>
               </Text>
@@ -309,7 +309,7 @@ export default function CardSuccesOrder() {
               <Box key={data.id}>
                 <Box mt={5}>
                   <Box>
-                    <Flex justifyContent={"space-between"} px={2}>
+                    <Flex justifyContent={'space-between'} px={2}>
                       <Button
                         bg={"#E6E6E6"}
                         color={"#1D1D1D"}
@@ -324,11 +324,11 @@ export default function CardSuccesOrder() {
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
 
                       <Button
-                        bg={"transparent"}
-                        border={"1px solid #D5D5D5"}
-                        borderRadius={"full"}
-                        fontSize={"14px"}
-                        height={"32px"}
+                        bg={'transparent'}
+                        border={'1px solid #D5D5D5'}
+                        borderRadius={'full'}
+                        fontSize={'14px'}
+                        height={'32px'}
                         onClick={onOpen}
                         py={4}
                       >
@@ -336,7 +336,7 @@ export default function CardSuccesOrder() {
                       </Button>
 
                       <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                        <ModalOverlay bg={"whiteAlpha.50"} />
+                        <ModalOverlay bg={'whiteAlpha.50'} />
                         <ModalContent>
                           <ModalHeader>
                             Send Message To {data.user?.name}{" "}
@@ -362,8 +362,8 @@ export default function CardSuccesOrder() {
                                     <AccordionPanel pb={4}>
                                       {item.content}
                                       <Button
-                                        colorScheme={"whatsapp"}
-                                        float={"right"}
+                                        colorScheme={'whatsapp'}
+                                        float={'right'}
                                       >
                                         <Link
                                           to={whatsappConfiguration(
@@ -384,7 +384,7 @@ export default function CardSuccesOrder() {
                         </ModalContent>
                       </Modal>
                     </Flex>
-                    <Text my={1} fontSize={"14px"} color={"gray.400"} px={2}>
+                    <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
                       INV/{data.invoiceNumber}
                     </Text>
                     <hr />

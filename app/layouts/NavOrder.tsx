@@ -1,23 +1,35 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
+  Flex,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
-  Flex,
 } from '@chakra-ui/react';
-import ScrollBox from '../components/ScrollBox';
-import CardCanceled from '../components/order/CardCanceled';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-export default function NavOrder({order}:any) {
+import UnpaidAllCard from '~/components/CardUnpaidAll';
+import ScrollBox from '~/components/ScrollBox';
+import CardCanceled from '~/components/order/CardCanceled';
+import CardReadyToShip from '~/components/order/CardReadyToShip';
+import UnpaidCard from '~/components/order/CardUnpaid';
+import { loader } from '~/routes/order';
 
+export function NavOrder({ allOrderSevice }: any) {
+  const cardProduct = useLoaderData<typeof loader>();
+  const { unpaidCard } = useLoaderData<typeof loader>();
+  const notificationCount =
+    cardProduct.dataProductReadyToShip.length > 0
+      ? cardProduct.dataProductReadyToShip.length
+      : 0;
   const [activeTab, setActiveTab] = useState(0);
   const handleClickTab = (index: number) => {
     setActiveTab(index);
   };
-
+  // const {unpaidCard} = useLoaderData<typeof loader>()
   return (
     <>
       <Box
@@ -34,35 +46,42 @@ export default function NavOrder({order}:any) {
             height: '100%',
             borderRadius: '10px',
           }}
-
         >
-          <Tabs  >
+          <Tabs>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'20px'}>
                 Daftar Pesanan
               </Text>
             </Box>
 
-            <Box >
+            <Box>
               <Box
                 display={'flex'}
                 overflow={'scroll'}
                 sx={{
-                  '::-webkit-scrollbar': {  // i want displayed scrollbar if user use mouse for scrolling, but if scrollbar not none is a no clear ,
+                  '::-webkit-scrollbar': {
+                    // i want displayed scrollbar if user use mouse for scrolling, but if scrollbar not none is a no clear ,
                     display: 'none',
                   },
                 }}
-                mb={"10"}
+                mb={'10'}
               >
-                <TabList mx={5}
-
-                 >
-                  <Tab onClick={() => handleClickTab(0)} fontWeight={activeTab === 0 ? "700" : "500"} >Semua</Tab>
+                <TabList mx={5}>
+                  <Tab
+                    onClick={() => handleClickTab(0)}
+                    fontWeight={activeTab === 0 ? '700' : '500'}
+                  >
+                    Semua
+                  </Tab>
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab onClick={() => handleClickTab(1)} fontWeight={activeTab === 1 ? "700" : "500"}  >
+                      <Tab
+                        onClick={() => handleClickTab(1)}
+                        fontWeight={activeTab === 1 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER */}
+
                         <Text
                           my={4}
                           color={'white'}
@@ -72,7 +91,8 @@ export default function NavOrder({order}:any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {unpaidCard.length}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
                         <Flex gap={1.5}>
@@ -84,7 +104,10 @@ export default function NavOrder({order}:any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab onClick={() => handleClickTab(2)} fontWeight={activeTab === 2 ? "700" : "500"} >
+                      <Tab
+                        onClick={() => handleClickTab(2)}
+                        fontWeight={activeTab === 2 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
@@ -108,7 +131,10 @@ export default function NavOrder({order}:any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab onClick={() => handleClickTab(3)} fontWeight={activeTab === 3 ? "700" : "500"}>
+                      <Tab
+                        onClick={() => handleClickTab(3)}
+                        fontWeight={activeTab === 3 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER  !*/}
                         <Text
                           my={4}
@@ -119,7 +145,8 @@ export default function NavOrder({order}:any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {notificationCount}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 
@@ -131,7 +158,10 @@ export default function NavOrder({order}:any) {
                   </Box>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab onClick={() => handleClickTab(4)} fontWeight={activeTab === 4 ? "700" : "500"} >
+                      <Tab
+                        onClick={() => handleClickTab(4)}
+                        fontWeight={activeTab === 4 ? '700' : '500'}
+                      >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
@@ -153,7 +183,10 @@ export default function NavOrder({order}:any) {
                   </Box>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Tab onClick={() => handleClickTab(5)} fontWeight={activeTab === 5 ? "700" : "500"} >
+                      <Tab
+                        onClick={() => handleClickTab(5)}
+                        fontWeight={activeTab === 5 ? '700' : '500'}
+                      >
                         <Flex gap={1.5} my={4}>
                           <Text>Pesanan </Text> <Text> Selesai</Text>
                         </Flex>
@@ -161,62 +194,58 @@ export default function NavOrder({order}:any) {
                     </Box>
                   </Box>
                   <Tab
-                  onClick={() => handleClickTab(6)}
-                  fontWeight={activeTab === 6 ? "700" : "500"}
-                   >Dibatalkan</Tab>
+                    onClick={() => handleClickTab(6)}
+                    fontWeight={activeTab === 6 ? '700' : '500'}
+                  >
+                    Dibatalkan
+                  </Tab>
                 </TabList>
               </Box>
-
             </Box>
 
             <Box my={5} paddingBottom={'100px'} background={'white'}>
-
               <TabPanels>
                 {/* YOUR CARD START IN HERE ! */}
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>Semua</h1>
+                    <UnpaidAllCard />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>belum bayar</h1>
+                    <UnpaidCard />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                  <h1>pesanan baru</h1>
+                    <h1>pesanan baru</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                <h1>siap dikirim</h1>
+                    <CardReadyToShip />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                <h1>dalam Pengiriman</h1>
+                    <h1>dalam Pengiriman</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                  <h1>pesanan selesai</h1>
+                    <h1>pesanan selesai</h1>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-
-                    {/* {order.map((item:any)=>( */}
-
                     <CardCanceled  />
-                    {/* // ))} */}
                   </TabPanel>
                 </ScrollBox>
 
@@ -229,3 +258,4 @@ export default function NavOrder({order}:any) {
     </>
   );
 }
+

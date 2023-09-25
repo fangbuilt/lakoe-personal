@@ -1,30 +1,29 @@
-import { Box } from "@chakra-ui/react";
-import type { ReactNode } from "react";
+import { Box } from '@chakra-ui/react';
+import type { ReactNode } from 'react';
 
 interface LayoutProps {
   children: ReactNode;
 }
 const vendorPrefixScrollBar = {
   '::-webkit-scrollbar': {
-    display: 'none'
+    display: 'none',
   },
   '::-moz-scrollbar': {
-    display: 'none'
+    display: 'none',
   },
   '::-ms-scrollbar': {
-    display: 'none'
+    display: 'none',
   },
   '::-o-scrollbar': {
-    display: 'none'
-  }
+    display: 'none',
+  },
 };
 export default function ScrollBox({ children }: LayoutProps) {
   return (
     <>
       <Box
-        style={{ overflowY: "auto", maxHeight: "60vh" }}
+        style={{ overflowY: 'auto', maxHeight: '400px' }}
         sx={vendorPrefixScrollBar}
-        scrollBehavior={"smooth"}
       >
         {children}
       </Box>
