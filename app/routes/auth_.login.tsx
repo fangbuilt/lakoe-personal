@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-empty */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { ActionArgs } from '@remix-run/node';
-import { useLoaderData, useNavigate } from '@remix-run/react';
 import {
   Box,
   Button,
@@ -15,31 +10,12 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { useNavigate } from '@remix-run/react';
 import { AiOutlineGooglePlus } from 'react-icons/ai';
 import { BsFacebook } from 'react-icons/bs';
 
-export async function loader() {
-  return {};
-}
-
-export async function action({ request }: ActionArgs) {
-  if (request.method.toLowerCase() === 'get') {
-  }
-
-  if (request.method.toLowerCase() === 'post') {
-  }
-
-  if (request.method.toLowerCase() === 'patch') {
-  }
-
-  if (request.method.toLowerCase() === 'delete') {
-  }
-}
-
-export default function Register() {
-  // const data = useLoaderData<typeof loader>();
+export default function Login() {
   const navigate = useNavigate();
-
   return (
     <div>
       <SimpleGrid minChildWidth={'500px'}>
@@ -95,30 +71,30 @@ export default function Register() {
             >
               <Box
                 w={'50%'}
-                bg={'blue.300'}
+                bg={'blue.500'}
                 p={3}
                 borderLeftRadius={3}
                 cursor={'pointer'}
                 _hover={{ bg: 'blue.200' }}
               >
-                <Text
-                  color={'white'}
-                  fontSize={'13px'}
-                  textAlign={'center'}
-                  onClick={() => navigate('/auth/login')}
-                >
+                <Text color={'white'} fontSize={'13px'} textAlign={'center'}>
                   Sign In
                 </Text>
               </Box>
               <Box
                 w={'50%'}
-                bg={'blue.500'}
+                bg={'blue.300'}
                 p={3}
                 borderRightRadius={3}
                 cursor={'pointer'}
-                _hover={{ bg: 'blue.200' }}
+                _hover={{ bg: 'blue.300' }}
               >
-                <Text color={'white'} fontSize={'13px'} textAlign={'center'}>
+                <Text
+                  color={'white'}
+                  fontSize={'13px'}
+                  textAlign={'center'}
+                  onClick={() => navigate('/auth/register')}
+                >
                   Sign Up
                 </Text>
               </Box>
@@ -126,29 +102,13 @@ export default function Register() {
 
             <Box mt={2} rounded={'lg'} p={8} w={'80%'}>
               <Stack spacing={4}>
-                <FormControl id="name">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Name
-                  </FormLabel>
-                  <Input type="text" placeholder="name" fontSize={'13px'} />
-                </FormControl>
                 <FormControl id="email">
                   <FormLabel fontSize="15px" color={'gray.600'}>
-                    Email
+                    Email address
                   </FormLabel>
                   <Input
                     type="email"
                     placeholder="example@gmail.com"
-                    fontSize={'13px'}
-                  />
-                </FormControl>
-                <FormControl id="phone">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Phone
-                  </FormLabel>
-                  <Input
-                    type="number"
-                    placeholder="+62 8123456"
                     fontSize={'13px'}
                   />
                 </FormControl>
@@ -167,7 +127,11 @@ export default function Register() {
                     direction={{ base: 'column', sm: 'row' }}
                     align={'start'}
                     justify={'space-between'}
-                  ></Stack>
+                  >
+                    <Text color={'blue.400'} fontSize="13px">
+                      Forgot password?
+                    </Text>
+                  </Stack>
                   <Button
                     bg={'blue.400'}
                     color={'white'}
@@ -175,7 +139,7 @@ export default function Register() {
                       bg: 'blue.500',
                     }}
                   >
-                    Sign up
+                    Sign in
                   </Button>
                   <Flex
                     mt={1}
@@ -184,17 +148,68 @@ export default function Register() {
                     justifyContent={'center'}
                     alignItems="center"
                   >
-                    <Text>Do you have an account? </Text>
+                    <Text>Don't have an account? </Text>
                     <Text
                       cursor={'pointer'}
                       fontWeight={'bold'}
-                      onClick={() => navigate('/auth/login')}
+                      onClick={() => navigate('/auth/register')}
                     >
-                      I have an account
+                      Sign Up here
                     </Text>
                   </Flex>
                 </Stack>
               </Stack>
+              <Flex
+                justifyContent={'center'}
+                alignItems={'center'}
+                gap={2}
+                mt={8}
+              >
+                <Box border={'1px'} borderColor={'gray.600'} w={'50px'}></Box>
+                <Text
+                  fontStyle={'italic'}
+                  color={'gray.600'}
+                  mt={3}
+                  fontWeight={'bold'}
+                  mb={4}
+                >
+                  0r
+                </Text>
+                <Box border={'1px'} borderColor={'gray.600'} w={'50px'}></Box>
+              </Flex>
+              <Flex
+                justifyContent={'center'}
+                alignItems={'center'}
+                gap={10}
+                mt={7}
+              >
+                <Box
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  gap={1}
+                >
+                  <Text fontSize={'30px'} color={'gray.700'}>
+                    <AiOutlineGooglePlus />
+                  </Text>
+                  <Text fontWeight={'bold'} color={'gray.700'}>
+                    Google
+                  </Text>
+                </Box>
+                <Box
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  gap={1}
+                >
+                  <Text fontSize={'20px'} color={'gray.700'}>
+                    <BsFacebook />
+                  </Text>
+                  <Text fontWeight={'bold'} color={'gray.700'}>
+                    Facebook
+                  </Text>
+                </Box>
+              </Flex>
             </Box>
           </Flex>
         </GridItem>
