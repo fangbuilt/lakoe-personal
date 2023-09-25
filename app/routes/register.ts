@@ -64,7 +64,6 @@ export async function loader({ request }: { request: Request }) {
     }
   }
 }
-
 export function action({ request }: { request: Request }) {
   return loader({ request });
 }
