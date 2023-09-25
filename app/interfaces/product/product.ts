@@ -6,6 +6,8 @@ export interface IProduct {
   storeId: string;
   categoryId: string;
   variants: IVariant[];
+  store: IStore;
+  slug: string;
 }
 
 export interface IVariant {
@@ -33,4 +35,8 @@ export interface IVariantOptionValue {
 export interface IProductAttachment {
   id: string;
   url: string;
+}
+
+export interface IStore {
+  name: string;
 }

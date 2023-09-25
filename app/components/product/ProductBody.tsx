@@ -72,6 +72,7 @@ export default function ProductBody(props: IProductBodyProps) {
                 fontSize={'14px'}
                 color={'white'}
                 colorScheme={'#0086B4'}
+                gap={1}
               >
                 <Image src={AddCircle} />
                 Tambah Produk

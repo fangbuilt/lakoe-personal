@@ -80,6 +80,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
+      store: true,
       attachments: true,
       variants: {
         include: {
@@ -92,7 +93,6 @@ export async function getProduct() {
       },
     },
   });
-  // console.log("ini", data);
   return data;
 }
 
@@ -123,6 +123,7 @@ export async function getProductByCategoryId(id: any) {
       categoryId: id,
     },
     include: {
+      store: true,
       attachments: true,
       variants: {
         include: {
@@ -141,7 +142,7 @@ export async function getProductByCategoryId(id: any) {
 export async function deleteProduct(id: string) {
   const deleteProduct = await db.product.delete({
     where: {
-      id,
+      id: id,
     },
   });
   return deleteProduct;
@@ -174,7 +175,6 @@ export async function update(data: any): Promise<any> {
       },
     },
   });
-  // console.log("ini update", update);
   return update;
 }
 
@@ -187,6 +187,35 @@ export async function updateIsActive(data: any) {
       id: data.id,
     },
   });
-  // console.log("ini status", status);
   return status;
+}
+
+export async function deleteProductInvoices(data: any) {
+  try {
+    const getInvoices = await db.invoice.findFirst({
+      where: {
+        cart: {
+          store: {
+            products: data,
+          },
+        },
+      },
+    });
+    if (getInvoices) {
+      return { success: false, message: 'Produk sudah ada dalam faktur.' };
+    }
+
+    await db.product.delete({
+      where: {
+        id: data.id,
+      },
+    });
+    return { success: true, message: 'Produk berhasil dihapus.' };
+  } catch (error) {
+    console.error('Terjadi kesalahan saat menghapus produk:', error);
+    return {
+      success: false,
+      message: 'Terjadi kesalahan saat menghapus produk.',
+    };
+  }
 }

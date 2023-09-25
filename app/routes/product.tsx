@@ -32,9 +32,9 @@ export async function action({ request }: ActionArgs) {
     const isActive =
       (formData.get('isActive') as string) === 'true' ? false : true;
 
-    console.log('ini isactive', isActive);
-    console.log('ini stock', price);
-    console.log('ini stock', stock);
+    // console.log("ini isactive", isActive);
+    // console.log("ini stock", price);
+    // console.log("ini stock", stock);
 
     if (price || stock) {
       const updatePriceStock = {
