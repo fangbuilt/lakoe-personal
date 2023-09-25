@@ -37,146 +37,148 @@ export async function loader({ params }: ActionArgs) {
 }
 
 export const action = async ({ request }: ActionArgs) => {
-  if (request.method.toLowerCase() === 'post') {
-    const formData = await request.formData();
+  try {
+    if (request.method.toLowerCase() === 'post') {
+      const formData = await request.formData();
 
-    const name = formData.get('username') as string;
-    const telp = formData.get('no-telp') as string;
-    const email = formData.get('email') as string;
-    const province = formData.get('province') as string;
-    const district = formData.get('district') as string;
-    const village = formData.get('village') as string;
-    const description = formData.get('description') as string;
-    const courier = formData.get('courier') as string;
-    const courierService = +(formData.get('courierService') as string);
+      const name = formData.get('username') as string;
+      const telp = formData.get('no-telp') as string;
+      const email = formData.get('email') as string;
+      const province = formData.get('province') as string;
+      const district = formData.get('district') as string;
+      const village = formData.get('village') as string;
+      const description = formData.get('description') as string;
+      const courier = formData.get('courier') as string;
+      const courierService = +(formData.get('courierService') as string);
 
-    const price = +(formData.get('price') as string);
-    const storeId = formData.get('storeId') as string;
-    const userId = formData.get('userId') as string;
-    const productId = formData.get('productId') as string;
-    const payment = formData.get('payment') as string;
-    const count = +(formData.get('calculation') as string);
-    const postalCode = formData.get('postalCode') as string;
-    const variantOptionId = formData.get('variantOptionId') as string;
-    const totalPrice = +(formData.get('totalPrice') as string);
-    const totalPriceUnique = +(formData.get('totalPriceUnique') as string);
-    const variantOptionValueId = formData.get('valueId') as string;
-    const stock = +(formData.get('stock') as string);
-    const rates = +(formData.get('rates') as string);
+      const price = +(formData.get('price') as string);
+      const storeId = formData.get('storeId') as string;
+      const userId = formData.get('userId') as string;
+      const productId = formData.get('productId') as string;
+      const payment = formData.get('payment') as string;
+      const count = +(formData.get('calculation') as string);
+      const postalCode = formData.get('postalCode') as string;
+      const variantOptionId = formData.get('variantOptionId') as string;
+      const totalPrice = +(formData.get('totalPrice') as string);
+      const totalPriceUnique = +(formData.get('totalPriceUnique') as string);
+      const variantOptionValueId = formData.get('valueId') as string;
+      const stock = +(formData.get('stock') as string);
+      const rates = +(formData.get('rates') as string);
 
-    if (!courier) {
-      console.log('Please select courier');
-      return false;
-    } else if (!courierService) {
-      console.log('Please select courier service');
-      return false;
-    } else if (!payment) {
-      console.log('Please select payment');
-      return false;
-    }
-
-    if (!courier) {
-      const messageElement = document.getElementById('message');
-      if (messageElement) {
-        messageElement.textContent = 'Mohon pilih kurir';
+      if (!courier) {
+        console.log('Please select courier');
+        return false;
+      } else if (!courierService) {
+        console.log('Please select courier service');
+        return false;
+      } else if (!payment) {
+        console.log('Please select payment');
+        return false;
       }
-      return false;
+
+      const invoice = {
+        price: totalPriceUnique + courierService,
+        discount: 0,
+        status: 'UNPAID',
+        receiverLongitude: '',
+        receiverLatitude: '',
+        receiverDistrict: district,
+        receiverPhone: telp,
+        receiverAddress: village + ' ' + district + ' ' + province,
+        receiverName: name,
+        receiverEmail: email,
+        receiverPostalCode: postalCode,
+        receiverAddressNote: description,
+        invoiceNumber: '',
+        waybill: '',
+        mootaTransactionId: '',
+        userId: userId,
+      };
+
+      const cart = {
+        price: totalPrice,
+        discount: 0,
+        userId: userId,
+        storeId: storeId,
+      };
+
+      const cartItem = {
+        qty: count,
+        price: price,
+        variantOptionId: variantOptionId,
+        userId: userId,
+        productId: productId,
+      };
+
+      const invoiceHistory = {
+        status: 'UNPAID',
+      };
+
+      const getPayment = {
+        bank: payment,
+        amount: totalPriceUnique + courierService,
+        status: 'UNPAID',
+        userId: userId,
+      };
+
+      const getCourier = {
+        availableForCashOnDelivery: false,
+        availableForProofOfDelivery: false,
+        availableForInstantWaybillId: false,
+        courierType: courier,
+        courierInsurance: 'false',
+        courierName: courier,
+        courierCode: courier,
+        courierServiceName: 'Instant',
+        courierServiceCode: 'Instant',
+        tier: 'premium',
+        description: '',
+        serviceType: '',
+        shippingType: 'parcel',
+        shipmentDurationRange: '',
+        shipmentDurationUnit: '',
+        price: rates,
+        orderId: 'orderId-test',
+        trackingId: '',
+        deliveryDate: '',
+        deliveryTime: '',
+      };
+
+      const update = {
+        valueId: variantOptionValueId,
+        stock: stock,
+      };
+
+      const data = {
+        invoice,
+        cart,
+        cartItem,
+        invoiceHistory,
+        getPayment,
+        update,
+        courierService,
+        getCourier,
+      };
+
+      handleClick(telp, name, email);
+
+      console.log('data : ', data);
+
+      try {
+        const create = await createCheckout(data);
+        return create;
+      } catch (error) {
+        console.log('Error : ', error);
+        return false;
+      } finally {
+        console.log('Done');
+      }
     }
-
-    const invoice = {
-      price: totalPriceUnique + courierService,
-      discount: 0,
-      status: 'UNPAID',
-      receiverLongitude: '',
-      receiverLatitude: '',
-      receiverDistrict: district,
-      receiverPhone: telp,
-      receiverAddress: village + ' ' + district + ' ' + province,
-      receiverName: name,
-      receiverEmail: email,
-      receiverPostalCode: postalCode,
-      receiverAddressNote: description,
-      invoiceNumber: '',
-      waybill: '',
-      mootaTransactionId: '',
-      userId: userId,
-    };
-
-    const cart = {
-      price: totalPrice,
-      discount: 0,
-      userId: userId,
-      storeId: storeId,
-    };
-
-    const cartItem = {
-      qty: count,
-      price: price,
-      variantOptionId: variantOptionId,
-      userId: userId,
-      productId: productId,
-    };
-
-    const invoiceHistory = {
-      status: 'UNPAID',
-    };
-
-    const getPayment = {
-      bank: payment,
-      amount: totalPriceUnique + courierService,
-      status: 'UNPAID',
-      userId: userId,
-    };
-
-    const getCourier = {
-      availableForCashOnDelivery: false,
-      availableForProofOfDelivery: false,
-      availableForInstantWaybillId: false,
-      courierType: courier,
-      courierInsurance: 'false',
-      courierName: courier,
-      courierCode: courier,
-      courierServiceName: 'Instant',
-      courierServiceCode: 'Instant',
-      tier: 'premium',
-      description: '',
-      serviceType: '',
-      shippingType: 'parcel',
-      shipmentDurationRange: '',
-      shipmentDurationUnit: '',
-      price: rates,
-      orderId: 'orderId-test',
-      trackingId: '',
-      deliveryDate: '',
-      deliveryTime: '',
-    };
-
-    const update = {
-      valueId: variantOptionValueId,
-      stock: stock,
-    };
-
-    const data = {
-      invoice,
-      cart,
-      cartItem,
-      invoiceHistory,
-      getPayment,
-      update,
-      courierService,
-      getCourier,
-    };
-
-    // await createCheckout(data);
-
-    handleClick(telp, name, email);
-
-    console.log('data : ', data);
-
-    // return redirect("/checkout");
-    return await createCheckout(data);
+    return null;
+  } catch (error) {
+    console.log('Error : ', error);
+    return null;
   }
-  return null;
 };
 
 export default function Checkout() {
@@ -189,7 +191,7 @@ export default function Checkout() {
 
   const { slug, store } = useParams();
 
-  const [count, setCount] = useState<number>(1);
+  const [count, setCount] = useState<number>(0);
 
   const handleIncrement = () => {
     setCount(count + 1);
@@ -209,6 +211,22 @@ export default function Checkout() {
     const value = e.target.value;
     const valueInt = parseInt(value);
     setSelectedOption(valueInt);
+  };
+
+  const limit = item?.variants[selectedOption].variantOptions[0]
+    .variantOptionValues[0].stock as number;
+
+  if (count < 0) {
+    setCount(0);
+  } else if (count > limit) {
+    setCount(limit);
+  }
+
+  const handleSubmit = () => {
+    if (count === 0) {
+      console.log('Please select quantity');
+      return alert('Pilih berapa banyak produk yang ingin dibeli');
+    }
   };
 
   return (
@@ -243,8 +261,8 @@ export default function Checkout() {
                 <Table variant="simple">
                   <Thead>
                     <Tr fontWeight={'bold'}>
-                      <Th width={'30%'}>Produk</Th>
-                      <Th width={'30%'}>Variasi</Th>
+                      <Th width={'40%'}>Produk</Th>
+                      <Th width={'40%'}>Variasi</Th>
                       <Th minW={'180px'}>Jumlah</Th>
                       <Th>Harga</Th>
                       <Th>Total</Th>
@@ -274,6 +292,7 @@ export default function Checkout() {
                               (item?.variants[selectedOption].variantOptions[0]
                                 .variantOptionValues[0].stock as number) - count
                             }
+                            readOnly
                           />
                         </Box>
                       </Td>
@@ -312,6 +331,7 @@ export default function Checkout() {
                         <Flex alignItems="center">
                           <Button onClick={handleDecrement}>-</Button>
                           <Input
+                            minW={'50px'}
                             type="number"
                             value={count}
                             onChange={handleChange}
@@ -355,8 +375,13 @@ export default function Checkout() {
                     .variantOptionValues[0].price
                 }
               />
-              <Input type="hidden" name="storeId" value={item?.storeId} />
-              <Input type="hidden" name="productId" value={item?.id} />
+              <Input
+                type="hidden"
+                name="storeId"
+                value={item?.storeId}
+                readOnly
+              />
+              <Input type="hidden" name="productId" value={item?.id} readOnly />
               <Input
                 type="hidden"
                 name="valueId"
@@ -421,7 +446,12 @@ export default function Checkout() {
                 </Box>
               </Box>
               <Box>
-                <Button bgColor={'GrayText'} w={'100%'} type="submit">
+                <Button
+                  onClick={handleSubmit}
+                  bgColor={'GrayText'}
+                  w={'100%'}
+                  type="submit"
+                >
                   Beli Sekarang
                 </Button>
               </Box>

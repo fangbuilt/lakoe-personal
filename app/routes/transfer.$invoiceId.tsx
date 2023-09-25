@@ -57,7 +57,7 @@ export default function PayTransfer() {
                   Untuk menyelesaikan proses order, silahkan transfer sejumlah
                 </Text>
                 <Center textAlign={'center'} mt={'24px'} color={'green.400'}>
-                  <Heading>Rp{item?.price.toLocaleString('id-ID')}.</Heading>
+                  <Heading>Rp{item?.price.toLocaleString('id-ID')}</Heading>
                   {/* <Heading color={"orange.400"}>{item.tagPrice}</Heading> */}
                 </Center>
                 <Center mt={3}>

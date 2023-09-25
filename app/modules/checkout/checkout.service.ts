@@ -52,7 +52,7 @@ export async function getCheckoutDetail(data: any) {
     return { product, unique };
   } catch (error) {
     console.log(error);
-    return redirect('/error-page');
+    return redirect(`/error-page/${data.store}/${data.slug}`);
   }
 }
 
@@ -93,7 +93,7 @@ export async function createCheckout(data: any) {
     where: {
       id: data.update.valueId as string,
     },
-    data: { stock: data.update.stock as number },
+    data: { stock: data.update.stock as number, updatedAt: new Date() },
   });
 
   return redirect(`/transfer/${invoice.id}`);

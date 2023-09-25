@@ -355,7 +355,6 @@ export default function CheckoutCourier(props: any) {
               </Select>
             </Box>
           </Box>
-
           <Text>Harga Ongkir : {rates} </Text>
           <Box>
             <Box>
@@ -458,18 +457,21 @@ export default function CheckoutCourier(props: any) {
             name="selectedProvinceName"
             placeholder="Phone Number"
             value={selectedProvinceName}
+            readOnly
           />
           <Input
             hidden
             name="selectedKabupatenName"
             placeholder="Phone Number"
             value={selectedKabupatenName}
+            readOnly
           />
           <Input
             hidden
             name="selectedKecamatanName"
             placeholder="Phone Number"
             value={selectedKecamatanName}
+            readOnly
           />
         </Box>
       </Box>
