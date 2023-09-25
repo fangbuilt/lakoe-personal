@@ -40,10 +40,10 @@ import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 // import {  useLoaderData } from '@remix-run/react';
 import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 // import type { loader } from '~/routes/order';
-import OrderUnpaidModal from './orderUnpaidModal';
 import { useState } from 'react';
+import ModalWhatsapp from './modalProps/modalWhatsapp';
 
-export default function UnpaidCard(props: any) {
+export default function UnpaidCardCopy(props: any) {
   console.log('props UnpaidCard ssssssssssss', props);
   const { filteredOrder, setSearchQuery } = UseSearchProductUnpaid();
   const { getSelectedCourier, selectedCouriers, toggleCourier } =
@@ -349,7 +349,7 @@ export default function UnpaidCard(props: any) {
                       >
                         Hubungi Pembeli
                       </Button>
-                      <OrderUnpaidModal
+                      <ModalWhatsapp
                         isOpen={modalIsOpen}
                         onClose={closeModal}
                         selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}

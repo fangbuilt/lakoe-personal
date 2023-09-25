@@ -53,11 +53,11 @@ import {
   statusToTemplate,
 } from '~/type/StatusColorMap';
 import UseSearchAll from '~/hooks/useSearchOrderAll';
-import OrderUnpaidModal from './orderUnpaidModal';
 import ModalTracking from './orderTrackingModal';
 import UnpaidCard from './CardUnpaid';
 import CardReadyToShip from './CardReadyToShip';
 import CardCenceled from './CardCanceled';
+import ModalWhatsapp from './modalProps/modalWhatsapp';
 export default function UnpaidAllCardCopy() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { filteredOrders, setSearchQuery, searchQuery } = UseSearchAll();
@@ -68,13 +68,6 @@ export default function UnpaidAllCardCopy() {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isOrderCancelledModalOpen, setIsOrderCancelledModalOpen] =
     useState(false);
-
-  const openModal = () => {
-    setModalIsOpen(true);
-    setIsUnpaidModalOpen(true);
-    setIsNewOrderModalOpen(true);
-    setIsOrderCancelledModalOpen(true);
-  };
 
   const closeModal = () => {
     setModalIsOpen(false);
@@ -388,9 +381,16 @@ export default function UnpaidAllCardCopy() {
                         borderRadius={'full'}
                         fontSize={'14px'}
                         onClick={() => {
-                          setModalIsOpen(true);
                           setSelectedCardId(item.id);
-                          openModal();
+                          if (item.status === 'UNPAID') {
+                            setIsUnpaidModalOpen(true);
+                          }
+                          if (item.status === 'READY_TO_SHIP') {
+                            setIsNewOrderModalOpen(true);
+                          }
+                          if (item.status === 'ORDER_CANCELLED') {
+                            setIsOrderCancelledModalOpen(true);
+                          }
                         }}
                         value={statusToSendBuyer[item.status] || ''}
                       >
@@ -398,30 +398,52 @@ export default function UnpaidAllCardCopy() {
                       </Button>
 
                       {/* Tampilkan modal berdasarkan status */}
-                      {isUnpaidModalOpen && item.status === 'UNPAID' ? (
-                        <OrderUnpaidModal
+                      {isUnpaidModalOpen && item.status === 'UNPAID' && (
+                        <ModalWhatsapp
                           isOpen={isUnpaidModalOpen}
                           onClose={closeModal}
                           selectedCardId={item.id}
                           itemName={item.receiverName}
                           itemPhone={item.receiverPhone}
                         />
-                      ) : isNewOrderModalOpen && item.status === 'NEW_ORDER' ? (
-                        <ModalTracking
-                          onClose={closeModal}
-                          isOpen={isNewOrderModalOpen}
-                          selectedCardId={item.id}
-                        />
-                      ) : isOrderCancelledModalOpen &&
-                        item.status === 'ORDER_CANCELLED' ? (
-                        <OrderUnpaidModal
-                          onClose={closeModal}
-                          isOpen={isOrderCancelledModalOpen}
-                          selectedCardId={item.id}
-                          itemName={item.receiverName}
-                          itemPhone={item.receiverPhone}
-                        />
-                      ) : null}
+                      )}
+                      {isNewOrderModalOpen &&
+                        item.status === 'READY_TO_SHIP' && (
+                          <ModalTracking
+                            onClose={closeModal}
+                            isOpen={isNewOrderModalOpen}
+                            selectedCardId={item.id}
+                          />
+                        )}
+                      {isOrderCancelledModalOpen &&
+                        item.status === 'ORDER_CANCELLED' && (
+                          <ModalWhatsapp
+                            onClose={closeModal}
+                            isOpen={isOrderCancelledModalOpen}
+                            selectedCardId={item.id}
+                            itemName={item.receiverName}
+                            itemPhone={item.receiverPhone}
+                          />
+                        )}
+
+                      {/* isNewOrderModalOpen && item.status === 'NEW_ORDER' ? (
+                      <ModalTracking
+                        onClose={closeModal}
+                        isOpen={isNewOrderModalOpen}
+                        selectedCardId={item.id}
+                      />
+                      )
+
+                      isOrderCancelledModalOpen &&
+                      item.status === 'ORDER_CANCELLED' ? (
+                      <OrderUnpaidModal
+                        onClose={closeModal}
+                        isOpen={isOrderCancelledModalOpen}
+                        selectedCardId={item.id}
+                        itemName={item.receiverName}
+                        itemPhone={item.receiverPhone}
+                      />
+                      ) */}
 
                       {/* {item.status === "UNPAID" ? (
                         <OrderUnpaidModal

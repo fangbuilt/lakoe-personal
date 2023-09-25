@@ -34,7 +34,7 @@ interface SendProps {
   itemName: string;
   itemPhone: string;
 }
-export default function OrderUnpaidModal(props: SendProps) {
+export default function ModalWhatsapp(props: SendProps) {
   const { getTemplateMessages } = useLoaderData<typeof loader>();
 
   return (

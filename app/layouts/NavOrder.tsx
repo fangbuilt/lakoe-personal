@@ -19,6 +19,9 @@ import UnpaidAllCard from '~/components/CardUnpaidAll';
 import UnpaidCard from '~/components/CardUnpaid';
 import CardUnpaidCollection from '~/components/CardUnpaidCollection';
 import CardUnpaidCollection2 from '~/components/CardUnpaidCollection2';
+import UnpaidAllCardCopy from '~/components/CardUnpaidAllcopy';
+import UnpaidCardCopy from '~/components/CardUnpaidcopy';
+import CardCenceledCopy from '~/components/CardCanceledcopy';
 // import UnpaidAllCardCopy from '~/components/CardUnpaidAllcopy';
 
 export default function NavOrder({ allOrderSevice }: any) {
@@ -214,15 +217,15 @@ export default function NavOrder({ allOrderSevice }: any) {
                 <ScrollBox>
                   <TabPanel>
                     {/* <UnpaidAllCard /> */}
-                    {/* <UnpaidAllCardCopy/> */}
-                    <CardUnpaidCollection />
+                    <UnpaidAllCardCopy />
+                    {/* <CardUnpaidCollection /> */}
                     {/* <CardUnpaidCollection2 /> */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <UnpaidCard />
+                    <UnpaidCardCopy />
                   </TabPanel>
                 </ScrollBox>
 
@@ -252,7 +255,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardCanceled />
+                    <CardCenceledCopy />
                   </TabPanel>
                 </ScrollBox>
 
