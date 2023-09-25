@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "image": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8dHNoaXJ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60",
+    "title": "Lawless Jakarta",
+    "price": "200.000",
+    "stock": "10",
+    "sku": "0219AKD192",
+    "varians": "fashion pria",
+    "isActive": false
+  },
+  {
+    "id": "2",
+    "image": "https://images.unsplash.com/photo-1633966887768-64f9a867bdba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHRzaGlydHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60",
+    "title": "Screamous merek distro keren dengan harga terjangkau",
+    "price": "250.000",
+    "stock": "5",
+    "sku": "0219AKD193",
+    "varians": "fashion pria",
+    "isActive": false
+  },
+  {
+    "id": "3",
+    "image": "https://images.unsplash.com/photo-1622445275649-b1922cc3e837?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHRzaGlydHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60",
+    "title": "Wadezig! merek distro lokal yang terkenal di luar Indonesia",
+    "price": "330.000",
+    "stock": "1",
+    "sku": "0219AKD153",
+    "varians": "fashion pria",
+    "isActive": false
+  },
+  {
+    "id": "4",
+    "image": "https://images.unsplash.com/photo-1562595803-20a06a2c41a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MTB8MjQyODMwOHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60",
+    "title": "Thanksinsomnia merk kaos distro khas kultur anak muda",
+    "price": "400.000",
+    "stock": "2",
+    "sku": "0200AKD193",
+    "varians": "fashion pria",
+    "isActive": false
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "placeholder": "Nama Anda",
+    "name": "username",
+    "type": "text"
+  },
+  {
+    "placeholder": "No. WhatsApp Anda",
+    "name": "no-telp",
+    "type": "number"
+  },
+  {
+    "placeholder": "Email Anda",
+    "name": "email",
+    "type": "email"
+  }
+]

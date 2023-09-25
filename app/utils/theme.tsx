@@ -1,14 +1,20 @@
-import { extendTheme, theme as defaultTheme } from '@chakra-ui/react';
+import { extendTheme } from '@chakra-ui/react';
+import { switchTheme } from './switchTheme';
 
 const theme = extendTheme({
-  ...defaultTheme,
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+  },
   colors: {
-    ...defaultTheme.colors,
+    lakoeCyan: '#0086B4',
+    lakoeCyanMuted: '#C5F8FF',
   },
   fonts: {
     heading: "'Plus Jakarta Sans', sans-serif;",
     body: "'Plus Jakarta Sans', sans-serif;",
   },
+  components: { Switch: switchTheme },
 });
 
-export default theme;
+export default extendTheme(theme);
