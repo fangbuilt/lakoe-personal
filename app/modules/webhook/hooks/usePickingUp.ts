@@ -45,7 +45,7 @@ export function pickingUp(email: string, name: string, waybill: string) {
     });
 }
 
-export async function updateInvoiceStatus(invoiceId: string) {
+export async function updateInvoiceStatus(invoiceId: string, ) {
   await db.invoice.update({
     where: { id: invoiceId },
     data: { status: 'IN_TRANSIT' },

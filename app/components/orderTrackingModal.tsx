@@ -195,7 +195,7 @@ export default function ModalTracking(props: SendProps) {
                   index={activeStep}
                   orientation="vertical"
                   width={"100%"}
-                  height={"250px"}
+                  height={"350px"}
                   gap="0"
                   p={"16px"}
                 >
