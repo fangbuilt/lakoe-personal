@@ -23,7 +23,7 @@ export default function ProductCard(props: IProductCardProps) {
         <Box display={'flex'} gap={3}>
           <Box display={'flex'} gap={3}>
             <Image
-              src={product.attachments[0].url}
+              src={product.attachments[0]?.url}
               w={'100px'}
               h={'100px'}
               borderRadius={'8px'}
