@@ -13,15 +13,28 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
 import moment from 'moment';
 import React from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
-import { AdminSuccessNotification } from '~/modules/DashboardMailerlite/mailerliteAdminSuccess';
 
-export default function AdminSuccessPopup(props: any) {
-  const { dataWithdrawal } = props;
+export default function AdminDeclinedPreview(props: any) {
+  const { dataDeclined } = props;
+  // const [formData, setFormData] = useState({
+  //   actionType: "create",
+  //   withdrawId: dataDeclined.withdraw.id || "",
+  //   storeId: dataDeclined.store?.id || "",
+  //   reason: "",
+  // });
+
+  // const handleChange = (event: any) => {
+  //   const { name, value } = event.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value,
+  //   });
+  // };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -35,10 +48,10 @@ export default function AdminSuccessPopup(props: any) {
   }
 
   const transferFee = 10000;
-  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
-  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
+  const tax = (parseInt(dataDeclined.withdraw.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataDeclined.withdraw.amount));
   const withdarwalTotal = formatRupiah(
-    parseInt(dataWithdrawal.amount) - transferFee - tax
+    parseInt(dataDeclined.withdraw.amount) - transferFee - tax
   );
 
   return (
@@ -79,25 +92,26 @@ export default function AdminSuccessPopup(props: any) {
               <Box>
                 <Text display={'flex'}>
                   Nomor Penarikan:{' '}
-                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
+                  <Text fontWeight={700}>{dataDeclined.withdraw.id}</Text>
                 </Text>
+                <Text>{dataDeclined.withdraw.status === 'REQUEST'}</Text>
                 <Text>
                   {moment(
-                    dataWithdrawal.createdAt,
+                    dataDeclined.withdraw.createdAt,
                     'YYYY-MM-DD HH:mm:ss'
-                  ).format('LLLL')}
+                  ).format('LLLL')}{' '}
                 </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {dataWithdrawal.bankAccount.accountName}
+                    {/* {dataDeclined.bankAccount.accountName} */}
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataDeclined.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
+                  <Text fontSize={'12px'}>{dataDeclined.withdraw.status}</Text>
                 </Box>
               </Flex>
 
@@ -105,15 +119,15 @@ export default function AdminSuccessPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>:{dataWithdrawal.bankAccount.bank}</Text>
+                  {/* <Text>: {dataDeclined.bankAccount.bank}</Text> */}
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
+                  {/* <Text>:{dataDeclined.bankAccount.accountNumber}</Text> */}
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
+                  {/* <Text>: {dataDeclined.bankAccount.accountName}</Text> */}
                 </Flex>
               </Box>
 
@@ -124,14 +138,14 @@ export default function AdminSuccessPopup(props: any) {
                     <Text width={'150px'}>Jumlah Penarikan</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> {formattedAmount}</Text>
+                  <Text>{formattedAmount}</Text>
                 </Flex>
                 <Flex justifyContent={'space-between'}>
                   <Flex>
                     <Text width={'150px'}>Biaya Admin</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text>{tax} </Text>
+                  <Text> {formatRupiah(tax)}</Text>
                 </Flex>
                 <Text fontSize={'10px'} color={'grey'}>
                   *1% jumlah penarikan
@@ -153,71 +167,37 @@ export default function AdminSuccessPopup(props: any) {
                 </Flex>
               </Box>
 
-              <Box mt={'10px'}>
-                <Text fontWeight={700}>Bukti Transfer</Text>
-                <Box
-                  mt={'10px'}
-                  width={'100px'}
-                  height={'100px'}
-                  border={'1px solid gray'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
-                >
-                  <Link
-                    to={
-                      'https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg'
-                    }
-                    target="_blank"
-                  >
-                    <Text fontWeight={'700'} color={'teal'}>
-                      Lihat Gambar
-                    </Text>
-                  </Link>
-                </Box>
-
-                <Button
-                  width={'100%'}
-                  textAlign={'center'}
-                  mt={'10px'}
-                  fontSize={'12px'}
-                  colorScheme="teal"
-                  padding={0}
-                  onClick={() => {
-                    AdminSuccessNotification(
-                      dataWithdrawal.store.name,
-                      formattedAmount,
-                      dataWithdrawal.bankAccount
-                    );
-
-                    onClose();
-                  }}
-                >
-                  Selesai
-                </Button>
+              <Box mt={2}>
+                <Text fontWeight={'bold'}>Alasan ditolak: </Text>
+                <Text>
+                  "
+                  {dataDeclined
+                    ? dataDeclined.reason || 'No reason provided'
+                    : 'No admin decline data available'}
+                  "
+                </Text>
               </Box>
 
               <Box mt={'10px'}>
                 <Text fontWeight={700}>Riwayat</Text>
                 <UnorderedList>
                   <ListItem>
-                    Penarikan diproses/diselesaikan oleh...
+                    Permintaan ditolak oleh Admin A{' '}
                     <ListItem ml={'20px'}>
-                      6 September 2023 pukul 15:05
+                      {moment(
+                        dataDeclined.withdraw.createdAt,
+                        'YYYY-MM-DD HH:mm:ss'
+                      ).format('LLLL')}{' '}
                     </ListItem>
                   </ListItem>
 
                   <ListItem>
-                    Permintaan disetujui oleh Admin A
+                    Permintaan dibuat{' '}
                     <ListItem ml={'20px'}>
-                      6 September 2023 pukul 15:00
-                    </ListItem>
-                  </ListItem>
-
-                  <ListItem>
-                    Permintaan dibuat
-                    <ListItem ml={'20px'}>
-                      6 September 2023 pukul 14:55
+                      {moment(
+                        dataDeclined.withdraw.createdAt,
+                        'YYYY-MM-DD HH:mm:ss'
+                      ).format('LLLL')}{' '}
                     </ListItem>
                   </ListItem>
                 </UnorderedList>

@@ -164,20 +164,41 @@ export default function AdminProcessingPopup(props: any) {
                   <Text> {withdarwalTotal}</Text>
                 </Flex>
               </Box>
-              <Form method="post">
-                <Input type="hidden" name="actionType" value="update" />
-                <Input type="hidden" name="id" value={withdrawalData.id} />
-                <Box mt={'10px'}>
+              <Box>
+                <Form method="post" encType="multipart/form-data">
+                  <Input type="hidden" name="actionType" value="create" />
+                  <Input
+                    type="text"
+                    name="withdrawId"
+                    value={withdrawalData.id}
+                  />
                   <Text fontWeight={700}>Bukti Transfer</Text>
                   <Box mt={'10px'}>
                     <Input
                       type="file"
-                      name="transferProof"
-                      id="transferProof"
+                      name="attachment"
+                      id="attachment"
+                      accept="image/*"
                     />
-                    {/* <TagLabel>Upload disini</TagLabel> */}
                   </Box>
+                  <Button
+                    width={'100%'}
+                    textAlign={'center'}
+                    mt={'10px'}
+                    fontSize={'12px'}
+                    colorScheme="teal"
+                    padding={0}
+                    type="submit"
+                  >
+                    upload
+                  </Button>
+                </Form>
+              </Box>
 
+              <Form method="patch">
+                {/* <Input type="hidden" name="actionType" value="update" /> */}
+                <Input type="hidden" name="id" value={withdrawalData.id} />
+                <Box mt={'10px'}>
                   <Button
                     width={'100%'}
                     textAlign={'center'}

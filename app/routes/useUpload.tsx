@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import type {
-  ActionArgs} from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
