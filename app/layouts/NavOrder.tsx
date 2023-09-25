@@ -18,6 +18,8 @@ import CardReadyToShip from '~/components/CardReadyToShip';
 import UnpaidAllCard from '~/components/CardUnpaidAll';
 import UnpaidCard from '~/components/CardUnpaid';
 import CardUnpaidCollection from '~/components/CardUnpaidCollection';
+import CardUnpaidCollection2 from '~/components/CardUnpaidCollection2';
+// import UnpaidAllCardCopy from '~/components/CardUnpaidAllcopy';
 
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
@@ -212,7 +214,9 @@ export default function NavOrder({ allOrderSevice }: any) {
                 <ScrollBox>
                   <TabPanel>
                     {/* <UnpaidAllCard /> */}
+                    {/* <UnpaidAllCardCopy/> */}
                     <CardUnpaidCollection />
+                    {/* <CardUnpaidCollection2 /> */}
                   </TabPanel>
                 </ScrollBox>
 

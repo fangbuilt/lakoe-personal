@@ -26,7 +26,7 @@ import React, { useState, useEffect } from 'react';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 // import searchFilter from '~/hooks/useSearchOrder';
-const CardUnpaidCollection = () => {
+const CardUnpaidCollection2 = () => {
   // Menggunakan destructuring untuk mendapatkan data yang diperlukan
   const { unpaidCard, canceledService, getTemplateMessages } =
     useLoaderData<typeof loader>();
@@ -313,4 +313,4 @@ const CardUnpaidCollection = () => {
   );
 };
 
-export default CardUnpaidCollection;
+export default CardUnpaidCollection2;

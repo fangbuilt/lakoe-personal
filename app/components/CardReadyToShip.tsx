@@ -20,7 +20,7 @@ export default function CardReadyToShip(props: any) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [, setSelectedCardId] = useState<string>('');
 
-  const cardProduct = useLoaderData<typeof loader>();
+  const { dataProductReadyToShip } = useLoaderData<typeof loader>();
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -34,7 +34,7 @@ export default function CardReadyToShip(props: any) {
     <>
       {/* CARD START HERE */}
 
-      {cardProduct.dataProductReadyToShip.map((data) => (
+      {dataProductReadyToShip.map((data) => (
         <Card mb={5} boxShadow={'xs'} key={data.id}>
           <Box key={data.id}>
             <Box mt={5}>

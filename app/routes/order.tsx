@@ -22,15 +22,21 @@ import getDataInShipping from '~/modules/order/orderShippingService';
 
 export async function loader() {
   const apiKey = process.env.BITESHIP_API_KEY;
-  const dataProductReadyToShip = await getDataProductReadyToShip();
+  // const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService, getTemplateMessages] =
-    await Promise.all([
-      getAllProductUnpid(),
-      getProductUnpid(),
-      CanceledService(),
-      getTemplateMessage(),
-    ]);
+  const [
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    getTemplateMessages,
+    dataProductReadyToShip,
+  ] = await Promise.all([
+    getAllProductUnpid(),
+    getProductUnpid(),
+    CanceledService(),
+    getTemplateMessage(),
+    getDataProductReadyToShip(),
+  ]);
   const dataInvoice = await getInvoiceByStatus();
   return json({
     unpaidCardAll,
