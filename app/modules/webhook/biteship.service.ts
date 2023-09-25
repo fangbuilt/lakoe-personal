@@ -7,38 +7,25 @@ import { pickingUp, updateInvoiceStatus } from "./hooks/usePickingUp";
 import { useLoaderData } from "@remix-run/react";
 import { loader } from "~/routes/order";
 
-// export async function getEmail(payload: any) {
-//     const dataInvoice = await db.invoice.findFirst({
-//       where: {
-//         waybill: payload.courier_waybill_id,
-//       },
-//       include: {
-//         user: true,
-//         courier: true,
-//       },
-//     });
+export async function getEmail(payload: any) {
+  const dataInvoice = await db.invoice.findFirst({
+    where: {
+      waybill: payload.courier_waybill_id,
+    },
+    include: {
+      user: true,
+      courier: true,
+    },
+  });
 
-//     return dataInvoice;
-//   }
+  return dataInvoice;
+}
 
 // const data = useLoaderData<typeof loader>();
 
 export async function Biteship(payload: any) {
   try {
-    // const dataInvoice = await getEmail(payload);
-
-    // console.log(dataInvoice);
-
-    // if (!dataInvoice) {
-    //   // Handle the case where dataInvoice is null (no matching record)
-    //   console.log("No matching record found for orderId: " + payload.order_id);
-    // }
-
-    // const email = dataInvoice?.user?.email as string;
-    // const name = dataInvoice?.user?.name as string;
-    // const waybill = dataInvoice?.waybill as string;
-
-    // The courier was informed
+    // The courier has informed
     if (payload.status === "allocated") {
       const courier = await db.courier.findFirst({
         where: {
@@ -46,9 +33,9 @@ export async function Biteship(payload: any) {
         },
       });
 
-
-      if (!courier?.id) {
-        return console.log("Courier ID is not found!");
+      if (!courier) {
+        console.log("Courier ID is not found!");
+        return;
       }
 
       await db.invoice.update({
@@ -61,8 +48,43 @@ export async function Biteship(payload: any) {
 
     // Courier picks up goods
     if (payload.status === "picking_up") {
-      // Handle 'picking_up' status
+      const courier = await db.courier.findFirst({
+        where: {
+          orderId: payload.order_id,
+        },
+      });
 
+      if (!courier) {
+        console.log("Courier ID is not found!");
+        return;
+      }
+
+      await db.courier.update({
+        where: { id: courier.id },
+        data: { trackingId: payload.courier_tracking_id },
+      });
+      const dataInvoice = await getEmail(payload);
+
+      console.log(dataInvoice);
+
+      if (!dataInvoice) {
+        // Handle the case where dataInvoice is null (no matching record)
+        console.log(
+          "No matching record found for orderId: " + payload.order_id
+        );
+      }
+
+      const email = dataInvoice?.user?.email as string;
+      const name = dataInvoice?.user?.name as string;
+      const waybill = dataInvoice?.waybill as string;
+
+      pickingUp(email, name, waybill);
+      console.log("tracking updated successfully!");
+      console.log("this is payload status: " + payload.status);
+    }
+
+    // The goods have been picked up
+    if (payload.status === "picked") {
       const existingInvoice = await db.invoice.findFirst({
         where: {
           waybill: payload.courier_waybill_id,
@@ -75,14 +97,6 @@ export async function Biteship(payload: any) {
       } else {
         await updateInvoiceStatus(existingInvoice.id);
       }
-
-      // pickingUp(email, name, waybill);
-      console.log("this is payload status: " + payload.status);
-    }
-
-    // The goods have been picked up
-    if (payload.status === "picked") {
-      // Handle 'picked' status
       console.log("this is payload status: " + payload.status);
     }
 
