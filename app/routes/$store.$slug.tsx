@@ -13,7 +13,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { type ActionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
 import { useState } from 'react';
 import CheckoutCourier from '~/modules/checkout/component/checkoutCourier';
@@ -31,9 +31,13 @@ export async function loader({ params }: ActionArgs) {
     slug: data.slug,
     store: data.store?.replace(/-/g, ' '),
   };
-
-  // const detail =
-  return getCheckoutDetail(getData);
+  try {
+    const detail = await getCheckoutDetail(getData);
+    return detail;
+  } catch (error) {
+    console.log('error');
+    return redirect(`/error-page/${data.store}/${data.slug}`);
+  }
 }
 
 export const action = async ({ request }: ActionArgs) => {
@@ -144,7 +148,7 @@ export const action = async ({ request }: ActionArgs) => {
         deliveryTime: '',
       };
 
-      const update = {
+      const updateStock = {
         valueId: variantOptionValueId,
         stock: stock,
       };
@@ -155,7 +159,7 @@ export const action = async ({ request }: ActionArgs) => {
         cartItem,
         invoiceHistory,
         getPayment,
-        update,
+        updateStock,
         courierService,
         getCourier,
       };

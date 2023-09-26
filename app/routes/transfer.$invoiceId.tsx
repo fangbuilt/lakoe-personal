@@ -8,7 +8,6 @@ import {
   useClipboard,
 } from '@chakra-ui/react';
 import { Link, useLoaderData, useParams } from '@remix-run/react';
-import data from '../utils/dummy.json';
 import type { ActionArgs } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
@@ -25,11 +24,24 @@ export async function loader({ params }: ActionArgs) {
 }
 
 export default function PayTransfer() {
-  const price = data.map((item) => item.price);
-  const tagPrice = data.map((item) => item.tagPrice);
-  const { onCopy, hasCopied } = useClipboard(`${price} ${tagPrice}`);
-  const { invoiceId } = useParams();
   const item = useLoaderData<typeof loader>();
+  const { onCopy, hasCopied } = useClipboard(`${item?.price}`);
+  const { invoiceId } = useParams();
+
+  let bankAccount;
+  const bank = item?.payment?.bank;
+
+  if (bank === 'BCA') {
+    bankAccount = '8812733';
+  } else if (bank === 'BNI') {
+    bankAccount = '7234798';
+  } else if (bank === 'Mandiri') {
+    bankAccount = '3858098';
+  } else if (bank === 'BRI') {
+    bankAccount = '8817389';
+  } else {
+    bankAccount = '7439861';
+  }
 
   return (
     <>
@@ -82,7 +94,7 @@ export default function PayTransfer() {
                   <Text mt={5}>ke bank berikut ini ya kak:</Text>
                   <Box lineHeight={'9'}>
                     <Text>Rek. {item?.payment?.bank} </Text>
-                    {/* <Text>{item?.payment?.amount}</Text> */}
+                    <Text>{bankAccount}</Text>
                     {/* <Text>A.n {item?.payment?.status}</Text> */}
                   </Box>
                   <Box mt={'20px'}>

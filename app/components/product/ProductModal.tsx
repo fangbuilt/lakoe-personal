@@ -12,6 +12,7 @@ import {
   Modal,
   ModalContent,
   ModalOverlay,
+  Switch,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -102,6 +103,17 @@ export default function ProductModal(props: IProduct) {
             </MenuItem>
           </MenuList>
         </Menu>
+        <Form method="PATCH">
+          <input type="hidden" value={props.id} name="id" />
+          <Button type="submit" variant={'ghost'}>
+            <Switch
+              size={'md'}
+              isChecked={props.isActive}
+              name="isActive"
+              value={props.isActive.toString()}
+            />
+          </Button>
+        </Form>
       </Box>
 
       {/* Change Price */}

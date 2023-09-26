@@ -9,7 +9,6 @@ export async function getCheckoutDetail(data: any) {
         store: {
           name: {
             equals: data.store,
-            mode: 'insensitive',
           },
         },
       },
@@ -91,9 +90,9 @@ export async function createCheckout(data: any) {
 
   await db.variantOptionValue.update({
     where: {
-      id: data.update.valueId as string,
+      id: data.updateStock.valueId as string,
     },
-    data: { stock: data.update.stock as number, updatedAt: new Date() },
+    data: { stock: data.updateStock.stock as number, updatedAt: new Date() },
   });
 
   return redirect(`/transfer/${invoice.id}`);

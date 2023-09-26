@@ -68,22 +68,23 @@ export default function CheckoutPage() {
                     to={`/${i.store?.name.replace(/ /g, '-').toLowerCase()}/${
                       i.slug
                     }`}
+                    target="_blank"
                   >
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
-                      <Text>
+                      {/* <Text>
                         Rp.
                         {i.variants[0].variantOptions[0].variantOptionValues[0].price.toLocaleString(
                           'id-ID'
                         )}
-                      </Text>
+                      </Text> */}
                       <Text>slug :{i.slug}</Text>
                       <Text>{i.store?.name}</Text>
-                      <Text>
+                      {/* <Text>
                         {i.variants[0].variantOptions[0].variantOptionValues[0]
                           .stock + ' '}
                         pcs
-                      </Text>
+                      </Text> */}
                     </Box>
                   </Link>
                 </Stack>
