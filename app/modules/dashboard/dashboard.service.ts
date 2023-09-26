@@ -99,6 +99,8 @@ export async function getWithdrawalList() {
     include: {
       store: true,
       bankAccount: true,
+      attachmentAdmin: true,
+      adminDecline: true,
     },
   });
 

@@ -19,32 +19,14 @@ import React, { useState } from 'react';
 import { LuZoomIn } from 'react-icons/lu';
 import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 import AdminDeclinedPopup from './AdminDeclinedPopup';
+import LoadingAttachmentAdmin from './loadingAttachmentLoading';
 
 export default function AdminApprovedPopup(props: any) {
   const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [statusUpdated, setStatusUpdated] = useState(dataWithdrawal.status);
 
-  // const [formData, setFormData] = useState({
-  //   actionType: "create",
-  //   withdrawId: dataWithdrawal.id || "",
-  //   storeId: dataWithdrawal.store?.id || "",
-  //   reason: "",
-  // });
-  // console.log(
-  //   "data reason",
-  //   formData.reason,
-  //   formData.withdrawId,
-  //   formData.storeId
-  // );
-
-  // const handleChange = (event: any) => {
-  //   const { name, value } = event.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value,
-  //   });
-  // };
+  const [isLoading, setIsLoading] = useState(false);
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -68,13 +50,16 @@ export default function AdminApprovedPopup(props: any) {
   };
   const handleApproveClick = async () => {
     try {
-      // Make an API call to update the status
+      setIsLoading(true);
       await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
-      // Update the local status
       setStatusUpdated('PROCESSING');
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 7000);
     }
   };
 
@@ -123,7 +108,7 @@ export default function AdminApprovedPopup(props: any) {
                     <Text fontWeight={700}>
                       {dataWithdrawal.bankAccount.accountName}
                     </Text>
-                    <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                    <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
                   </Box>
                   <Box>
                     <Text fontSize={'12px'}>{statusUpdated}</Text>
@@ -214,6 +199,9 @@ export default function AdminApprovedPopup(props: any) {
                       <AdminDeclinedPopup dataWithdrawal={dataWithdrawal} />
                     </Button>
                   </Flex>
+                  <Box mt={5} mb={0}>
+                    {isLoading && <LoadingAttachmentAdmin />}
+                  </Box>
                 </Box>
               </Box>
             </ModalBody>
@@ -240,7 +228,7 @@ export default function AdminApprovedPopup(props: any) {
                 borderColor={'gray.500'}
                 fontSize={'12px'}
                 onClick={() => {
-                  onClose();
+                  handleApproveClick();
                 }}
               >
                 Save

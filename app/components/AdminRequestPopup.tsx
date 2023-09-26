@@ -19,6 +19,7 @@ import React, { useState } from 'react';
 import { LuZoomIn } from 'react-icons/lu';
 import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 import AdminDeclinedPopup from './AdminDeclinedPopup';
+import LoadingAttachmentAdmin from './loadingAttachmentLoading';
 
 export default function AdminRequestPopup(props: any) {
   const { dataWithdrawal } = props;
@@ -39,6 +40,8 @@ export default function AdminRequestPopup(props: any) {
     parseInt(dataWithdrawal.amount) - transferFee - tax
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -48,12 +51,17 @@ export default function AdminRequestPopup(props: any) {
 
   const handleApproveClick = async () => {
     try {
+      setIsLoading(true);
       await updateStatusWithdraw(dataWithdrawal.id, 'APPROVED');
       setStatusUpdated('APPROVED');
 
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 7000);
     }
   };
 
@@ -103,7 +111,7 @@ export default function AdminRequestPopup(props: any) {
                     <Text fontWeight={700}>
                       {dataWithdrawal.bankAccount.accountName}
                     </Text>
-                    <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                    <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
                   </Box>
                   <Box>
                     <Text fontSize={'12px'}>{statusUpdated}</Text>
@@ -180,7 +188,9 @@ export default function AdminRequestPopup(props: any) {
                       colorScheme="teal"
                       padding={0}
                       type="submit"
-                      onClick={handleApproveClick}
+                      onClick={() => {
+                        handleApproveClick();
+                      }}
                     >
                       Approved
                     </Button>
@@ -193,9 +203,10 @@ export default function AdminRequestPopup(props: any) {
                     >
                       <AdminDeclinedPopup dataWithdrawal={dataWithdrawal} />
                     </Button>
-
-                    {/* )} */}
                   </Flex>
+                  <Box mt={5} mb={0}>
+                    {isLoading && <LoadingAttachmentAdmin />}
+                  </Box>
                 </Box>
               </Box>
             </ModalBody>
@@ -211,7 +222,7 @@ export default function AdminRequestPopup(props: any) {
                 borderColor={'gray.500'}
                 fontSize={'12px'}
                 onClick={() => {
-                  onClose();
+                  handleApproveClick();
                 }}
               >
                 Save
