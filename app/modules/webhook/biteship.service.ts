@@ -15,6 +15,15 @@ export async function getEmail(payload: any) {
     include: {
       user: true,
       courier: true,
+      cart: {
+        include: {
+          cartItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -25,8 +34,28 @@ export async function getEmail(payload: any) {
 
 export async function Biteship(payload: any) {
   try {
-    // The courier has informed
+    // Allocated
     if (payload.status === "allocated") {
+      const invoice = await db.invoice.findFirst({
+        where: {
+          courierId: payload.courier_id,
+        },
+      });
+
+      // console.log("Found Invoice", invoice);
+
+      if (!invoice) {
+        console.log("Invoice with Courier ID is not found!");
+        return;
+      }
+
+      await db.courier.update({
+        where: { id: invoice.courierId },
+        data: { orderId: payload.order_id },
+      });
+
+      // console.log("order id updated successfully!");
+
       const courier = await db.courier.findFirst({
         where: {
           orderId: payload.order_id,
@@ -65,7 +94,7 @@ export async function Biteship(payload: any) {
       });
       const dataInvoice = await getEmail(payload);
 
-      console.log(dataInvoice);
+      // console.log(dataInvoice);
 
       if (!dataInvoice) {
         // Handle the case where dataInvoice is null (no matching record)
@@ -77,9 +106,20 @@ export async function Biteship(payload: any) {
       const email = dataInvoice?.user?.email as string;
       const name = dataInvoice?.user?.name as string;
       const waybill = dataInvoice?.waybill as string;
+      const invNum = dataInvoice?.invoiceNumber as string;
+      const courierName = dataInvoice?.courier?.courierName as string;
+      let qty = 0; // Initialize quantity as 0
+      let productName = ""; // Initialize product name as an empty string
 
-      pickingUp(email, name, waybill);
-      console.log("tracking updated successfully!");
+      const cartItems = dataInvoice?.cart?.cartItems || []; // Ensure cartItems is defined
+
+      cartItems.forEach((item) => {
+        qty += item.qty || 0; // Add item quantity to the total, treating undefined as 0
+        productName += item.product?.name || ""; // add item product names, treating undefined as an empty string
+      });
+
+      pickingUp(email, name, waybill, invNum, courierName, productName, qty);
+      console.log("tracking updated successfully! and email sent succesfully");
       console.log("this is payload status: " + payload.status);
     }
 
@@ -97,6 +137,7 @@ export async function Biteship(payload: any) {
       } else {
         await updateInvoiceStatus(existingInvoice.id);
       }
+
       console.log("this is payload status: " + payload.status);
     }
 

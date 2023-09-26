@@ -31,8 +31,6 @@ export default function ModalTracking(props: SendProps) {
   const { orderTrackingsData, orderMultiTrackingsData } = useOrderTracking(
     props.selectedCardId
   );
-  console.log("ini order tracking", orderTrackingsData?.courier);
-  console.log("ini props", props.selectedCardId);
 
   let steps = orderMultiTrackingsData;
 

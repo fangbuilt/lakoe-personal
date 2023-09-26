@@ -33,7 +33,7 @@ export default function CardReadyToShip() {
     <>
       {/* CARD START HERE */}
 
-      {cardProduct.dataProductReadyToShip.map((data) => (
+      {cardProduct.dataProductReadyToShip.reverse().map((data) => (
         <Card mb={5} boxShadow={"xs"} key={data.id}>
           <Box key={data.id}>
             <Box mt={5}>

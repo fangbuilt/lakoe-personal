@@ -84,10 +84,10 @@ export async function action({ request }: ActionArgs) {
   const status = formData.get('status') as string;
   const actionType = formData.get('actionType') as string;
 
-  console.log('yg kamu cari', id, actionType, status);
+  // console.log('yg kamu cari', id, actionType, status);
 
   if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
-    console.log('masuk sini');
+    // console.log('masuk sini');
 
     await db.invoiceHistory.create({
       data: {
@@ -106,7 +106,7 @@ export async function action({ request }: ActionArgs) {
     });
 
     // alert
-    console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
+    // console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
   }
 
   if (isMootaIP(requestIP)) {
