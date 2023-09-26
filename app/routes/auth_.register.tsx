@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-empty */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { ActionArgs } from '@remix-run/node';
+import { ActionArgs, LoaderArgs, json, redirect } from '@remix-run/node';
 import {
   Form,
   useActionData,
@@ -24,7 +24,11 @@ import {
 import { AiOutlineGooglePlus } from 'react-icons/ai';
 import { BsFacebook } from 'react-icons/bs';
 import { db } from '~/libs/prisma/db.server';
-import { createUserSession, register } from '~/modules/auth/auth.service';
+import {
+  createUserSession,
+  getUserId,
+  register,
+} from '~/modules/auth/auth.service';
 import { badRequest } from '~/utils/request.server';
 
 // export async function loader() {
@@ -61,6 +65,29 @@ function validatePhone(phone: string) {
   }
 }
 
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return json({});
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return redirect('/dashboard');
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
+}
+
 export async function action({ request }: ActionArgs) {
   const form = await request.formData();
 
@@ -69,7 +96,7 @@ export async function action({ request }: ActionArgs) {
   const phone = String(form.get('phone'));
   const password = String(form.get('password'));
   const storeId = String(null);
-  const roleId = '3';
+  const roleId = '2';
   const redirectTo = validateUrl(
     (form.get('redirectTo') as string) || '/checkout'
   );

@@ -10,11 +10,21 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import {
+  json,
+  type ActionArgs,
+  type LoaderArgs,
+  redirect,
+} from '@remix-run/node';
 import { Form, useActionData, useNavigate } from '@remix-run/react';
 import { AiOutlineGooglePlus } from 'react-icons/ai';
 import { BsFacebook } from 'react-icons/bs';
-import { createUserSession, login } from '~/modules/auth/auth.service';
+import { db } from '~/libs/prisma/db.server';
+import {
+  createUserSession,
+  getUserId,
+  login,
+} from '~/modules/auth/auth.service';
 import { badRequest } from '~/utils/request.server';
 
 function validateUrl(url: string) {
@@ -34,6 +44,29 @@ function validateEmail(email: string) {
 function validatePassword(password: string) {
   if (password.length < 6) {
     return 'Password must be at least 6 characters long';
+  }
+}
+
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return json({});
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return redirect('/dashboard');
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
   }
 }
 
