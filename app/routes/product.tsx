@@ -8,6 +8,7 @@ import {
   deleteProduct,
   getProduct,
   update,
+  disableProduct,
 } from '~/modules/product/product.service';
 
 export async function loader() {
@@ -34,6 +35,13 @@ export async function action({ request }: ActionArgs) {
     console.log('stock', stock);
 
     await update({ id, price, stock });
+  }
+
+  if (request.method.toLowerCase() === 'post') {
+    const formData = await request.formData();
+    const id = formData.get('id') as string;
+
+    await disableProduct(id);
   }
 
   return redirect('/product');

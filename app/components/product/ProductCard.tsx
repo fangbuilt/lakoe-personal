@@ -1,5 +1,4 @@
 import { Box, Checkbox, Switch, Text, Image } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
 import { useState, type ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
@@ -8,10 +7,11 @@ import { db } from '~/libs/prisma/db.server';
 interface IProductCardProps {
   product: IProduct;
   children?: ReactNode;
+  isChecked: boolean;
 }
 
 export default function ProductCard(props: IProductCardProps) {
-  const { product, children } = props;
+  const { product, children, isChecked } = props;
   const [isActive, setIsActive] = useState(product.isActive);
   const handleSwitchChange = async () => {
     await db.product.update({
@@ -106,15 +106,13 @@ export default function ProductCard(props: IProductCardProps) {
             py={1}
             gap={10}
           >
-            <Checkbox size="lg" />
-            <Form method="PATCH">
-              <Switch
-                type="submit"
-                size="md"
-                isChecked={isActive}
-                onChange={handleSwitchChange}
-              />
-            </Form>
+            <Checkbox size="lg" isChecked={isChecked} />
+            <Switch
+              type="submit"
+              size="md"
+              isChecked={isActive}
+              onChange={handleSwitchChange}
+            />
           </Box>
         </Box>
       </Box>

@@ -40,7 +40,6 @@ export default function ProductModal(props: IProduct) {
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
-  console.log('propsprops', props);
   return (
     <>
       <Box display={'flex'} alignItems={'center'} gap={2}>

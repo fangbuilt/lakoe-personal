@@ -24,6 +24,7 @@ import { useEffect, useState } from 'react';
 import ProductEmpty from './ProductEmpty';
 import ProductEmptyActive from './ProductEmptyActive';
 import ProductEmptyNonActive from './ProductEmptyNonActive';
+import ProductModalSelect from './ProductModalSelect';
 
 interface IProductBodyProps {
   product: IProduct[];
@@ -41,17 +42,10 @@ export default function ProductBody(props: IProductBodyProps) {
     useFilterProducts();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortProducts();
-  // console.log('props product body',props)
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
   useEffect(() => {
     setSearchQuery(debouncedSearchTerm);
   }, [debouncedSearchTerm, setSearchQuery]);
-
-  // const filteredProducts =
-  //   activeTab === 1
-  //     ? product.filter((a) => a.isActive)
-  //     : activeTab === 2
-  //     ? product.filter((a) => !a.isActive)
-  //     : product;
 
   return (
     <>
@@ -117,12 +111,23 @@ export default function ProductBody(props: IProductBodyProps) {
                       {searchProducts.length} Produk
                     </Text>
                     <Box display={'flex'} gap={2}>
+                      {selectAllChecked && (
+                        <>
+                          <ProductModalSelect {...searchProducts[0]} />
+                        </>
+                      )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
-                      <Checkbox defaultChecked></Checkbox>
+                      <Checkbox
+                        onChange={() => setSelectAllChecked(!selectAllChecked)}
+                      ></Checkbox>
                     </Box>
                   </Box>
                   {searchProducts.map((a) => (
-                    <ProductCard key={a.id} product={a}>
+                    <ProductCard
+                      key={a.id}
+                      product={a}
+                      isChecked={selectAllChecked}
+                    >
                       <ProductModal {...a} />
                     </ProductCard>
                   ))}
@@ -143,12 +148,23 @@ export default function ProductBody(props: IProductBodyProps) {
                       {searchProducts.length} Produk
                     </Text>
                     <Box display={'flex'} gap={2}>
+                      {selectAllChecked && (
+                        <>
+                          <ProductModalSelect {...searchProducts[0]} />
+                        </>
+                      )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
-                      <Checkbox defaultChecked></Checkbox>
+                      <Checkbox
+                        onChange={() => setSelectAllChecked(!selectAllChecked)}
+                      ></Checkbox>
                     </Box>
                   </Box>
                   {searchProducts.map((a) => (
-                    <ProductCard key={a.id} product={a}>
+                    <ProductCard
+                      key={a.id}
+                      product={a}
+                      isChecked={selectAllChecked}
+                    >
                       <ProductModal {...a} />
                     </ProductCard>
                   ))}
@@ -169,12 +185,23 @@ export default function ProductBody(props: IProductBodyProps) {
                       {searchProducts.length} Produk
                     </Text>
                     <Box display={'flex'} gap={2}>
+                      {selectAllChecked && (
+                        <>
+                          <ProductModalSelect {...searchProducts[0]} />
+                        </>
+                      )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
-                      <Checkbox defaultChecked></Checkbox>
+                      <Checkbox
+                        onChange={() => setSelectAllChecked(!selectAllChecked)}
+                      ></Checkbox>
                     </Box>
                   </Box>
                   {searchProducts.map((a) => (
-                    <ProductCard key={a.id} product={a}>
+                    <ProductCard
+                      key={a.id}
+                      product={a}
+                      isChecked={selectAllChecked}
+                    >
                       <ProductModal {...a} />
                     </ProductCard>
                   ))}
