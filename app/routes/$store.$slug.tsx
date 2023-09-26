@@ -4,6 +4,12 @@ import {
   Flex,
   Image,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -12,6 +18,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { redirect, type ActionArgs } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
@@ -226,7 +233,10 @@ export default function Checkout() {
     setCount(limit);
   }
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const handleSubmit = () => {
+    onOpen();
     if (count === 0) {
       console.log('Please select quantity');
       return alert('Pilih berapa banyak produk yang ingin dibeli');
@@ -244,6 +254,35 @@ export default function Checkout() {
         <Box display={'none'}>
           <Text>{store}</Text>
           <Text>{slug}</Text>
+        </Box>
+        <Box>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent p={5}>
+              <ModalHeader fontWeight={'bold'} textAlign={'center'}>
+                Currently placing a new order
+              </ModalHeader>
+              {/* <ModalCloseButton /> */}
+              <ModalBody>
+                <Box
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  mb={5}
+                >
+                  <Spinner
+                    w={20}
+                    h={20}
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="xl"
+                  />
+                </Box>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         </Box>
         <Box
           display={'flex'}

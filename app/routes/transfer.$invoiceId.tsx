@@ -7,8 +7,8 @@ import {
   Text,
   useClipboard,
 } from '@chakra-ui/react';
-import { Link, useLoaderData, useParams } from '@remix-run/react';
 import type { ActionArgs } from '@remix-run/node';
+import { Link, useLoaderData, useParams } from '@remix-run/react';
 import { db } from '~/libs/prisma/db.server';
 
 export async function loader({ params }: ActionArgs) {
@@ -100,6 +100,7 @@ export default function PayTransfer() {
                   <Box mt={'20px'}>
                     <Text>Konfirmasikan Pembayaran Anda di:</Text>
                     <Link to={`/payment/${invoiceId}`}>
+                      {/* <Link to={`#`} onClick={onOpen}> */}
                       <Text display={'inline'} color={'blue'} ms={1}>
                         Konfirmasi Pembayaran
                       </Text>
