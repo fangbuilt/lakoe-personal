@@ -19,9 +19,6 @@ import {
 import moment from 'moment';
 import React, { useState } from 'react';
 
-import { LuZoomIn } from 'react-icons/lu';
-import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
-
 export default function AdminDeclinedPopup(props: any) {
   const { dataWithdrawal } = props;
   const [formData, setFormData] = useState({
@@ -69,7 +66,7 @@ export default function AdminDeclinedPopup(props: any) {
           padding={'5px 15px'}
           borderRadius={'15px'}
         >
-          <LuZoomIn />
+          Declined
         </Text>
       </Flex>
 
@@ -205,11 +202,6 @@ export default function AdminDeclinedPopup(props: any) {
                     width="100%"
                     textAlign="center"
                     mt="10px"
-                    onClick={() => {
-                      AdminDeclinedNotification(formData.reason);
-
-                      onClose();
-                    }}
                   >
                     Send email to Seller
                   </Button>

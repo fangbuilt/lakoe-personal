@@ -24,8 +24,8 @@ import { useState } from 'react';
 import AdminRequestPopup from './AdminRequestPopup';
 import AdminSuccessPopup from './AdminSuccessPopup';
 import AdminProcessingPopup from './AdminProcessingPopup';
-import AdminDeclinedPopup from './AdminDeclinedPopup';
 import AdminApprovedPopup from './AdminApprovedPopup';
+import { AiFillCloseCircle } from 'react-icons/ai';
 
 export default function AdminRequest({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
@@ -237,6 +237,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       </Link>
                     </Box>
                   </Box>
+
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
                       <Link to={'/adminDeclined'}>
@@ -257,6 +258,31 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
                             <Text fontSize={'12px'}>Declined</Text>
+                          </Flex>
+                        </Tab>
+                      </Link>
+                    </Box>
+                  </Box>
+
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
+                      <Link to={'/adminRefund'}>
+                        <Tab>
+                          {/* NOTIFICATION ORDER */}
+                          <Text
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
+                            borderRadius={'full'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
+                            marginRight={2}
+                          >
+                            {withdrawalCountByDeclined}{' '}
+                          </Text>
+                          {/* END NOTIFICATION ORDER */}
+                          <Flex gap={1.5}>
+                            <Text fontSize={'12px'}>Refund</Text>
                           </Flex>
                         </Tab>
                       </Link>
@@ -455,14 +481,15 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       )}
                       {item.status === 'DECLINED' && (
                         <Text
-                          color={'black'}
+                          color={'red'}
                           textAlign={'center'}
                           borderRadius={'15px'}
                           cursor={'pointer'}
                           px={'5px'}
-                          fontSize={'10px'}
+                          fontSize={'20px'}
+                          ml={5}
                         >
-                          <AdminDeclinedPopup dataWithdrawal={item} />
+                          <AiFillCloseCircle />
                         </Text>
                       )}
                     </Td>

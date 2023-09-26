@@ -29,7 +29,6 @@ import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
 import { db } from '~/libs/prisma/db.server';
-// import React, { useState } from "react";
 
 export async function loader(id: string) {
   return await getStoreData(id);

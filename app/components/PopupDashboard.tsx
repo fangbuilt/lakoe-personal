@@ -197,7 +197,6 @@ export default function DashboardPopup({
                   onChange={(event) => {
                     handleChange(event);
                     handleAmount();
-                    // handleAmountRupiah();
                   }}
                   type="number"
                   ref={initialRef}

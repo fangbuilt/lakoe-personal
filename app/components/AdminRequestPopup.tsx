@@ -3,8 +3,6 @@ import {
   Button,
   Divider,
   Flex,
-  FormControl,
-  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -19,42 +17,13 @@ import moment from 'moment';
 import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
-import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
+import AdminDeclinedPopup from './AdminDeclinedPopup';
 
 export default function AdminRequestPopup(props: any) {
   const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [statusUpdated, setStatusUpdated] = useState(dataWithdrawal.status);
-  const [formUpdate, setFormUpdate] = useState<{ [id: string]: boolean }>({});
-
-  const toggleButtonUpdate = (id: string) => {
-    setFormUpdate((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id] || false,
-    }));
-  };
-
-  const [formData, setFormData] = useState({
-    actionType: 'create',
-    withdrawId: dataWithdrawal.id || '',
-    storeId: dataWithdrawal.store?.id || '',
-    reason: '',
-  });
-  console.log(
-    'data reason',
-    formData.reason,
-    formData.withdrawId,
-    formData.storeId
-  );
-
-  const handleChange = (event: any) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -79,10 +48,9 @@ export default function AdminRequestPopup(props: any) {
 
   const handleApproveClick = async () => {
     try {
-      // Make an API call to update the status
-      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
-      // Update the local status
-      setStatusUpdated('PROCESSING');
+      await updateStatusWithdraw(dataWithdrawal.id, 'APPROVED');
+      setStatusUpdated('APPROVED');
+
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -182,7 +150,7 @@ export default function AdminRequestPopup(props: any) {
                       <Text width={'150px'}>Biaya Admin</Text>
                       <Text>:</Text>
                     </Flex>
-                    <Text>{tax}</Text>
+                    <Text>{formatRupiah(tax)}</Text>
                   </Flex>
                   <Text fontSize={'10px'} color={'grey'}>
                     *1% jumlah penarikan
@@ -204,75 +172,29 @@ export default function AdminRequestPopup(props: any) {
                   </Flex>
 
                   <Flex gap={'5px'} mt={'10px'}>
-                    {formUpdate[dataWithdrawal.id] ? (
-                      <Form method="post">
-                        <FormControl w={'400px'}>
-                          <Input
-                            type="hidden"
-                            name="actionType"
-                            value="create"
-                          />
-                          <Input
-                            type="hidden"
-                            name="withdrawId"
-                            value={formData.withdrawId}
-                          />
-                          <Input
-                            type="hidden"
-                            name="storeId"
-                            value={formData.storeId}
-                          />
-                          <FormLabel fontSize="12px" fontWeight={700}>
-                            Alasan Penolakan
-                          </FormLabel>
-                          <Input
-                            placeholder="Reason of declined..."
-                            type="text"
-                            name="reason"
-                            fontSize="10px"
-                            onChange={handleChange}
-                            value={formData.reason}
-                          />
-                        </FormControl>
-                        <Button
-                          type="submit"
-                          fontSize="12px"
-                          colorScheme="teal"
-                          width="100%"
-                          textAlign="center"
-                          mt="10px"
-                        >
-                          Save Reason
-                        </Button>
-                      </Form>
-                    ) : (
-                      <>
-                        <Button
-                          name="status"
-                          value="PROCESSING"
-                          flex={'50%'}
-                          fontSize={'12px'}
-                          colorScheme="teal"
-                          padding={0}
-                          type="submit"
-                          onClick={handleApproveClick}
-                        >
-                          Approved
-                        </Button>
-                        <Button
-                          flex={'50%'}
-                          fontSize={'12px'}
-                          colorScheme="teal"
-                          padding={0}
-                          type="submit"
-                          onClick={() => {
-                            toggleButtonUpdate(dataWithdrawal.id);
-                          }}
-                        >
-                          Declined
-                        </Button>
-                      </>
-                    )}
+                    <Button
+                      name="status"
+                      value="APPROVED"
+                      flex={'50%'}
+                      fontSize={'12px'}
+                      colorScheme="teal"
+                      padding={0}
+                      type="submit"
+                      onClick={handleApproveClick}
+                    >
+                      Approved
+                    </Button>
+                    <Button
+                      flex={'50%'}
+                      fontSize={'12px'}
+                      bg={'teal'}
+                      padding={0}
+                      _hover={{ bg: 'teal' }}
+                    >
+                      <AdminDeclinedPopup dataWithdrawal={dataWithdrawal} />
+                    </Button>
+
+                    {/* )} */}
                   </Flex>
                 </Box>
               </Box>
@@ -289,8 +211,6 @@ export default function AdminRequestPopup(props: any) {
                 borderColor={'gray.500'}
                 fontSize={'12px'}
                 onClick={() => {
-                  AdminDeclinedNotification(formData.reason);
-
                   onClose();
                 }}
               >

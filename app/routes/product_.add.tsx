@@ -16,46 +16,47 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from '@remix-run/node';
+// import { useState } from 'react';
 
 export async function action({ request }: ActionArgs) {
-  const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
-    if (name !== 'image') {
-      return undefined;
-    }
-
-    const uploadedImage = await uploadImage(data);
-
-    return uploadedImage.secure_url;
-  }, createMemoryUploadHandler());
-
-  const formData = await parseMultipartFormData(request, uploadHandler);
-
-  const imageUrl = formData.get('image') as string;
-  const categori = formData.get('category') as string;
-
-  console.log('imag', imageUrl);
-
   if (request.method.toLowerCase() === 'post') {
+    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
+      if (name !== 'mainPhoto' && name !== 'photo2') {
+        return undefined;
+      }
+
+      const uploadedImage = await uploadImage(data);
+
+      return uploadedImage.secure_url;
+    }, createMemoryUploadHandler());
+
+    const formData = await parseMultipartFormData(request, uploadHandler);
+    const imageUrl = formData.get('mainPhoto') as string;
+    const imageUrl2 = formData.get('photo2') as string;
+    const height = parseFloat(formData.get('height') as string);
+    console.log('image', imageUrl);
+    console.log('image2', imageUrl2);
+
     const data = {
+      url: imageUrl,
+      url2: imageUrl2,
       name: formData.get('name'),
       description: formData.get('description'),
-      url: imageUrl,
-      minumumOrder: Number(formData.get('min_order')),
+      minimumOrder: Number(formData.get('min_order')),
       price: parseFloat(formData.get('price') as string),
       stock: parseInt(formData.get('stock') as string),
       sku: formData.get('sku'),
       slug: formData.get('url'),
-      category: categori,
+      category: formData.get('category') as string,
       weight: parseInt(formData.get('weight') as string),
       length: parseFloat(formData.get('length') as string),
       width: parseFloat(formData.get('width') as string),
-      height: parseFloat(formData.get('height') as string),
+      height: height,
     };
-    const newProduct = await createProduct(data, '1');
-
-    return newProduct;
+    await createProduct(data, '1');
+    return redirect('/product');
   }
-  return redirect('/product/add');
+  return null;
 }
 
 export default function AddProduct() {

@@ -23,22 +23,6 @@ export async function getStoreData(id: string) {
   );
 }
 
-// export async function updateCreditStore(data: any, creditUpdate: number) {
-//   try {
-//     const updateCredit = db.store.update({
-//       where: {
-//         id: "50",
-//       },
-//       data: {
-//         credit: data.creditUpdate,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Error updating credit:", error);
-//     throw error;
-//   }
-// }
-
 //BankAccount CRUD
 export async function getBankList(storeId: string) {
   return json(
@@ -111,15 +95,21 @@ export async function updateBank(
 
 //Withdraw
 export async function getWithdrawalList() {
-  return await db.withdraw.findMany({
+  const withdrawalList = await db.withdraw.findMany({
     include: {
       store: true,
       bankAccount: true,
     },
   });
+
+  return withdrawalList;
 }
 
-export async function updateStatusWithdraw(id: string, statusUpdated: string) {
+export async function updateStatusWithdraw(
+  id: string,
+  statusUpdated: string,
+  dateUpdated?: string
+) {
   try {
     const updatedStatus = await db.withdraw.update({
       where: {
@@ -127,6 +117,7 @@ export async function updateStatusWithdraw(id: string, statusUpdated: string) {
       },
       data: {
         status: statusUpdated,
+        updatedAt: dateUpdated,
       },
     });
     return updatedStatus;
@@ -184,7 +175,6 @@ export async function createWithdraw(
       },
     });
 
-    // console.log("Withdraw created:", withdraw);
     return withdraw;
   } catch (error) {
     console.error('Error creating withdrawal:', error);
@@ -246,4 +236,17 @@ export async function createAttachmentAdmin(
     console.error('Error creating attachment:', error);
     throw error;
   }
+}
+
+// adminDecline
+
+export async function getReasonDeclined() {
+  const reasonDeclinedList = await db.adminDecline.findMany({
+    include: {
+      store: true,
+      withdraw: true,
+    },
+  });
+
+  return reasonDeclinedList;
 }

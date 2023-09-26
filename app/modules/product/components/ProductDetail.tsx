@@ -18,19 +18,24 @@ import CloseCircle from '~/assets/icon-pack/button-icons/close-circle.svg';
 import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
 // import useAddProduct from '../hooks/useAddProduct';
 import { useState } from 'react';
+// import axios from 'axios';
+
+// interface Photo {
+//   label: string;
+//   name: string;
+//   image: File | null; // Menggunakan File | null
+// }
 
 export function ProductDetail() {
-  // const { preview } = useAddProduct();
-
   const [photos, setPhotos] = useState([
     { label: 'Foto Utama', name: 'mainPhoto', image: null },
-    // { label: 'Foto 2', name: 'photo2', image: null },
+    { label: 'Foto 2', name: 'photo2', image: null },
     // { label: 'Foto 3', name: 'photo3', image: null },
     // { label: 'Foto 4', name: 'photo4', image: null },
     // { label: 'Foto 5', name: 'photo5', image: null },
   ]);
 
-  const handleImageUpload = (name: string, image: any) => {
+  const handleImagePreview = (name: string, image: any) => {
     const updatedPhotos = photos.map((photo) => {
       if (photo.name === name) {
         return { ...photo, image };
@@ -75,7 +80,7 @@ export function ProductDetail() {
                 )}
                 <Dropzone
                   onDrop={(acceptedFiles) => {
-                    handleImageUpload(photo.name, acceptedFiles[0]);
+                    handleImagePreview(photo.name, acceptedFiles[0]);
                   }}
                 >
                   {({ getRootProps, getInputProps }) => (
@@ -83,7 +88,7 @@ export function ProductDetail() {
                       <div {...getRootProps()}>
                         <input
                           // {...getInputProps()}
-                          name="image"
+                          name={photo.name}
                           type="file"
                           accept="image/*"
                         />
