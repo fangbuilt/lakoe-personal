@@ -29,7 +29,7 @@ model User {
   invoices               Invoice[]
   payments               Payment[]
   withdraws              Withdraw[]
-  verify                 Verify?
+  verify                 Verify[]
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
@@ -415,6 +415,7 @@ model BankAccount {
   store         Store?     @relation(fields: [storeId], references: [id])
   storeId       String
   withdraws     Withdraw[]
+  adminDecline  AdminDecline?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @default(now())
 
@@ -470,6 +471,8 @@ model AdminDecline {
   storeId    String
   withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
   withdrawId String
+  bankAccount       BankAccount? @relation(fields: [bankAccountId], references: [id])
+  bankAccountId     String @unique
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
 
