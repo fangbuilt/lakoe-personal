@@ -27,6 +27,9 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
     (item: any) => item.status === 'REQUEST'
   );
+  const filteredDataApproved = dataWithdrawal.filter(
+    (item: any) => item.status === 'APPROVED'
+  );
   const filteredDataProcessing = dataWithdrawal.filter(
     (item: any) => item.status === 'PROCESSING'
   );
@@ -45,6 +48,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
 
   const withdrawalCountAll = dataWithdrawal.length;
   const withdrawalCountByRequest = filteredDataRequest.length;
+  const withdrawalCountByApproved = filteredDataApproved.length;
   const withdrawalCountByProcessing = filteredDataProcessing.length;
   const withdrawalCountBySuccess = filteredDataSuccess.length;
   const withdrawalCountByDeclined = filteredDataDeclined.length;
@@ -81,7 +85,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
         bg="white"
       >
         <Box>
-          <Tabs defaultIndex={3}>
+          <Tabs defaultIndex={4}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
                 Daftar Penarikan Dana
@@ -145,6 +149,32 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
                             <Text fontSize={'12px'}>Request</Text>
+                          </Flex>
+                        </Tab>
+                      </Link>
+                    </Box>
+                  </Box>
+
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
+                      <Link to={'/adminApproved'}>
+                        <Tab>
+                          {/* NOTIFICATION ORDER */}
+                          <Text
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
+                            borderRadius={'full'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
+                            marginRight={2}
+                          >
+                            {withdrawalCountByApproved}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
+                          </Text>
+                          {/* END NOTIFICATION ORDER */}
+                          <Flex gap={1.5}>
+                            <Text fontSize={'12px'}>Approved</Text>
                           </Flex>
                         </Tab>
                       </Link>
@@ -270,10 +300,10 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Seller
+                    Nama Store
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Uang
+                    Jumlah Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -291,12 +321,12 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                     </Td>
 
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
-                    </Td>
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
+                    </Td>
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {formatRupiah(item.amount)}
