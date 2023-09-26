@@ -22,7 +22,9 @@ import CardUnpaidCollection2 from '~/components/CardUnpaidCollection2';
 import UnpaidAllCardCopy from '~/components/CardUnpaidAllcopy';
 import UnpaidCardCopy from '~/components/CardUnpaidcopy';
 import CardCenceledCopy from '~/components/CardCanceledcopy';
-// import UnpaidAllCardCopy from '~/components/CardUnpaidAllcopy';
+import CardInShipping from '~/components/CardInShipping';
+import CardSuccesOrder from '~/components/CardSuccesOrder';
+import CardNewOrderBa from '~/components/CardNewOrderBa';
 
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
@@ -231,7 +233,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>pesanan baru</h1>
+                    <CardNewOrderBa />
                   </TabPanel>
                 </ScrollBox>
 
@@ -243,13 +245,13 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>dalam Pengiriman</h1>
+                    <CardInShipping />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>pesanan selesai</h1>
+                    <CardSuccesOrder />
                   </TabPanel>
                 </ScrollBox>
 

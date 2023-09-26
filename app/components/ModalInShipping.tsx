@@ -24,17 +24,22 @@ import { useState } from 'react';
 import { BsCircleFill } from 'react-icons/bs';
 import copy from '~/assets/DetailOrderIcon/copy.svg';
 import { UseBiteshipTrack } from '~/hooks/useBiteshipTrack';
-import type { ITracking } from '~/interfaces/order/orderTracking';
+import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 
 export default function ModalInShipping(props: {
   isOpen: boolean;
   onClose: () => void;
-  data: ITracking;
+  selectedCardId: string;
+  data: IBiteshipTracking;
 }) {
-  const { trackingInfoArray, trackingInfo } = UseBiteshipTrack();
+  const { trackingInfoArray, trackingInfo } = UseBiteshipTrack(
+    props.selectedCardId
+  );
 
   const steps = trackingInfoArray;
-  console.log('step', steps);
+
+  const stepCount = steps.length;
+  const stepHeight = 65;
 
   const { activeStep } = useSteps({
     index: 1,
@@ -44,15 +49,8 @@ export default function ModalInShipping(props: {
   const toast = useToast();
   const [, setCopied] = useState(false);
 
-  const stepCount = steps.length;
-  const stepHeight = 65;
-
-  // useEffect(() => {
-  //   steps;
-  // }, []);
-
   const handleCopyClick = () => {
-    const textToCopy = props.data.waybill_id as string;
+    const textToCopy = props.data?.waybill_id as string;
     navigator.clipboard.writeText(textToCopy).then(() => {
       setCopied(true);
 
@@ -104,7 +102,7 @@ export default function ModalInShipping(props: {
                       lineHeight={'20px'}
                       color={'#1D1D1D'}
                     >
-                      {trackingInfo?.courier.company}
+                      {trackingInfo?.courier?.company}
                     </Text>
                   </Box>
                   <Box width={'288px'} height={'44px'} gap={1}>
@@ -235,7 +233,7 @@ export default function ModalInShipping(props: {
                   padding={'var(--4, 16px)'}
                   borderRadius={'var(--rounded-lg, 12px)'}
                 >
-                  {steps.map((step: any, index: number) => (
+                  {steps.reverse().map((step: any, index: number) => (
                     <Step key={index}>
                       <StepIndicator>
                         <StepStatus
@@ -288,7 +286,6 @@ export default function ModalInShipping(props: {
                           )}
                         </StepDescription>
                       </Box>
-
                       <StepSeparator style={{ background: '#E6E6E6' }} />
                     </Step>
                   ))}

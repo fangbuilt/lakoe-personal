@@ -3,6 +3,9 @@ import {
   Button,
   Divider,
   Flex,
+  FormControl,
+  FormLabel,
+  Input,
   ListItem,
   Modal,
   ModalBody,
@@ -13,15 +16,42 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import React from 'react';
+import { Form } from '@remix-run/react';
+import moment from 'moment';
+import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
+import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 
 export default function AdminDeclinedPopup(props: any) {
+  const { dataWithdrawal } = props;
+  const [formData, setFormData] = useState({
+    reasonAdminDeclained: '',
+  });
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+
+  function formatRupiah(amount: number) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
+  }
+
+  const transferFee = 10000;
+  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
+  const withdarwalTotal = formatRupiah(
+    parseInt(dataWithdrawal.amount) - transferFee - tax
+  );
 
   return (
     <>
@@ -60,18 +90,26 @@ export default function AdminDeclinedPopup(props: any) {
             >
               <Box>
                 <Text display={'flex'}>
-                  Nomor Penarikan: <Text fontWeight={700}>123ASD</Text>
+                  Nomor Penarikan:{' '}
+                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                 </Text>
-                <Text>Dibuat 6 September 2023 pukul 15:45 </Text>
+                <Text>
+                  {moment(
+                    dataWithdrawal.createdAt,
+                    'YYYY-MM-DD HH:mm:ss'
+                  ).format('LLLL')}{' '}
+                </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
-                  <Text fontWeight={700}>Adira Salahudi</Text>
-                  <Text fontSize={'12px'}>Dumbways Store</Text>
+                  <Text fontWeight={700}>
+                    {dataWithdrawal.bankAccount.accountName}
+                  </Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>Status: Declined</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
                 </Box>
               </Flex>
 
@@ -79,15 +117,15 @@ export default function AdminDeclinedPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: BNI</Text>
+                  <Text>: {dataWithdrawal.bankAccount.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: 0460541966</Text>
+                  <Text>:{dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: Adira Salahudi</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                 </Flex>
               </Box>
 
@@ -98,14 +136,14 @@ export default function AdminDeclinedPopup(props: any) {
                     <Text width={'150px'}>Jumlah Penarikan</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 1.000.000</Text>
+                  <Text>{formattedAmount}</Text>
                 </Flex>
                 <Flex justifyContent={'space-between'}>
                   <Flex>
                     <Text width={'150px'}>Biaya Admin</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 10.000</Text>
+                  <Text> {tax}</Text>
                 </Flex>
                 <Text fontSize={'10px'} color={'grey'}>
                   *1% jumlah penarikan
@@ -115,7 +153,7 @@ export default function AdminDeclinedPopup(props: any) {
                     <Text width={'150px'}>Biaya Transfer</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 10.000</Text>
+                  <Text> {formatRupiah(transferFee)}</Text>
                 </Flex>
                 <Divider my={'5px'} py={'1px'} bg={'grey'} />
                 <Flex justifyContent={'space-between'}>
@@ -123,16 +161,38 @@ export default function AdminDeclinedPopup(props: any) {
                     <Text width={'150px'}>Saldo yang diterima</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 980.000</Text>
+                  <Text> {withdarwalTotal}</Text>
                 </Flex>
               </Box>
 
               <Box mt={'10px'}>
-                <Text fontWeight={700}>Alasan Penolakan</Text>
-                <Text>
-                  Nama pemilik rekening tidak sama dengan pemilik Toko. Silakan
-                  melakukan penarikan uang dengan data yang sesuai.{' '}
-                </Text>
+                <Form>
+                  <FormControl>
+                    <FormLabel fontSize={'12px'} fontWeight={700}>
+                      Alasan Penolakan
+                    </FormLabel>
+                    <Input
+                      type="text"
+                      name="reasondAdminDeclined"
+                      value={formData.reasonAdminDeclained}
+                      fontSize={'10px'}
+                      onChange={(event) => handleChange(event)}
+                    />
+                  </FormControl>
+                  <Button
+                    fontSize={'12px'}
+                    colorScheme="teal"
+                    width={'100%'}
+                    textAlign={'center'}
+                    mt={'10px'}
+                    onClick={() => {
+                      onClose();
+                      AdminDeclinedNotification(formData.reasonAdminDeclained);
+                    }}
+                  >
+                    Send email to Seller
+                  </Button>
+                </Form>
               </Box>
 
               <Box mt={'10px'}>
@@ -141,14 +201,20 @@ export default function AdminDeclinedPopup(props: any) {
                   <ListItem>
                     Permintaan ditolak oleh Admin A{' '}
                     <ListItem ml={'20px'}>
-                      6 September 2023 pukul 15:15
+                      {moment(
+                        dataWithdrawal.updatedAt,
+                        'YYYY-MM-DD HH:mm:ss'
+                      ).format('LLLL')}{' '}
                     </ListItem>
                   </ListItem>
 
                   <ListItem>
                     Permintaan dibuat{' '}
                     <ListItem ml={'20px'}>
-                      6 September 2023 pukul 15:05
+                      {moment(
+                        dataWithdrawal.createdAt,
+                        'YYYY-MM-DD HH:mm:ss'
+                      ).format('LLLL')}{' '}
                     </ListItem>
                   </ListItem>
                 </UnorderedList>
@@ -157,6 +223,7 @@ export default function AdminDeclinedPopup(props: any) {
           </ModalBody>
           <ModalFooter>
             <Button
+              type="submit"
               colorScheme="teal"
               mr={3}
               onClick={onClose}
@@ -165,7 +232,7 @@ export default function AdminDeclinedPopup(props: any) {
               borderColor={'gray.500'}
               fontSize={'12px'}
             >
-              Close
+              Selesai
             </Button>
           </ModalFooter>
         </ModalContent>

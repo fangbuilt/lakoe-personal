@@ -49,7 +49,7 @@ export const statusToColor: StatusColorMap = {
   ORDER_SUCCES: '#E6E6E6',
   ORDER_CANCELLED: '#EA3829',
   NEW_ORDER: '#008F5D',
-  ORDER_COMPLETED: '#E6E6E6',
+  ORDER_COMPLETED: '#909090',
 };
 // status
 export const statusNameButton: StatusNameMap = {

@@ -103,6 +103,23 @@ export async function getWithdrawalList() {
   });
 }
 
+export async function updateStatusWithdraw(id: string, statusUpdated: string) {
+  try {
+    const updatedStatus = await db.withdraw.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: statusUpdated,
+      },
+    });
+    return updatedStatus;
+  } catch (error) {
+    console.error('Error updating status:', error);
+    throw error;
+  }
+}
+
 export async function createWithdraw(
   data: any,
   id: any,
@@ -139,6 +156,7 @@ export async function createWithdraw(
         },
         amount: amount,
         status: 'REQUEST',
+        // attachment: data.attachment,
         bankAccount: {
           connect: { id: bankId },
         },

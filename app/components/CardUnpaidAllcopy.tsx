@@ -58,22 +58,37 @@ import UnpaidCard from './CardUnpaid';
 import CardReadyToShip from './CardReadyToShip';
 import CardCenceled from './CardCanceled';
 import ModalWhatsapp from './modalProps/modalWhatsapp';
-export default function UnpaidAllCardCopy() {
+import CardInShipping from './CardInShipping';
+import ModalInShipping from './ModalInShipping';
+import type { IBiteshipTracking } from '~/interfaces/orderTracking';
+import { ModalComponent } from './CardNewOrderBa';
+export default function UnpaidAllCardCopy(props: {
+  dataTracking: IBiteshipTracking;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { filteredOrders, setSearchQuery, searchQuery } = UseSearchAll();
   const { getTemplateMessages } = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [, setSelectedCardId] = useState<string>('');
+  const [selectedCardId, setSelectedCardId] = useState<string>('');
   const [isUnpaidModalOpen, setIsUnpaidModalOpen] = useState(false);
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
+  const [isOrderNewOrderModalOpen, setIsOrderNewOrderModalOpen] =
+    useState(false);
   const [isOrderCancelledModalOpen, setIsOrderCancelledModalOpen] =
     useState(false);
-
+  const [isOrderInTransitModalOpen, setIsOrderInTransitModalOpen] =
+    useState(false);
+  const [isOrderCompletedModalOpen, setIsOrderCompletedModalOpen] =
+    useState(false);
+  const [modalText, setModalText] = useState('');
   const closeModal = () => {
     setModalIsOpen(false);
     setIsUnpaidModalOpen(false);
     setIsNewOrderModalOpen(false);
+    setIsOrderNewOrderModalOpen(false);
     setIsOrderCancelledModalOpen(false);
+    setIsOrderInTransitModalOpen(false);
+    setIsOrderCompletedModalOpen(false);
   };
 
   const {
@@ -107,6 +122,7 @@ export default function UnpaidAllCardCopy() {
   };
   const itemTemplate: ItemTemplate = defaultITemplates;
 
+  const componentWithoutProps = <ModalComponent />;
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
@@ -385,11 +401,20 @@ export default function UnpaidAllCardCopy() {
                           if (item.status === 'UNPAID') {
                             setIsUnpaidModalOpen(true);
                           }
+                          if (item.status === 'NEW_ORDER') {
+                            setIsOrderNewOrderModalOpen(true);
+                          }
                           if (item.status === 'READY_TO_SHIP') {
                             setIsNewOrderModalOpen(true);
                           }
                           if (item.status === 'ORDER_CANCELLED') {
                             setIsOrderCancelledModalOpen(true);
+                          }
+                          if (item.status === 'IN_TRANSIT') {
+                            setIsOrderInTransitModalOpen(true);
+                          }
+                          if (item.status === 'ORDER_COMPLETED') {
+                            setIsOrderCompletedModalOpen(true);
                           }
                         }}
                         value={statusToSendBuyer[item.status] || ''}
@@ -407,6 +432,15 @@ export default function UnpaidAllCardCopy() {
                           itemPhone={item.receiverPhone}
                         />
                       )}
+                      {isOrderNewOrderModalOpen &&
+                        item.status === 'NEW_ORDER' && (
+                          <ModalComponent
+                            isOpen={isOrderNewOrderModalOpen}
+                            onClose={onClose}
+                            modalText={modalText}
+                            // onConfirm={afterpacking}
+                          />
+                        )}
                       {isNewOrderModalOpen &&
                         item.status === 'READY_TO_SHIP' && (
                           <ModalTracking
@@ -425,93 +459,25 @@ export default function UnpaidAllCardCopy() {
                             itemPhone={item.receiverPhone}
                           />
                         )}
-
-                      {/* isNewOrderModalOpen && item.status === 'NEW_ORDER' ? (
-                      <ModalTracking
-                        onClose={closeModal}
-                        isOpen={isNewOrderModalOpen}
-                        selectedCardId={item.id}
-                      />
-                      )
-
-                      isOrderCancelledModalOpen &&
-                      item.status === 'ORDER_CANCELLED' ? (
-                      <OrderUnpaidModal
-                        onClose={closeModal}
-                        isOpen={isOrderCancelledModalOpen}
-                        selectedCardId={item.id}
-                        itemName={item.receiverName}
-                        itemPhone={item.receiverPhone}
-                      />
-                      ) */}
-
-                      {/* {item.status === "UNPAID" ? (
-                        <OrderUnpaidModal
-                          isOpen={modalIsOpen}
-                          onClose={closeModal}
-                          selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
-                          itemName={item.receiverName}
-                          itemPhone={item.receiverPhone}
-                        />
-                      ) : item.status === "NEW_ORDER" ? (
-                        <ModalTracking
-                          isOpen={modalIsOpen}
-                          onClose={closeModal}
-                          selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
-                        />
-                      ) : item.status === "ORDER_CANCELLED" ? (
-                        <OrderUnpaidModal
-                          isOpen={modalIsOpen}
-                          onClose={closeModal}
-                          selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
-                          itemName={item.receiverName}
-                          itemPhone={item.receiverPhone}
-                        />
-                      ) :null} */}
-
-                      {/* <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                        <ModalOverlay bg={'whiteAlpha.100'} />
-                        <ModalContent>
-                          <ModalHeader>
-                            Send Message ke {item.receiverName}
-                          </ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <Accordion allowToggle>
-                              {getTemplateMessages.map((itemtemp) => (
-                                <AccordionItem key={itemtemp.id}>
-                                  <Text>
-                                    <AccordionButton>
-                                      <Box as="span" flex="1" textAlign="left">
-                                        {itemtemp.name}
-                                      </Box>
-                                      <AccordionIcon />
-                                    </AccordionButton>
-                                  </Text>
-                                  <AccordionPanel pb={4}>
-                                    {itemtemp.content}
-                                    <Button
-                                      colorScheme={'whatsapp'}
-                                      float={'right'}
-                                    >
-                                      <Link
-                                        to={createWhatsAppTemplateMessageUnpaid(
-                                          item.receiverPhone ?? '',
-                                          itemtemp.content
-                                        )}
-                                        target="_blank"
-                                      >
-                                        Kirim
-                                      </Link>
-                                    </Button>
-                                  </AccordionPanel>
-                                </AccordionItem>
-                              ))}
-                            </Accordion>
-                          </ModalBody>
-                          <ModalFooter></ModalFooter>
-                        </ModalContent>
-                      </Modal>  */}
+                      {isOrderInTransitModalOpen &&
+                        item.status === 'IN_TRANSIT' && (
+                          <ModalInShipping
+                            onClose={closeModal}
+                            isOpen={isOrderInTransitModalOpen}
+                            data={props.dataTracking}
+                            selectedCardId={selectedCardId}
+                          />
+                        )}
+                      {isOrderCompletedModalOpen &&
+                        item.status === 'ORDER_COMPLETED' && (
+                          <ModalWhatsapp
+                            isOpen={isOrderCompletedModalOpen}
+                            onClose={closeModal}
+                            selectedCardId={item.id}
+                            itemName={item.receiverName}
+                            itemPhone={item.receiverPhone}
+                          />
+                        )}
                     </Flex>
                     <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
                       {item.invoiceNumber}

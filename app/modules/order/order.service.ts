@@ -382,3 +382,30 @@ export async function updateStatusInvoice(data: any) {
 export async function getTemplateMessage() {
   return await db.messageTemplate.findMany();
 }
+
+export async function SuccesService() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'ORDER_COMPLETED',
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}

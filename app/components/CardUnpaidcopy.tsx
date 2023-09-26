@@ -356,49 +356,6 @@ export default function UnpaidCardCopy(props: any) {
                         itemName={item.receiverName}
                         itemPhone={item.receiverPhone}
                       />
-                      {/* <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                        <ModalOverlay background={'whiteAlpha.50'} />
-                        <ModalContent>
-                          <ModalHeader>
-                            Send Message ke {item.receiverName}
-                          </ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <Accordion allowToggle>
-                              {getTemplateMessages.map((itemtemp) => (
-                                <AccordionItem key={itemtemp.id}>
-                                  <Text>
-                                    <AccordionButton>
-                                      <Box as="span" flex="1" textAlign="left">
-                                        Pesan {itemtemp.name}
-                                      </Box>
-                                      <AccordionIcon />
-                                    </AccordionButton>
-                                  </Text>
-                                  <AccordionPanel pb={4}>
-                                    {itemtemp.content}
-                                    <Button
-                                      colorScheme={'whatsapp'}
-                                      float={'right'}
-                                    >
-                                      <Link
-                                        to={createWhatsAppTemplateMessageUnpaid(
-                                          item.receiverPhone ?? '',
-                                          itemtemp.content
-                                        )}
-                                        target="_blank"
-                                      >
-                                        Kirim
-                                      </Link>
-                                    </Button>
-                                  </AccordionPanel>
-                                </AccordionItem>
-                              ))}
-                            </Accordion>
-                          </ModalBody>
-                          <ModalFooter></ModalFooter>
-                        </ModalContent>
-                      </Modal> */}
                       {/*  */}
                     </Flex>
                     <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>

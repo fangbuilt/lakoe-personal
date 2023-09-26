@@ -319,7 +319,7 @@ export default function CardCenceledCopy(props: any) {
         </Box>
       ) : (
         <Box>
-          {filteredOrders.map((data, index) => (
+          {filteredOrders.map((data) => (
             <Card mb={5} mt={5} boxShadow={'xs'} key={data.id}>
               <Box>
                 <Box mt={5}>

@@ -116,7 +116,12 @@ export default function Dashboard() {
       item.bankAccounts.forEach((account) => {
         if (account.withdraws && account.withdraws.length > 0) {
           account.withdraws.forEach((withdraw) => {
-            totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+            if (
+              withdraw.status !== 'SUCCESS' &&
+              withdraw.status !== 'DECLINED'
+            ) {
+              totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+            }
           });
         }
       });

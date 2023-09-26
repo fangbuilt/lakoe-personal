@@ -7,21 +7,38 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalOverlay,
   Text,
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
+import moment from 'moment';
 import React from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
 
 export default function AdminSuccessPopup(props: any) {
+  const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+
+  function formatRupiah(amount: number) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
+  }
+
+  const transferFee = 10000;
+  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
+  const withdarwalTotal = formatRupiah(
+    parseInt(dataWithdrawal.amount) - transferFee - tax
+  );
 
   return (
     <>
@@ -60,18 +77,26 @@ export default function AdminSuccessPopup(props: any) {
             >
               <Box>
                 <Text display={'flex'}>
-                  Nomor Penarikan: <Text fontWeight={700}>123ASD</Text>
+                  Nomor Penarikan:{' '}
+                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                 </Text>
-                <Text>Dibuat 6 September 2023 pukul 15:45 </Text>
+                <Text>
+                  {moment(
+                    dataWithdrawal.createdAt,
+                    'YYYY-MM-DD HH:mm:ss'
+                  ).format('LLLL')}
+                </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
-                  <Text fontWeight={700}>Adira Salahudi</Text>
-                  <Text fontSize={'12px'}>Dumbways Store</Text>
+                  <Text fontWeight={700}>
+                    {dataWithdrawal.bankAccount.accountName}
+                  </Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>Status: Succes</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
                 </Box>
               </Flex>
 
@@ -79,15 +104,15 @@ export default function AdminSuccessPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: BNI</Text>
+                  <Text>:{dataWithdrawal.bankAccount.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: 0460541966</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: Adira Salahudi</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                 </Flex>
               </Box>
 
@@ -98,14 +123,14 @@ export default function AdminSuccessPopup(props: any) {
                     <Text width={'150px'}>Jumlah Penarikan</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 1.000.000</Text>
+                  <Text> {formattedAmount}</Text>
                 </Flex>
                 <Flex justifyContent={'space-between'}>
                   <Flex>
                     <Text width={'150px'}>Biaya Admin</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 10.000</Text>
+                  <Text>{tax} </Text>
                 </Flex>
                 <Text fontSize={'10px'} color={'grey'}>
                   *1% jumlah penarikan
@@ -115,7 +140,7 @@ export default function AdminSuccessPopup(props: any) {
                     <Text width={'150px'}>Biaya Transfer</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 10.000</Text>
+                  <Text> {formatRupiah(transferFee)}</Text>
                 </Flex>
                 <Divider my={'5px'} py={'1px'} bg={'grey'} />
                 <Flex justifyContent={'space-between'}>
@@ -123,7 +148,7 @@ export default function AdminSuccessPopup(props: any) {
                     <Text width={'150px'}>Saldo yang diterima</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> Rp. 980.000</Text>
+                  <Text> {withdarwalTotal}</Text>
                 </Flex>
               </Box>
 
@@ -140,8 +165,9 @@ export default function AdminSuccessPopup(props: any) {
                 >
                   <Link
                     to={
-                      'https://media.istockphoto.com/id/1488332977/photo/wooden-deck-at-the-seaside.webp?b=1&s=170667a&w=0&k=20&c=R47Apouxt_juv7WNuTpnnc3GGd4R5yf05uCwEY7YhNA='
+                      'https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg'
                     }
+                    target="_blank"
                   >
                     <Text fontWeight={'700'} color={'teal'}>
                       Lihat Gambar
@@ -189,6 +215,19 @@ export default function AdminSuccessPopup(props: any) {
               </Box>
             </Box>
           </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="teal"
+              mr={3}
+              onClick={onClose}
+              color={'white'}
+              border={'1px solid'}
+              borderColor={'gray.500'}
+              fontSize={'12px'}
+            >
+              Close
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

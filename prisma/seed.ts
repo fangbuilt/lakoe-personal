@@ -137,7 +137,7 @@ async function main() {
         id: x.toString(),
         name: name,
         description: faker.commerce.productDescription(),
-        minumumOrder: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
+        minimumOrder: faker.helpers.rangeToNumber({ min: 0, max: 100 }),
         slug: faker.helpers.slugify(name) + x.toString(),
         storeId: faker.helpers.arrayElement(relationsId),
         categoryId: faker.helpers.arrayElement(relationsId),
@@ -444,7 +444,7 @@ async function main() {
         status: faker.helpers.arrayElement([
           'REQUEST',
           'APPROVED',
-          'PROGRESSING',
+          'PROCESSING',
           'SUCCESS',
           'DECLINED',
         ]),
