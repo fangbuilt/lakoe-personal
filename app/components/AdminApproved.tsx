@@ -83,6 +83,7 @@ export default function AdminApproved({ dataWithdrawal }: any) {
         p="6"
         rounded="md"
         bg="white"
+        overflow={'auto'}
       >
         <Box>
           <Tabs defaultIndex={2}>

@@ -72,6 +72,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
         p="6"
         rounded="md"
         bg="white"
+        overflow={'auto'}
       >
         <Box>
           <Tabs defaultIndex={5}>

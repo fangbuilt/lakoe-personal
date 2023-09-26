@@ -94,7 +94,7 @@ export default function AdminSuccessPopup(props: any) {
                   <Text fontWeight={700}>
                     {dataWithdrawal.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
                 </Box>
                 <Box>
                   <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
@@ -185,7 +185,7 @@ export default function AdminSuccessPopup(props: any) {
                   padding={0}
                   onClick={() => {
                     AdminSuccessNotification(
-                      dataWithdrawal.store.name,
+                      dataWithdrawal.store?.name,
                       formattedAmount,
                       dataWithdrawal.bankAccount
                     );

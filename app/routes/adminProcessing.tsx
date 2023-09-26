@@ -23,12 +23,10 @@ export async function loader() {
 }
 
 export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const id = formData.get('id');
-  const status = formData.get('status');
-  const actionType = formData.get('actionType');
-
   if (request.method.toLowerCase() === 'patch') {
+    const formData = await request.formData();
+    const id = formData.get('id');
+    const status = formData.get('status');
     try {
       const updateStatus = await updateStatusWithdraw(
         id as string,
@@ -41,9 +39,9 @@ export async function action({ request }: ActionArgs) {
     }
   }
 
-  if (actionType === 'create') {
+  if (request.method.toLowerCase() === 'post') {
     const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
-      if (name !== 'attachment') {
+      if (name !== 'img') {
         return undefined;
       }
       const uploadedImage = await uploadImage(data);
@@ -53,7 +51,7 @@ export async function action({ request }: ActionArgs) {
     try {
       const formData = await parseMultipartFormData(request, uploadHandler);
 
-      const imgSource = formData.get('attachment') as string;
+      const imgSource = formData.get('img') as string;
       const withdrawIdAttachment = formData.get('withdrawId') as string;
 
       console.log('img url', imgSource);
