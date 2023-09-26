@@ -113,7 +113,10 @@ export default function ProductBody(props: IProductBodyProps) {
                     <Box display={'flex'} gap={2}>
                       {selectAllChecked && (
                         <>
-                          <ProductModalSelect {...searchProducts[0]} />
+                          <ProductModalSelect
+                            {...searchProducts[0]}
+                            selectedProductCount={searchProducts.length}
+                          />
                         </>
                       )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
@@ -150,7 +153,10 @@ export default function ProductBody(props: IProductBodyProps) {
                     <Box display={'flex'} gap={2}>
                       {selectAllChecked && (
                         <>
-                          <ProductModalSelect {...searchProducts[0]} />
+                          <ProductModalSelect
+                            {...searchProducts[0]}
+                            selectedProductCount={searchProducts.length}
+                          />
                         </>
                       )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
@@ -187,7 +193,10 @@ export default function ProductBody(props: IProductBodyProps) {
                     <Box display={'flex'} gap={2}>
                       {selectAllChecked && (
                         <>
-                          <ProductModalSelect {...searchProducts[0]} />
+                          <ProductModalSelect
+                            {...searchProducts[0]}
+                            selectedProductCount={searchProducts.length}
+                          />
                         </>
                       )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>

@@ -15,7 +15,9 @@ import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { IProduct } from '~/interfaces/product/product';
 
-export default function ProductModalSelect(props: IProduct) {
+export default function ProductModalSelect(
+  props: IProduct & { selectedProductCount: number }
+) {
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -60,9 +62,9 @@ export default function ProductModalSelect(props: IProduct) {
             alignContent={'center'}
           >
             <Text fontSize={'18px'} color={'#1D1D1D'}>
-              Nonaktifkan {props.name} {''} Produk
+              Nonaktifkan {props.selectedProductCount} {''} Produk
             </Text>
-            <Button onClick={onDeleteClose} variant="link">
+            <Button onClick={onDisableClose} variant="link">
               <Image src={CloseCircle} />
             </Button>
           </Box>
@@ -75,7 +77,7 @@ export default function ProductModalSelect(props: IProduct) {
 
           <Box display={'flex'} justifyContent={'flex-end'} gap={2} mt={4}>
             <Button
-              onClick={onDeleteClose}
+              onClick={onDisableClose}
               borderRadius={'50px'}
               variant={'outline'}
             >
@@ -90,7 +92,7 @@ export default function ProductModalSelect(props: IProduct) {
                 borderRadius={'50px'}
                 type="submit"
               >
-                Ya, Hapus
+                Ya, Nonaktifkan
               </Button>
             </Form>
           </Box>
@@ -107,7 +109,7 @@ export default function ProductModalSelect(props: IProduct) {
             alignContent={'center'}
           >
             <Text fontSize={'18px'} color={'#1D1D1D'}>
-              Hapus {props.name} {''} Produk
+              Hapus {props.selectedProductCount} {''} Produk
             </Text>
             <Button onClick={onDeleteClose} variant="link">
               <Image src={CloseCircle} />
