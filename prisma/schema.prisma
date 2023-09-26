@@ -30,6 +30,7 @@ model User {
   payments               Payment[]
   withdraws              Withdraw[]
   verify                 Verify[]
+  isVerify                Boolean
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
