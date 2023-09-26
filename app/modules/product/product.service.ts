@@ -92,7 +92,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
-      store: true,
+      // store: true,
       attachments: true,
       variants: {
         include: {
@@ -151,15 +151,6 @@ export async function getProductByCategoryId(id: any) {
   return data;
 }
 
-export async function deleteProduct(id: string) {
-  const deleteProduct = await db.product.delete({
-    where: {
-      id: id,
-    },
-  });
-  return deleteProduct;
-}
-
 export async function update(data: any): Promise<any> {
   const currentData = await db.variantOptionValue.findFirst({
     where: {
@@ -202,32 +193,38 @@ export async function updateIsActive(data: any) {
   return status;
 }
 
-export async function deleteProductInvoices(data: any) {
-  try {
-    const getInvoices = await db.invoice.findFirst({
-      where: {
-        cart: {
-          store: {
-            products: data,
+export async function getProductTest() {
+  const data = await db.product.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return data;
+}
+
+export async function deleteProduct(id: any) {
+  const getProductInvoice = await db.invoice.findFirst({
+    where: {
+      cart: {
+        cartItems: {
+          some: {
+            productId: id,
           },
         },
       },
-    });
-    if (getInvoices) {
-      return { success: false, message: 'Produk sudah ada dalam faktur.' };
-    }
-
+    },
+  });
+  console.log('ini id product', getProductInvoice);
+  if (!getProductInvoice) {
     await db.product.delete({
       where: {
-        id: data.id,
+        id: id,
       },
     });
-    return { success: true, message: 'Produk berhasil dihapus.' };
-  } catch (error) {
-    console.error('Terjadi kesalahan saat menghapus produk:', error);
-    return {
-      success: false,
-      message: 'Terjadi kesalahan saat menghapus produk.',
-    };
+    const isSuccess = true;
+    return isSuccess;
+  } else {
+    const isSuccess = false;
+    return isSuccess;
   }
 }

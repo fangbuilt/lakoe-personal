@@ -41,18 +41,9 @@ export default function ProductBody(props: IProductBodyProps) {
     useFilterProducts();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortProducts();
-  // console.log('props product body',props)
   useEffect(() => {
     setSearchQuery(debouncedSearchTerm);
   }, [debouncedSearchTerm, setSearchQuery]);
-
-  // const filteredProducts =
-  //   activeTab === 1
-  //     ? product.filter((a) => a.isActive)
-  //     : activeTab === 2
-  //     ? product.filter((a) => !a.isActive)
-  //     : product;
-
   return (
     <>
       <Box w={'100%'} bgColor={'white'} borderRadius={10}>
