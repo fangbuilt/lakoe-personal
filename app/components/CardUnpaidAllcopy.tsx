@@ -62,6 +62,7 @@ import CardInShipping from './CardInShipping';
 import ModalInShipping from './ModalInShipping';
 import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 import { ModalComponent } from './CardNewOrderBa';
+import HooksMasRino from './HooksMasRino';
 export default function UnpaidAllCardCopy(props: {
   dataTracking: IBiteshipTracking;
 }) {
@@ -121,8 +122,8 @@ export default function UnpaidAllCardCopy(props: {
     status: 'UNPAID',
   };
   const itemTemplate: ItemTemplate = defaultITemplates;
+  const { setSelectedProps, afterpacking } = HooksMasRino();
 
-  const componentWithoutProps = <ModalComponent />;
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
@@ -402,6 +403,9 @@ export default function UnpaidAllCardCopy(props: {
                             setIsUnpaidModalOpen(true);
                           }
                           if (item.status === 'NEW_ORDER') {
+                            setModalText(
+                              'Apakah sudah di pack dan siap dikirim?'
+                            );
                             setIsOrderNewOrderModalOpen(true);
                           }
                           if (item.status === 'READY_TO_SHIP') {
@@ -436,9 +440,9 @@ export default function UnpaidAllCardCopy(props: {
                         item.status === 'NEW_ORDER' && (
                           <ModalComponent
                             isOpen={isOrderNewOrderModalOpen}
-                            onClose={onClose}
+                            onClose={closeModal}
                             modalText={modalText}
-                            // onConfirm={afterpacking}
+                            onConfirm={afterpacking}
                           />
                         )}
                       {isNewOrderModalOpen &&
