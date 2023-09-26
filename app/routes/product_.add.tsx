@@ -1,5 +1,5 @@
 import { Stack } from '@chakra-ui/react';
-import type { LoaderArgs , type ActionArgs } from '@remix-run/node';
+import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import { Action } from '~/modules/product/components/Action';
@@ -15,7 +15,9 @@ import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
- redirect, json } from '@remix-run/node';
+  redirect,
+  json,
+} from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 import { getUserId } from '~/modules/auth/auth.service';
 // import { useState } from 'react';

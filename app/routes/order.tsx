@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
-import { json, redirect} from '@remix-run/node';
-import type { LoaderArgs , type ActionArgs } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
+import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
   MootaOrderStatusUpdate,
