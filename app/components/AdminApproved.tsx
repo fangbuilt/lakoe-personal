@@ -13,26 +13,32 @@ import {
   Tbody,
   Td,
   Input,
+  VStack,
   FormControl,
   Select,
-  VStack,
 } from '@chakra-ui/react';
 
 import { Link } from '@remix-run/react';
 import moment from 'moment';
 import { useState } from 'react';
-import AdminDeclinedPreview from './AdminDeclinedPreview';
-import { CheckCircleIcon } from '@chakra-ui/icons';
+import AdminApprovedPopup from './AdminApprovedPopup';
 
-export default function AdminDeclined({ dataDeclined }: any) {
-  const filteredDataDeclined = dataDeclined
-    .map((item: any) => {
-      if (item.withdraw.status === 'DECLINED') {
-        return item;
-      }
-    })
-    .filter(Boolean);
-
+export default function AdminApproved({ dataWithdrawal }: any) {
+  const filteredDataRequest = dataWithdrawal.filter(
+    (item: any) => item.status === 'REQUEST'
+  );
+  const filteredDataApproved = dataWithdrawal.filter(
+    (item: any) => item.status === 'APPROVED'
+  );
+  const filteredDataProcessing = dataWithdrawal.filter(
+    (item: any) => item.status === 'PROCESSING'
+  );
+  const filteredDataSuccess = dataWithdrawal.filter(
+    (item: any) => item.status === 'SUCCESS'
+  );
+  const filteredDataDeclined = dataWithdrawal.filter(
+    (item: any) => item.status === 'DECLINED'
+  );
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -40,6 +46,11 @@ export default function AdminDeclined({ dataDeclined }: any) {
     }).format(amount);
   }
 
+  const withdrawalCountAll = dataWithdrawal.length;
+  const withdrawalCountByRequest = filteredDataRequest.length;
+  const withdrawalCountByApproved = filteredDataApproved.length;
+  const withdrawalCountByProcessing = filteredDataProcessing.length;
+  const withdrawalCountBySuccess = filteredDataSuccess.length;
   const withdrawalCountByDeclined = filteredDataDeclined.length;
 
   interface SelectOption {
@@ -66,7 +77,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
     <>
       <Box
         width={'100%'}
-        padding={'20px'}
+        padding={'10px'}
         borderRadius={'15px'}
         boxShadow="base"
         p="6"
@@ -74,7 +85,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
         bg="white"
       >
         <Box>
-          <Tabs defaultIndex={5}>
+          <Tabs defaultIndex={2}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
                 Daftar Penarikan Dana
@@ -98,13 +109,16 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountAll}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -121,13 +135,16 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountByRequest}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -144,13 +161,16 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountByApproved}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -167,13 +187,16 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountByProcessing}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
 
@@ -191,13 +214,16 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         <Tab>
                           {/* NOTIFICATION ORDER  !*/}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountBySuccess}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
 
@@ -223,6 +249,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                             marginRight={2}
                           >
                             {withdrawalCountByDeclined}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -287,7 +314,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredDataDeclined.map((item: any) => (
+                {filteredDataApproved.map((item: any) => (
                   <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
@@ -301,20 +328,20 @@ export default function AdminDeclined({ dataDeclined }: any) {
                       {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {formatRupiah(item.withdraw?.amount)}
+                      {formatRupiah(item.amount)}
                     </Td>
                     <Td margin={'2px 0'}>
                       <Text>
-                        {item.withdraw.status === 'DECLINED' && (
+                        {item.status === 'APPROVED' && (
                           <Text
-                            bg={'RED'}
+                            bg={'blue.600'}
                             color={'white'}
                             borderRadius={'15px'}
                             px={'5px'}
                             fontSize={'10px'}
                             textAlign={'center'}
                           >
-                            DECLINED
+                            APPROVED
                           </Text>
                         )}
                       </Text>
@@ -329,7 +356,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminDeclinedPreview dataDeclined={item} />
+                        <AdminApprovedPopup dataWithdrawal={item} />
                       </Text>
                     </Td>
                   </Tr>
