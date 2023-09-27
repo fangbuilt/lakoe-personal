@@ -108,7 +108,7 @@ export default function AdminDeclinedPreview(props: any) {
                   <Text fontWeight={700}>
                     {/* {dataDeclined.bankAccount.accountName} */}
                   </Text>
-                  <Text fontSize={'12px'}>{dataDeclined.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataDeclined.store?.name}</Text>
                 </Box>
                 <Box>
                   <Text fontSize={'12px'}>{dataDeclined.withdraw.status}</Text>

@@ -29,12 +29,61 @@ import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
 import { db } from '~/libs/prisma/db.server';
+// import { PrismaClient } from "@prisma/client";
 
 export async function loader(id: string) {
   return await getStoreData(id);
 }
 
 export async function action({ request }: ActionArgs) {
+  // const prisma = new PrismaClient();
+  // // updateCreditWhenStatusWithdrawIsDeclined
+  // async function updateCredit(storeId: string) {
+  //   try {
+  //     const findDeclinedStatusWithdraw = await prisma.withdraw.findMany({
+  //       where: {
+  //         storeId: "1",
+  //         status: "DECLINED",
+  //       },
+  //     });
+
+  //     const calculateAmountWithDeclinedStatus =
+  //       findDeclinedStatusWithdraw.reduce(
+  //         (total, withdraw) => total + withdraw.amount,
+  //         0
+  //       );
+
+  //     if (calculateAmountWithDeclinedStatus > 0) {
+  //       const store = await prisma.store.findUnique({
+  //         where: {
+  //           id: "1",
+  //         },
+  //       });
+
+  //       if (store) {
+  //         const updateCreditStore = await prisma.store.update({
+  //           where: {
+  //             id: "1",
+  //           },
+  //           data: {
+  //             credit: store.credit + calculateAmountWithDeclinedStatus,
+  //           },
+  //         });
+  //         console.log("update credit", updateCreditStore);
+  //         return updateCreditStore;
+  //       } else {
+  //         throw new Error(`Store with ID ${storeId} not found.`);
+  //       }
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating credit:", error);
+  //     throw error;
+  //   }
+  //   console.log("update credit", updateCredit);
+  // }
+
   const formData = await request.formData();
 
   const actionType = formData.get('actionType');
@@ -67,7 +116,7 @@ export async function action({ request }: ActionArgs) {
 
       const store = await db.store.findUnique({
         where: {
-          id: '4',
+          id: '1',
         },
       });
       if (store) {
@@ -75,7 +124,7 @@ export async function action({ request }: ActionArgs) {
 
         await db.store.update({
           where: {
-            id: '4',
+            id: '1',
           },
           data: {
             credit: newCredit,
@@ -120,8 +169,6 @@ export default function Dashboard() {
               withdraw.status !== 'DECLINED'
             ) {
               totalWithdrawAmount += parseFloat(withdraw.amount.toString());
-            } else if (withdraw.status === 'DECLINED') {
-              item.credit += parseFloat(withdraw.amount.toString());
             }
           });
         }

@@ -6,14 +6,14 @@ export async function getStoreData(id: string) {
   return json(
     await db.store.findMany({
       where: {
-        id: '4',
+        id: '1',
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '4',
+                storeId: '1',
               },
             },
           },
@@ -28,7 +28,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '4',
+        storeId: '1',
       },
     })
   );
@@ -58,7 +58,7 @@ export async function createBank(data: any) {
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '4' },
+        connect: { id: '1' },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -156,7 +156,7 @@ export async function createWithdraw(
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '4' },
+          connect: { id: '1' },
         },
         amount: amount,
         status: 'REQUEST',

@@ -11,7 +11,12 @@ const LoadingAttachmentAdmin = ({ isLoading, type, color }: any) => (
     margin={'auto'}
     bgColor={'white'}
   >
-    <ReactLoading type={'spin'} color={'blue.500'} height={60} width={30} />
+    <ReactLoading
+      type={'bubbles'}
+      color={'blue.600'}
+      height={100}
+      width={100}
+    />
     <Text fontSize={'12px'}>Please wait a second...</Text>
   </Box>
 );
