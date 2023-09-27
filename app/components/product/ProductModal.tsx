@@ -62,6 +62,11 @@ export default function ProductModal(props: IProduct) {
         >
           Ubah Stok
         </Button>
+        {/* <Link
+          to={`/${props.store.name.replace(/ /g, '-').toLowerCase()}/${
+            props.slug
+          }`}
+        > */}
         <Button
           borderRadius={'50px'}
           size="sm"
@@ -71,6 +76,7 @@ export default function ProductModal(props: IProduct) {
           <Image src={Link2} />
           Lihat Halaman
         </Button>
+        {/* </Link> */}
         <Menu>
           <MenuButton
             as={Button}
@@ -255,7 +261,7 @@ export default function ProductModal(props: IProduct) {
               Batalkan
             </Button>
             <Form method="DELETE">
-              <Input type="hidden" name="id" value={props.id} />
+              <input type="hidden" name="id" value={props.id} />
               <Button
                 colorScheme="#0086B4"
                 bgColor={'#0086B4'}
