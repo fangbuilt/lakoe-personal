@@ -108,28 +108,6 @@ export async function action({ request }: ActionArgs) {
   return redirect('/adminSuccess');
 }
 
-export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const id = formData.get('id');
-  const status = formData.get('status');
-  const actionType = formData.get('actionType');
-
-  if (actionType === 'update' && status) {
-    try {
-      const updateStatus = await updateStatusWithdraw(
-        id as string,
-        status as string
-      ); // Pass both id and status
-      console.log('Status updated successfully:', updateStatus);
-      // Handle success
-    } catch (error) {
-      console.error('Error updating status:', error);
-      throw error;
-    }
-  }
-  return redirect('/adminProcessing');
-}
-
 export default function DasboardAdminProcessing() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (

@@ -24,12 +24,8 @@ import { useState } from 'react';
 import AdminRequestPopup from './AdminRequestPopup';
 import AdminSuccessPopup from './AdminSuccessPopup';
 import AdminProcessingPopup from './AdminProcessingPopup';
-<<<<<<< HEAD
-import AdminDeclinedPopup from './AdminDeclinedPopup';
-=======
 import AdminApprovedPopup from './AdminApprovedPopup';
 import { AiFillCloseCircle } from 'react-icons/ai';
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
 
 export default function AdminRequest({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
@@ -357,8 +353,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           </Text>
                         )}
 
-<<<<<<< HEAD
-=======
                         {item.status === 'APPROVED' && (
                           <Text
                             bg={'blue.600'}
@@ -372,7 +366,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           </Text>
                         )}
 
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                         {item.status === 'PROCESSING' && (
                           <Text
                             bg={'teal'}
@@ -427,8 +420,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           <AdminRequestPopup dataWithdrawal={item} />
                         </Text>
                       )}
-<<<<<<< HEAD
-=======
                       {item.status === 'APPROVED' && (
                         <Text
                           color={'black'}
@@ -441,7 +432,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           <AdminApprovedPopup dataWithdrawal={item} />
                         </Text>
                       )}
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                       {item.status === 'PROCESSING' && (
                         <Text
                           color={'black'}
@@ -468,25 +458,15 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       )}
                       {item.status === 'DECLINED' && (
                         <Text
-<<<<<<< HEAD
-                          color={'black'}
-=======
                           color={'red'}
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                           textAlign={'center'}
                           borderRadius={'15px'}
                           cursor={'pointer'}
                           px={'5px'}
-<<<<<<< HEAD
-                          fontSize={'10px'}
-                        >
-                          <AdminDeclinedPopup dataWithdrawal={item} />
-=======
                           fontSize={'20px'}
                           ml={5}
                         >
                           <AiFillCloseCircle />
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                         </Text>
                       )}
                     </Td>

@@ -133,27 +133,6 @@ export async function loader({ request }: LoaderArgs) {
 //   });
 // }
 
-export async function loader() {
-  const apiKey = process.env.BITESHIP_API_KEY;
-  const dataProductReadyToShip = await getDataProductReadyToShip();
-  //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-  ]);
-  const dataInvoice = await getInvoiceByStatus();
-  return json({
-    unpaidCardAll,
-    unpaidCard,
-    canceledService,
-    dataInvoice,
-    dataShipping: await getDataInShipping(),
-    dataProductReadyToShip,
-    apiKey,
-  });
-}
-
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
 

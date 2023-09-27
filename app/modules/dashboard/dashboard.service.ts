@@ -1,19 +1,19 @@
-import { json } from '@remix-run/node';
-import { db } from '~/libs/prisma/db.server';
+import { json } from "@remix-run/node";
+import { db } from "~/libs/prisma/db.server";
 
 // Fetching data store, bankAccount, withdraw
 export async function getStoreData(id: string) {
   return json(
     await db.store.findMany({
       where: {
-        id: '4',
+        id: "4",
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '4',
+                storeId: "4",
               },
             },
           },
@@ -28,7 +28,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '4',
+        storeId: "4",
       },
     })
   );
@@ -58,7 +58,7 @@ export async function createBank(data: any) {
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '4' },
+        connect: { id: "4" },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -88,7 +88,7 @@ export async function updateBank(
     });
     return updatedBank;
   } catch (error) {
-    console.error('error updating', error);
+    console.error("error updating", error);
     throw error;
   }
 }
@@ -117,24 +117,7 @@ export async function updateStatusWithdraw(id: string, statusUpdated: string) {
     });
     return updatedStatus;
   } catch (error) {
-    console.error('Error updating status:', error);
-    throw error;
-  }
-}
-
-export async function updateStatusWithdraw(id: string, statusUpdated: string) {
-  try {
-    const updatedStatus = await db.withdraw.update({
-      where: {
-        id: id,
-      },
-      data: {
-        status: statusUpdated,
-      },
-    });
-    return updatedStatus;
-  } catch (error) {
-    console.error('Error updating status:', error);
+    console.error("Error updating status:", error);
     throw error;
   }
 }
@@ -149,11 +132,11 @@ export async function createWithdraw(
     const amount = parseFloat(data.amount);
 
     const user = await db.user.findUnique({
-      where: { id: '5' },
+      where: { id: "5" },
     });
 
     if (!user) {
-      throw new Error('User with id not found.');
+      throw new Error("User with id not found.");
     }
 
     const bankAccount = await db.bankAccount.findUnique({
@@ -163,7 +146,7 @@ export async function createWithdraw(
     });
 
     if (!bankAccount) {
-      throw new Error('Bank Account Id not found.');
+      throw new Error("Bank Account Id not found.");
     }
 
     const bankId = bankAccount.id;
@@ -171,23 +154,23 @@ export async function createWithdraw(
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '4' },
+          connect: { id: "4" },
         },
         amount: amount,
-        status: 'REQUEST',
+        status: "REQUEST",
         // attachment: data.attachment,
         bankAccount: {
           connect: { id: bankId },
         },
         approvedBy: {
-          connect: { id: '1' },
+          connect: { id: "1" },
         },
       },
     });
 
     return withdraw;
   } catch (error) {
-    console.error('Error creating withdrawal:', error);
+    console.error("Error creating withdrawal:", error);
     throw error;
   }
 }
@@ -218,7 +201,7 @@ export async function createDeclinedReason(
       reason: data.reason,
     },
   });
-  console.log('this is reason declined:', createReason);
+  console.log("this is reason declined:", createReason);
 
   return createReason;
 }
@@ -239,11 +222,11 @@ export async function createAttachmentAdmin(
       },
     });
 
-    console.log('Attachment creation success:', createAttachment);
+    console.log("Attachment creation success:", createAttachment);
 
     return createAttachment;
   } catch (error) {
-    console.error('Error creating attachment:', error);
+    console.error("Error creating attachment:", error);
     throw error;
   }
 }

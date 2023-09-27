@@ -21,13 +21,6 @@ import {
 import { Link } from '@remix-run/react';
 import moment from 'moment';
 import { useState } from 'react';
-<<<<<<< HEAD
-import { getStoreData } from '~/modules/dashboard/dashboard.service';
-
-export async function loader(id: string) {
-  return await getStoreData(id);
-}
-=======
 import AdminDeclinedPreview from './AdminDeclinedPreview';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 
@@ -39,7 +32,6 @@ export default function AdminDeclined({ dataDeclined }: any) {
       }
     })
     .filter(Boolean);
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -281,17 +273,10 @@ export default function AdminDeclined({ dataDeclined }: any) {
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-<<<<<<< HEAD
-                    Seller
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Uang
-=======
                     Nama Store
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Jumlah Penarikan
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -320,11 +305,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                     </Td>
                     <Td margin={'2px 0'}>
                       <Text>
-<<<<<<< HEAD
-                        {item.status === 'DECLINED' && (
-=======
                         {item.withdraw.status === 'DECLINED' && (
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                           <Text
                             bg={'RED'}
                             color={'white'}
@@ -348,11 +329,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-<<<<<<< HEAD
-                        <AdminDeclinedPopup dataWithdrawal={item} />
-=======
                         <AdminDeclinedPreview dataDeclined={item} />
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                       </Text>
                     </Td>
                   </Tr>
