@@ -39,16 +39,16 @@ export async function getEmail(payload: any) {
 // const data = useLoaderData<typeof loader>();
 
 export async function Biteship(payload: any) {
+  // Allocated
   try {
-    // Allocated
     if (payload.status === "allocated") {
       const invoice = await db.invoice.findFirst({
         where: {
-          courierId: "3",
+          courierId: payload.courierId,
         },
       });
 
-      // console.log("Found Invoice", invoice);
+      console.log("Found Invoice", invoice);
 
       if (!invoice) {
         console.log("Invoice with Courier ID is not found!");
@@ -60,7 +60,7 @@ export async function Biteship(payload: any) {
         data: { orderId: payload.order_id },
       });
 
-      // console.log("order id updated successfully!");
+      console.log("order id updated successfully!");
 
       const courier = await db.courier.findFirst({
         where: {
