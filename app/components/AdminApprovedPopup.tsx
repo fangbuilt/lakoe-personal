@@ -20,7 +20,7 @@ import { LuZoomIn } from 'react-icons/lu';
 import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 import AdminDeclinedPopup from './AdminDeclinedPopup';
 
-export default function AdminRequestPopup(props: any) {
+export default function AdminApprovedPopup(props: any) {
   const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [statusUpdated, setStatusUpdated] = useState(dataWithdrawal.status);
@@ -69,8 +69,10 @@ export default function AdminRequestPopup(props: any) {
 
   const handleApproveClick = async () => {
     try {
-      await updateStatusWithdraw(dataWithdrawal.id, 'APPROVED');
-      setStatusUpdated('APPROVED');
+      // Make an API call to update the status
+      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
+      // Update the local status
+      setStatusUpdated('PROCESSING');
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -144,16 +146,16 @@ export default function AdminRequestPopup(props: any) {
                     <Text width={'150px'}>Nama Pemilik</Text>
                     <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                   </Flex>
-                  <Button
-                    width={'100%'}
-                    textAlign={'center'}
-                    mt={'10px'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                  >
-                    Check
-                  </Button>
+                  {/* <Button
+                  width={"100%"}
+                  textAlign={"center"}
+                  mt={"10px"}
+                  fontSize={"12px"}
+                  colorScheme="teal"
+                  padding={0}
+                >
+                  Check
+                </Button> */}
                 </Box>
 
                 <Box mt={'20px'} fontSize={'12px'}>
@@ -170,7 +172,7 @@ export default function AdminRequestPopup(props: any) {
                       <Text width={'150px'}>Biaya Admin</Text>
                       <Text>:</Text>
                     </Flex>
-                    <Text>{formatRupiah(tax)}</Text>
+                    <Text>{tax}</Text>
                   </Flex>
                   <Text fontSize={'10px'} color={'grey'}>
                     *1% jumlah penarikan
@@ -192,51 +194,9 @@ export default function AdminRequestPopup(props: any) {
                   </Flex>
 
                   <Flex gap={'5px'} mt={'10px'}>
-                    {/* {formUpdate[dataWithdrawal.id] ? (
-                      <Form method="post" onSubmit={handleSubmitReason}>
-                        <FormControl w={"400px"}>
-                          <Input
-                            type="hidden"
-                            name="actionType"
-                            value="create"
-                          />
-                          <Input
-                            type="hidden"
-                            name="withdrawId"
-                            value={formData.withdrawId}
-                          />
-                          <Input
-                            type="hidden"
-                            name="storeId"
-                            value={formData.storeId}
-                          />
-                          <FormLabel fontSize="12px" fontWeight={700}>
-                            Alasan Penolakan
-                          </FormLabel>
-                          <Input
-                            placeholder="Reason of declined..."
-                            type="text"
-                            name="reason"
-                            fontSize="10px"
-                            onChange={handleChange}
-                            value={formData.reason}
-                          />
-                        </FormControl>
-                        <Button
-                          type="submit"
-                          fontSize="12px"
-                          colorScheme="teal"
-                          width="100%"
-                          textAlign="center"
-                          mt="10px"
-                        >
-                          Save Reason
-                        </Button>
-                        {/* <Text>{dataWithdrawal.adminDeclined.reason}</Text> */}
-                    {/* </Form> */}
                     <Button
                       name="status"
-                      value="APPROVED"
+                      value="PROCESSING"
                       flex={'50%'}
                       fontSize={'12px'}
                       colorScheme="teal"
@@ -244,7 +204,7 @@ export default function AdminRequestPopup(props: any) {
                       type="submit"
                       onClick={handleApproveClick}
                     >
-                      Approved
+                      Processing
                     </Button>
                     <Button
                       flex={'50%'}
@@ -255,13 +215,22 @@ export default function AdminRequestPopup(props: any) {
                     >
                       <AdminDeclinedPopup dataWithdrawal={dataWithdrawal} />
                     </Button>
-
-                    {/* )} */}
                   </Flex>
                 </Box>
               </Box>
             </ModalBody>
             <ModalFooter>
+              <Button
+                colorScheme="teal"
+                mr={3}
+                onClick={onClose}
+                color={'white'}
+                border={'1px solid'}
+                borderColor={'gray.500'}
+                fontSize={'12px'}
+              >
+                Close
+              </Button>
               <Button
                 name="status"
                 value="DECLINED"

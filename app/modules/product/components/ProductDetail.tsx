@@ -17,12 +17,17 @@ import CloseCircle from '~/assets/icon-pack/button-icons/close-circle.svg';
 import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
 import axios, { AxiosResponse } from 'axios';
 import crypto from 'crypto';
+import { loader } from '~/routes/product_.add';
+import { useLoaderData } from '@remix-run/react';
 
-const CLOUDINARY_UPLOAD_PRESET = 'idmfzrrw';
-const CLOUDINARY_CLOUD_NAME = 'djhgxoqqh';
+// import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '~/constants/cloudinary';
+
 
 export function ProductDetail() {
   const [, setSelectedImage] = useState<string | null>(null);
+
+  const data = useLoaderData<typeof loader>()
+
 
   const [photos, setPhotos] = useState([
     { label: 'Foto Utama', name: 'mainPhoto', image: null },
@@ -41,11 +46,11 @@ export function ProductDetail() {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('upload_preset', data.ENV.CLOUDINARY_UPLOAD_PRESET);
 
     try {
       const response: AxiosResponse = await axios.post(
-        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`,
+        `https://api.cloudinary.com/v1_1/${data.ENV.CLOUDINARY_CLOUD_NAME}/upload`,
         formData,
         {
           headers: {
@@ -90,7 +95,7 @@ export function ProductDetail() {
       const signature = generateSHA1(generateSignature(publicId, apiSecret));
 
       // Send a DELETE request to Cloudinary
-      await axios.post(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/destroy`, {
+      await axios.post(`https://api.cloudinary.com/v1_1/${data.ENV.CLOUDINARY_CLOUD_NAME}/image/destroy`, {
         public_id: publicId,
         signature: signature,
         api_key: apiKey,

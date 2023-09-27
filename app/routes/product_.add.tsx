@@ -1,7 +1,9 @@
 import { Stack } from '@chakra-ui/react';
-import { redirect, type ActionArgs } from '@remix-run/node';
+import { type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import { Action } from '~/modules/product/components/Action';
 import { Price } from '~/modules/product/components/Price';
 import { ProductDetail } from '~/modules/product/components/ProductDetail';
@@ -11,6 +13,39 @@ import { ProductManagement } from '~/modules/product/components/ProductManagemen
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
 import { createProduct } from '~/modules/product/product.service';
 
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET as string;
+  const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME as string;
+
+
+  if (role?.roleId === '1') {
+    redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return {
+      ENV: {
+        CLOUDINARY_UPLOAD_PRESET,
+        CLOUDINARY_CLOUD_NAME
+      }
+    }
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  }
+
+
+
+
+}
 
 export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'post') {
@@ -19,14 +54,18 @@ export async function action({ request }: ActionArgs) {
 
     const imageUrl = formData.get('mainPhoto') as string;
     const imageUrl2 = formData.get('photo2') as string;
+    const imageUrl3 = formData.get('photo3') as string;
+    const imageUrl4 = formData.get('photo4') as string;
+    const imageUrl5 = formData.get('photo5') as string;
     const height = parseFloat(formData.get('height') as string);
-    const description = "bro bro"
-    console.log('image', imageUrl);
-    console.log('image2', imageUrl2);
+    const description = formData.get("description") as string;
 
     const data = {
       url: imageUrl,
       url2: imageUrl2,
+      url3: imageUrl3,
+      url4: imageUrl4,
+      url5: imageUrl5,
       name: formData.get('name'),
       description: description,
       minimumOrder: Number(formData.get('min_order')),
