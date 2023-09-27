@@ -21,6 +21,7 @@ import { db } from '~/libs/prisma/db.server';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
 import { getUserId } from '~/modules/auth/auth.service';
+import SuccesService from '~/modules/order/orderSuccessService';
 
 // export async function action({ request }: ActionArgs) {
 //   if (request.method.toLowerCase() === 'patch') {
@@ -66,11 +67,13 @@ export async function loader({ request }: LoaderArgs) {
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-  ]);
+  const [unpaidCardAll, unpaidCard, canceledService, successedService] =
+    await Promise.all([
+      getAllProductUnpid(),
+      getProductUnpid(),
+      CanceledService(),
+      SuccesService(),
+    ]);
   const dataInvoice = await getInvoiceByStatus();
 
   const role = await db.user.findFirst({
@@ -86,6 +89,7 @@ export async function loader({ request }: LoaderArgs) {
       unpaidCardAll,
       unpaidCard,
       canceledService,
+      successedService,
       dataInvoice,
       dataShipping: await getDataInShipping(),
       dataProductReadyToShip,
