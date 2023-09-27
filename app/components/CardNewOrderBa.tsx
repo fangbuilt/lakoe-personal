@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import HooksMasRino from '~/modules/webhook/hooks/HooksMasRino';
+import NewOrderHooks from '~/modules/webhook/hooks/NewOrderHooks';
 import type { loader } from '~/routes/order';
 
 export function formatCurrency(price: number): string {
@@ -77,7 +77,7 @@ export default function CardNewOrderBa() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cardProduct = useLoaderData<typeof loader>();
-  const { setSelectedProps, afterpacking } = HooksMasRino();
+  const { setSelectedProps, afterpacking } = NewOrderHooks();
 
   const props = cardProduct.dataInvoice;
 

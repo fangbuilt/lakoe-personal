@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import { useSubmit } from '@remix-run/react';
 
-export default function HooksMasRino() {
+export default function NewOrderHooks() {
   const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
   const submit = useSubmit();
 
@@ -66,7 +66,7 @@ export default function HooksMasRino() {
     }
   };
 
-  const systembalance = 1; //saldo LAKOE
+  const systembalance = 918273981273987; //saldo LAKOE
 
   const afterpacking = () => {
     if (systembalance > 50000) {
