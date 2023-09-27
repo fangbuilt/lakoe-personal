@@ -391,7 +391,7 @@ export default function StatusOrderDetail({
 
   function useStatusLacakPengiriman(status: string, dataTracking: ITracking) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
+    const [selectedCardId, setSelectedCardId] = useState<string>('');
     function openModal() {
       setModalIsOpen(true);
     }
@@ -420,6 +420,7 @@ export default function StatusOrderDetail({
               isOpen={modalIsOpen}
               onClose={closeModal}
               data={dataTracking}
+              selectedCardId={selectedCardId}
             />
           )}
         </>

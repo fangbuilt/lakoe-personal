@@ -24,11 +24,19 @@ import { useState } from 'react';
 import AdminRequestPopup from './AdminRequestPopup';
 import AdminSuccessPopup from './AdminSuccessPopup';
 import AdminProcessingPopup from './AdminProcessingPopup';
+<<<<<<< HEAD
 import AdminDeclinedPopup from './AdminDeclinedPopup';
+=======
+import AdminApprovedPopup from './AdminApprovedPopup';
+import { AiFillCloseCircle } from 'react-icons/ai';
+>>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
 
 export default function AdminRequest({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
     (item: any) => item.status === 'REQUEST'
+  );
+  const filteredDataApproved = dataWithdrawal.filter(
+    (item: any) => item.status === 'APPROVED'
   );
   const filteredDataProcessing = dataWithdrawal.filter(
     (item: any) => item.status === 'PROCESSING'
@@ -48,6 +56,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
   const withdrawalCountAll = dataWithdrawal.length;
   const withdrawalCountByRequest = filteredDataRequest.length;
+  const withdrawalCountByApproved = filteredDataApproved.length;
   const withdrawalCountByProcessing = filteredDataProcessing.length;
   const withdrawalCountBySuccess = filteredDataSuccess.length;
   const withdrawalCountByDeclined = filteredDataDeclined.length;
@@ -60,11 +69,9 @@ export default function AdminRequest({ dataWithdrawal }: any) {
   const [selectedOption, setSelectedOption] = useState<string>('');
 
   const options: SelectOption[] = [
-    { value: 'All', label: 'All' },
-    { value: 'Request', label: 'Request' },
-    { value: 'Processing', label: 'Processing' },
-    { value: 'Success', label: 'Success' },
-    { value: 'Declined', label: 'Declined' },
+    { value: 'Status', label: 'Status' },
+    { value: 'Time', label: 'Time' },
+    { value: 'Saldo Penarikan', label: 'Saldo Penarikan' },
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -149,6 +156,32 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
                             <Text fontSize={'12px'}>Request</Text>
+                          </Flex>
+                        </Tab>
+                      </Link>
+                    </Box>
+                  </Box>
+
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
+                      <Link to={'/adminApproved'}>
+                        <Tab>
+                          {/* NOTIFICATION ORDER */}
+                          <Text
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
+                            borderRadius={'full'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
+                            marginRight={2}
+                          >
+                            {withdrawalCountByApproved}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
+                          </Text>
+                          {/* END NOTIFICATION ORDER */}
+                          <Flex gap={1.5}>
+                            <Text fontSize={'12px'}>Approved</Text>
                           </Flex>
                         </Tab>
                       </Link>
@@ -277,7 +310,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Saldo Penarikan
+                    Jumlah Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -297,6 +330,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {item.store?.name}
                     </Td>
+
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {item.store?.name}
                     </Td>
@@ -323,6 +357,22 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           </Text>
                         )}
 
+<<<<<<< HEAD
+=======
+                        {item.status === 'APPROVED' && (
+                          <Text
+                            bg={'blue.600'}
+                            color={'white'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            APPROVED
+                          </Text>
+                        )}
+
+>>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                         {item.status === 'PROCESSING' && (
                           <Text
                             bg={'teal'}
@@ -377,6 +427,21 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           <AdminRequestPopup dataWithdrawal={item} />
                         </Text>
                       )}
+<<<<<<< HEAD
+=======
+                      {item.status === 'APPROVED' && (
+                        <Text
+                          color={'black'}
+                          textAlign={'center'}
+                          borderRadius={'15px'}
+                          cursor={'pointer'}
+                          px={'5px'}
+                          fontSize={'10px'}
+                        >
+                          <AdminApprovedPopup dataWithdrawal={item} />
+                        </Text>
+                      )}
+>>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                       {item.status === 'PROCESSING' && (
                         <Text
                           color={'black'}
@@ -403,14 +468,25 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       )}
                       {item.status === 'DECLINED' && (
                         <Text
+<<<<<<< HEAD
                           color={'black'}
+=======
+                          color={'red'}
+>>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                           textAlign={'center'}
                           borderRadius={'15px'}
                           cursor={'pointer'}
                           px={'5px'}
+<<<<<<< HEAD
                           fontSize={'10px'}
                         >
                           <AdminDeclinedPopup dataWithdrawal={item} />
+=======
+                          fontSize={'20px'}
+                          ml={5}
+                        >
+                          <AiFillCloseCircle />
+>>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
                         </Text>
                       )}
                     </Td>
