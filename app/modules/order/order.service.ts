@@ -366,3 +366,22 @@ export async function updateStatusInvoice(data: any) {
     },
   });
 }
+
+export async function updateStatusInvoice2(data: any) {
+  const { id } = data;
+  await db.invoice.update({
+    data: {
+      status: 'ORDER_CANCELLED',
+      invoiceHistories: {
+        create: {
+          status: 'ORDER_CANCELLED',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+    },
+    where: {
+      id: id,
+    },
+  });
+}
