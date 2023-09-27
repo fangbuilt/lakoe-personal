@@ -6,7 +6,7 @@ const mailerlite = new MailerLite({
   api_key: process.env.MAILERLITE_API_KEY as string,
 });
 
-export function pickingUp(email: string, name: string, waybill: string, invoiceNumber: string, courierName: string, productName: string, quantity: number) : void {
+export function pickingUp(email: string, name: string, waybill: string, invoiceNumber: string, courierName: string, productName: string, quantity: number, variants: string) : void {
   const emailAddress = `${email}`;
   const date = new Date().getTime();
   const username = `${date}`;
@@ -32,7 +32,8 @@ export function pickingUp(email: string, name: string, waybill: string, invoiceN
       invoicenumber: `${invoiceNumber}`,
       couriername: `${courierName}`,
       productname: `${productName}`,
-      quantity: `${quantity}`
+      quantity: `${quantity}`,
+      variant: `${variants}`
 
       // address: `${address}`,
     },

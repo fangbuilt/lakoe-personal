@@ -1,11 +1,5 @@
 import { db } from "~/libs/prisma/db.server";
-import {
-  droppingOff,
-  updateInvoiceStatusInTransit,
-} from "./hooks/useDroppingOff";
 import { pickingUp, updateInvoiceStatus } from "./hooks/usePickingUp";
-import { useLoaderData } from "@remix-run/react";
-import { loader } from "~/routes/order";
 
 export async function getEmail(payload: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -19,7 +13,19 @@ export async function getEmail(payload: any) {
         include: {
           cartItems: {
             include: {
-              product: true,
+              product: {
+                include: {
+                  variants: {
+                    include: {
+                      variantOptions: {
+                        include: {
+                          variantOptionValues: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -38,7 +44,7 @@ export async function Biteship(payload: any) {
     if (payload.status === "allocated") {
       const invoice = await db.invoice.findFirst({
         where: {
-          courierId: payload.courier_id,
+          courierId: "3",
         },
       });
 
@@ -108,6 +114,7 @@ export async function Biteship(payload: any) {
       const waybill = dataInvoice?.waybill as string;
       const invNum = dataInvoice?.invoiceNumber as string;
       const courierName = dataInvoice?.courier?.courierName as string;
+      let variantInfo = "";
       let qty = 0; // Initialize quantity as 0
       let productName = ""; // Initialize product name as an empty string
 
@@ -116,9 +123,28 @@ export async function Biteship(payload: any) {
       cartItems.forEach((item) => {
         qty += item.qty || 0; // Add item quantity to the total, treating undefined as 0
         productName += item.product?.name || ""; // add item product names, treating undefined as an empty string
-      });
 
-      pickingUp(email, name, waybill, invNum, courierName, productName, qty);
+        if (item.product?.variants) {
+          item.product.variants.forEach((variant) => {
+            variantInfo += `Variant: ${variant.name}\n`;
+            if (variant.variantOptions) {
+              variant.variantOptions.forEach((option) => {
+                variantInfo += `, ${option.name}\n`;
+              });
+            }
+          });
+        }
+      });
+      pickingUp(
+        email,
+        name,
+        waybill,
+        invNum,
+        courierName,
+        productName,
+        qty,
+        variantInfo
+      );
       console.log("tracking updated successfully! and email sent succesfully");
       console.log("this is payload status: " + payload.status);
     }

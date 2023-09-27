@@ -1,8 +1,8 @@
-import { useLoaderData } from '@remix-run/react';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import type { ITracking } from '~/interfaces/order/orderTracking';
-import type { loader } from '~/routes/order';
+import { useLoaderData } from "@remix-run/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import type { ITracking } from "~/interfaces/order/orderTracking";
+import type { loader } from "~/routes/order";
 
 export function UseBiteshipTrack(trackingNumber: string) {
   const data = useLoaderData<typeof loader>();
@@ -24,7 +24,6 @@ export function UseBiteshipTrack(trackingNumber: string) {
 
       setTrackingInfo(response.data);
       setTrackingInfoArray(response.data.history);
-      // }
     } catch (err) {
       setError(null);
     }

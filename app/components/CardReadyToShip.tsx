@@ -28,7 +28,6 @@ export default function CardReadyToShip() {
   const closeModal = () => {
     setModalIsOpen(false);
   };
-
   return (
     <>
       {/* CARD START HERE */}
@@ -63,13 +62,6 @@ export default function CardReadyToShip() {
                     >
                       Tracking Pengiriman
                     </Button>
-                    {modalIsOpen && (
-                      <ModalTracking
-                        isOpen={modalIsOpen}
-                        onClose={closeModal}
-                        selectedCardId={selectedCardId}
-                      />
-                    )}
                     {/*  */}
                   </Box>
                 </Flex>
@@ -126,6 +118,14 @@ export default function CardReadyToShip() {
           </Box>
         </Card>
       ))}
+
+      {modalIsOpen && (
+        <ModalTracking
+          isOpen={modalIsOpen}
+          onClose={closeModal}
+          selectedCardId={selectedCardId}
+        />
+      )}
 
       {/* END CARD */}
     </>

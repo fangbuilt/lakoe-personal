@@ -9,7 +9,6 @@ export default function useOrderTracking(trackingId: string) {
   const [orderTrackingsData, setOrderTrackingsData] =
     useState<IBiteshipTracking>();
 
-
   const [orderMultiTrackingsData, setOrderMultiTrackingsData] = useState<
     IBiteshipTracking[]
   >([]);
