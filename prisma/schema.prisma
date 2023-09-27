@@ -9,7 +9,10 @@ datasource db {
   provider     = "mysql"
   relationMode = "prisma"
   url          = env("DATABASE_URL")
+
 }
+
+
 
 // your beautiful schema goes below :
 model User {

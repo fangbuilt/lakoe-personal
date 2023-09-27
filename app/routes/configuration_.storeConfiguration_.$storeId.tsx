@@ -73,7 +73,7 @@ export async function action({ request }: ActionArgs) {
   //ini adalah action location ===============================================
   const formData = await request.formData();
   console.log('ini isi dari formData', formData);
-
+  const storeId = '1';
   const actionType = formData.get('actionType');
   console.log('ini isi dari actionType', actionType);
 
@@ -111,7 +111,7 @@ export async function action({ request }: ActionArgs) {
       postalCode,
       isMainLocation,
     });
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration/${storeId} `;
 
     return redirect(redirectURL);
   } else if (actionType === 'deletelocation') {
