@@ -65,8 +65,10 @@ export default function NewOrderHooks() {
       alert(error);
     }
   };
+  // const systembalance = LakoeBalanceByMoota();
+  const systembalance = 918273981273987; //saldo dummy
 
-  const systembalance = 918273981273987; //saldo LAKOE
+  //saldo real berada dengan script diatas saldo dummy, silahkan gunakan pemanggilang pada fungsi "LakoeBalanceByMoota" saat saldo real sudah ada isinya dan dapat benar benar digunakan terutama saat deployment
 
   const afterpacking = () => {
     if (systembalance > 50000) {
@@ -165,3 +167,40 @@ export default function NewOrderHooks() {
 
   return { setSelectedProps, afterpacking };
 }
+
+export async function LakoeBalanceByMoota() {
+  const MootaBaseURL = 'https://app.moota.co';
+  const MootaGetBankEndPoint = '/api/v2/bank';
+  const MootaAPI = process.env.MOOTA_API;
+
+  const LakoeRequestToMoota = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${MootaAPI}`,
+      Accept: 'application/json',
+    },
+  };
+
+  try {
+    const responseMoota = await fetch(
+      `${MootaBaseURL}${MootaGetBankEndPoint}`,
+      LakoeRequestToMoota
+    );
+
+    if (responseMoota.ok) {
+      const responseData = await responseMoota.json();
+      const balance = parseFloat(responseData.data[0].balance);
+      console.log('Saldo Bank Lakoe:', balance);
+    } else {
+      console.error(
+        'Gagal mengambil data dari Moota:',
+        responseMoota.statusText
+      );
+    }
+  } catch (err) {
+    console.error('Terjadi kesalahan:', err);
+  }
+}
+
+// Memanggil fungsi untuk melakukan permintaan ke Moota
+LakoeBalanceByMoota();
