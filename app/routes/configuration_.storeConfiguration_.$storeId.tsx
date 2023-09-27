@@ -25,6 +25,7 @@ import createLocation, {
   createMessage,
   getStoreid,
   deleteLocation,
+  updateLocation,
 } from '~/modules/configuration/configuration.service';
 
 import {
@@ -61,7 +62,7 @@ export async function action({ request }: ActionArgs) {
   const latitude = formData.get('latitude');
   const longtitude = formData.get('longtitude');
   const cityDistrict = formData.get('cityDistrict');
-  const postalCode = formData.get('postalCode');
+  const postalCode = formData.get('postalCode') as string;
   const isMainLocation = true;
   console.log('ini isi dari name :', name);
   console.log('ini isi dari adres :', address);
@@ -96,6 +97,19 @@ export async function action({ request }: ActionArgs) {
   } else if (actionType === 'deletelocation') {
     const id = formData.get('id') as string;
     await deleteLocation(id);
+  } else if (actionType === 'editlocation') {
+    console.log('masuk ok!');
+    const id = formData.get('id') as string;
+
+    await updateLocation(id, {
+      name,
+      address,
+      latitude,
+      longtitude,
+      cityDistrict,
+      postalCode,
+      isMainLocation,
+    });
   }
 
   //=======================================================================

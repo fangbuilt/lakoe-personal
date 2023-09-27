@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Flex,
   Image,
   TabPanel,
@@ -11,24 +10,26 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
-import { useState } from 'react';
-import Edit from '~/assets/icon-pack/edit.svg';
 import Location from '~/assets/icon-pack/location.svg';
 import type { loader } from '~/routes/configuration_.storeConfiguration_.$storeId';
-import { DeleteButton, ModalCreateLocation } from './Modals';
+import {
+  CreateButtonLocation,
+  DeleteButtonLocation,
+  UpdateButtonLocation,
+} from './Modals';
 
 export default function Locations() {
   // ini logic modal
-  const [isOpenModal1, setIsOpenModal1] = useState(false);
+  //const [isOpenModal1, setIsOpenModal1] = useState(false);
   //const [, setIsOpenModal2] = useState(false);
 
-  const openModal1 = () => {
-    setIsOpenModal1(true);
-  };
+  // const openModal1 = () => {
+  //   setIsOpenModal1(true);
+  // };
 
-  const closeModal1 = () => {
-    setIsOpenModal1(false);
-  };
+  // const closeModal1 = () => {
+  //   setIsOpenModal1(false);
+  // };
 
   // const openModal2 = () => {
   //   setIsOpenModal2(true);
@@ -60,17 +61,17 @@ export default function Locations() {
               Alamat ini akan digunakan sebagai alamat pengirimanmu
             </Text>
           </Box>
-
-          <Button
-            borderRadius={'20px'}
-            border={'1px solid #aeaeae'}
-            bg={'white'}
-            fontSize={'12px'}
-            size={'sm'}
+          <CreateButtonLocation />
+          {/* <Button
+            borderRadius={"20px"}
+            border={"1px solid #aeaeae"}
+            bg={"white"}
+            fontSize={"12px"}
+            size={"sm"}
             onClick={openModal1}
           >
             Tambah Lokasi
-          </Button>
+          </Button> */}
         </Box>
         {/* <TableContainer
           border={"1px"}
@@ -279,7 +280,7 @@ export default function Locations() {
                     <Tr>
                       <Td p={'0px'}>
                         <Flex>
-                          <DeleteButton
+                          <DeleteButtonLocation
                             id={data.id}
                             name={data.name}
                             address={''}
@@ -290,15 +291,17 @@ export default function Locations() {
                             cityDistrict={''}
                             isMainLocation={false}
                           />
-                          <Button
-                            borderRadius={'full'}
-                            bg={'white'}
-                            border={'1px solid #aeaeae'}
-                            p={'0px'}
-                            size={'sm'}
-                          >
-                            <Image w={'15px'} src={Edit} />
-                          </Button>
+                          <UpdateButtonLocation
+                            id={data.id}
+                            name={data.name}
+                            address={data.address}
+                            addressNote={''}
+                            latitude={data.latitude}
+                            longtitude={data.longtitude}
+                            postalCode={''}
+                            cityDistrict={data.cityDistrict}
+                            isMainLocation={false}
+                          />
                         </Flex>
                       </Td>
                     </Tr>
@@ -320,7 +323,7 @@ export default function Locations() {
             </TableContainer>
           ))}
         </Box>
-        <ModalCreateLocation isOpen={isOpenModal1} onClose={closeModal1} />
+        {/* <ModalCreateLocation isOpen={isOpenModal1} onClose={closeModal1} /> */}
         {/* <ModalDelete isOpen={isOpenModal2} onClose={closeModal2} /> */}
       </TabPanel>
     </>

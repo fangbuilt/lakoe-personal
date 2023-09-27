@@ -26,15 +26,52 @@ export default async function createLocation(data: any) {
   }
 }
 
-export async function getAllDataLocation() {
-  return await db.location.findMany();
-}
-
 export async function deleteLocation(id: any) {
   return await db.location.delete({
     where: { id },
   });
 }
+
+export async function updateLocation(id: any, data: any) {
+  // const updateLocation = await db.messageTemplate.update({
+  //   where: { id: id },
+  //   data: { name, content },
+  // });
+  // return updateLocation;
+  try {
+    const updateLocation = await db.location.update({
+      where: { id: id },
+      data: {
+        store: {
+          connect: { id: '1' },
+        },
+        profile: {
+          connect: { id: '1' },
+        },
+        name: data.name,
+        address: data.address,
+        latitude: data.latitude,
+        longtitude: data.longtitude,
+        cityDistrict: data.cityDistrict,
+        postalCode: data.postalCode,
+        isMainLocation: data.isMainLocation,
+      },
+    });
+
+    return updateLocation;
+  } catch (error) {
+    console.log('error service', error);
+  }
+}
+
+export async function getAllDataLocation() {
+  return await db.location.findMany({
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+}
+
 //====================================================
 export async function createStoreInformation(data: any) {
   const dataPost = await db.store.create({
