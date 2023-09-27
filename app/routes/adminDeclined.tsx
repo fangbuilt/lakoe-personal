@@ -4,16 +4,12 @@ import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminDeclined from '~/components/AdminDeclined';
 import { ImplementGridAdmin } from '~/layouts/Grid';
-<<<<<<< HEAD
-import { getWithdrawalList } from '~/modules/dashboard/dashboard.service';
-=======
 import { db } from '~/libs/prisma/db.server';
 import { getUserId } from '~/modules/auth/auth.service';
 import {
   createDeclinedReason,
   getReasonDeclined,
 } from '~/modules/dashboard/dashboard.service';
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -69,11 +65,7 @@ export default function DasboardAdminDeclined() {
   return (
     <ImplementGridAdmin>
       <Flex h={'100vh'} width={'100%'} bg={'yellow'}>
-<<<<<<< HEAD
-        <AdminDeclined dataWithdrawal={dataWithdrawal} />
-=======
         <AdminDeclined dataDeclined={dataDeclined} />
->>>>>>> 542471b32e6294979bed6b5b00b1bfa9fb2635ac
       </Flex>
     </ImplementGridAdmin>
   );
