@@ -46,21 +46,21 @@ import {
   CreateButton,
 } from '~/modules/configuration/components/CrudModal';
 import type { ActionArgs } from '@remix-run/node';
-// import { redirect } from '@remix-run/node';
 import {
   getMessages,
   updateMessage,
   deleteMessage,
   createMessage,
-  getStoreid,
+  getStoreId,
 } from '~/modules/configuration/configuration.service';
 import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 
 export async function loader({ params }: ActionArgs) {
   const messages = await getMessages();
   const { storeId } = params;
-  const store_id = await getStoreid(storeId);
+  const store_id = await getStoreId(storeId);
 
   return { messages, store_id };
 }
@@ -80,14 +80,15 @@ export async function action({ request }: ActionArgs) {
     await deleteMessage(id);
   } else if (action === 'update') {
     const id = formData.get('id') as string;
-    const updatedName = formData.get('updatedName') as string;
-    const updatedContent = formData.get('updatedContent') as string;
+    const name = formData.get('updatedName') as string;
+    const content = formData.get('updatedContent') as string;
 
-    await updateMessage(id, updatedName, updatedContent);
+    const validatedData = updateMessageSchema.parse({ id, name, content });
+
+    await updateMessage(validatedData);
   }
 
   return null;
-  // return redirect('/configuration/storeConfiguration');
 }
 
 export default function StoreConfiguration() {

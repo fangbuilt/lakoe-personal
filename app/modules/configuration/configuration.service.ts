@@ -1,15 +1,14 @@
-// import { z } from "zod";
+import type { z } from 'zod';
+import type { updateMessageSchema } from './configuration.schema';
 import { db } from '~/libs/prisma/db.server';
 
 export async function getMessages() {
-  // export async function login(data: z.infer<typeof checkoutSchema>) {}
   return await db.messageTemplate.findMany({
-    orderBy: { id: 'asc' },
+    orderBy: { createdAt: 'desc' },
   });
 }
 
-export async function getStoreid(id: any) {
-  // export async function login(data: z.infer<typeof checkoutSchema>) {}
+export async function getStoreId(id: any) {
   return await db.store.findUnique({
     where: {
       id,
@@ -24,10 +23,10 @@ export async function createMessage(name: any, id: any, content: any) {
   });
 }
 
-export async function updateMessage(id: any, name: any, content: any) {
+export async function updateMessage(data: z.infer<typeof updateMessageSchema>) {
   const updateMessage = await db.messageTemplate.update({
-    where: { id: id },
-    data: { name, content },
+    where: { id: data.id },
+    data,
   });
 
   return updateMessage;
