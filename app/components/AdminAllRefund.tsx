@@ -20,7 +20,7 @@ import {
 
 import { Link } from '@remix-run/react';
 import moment from 'moment';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import AdminRequestPopup from './AdminRequestPopup';
 import AdminSuccessPopup from './AdminSuccessPopup';
 import AdminProcessingPopup from './AdminProcessingPopup';
@@ -40,9 +40,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
   const filteredDataSuccess = dataWithdrawal.filter(
     (item: any) => item.status === 'SUCCESS'
   );
-  const filteredDataDeclined = dataWithdrawal.filter(
-    (item: any) => item.status === 'DECLINED'
-  );
+
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -55,7 +53,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
   const withdrawalCountByApproved = filteredDataApproved.length;
   const withdrawalCountByProcessing = filteredDataProcessing.length;
   const withdrawalCountBySuccess = filteredDataSuccess.length;
-  const withdrawalCountByDeclined = filteredDataDeclined.length;
 
   interface SelectOption {
     value: string;
@@ -91,7 +88,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
           <Tabs defaultIndex={0}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
-                Daftar Penarikan Dana
+                Daftar Refund
               </Text>
             </Box>
 
@@ -108,7 +105,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdminWithdraw'}>
+                      <Link to={'/dashboardAdminRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -134,7 +131,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminRequest'}>
+                      <Link to={'/adminRequestRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -160,7 +157,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminApproved'}>
+                      <Link to={'/adminApprovedRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -186,7 +183,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminProcessing'}>
+                      <Link to={'/adminProcessingRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -213,7 +210,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminSuccess'}>
+                      <Link to={'/adminSuccessRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER  !*/}
                           <Text
@@ -232,32 +229,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                           <Flex gap={1.5}>
                             <Text fontSize={'12px'}>Success</Text>
-                          </Flex>
-                        </Tab>
-                      </Link>
-                    </Box>
-                  </Box>
-
-                  <Box textAlign={'center'}>
-                    <Box display={'flex'}>
-                      <Link to={'/adminDeclined'}>
-                        <Tab>
-                          {/* NOTIFICATION ORDER */}
-                          <Text
-                            my={2}
-                            color={'white'}
-                            bg={'teal'}
-                            borderRadius={'full'}
-                            boxSize={'18px'}
-                            fontSize={'12px'}
-                            marginRight={2}
-                          >
-                            {withdrawalCountByDeclined}{' '}
-                            {/* INSERT YOUR NOTIF DATA HERE */}
-                          </Text>
-                          {/* END NOTIFICATION ORDER */}
-                          <Flex gap={1.5}>
-                            <Text fontSize={'12px'}>Declined</Text>
                           </Flex>
                         </Tab>
                       </Link>

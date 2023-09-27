@@ -1,6 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
-import { LeftNavigationAdmin } from '~/components/AdminLeftNavigation';
+import { LeftNavigationAdminRefund } from '~/components/AdminLeftNavigationRefund';
+import { LeftNavigationAdminWithdraw } from '~/components/AdminLeftNavigationWithdraw';
 import { LeftNavigation } from '~/components/LeftNavigation';
 
 interface LayoutProps {
@@ -55,7 +56,7 @@ export function ImplementGrid({ children }: LayoutProps) {
   );
 }
 
-export function ImplementGridAdmin({ children }: LayoutProps) {
+export function ImplementGridAdminWithdraw({ children }: LayoutProps) {
   return (
     <Box
       justifyContent={'center'}
@@ -63,7 +64,31 @@ export function ImplementGridAdmin({ children }: LayoutProps) {
       bgGradient="linear(0deg, #D9AFD9 0%, #97D9E1 )"
     >
       <Box width={'20%'} padding={'1%'}>
-        <LeftNavigationAdmin />
+        <LeftNavigationAdminWithdraw />
+      </Box>
+
+      <Box
+        width={'80%'}
+        padding={'1%'}
+        justifyContent={'center'}
+        display={'flex'}
+        alignItems={'none'}
+      >
+        {children}{' '}
+      </Box>
+    </Box>
+  );
+}
+
+export function ImplementGridAdminRefund({ children }: LayoutProps) {
+  return (
+    <Box
+      justifyContent={'center'}
+      display={'flex'}
+      bgGradient="linear(0deg, #159957 0%, #155799 )"
+    >
+      <Box width={'20%'} padding={'1%'}>
+        <LeftNavigationAdminRefund />
       </Box>
 
       <Box

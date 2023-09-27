@@ -1,22 +1,38 @@
 import { Flex } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import AdminDeclined from '~/components/AdminDeclined';
+import React from 'react';
+
+import AdminApprovedRefund from '~/components/AdminApprovedRefund';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import {
   createDeclinedReason,
-  getReasonDeclined,
+  getWithdrawalList,
+  updateStatusWithdraw,
 } from '~/modules/dashboard/dashboard.service';
 
 export async function loader() {
-  return await getReasonDeclined();
+  return await getWithdrawalList();
 }
-
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-
+  const id = formData.get('id');
+  const status = formData.get('status');
   const actionType = formData.get('actionType');
+
+  if (actionType === 'update' && status) {
+    try {
+      const updateStatus = await updateStatusWithdraw(
+        id as string,
+        status as string
+      );
+      console.log('Status updated successfully:', updateStatus);
+    } catch (error) {
+      console.error('Error updating status:', error);
+      throw error;
+    }
+  }
+
   const withdrawId = formData.get('withdrawId');
   const storeId = formData.get('storeId');
   const reason = formData.get('reason');
@@ -35,16 +51,15 @@ export async function action({ request }: ActionArgs) {
       console.error('Error creating declined reason:', error);
     }
   }
-
-  return redirect('/adminDeclined');
+  return null;
 }
 
-export default function DasboardAdminDeclined() {
-  const dataDeclined = useLoaderData<typeof loader>();
+export default function DasboardAdminApprovedRefund() {
+  const dataWithdrawal = useLoaderData<typeof loader>();
   return (
     <ImplementGridAdminWithdraw>
-      <Flex h={'100vh'} width={'100%'} bg={'yellow'}>
-        <AdminDeclined dataDeclined={dataDeclined} />
+      <Flex h={'100vh'} width={'100%'}>
+        <AdminApprovedRefund dataWithdrawal={dataWithdrawal} />
       </Flex>
     </ImplementGridAdminWithdraw>
   );

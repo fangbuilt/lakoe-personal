@@ -21,13 +21,9 @@ import {
 import { Link } from '@remix-run/react';
 import moment from 'moment';
 import { useState } from 'react';
-import AdminRequestPopup from './AdminRequestPopup';
-import AdminSuccessPopup from './AdminSuccessPopup';
-import AdminProcessingPopup from './AdminProcessingPopup';
-import AdminApprovedPopup from './AdminApprovedPopup';
-import { AiFillCloseCircle } from 'react-icons/ai';
+import AdminSuccessRefundPopup from './AdminSuccessRefundPopup';
 
-export default function AdminRequest({ dataWithdrawal }: any) {
+export default function AdminSuccessRefund({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
     (item: any) => item.status === 'REQUEST'
   );
@@ -40,9 +36,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
   const filteredDataSuccess = dataWithdrawal.filter(
     (item: any) => item.status === 'SUCCESS'
   );
-  const filteredDataDeclined = dataWithdrawal.filter(
-    (item: any) => item.status === 'DECLINED'
-  );
+
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -55,7 +49,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
   const withdrawalCountByApproved = filteredDataApproved.length;
   const withdrawalCountByProcessing = filteredDataProcessing.length;
   const withdrawalCountBySuccess = filteredDataSuccess.length;
-  const withdrawalCountByDeclined = filteredDataDeclined.length;
 
   interface SelectOption {
     value: string;
@@ -65,9 +58,11 @@ export default function AdminRequest({ dataWithdrawal }: any) {
   const [selectedOption, setSelectedOption] = useState<string>('');
 
   const options: SelectOption[] = [
-    { value: 'Status', label: 'Status' },
-    { value: 'Time', label: 'Time' },
-    { value: 'Saldo Penarikan', label: 'Saldo Penarikan' },
+    { value: 'All', label: 'All' },
+    { value: 'Request', label: 'Request' },
+    { value: 'Processing', label: 'Processing' },
+    { value: 'Success', label: 'Success' },
+    { value: 'Declined', label: 'Declined' },
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -88,10 +83,10 @@ export default function AdminRequest({ dataWithdrawal }: any) {
         overflow={'auto'}
       >
         <Box>
-          <Tabs defaultIndex={0}>
+          <Tabs defaultIndex={4}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
-                Daftar Penarikan Dana
+                Daftar Refund
               </Text>
             </Box>
 
@@ -108,7 +103,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdminWithdraw'}>
+                      <Link to={'/dashboardAdminRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -134,7 +129,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminRequest'}>
+                      <Link to={'/adminRequestRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -160,7 +155,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminApproved'}>
+                      <Link to={'/adminApprovedRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -186,7 +181,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminProcessing'}>
+                      <Link to={'/adminProcessingRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -213,7 +208,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminSuccess'}>
+                      <Link to={'/adminSuccessRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER  !*/}
                           <Text
@@ -237,32 +232,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       </Link>
                     </Box>
                   </Box>
-
-                  <Box textAlign={'center'}>
-                    <Box display={'flex'}>
-                      <Link to={'/adminDeclined'}>
-                        <Tab>
-                          {/* NOTIFICATION ORDER */}
-                          <Text
-                            my={2}
-                            color={'white'}
-                            bg={'teal'}
-                            borderRadius={'full'}
-                            boxSize={'18px'}
-                            fontSize={'12px'}
-                            marginRight={2}
-                          >
-                            {withdrawalCountByDeclined}{' '}
-                            {/* INSERT YOUR NOTIF DATA HERE */}
-                          </Text>
-                          {/* END NOTIFICATION ORDER */}
-                          <Flex gap={1.5}>
-                            <Text fontSize={'12px'}>Declined</Text>
-                          </Flex>
-                        </Tab>
-                      </Link>
-                    </Box>
-                  </Box>
                 </TabList>
               </Box>
               {/* </Tabs> */}
@@ -281,7 +250,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 fontSize={'12px'}
               >
                 {options.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option key={option.label} value={option.value}>
                     {option.label}
                   </option>
                 ))}
@@ -298,13 +267,13 @@ export default function AdminRequest({ dataWithdrawal }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    ID Withdraw
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Store
+                    Nomor Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
+                  </Th>
+                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                    Nama Store
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Jumlah Penarikan
@@ -318,14 +287,10 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {dataWithdrawal.map((item: any) => (
+                {filteredDataSuccess.map((item: any) => (
                   <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
-                    </Td>
-
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
                     </Td>
 
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
@@ -334,49 +299,13 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       )}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.store?.name}
+                    </Td>
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {formatRupiah(item.amount)}
                     </Td>
                     <Td margin={'2px 0'}>
                       <Text>
-                        {item.status === 'REQUEST' && (
-                          <Text
-                            bg={'Yellow'}
-                            color={'black'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            REQUEST
-                          </Text>
-                        )}
-
-                        {item.status === 'APPROVED' && (
-                          <Text
-                            bg={'blue.600'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            APPROVED
-                          </Text>
-                        )}
-
-                        {item.status === 'PROCESSING' && (
-                          <Text
-                            bg={'teal'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            PROCESSING
-                          </Text>
-                        )}
-
                         {item.status === 'SUCCESS' && (
                           <Text
                             bg={'green'}
@@ -389,84 +318,20 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                             SUCCESS
                           </Text>
                         )}
-
-                        {item.status === 'DECLINED' && (
-                          <Text
-                            bg={'RED'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            DECLINED
-                          </Text>
-                        )}
                       </Text>
                     </Td>
 
                     <Td padding={'5px'}>
-                      {item.status === 'REQUEST' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminRequestPopup dataWithdrawal={item} />
-                        </Text>
-                      )}
-                      {item.status === 'APPROVED' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminApprovedPopup dataWithdrawal={item} />
-                        </Text>
-                      )}
-                      {item.status === 'PROCESSING' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminProcessingPopup withdrawalData={item} />
-                        </Text>
-                      )}
-                      {item.status === 'SUCCESS' && (
-                        <Text
-                          color={'black'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'10px'}
-                        >
-                          <AdminSuccessPopup dataWithdrawal={item} />
-                        </Text>
-                      )}
-                      {item.status === 'DECLINED' && (
-                        <Text
-                          color={'red'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'20px'}
-                          ml={5}
-                        >
-                          <AiFillCloseCircle />
-                        </Text>
-                      )}
+                      <Text
+                        color={'black'}
+                        textAlign={'center'}
+                        borderRadius={'15px'}
+                        cursor={'pointer'}
+                        px={'5px'}
+                        fontSize={'10px'}
+                      >
+                        <AdminSuccessRefundPopup dataWithdrawal={item} />
+                      </Text>
                     </Td>
                   </Tr>
                 ))}
