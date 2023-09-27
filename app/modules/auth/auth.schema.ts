@@ -9,5 +9,7 @@ export const registerSchema = z.object({
   name: z.string(),
   email: z.string().min(1).email(),
   phone: z.string(),
-  password: z.string().min(8),
+  password: z.string(),
+  storeId: z.string().optional(),
+  roleId: z.string(),
 });

@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-empty */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { ActionArgs } from '@remix-run/node';
-import { useLoaderData, useNavigate } from '@remix-run/react';
+import { ActionArgs, LoaderArgs, json, redirect } from '@remix-run/node';
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react';
 import {
   Box,
   Button,
@@ -17,27 +23,136 @@ import {
 } from '@chakra-ui/react';
 import { AiOutlineGooglePlus } from 'react-icons/ai';
 import { BsFacebook } from 'react-icons/bs';
+import { db } from '~/libs/prisma/db.server';
+import {
+  createUserSession,
+  getUserId,
+  register,
+} from '~/modules/auth/auth.service';
+import { badRequest } from '~/utils/request.server';
 
-export async function loader() {
-  return {};
+// export async function loader() {
+//   return {};
+// }
+function validateUrl(url: string) {
+  const urls = ['/', '/checkout', '/dashboard'];
+  if (urls.includes(url)) {
+    return url;
+  }
+  return '/';
+}
+
+function validateName(name: string) {
+  if (name.length < 3) {
+    return 'Name must be at least 3 characters long';
+  }
+}
+function validateEmail(email: string) {
+  if (email.length < 3) {
+    return 'Email must be at least 3 characters long';
+  }
+}
+
+function validatePassword(password: string) {
+  if (password.length < 6) {
+    return 'Password must be at least 6 characters long';
+  }
+}
+
+function validatePhone(phone: string) {
+  if (phone.length < 6) {
+    return 'Phone must be at least 6 characters long';
+  }
+}
+
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return json({});
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return redirect('/dashboard');
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
-  if (request.method.toLowerCase() === 'get') {
+  const form = await request.formData();
+
+  const name = String(form.get('name'));
+  const email = String(form.get('email'));
+  const phone = String(form.get('phone'));
+  const password = String(form.get('password'));
+  const storeId = String(null);
+  const roleId = '2';
+  const redirectTo = validateUrl(
+    (form.get('redirectTo') as string) || '/checkout'
+  );
+
+  if (
+    typeof name !== 'string' ||
+    typeof email !== 'string' ||
+    typeof password !== 'string' ||
+    typeof phone !== 'string'
+  ) {
+    return badRequest({
+      fieldErrors: null,
+      fields: null,
+      formError: 'Form not submitted correctly.',
+    });
   }
 
-  if (request.method.toLowerCase() === 'post') {
+  const fields = { password, email, name, phone };
+  const fieldErrors = {
+    name: validateName(name),
+    password: validatePassword(password),
+    email: validateEmail(email),
+    phone: validatePhone(phone),
+  };
+  if (Object.values(fieldErrors).some(Boolean)) {
+    return badRequest({
+      fieldErrors,
+      fields,
+      formError: null,
+    });
   }
 
-  if (request.method.toLowerCase() === 'patch') {
+  const userExists = await db.user.findFirst({ where: { email } });
+  if (userExists) {
+    return badRequest({
+      fieldErrors: null,
+      fields,
+      formError: `User with email ${email} already exists`,
+    });
   }
 
-  if (request.method.toLowerCase() === 'delete') {
-  }
+  const user = await register({
+    name,
+    email,
+    phone,
+    password,
+    storeId,
+    roleId,
+  });
+  return createUserSession(user.id, redirectTo);
 }
 
 export default function Register() {
   // const data = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   return (
@@ -126,74 +241,160 @@ export default function Register() {
 
             <Box mt={2} rounded={'lg'} p={8} w={'80%'}>
               <Stack spacing={4}>
-                <FormControl id="name">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Name
-                  </FormLabel>
-                  <Input type="text" placeholder="name" fontSize={'13px'} />
-                </FormControl>
-                <FormControl id="email">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Email
-                  </FormLabel>
+                <Form method="POST">
                   <Input
-                    type="email"
-                    placeholder="example@gmail.com"
-                    fontSize={'13px'}
+                    type="hidden"
+                    name="redirectTo"
+                    value={searchParams.get('redirectTo') ?? undefined}
                   />
-                </FormControl>
-                <FormControl id="phone">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Phone
-                  </FormLabel>
-                  <Input
-                    type="number"
-                    placeholder="+62 8123456"
-                    fontSize={'13px'}
-                  />
-                </FormControl>
-                <FormControl id="password">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Password
-                  </FormLabel>
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    fontSize={'13px'}
-                  />
-                </FormControl>
-                <Stack spacing={2}>
-                  <Stack
-                    direction={{ base: 'column', sm: 'row' }}
-                    align={'start'}
-                    justify={'space-between'}
-                  ></Stack>
-                  <Button
-                    bg={'blue.400'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'blue.500',
-                    }}
-                  >
-                    Sign up
-                  </Button>
-                  <Flex
-                    mt={1}
-                    gap={1}
-                    fontSize="13px"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    <Text>Do you have an account? </Text>
-                    <Text
-                      cursor={'pointer'}
-                      fontWeight={'bold'}
-                      onClick={() => navigate('/auth/login')}
+                  <FormControl id="name">
+                    <FormLabel fontSize="15px" color={'gray.600'}>
+                      Name
+                    </FormLabel>
+                    <Input
+                      type="text"
+                      name="name"
+                      placeholder="name"
+                      fontSize={'13px'}
+                      defaultValue={actionData?.fields?.name}
+                      aria-invalid={Boolean(actionData?.fieldErrors?.name)}
+                      aria-errormessage={
+                        actionData?.fieldErrors?.name ? 'name-error' : undefined
+                      }
+                    />
+                    {actionData?.fieldErrors?.name ? (
+                      <Text
+                        className="form-validation-error"
+                        role="alert"
+                        id="name-error"
+                      >
+                        {actionData.fieldErrors.name}
+                      </Text>
+                    ) : null}
+                  </FormControl>
+                  <FormControl id="email">
+                    <FormLabel fontSize="15px" color={'gray.600'}>
+                      Email
+                    </FormLabel>
+                    <Input
+                      type="email"
+                      name="email"
+                      placeholder="example@gmail.com"
+                      fontSize={'13px'}
+                      defaultValue={actionData?.fields?.email}
+                      aria-invalid={Boolean(actionData?.fieldErrors?.email)}
+                      aria-errormessage={
+                        actionData?.fieldErrors?.email
+                          ? 'email-error'
+                          : undefined
+                      }
+                    />
+                    {actionData?.fieldErrors?.email ? (
+                      <Text
+                        className="form-validation-error"
+                        role="alert"
+                        id="email-error"
+                      >
+                        {actionData.fieldErrors.email}
+                      </Text>
+                    ) : null}
+                  </FormControl>
+                  <FormControl id="phone">
+                    <FormLabel fontSize="15px" color={'gray.600'}>
+                      Phone
+                    </FormLabel>
+                    <Input
+                      type="number"
+                      name="phone"
+                      placeholder="+62 8123456"
+                      fontSize={'13px'}
+                      defaultValue={actionData?.fields?.phone}
+                      aria-invalid={Boolean(actionData?.fieldErrors?.phone)}
+                      aria-errormessage={
+                        actionData?.fieldErrors?.phone
+                          ? 'phone-error'
+                          : undefined
+                      }
+                    />
+                    {actionData?.fieldErrors?.phone ? (
+                      <Text
+                        className="form-validation-error"
+                        role="alert"
+                        id="phone-error"
+                      >
+                        {actionData.fieldErrors.phone}
+                      </Text>
+                    ) : null}
+                  </FormControl>
+                  <FormControl id="password">
+                    <FormLabel fontSize="15px" color={'gray.600'}>
+                      Password
+                    </FormLabel>
+                    <Input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      fontSize={'13px'}
+                      defaultValue={actionData?.fields?.password}
+                      aria-invalid={Boolean(actionData?.fieldErrors?.password)}
+                      aria-errormessage={
+                        actionData?.fieldErrors?.password
+                          ? 'password-error'
+                          : undefined
+                      }
+                    />
+                  </FormControl>
+                  <Stack spacing={2}>
+                    <Stack
+                      direction={{ base: 'column', sm: 'row' }}
+                      align={'start'}
+                      justify={'space-between'}
                     >
-                      I have an account
-                    </Text>
-                  </Flex>
-                </Stack>
+                      {actionData?.fieldErrors?.password ? (
+                        <Text
+                          className="form-validation-error"
+                          role="alert"
+                          id="password-error"
+                        >
+                          {actionData.fieldErrors.password}
+                        </Text>
+                      ) : null}
+                      <Box id="form-error-message">
+                        {actionData?.formError ? (
+                          <Text className="form-validation-error" role="alert">
+                            {actionData.formError}
+                          </Text>
+                        ) : null}
+                      </Box>
+                    </Stack>
+                    <Button
+                      bg={'blue.400'}
+                      color={'white'}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                      type="submit"
+                    >
+                      Sign up
+                    </Button>
+                    <Flex
+                      mt={1}
+                      gap={1}
+                      fontSize="13px"
+                      justifyContent={'center'}
+                      alignItems="center"
+                    >
+                      <Text>Do you have an account? </Text>
+                      <Text
+                        cursor={'pointer'}
+                        fontWeight={'bold'}
+                        onClick={() => navigate('/auth/login')}
+                      >
+                        I have an account
+                      </Text>
+                    </Flex>
+                  </Stack>
+                </Form>
               </Stack>
             </Box>
           </Flex>

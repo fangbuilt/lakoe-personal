@@ -10,12 +10,126 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { useNavigate } from '@remix-run/react';
+import {
+  json,
+  type ActionArgs,
+  type LoaderArgs,
+  redirect,
+} from '@remix-run/node';
+import { Form, useActionData, useNavigate } from '@remix-run/react';
 import { AiOutlineGooglePlus } from 'react-icons/ai';
 import { BsFacebook } from 'react-icons/bs';
+import { db } from '~/libs/prisma/db.server';
+import {
+  createUserSession,
+  getUserId,
+  login,
+} from '~/modules/auth/auth.service';
+import { badRequest } from '~/utils/request.server';
+
+function validateUrl(url: string) {
+  const urls = ['/dashboardAdmin', '/checkout', '/dashboard'];
+  if (urls.includes(url)) {
+    return url;
+  }
+  return '/';
+}
+
+function validateEmail(email: string) {
+  if (email.length < 3) {
+    return 'Email must be at least 3 characters long';
+  }
+}
+
+function validatePassword(password: string) {
+  if (password.length < 6) {
+    return 'Password must be at least 6 characters long';
+  }
+}
+
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return json({});
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return redirect('/dashboard');
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
+}
+
+export async function action({ request }: ActionArgs) {
+  const form = await request.formData();
+
+  const email = String(form.get('email'));
+  const password = String(form.get('password'));
+
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return badRequest({
+      fieldErrors: null,
+      fields: null,
+      formError: 'Form not submitted correctly.',
+    });
+  }
+
+  const fields = { password, email };
+  const fieldErrors = {
+    password: validatePassword(password),
+    email: validateEmail(email),
+  };
+  if (Object.values(fieldErrors).some(Boolean)) {
+    return badRequest({
+      fieldErrors,
+      fields,
+      formError: null,
+    });
+  }
+
+  const user = await login({ email, password });
+  if (!user) {
+    return badRequest({
+      fieldErrors: null,
+      fields,
+      formError: 'Username/Password combination is incorrect',
+    });
+  }
+
+  if (user.roleId === '1') {
+    const redirectTo = validateUrl(
+      (form.get('redirectTo') as string) || '/dashboardAdmin'
+    );
+
+    return createUserSession(user.id, redirectTo);
+  } else if (user.roleId === '2') {
+    const redirectTo = validateUrl(
+      (form.get('redirectTo') as string) || '/dashboard'
+    );
+
+    return createUserSession(user.id, redirectTo);
+  } else {
+    const redirectTo = validateUrl(
+      (form.get('redirectTo') as string) || '/checkout'
+    );
+
+    return createUserSession(user.id, redirectTo);
+  }
+}
 
 export default function Login() {
   const navigate = useNavigate();
+  const actionData = useActionData<typeof action>();
   return (
     <div>
       <SimpleGrid minChildWidth={'500px'}>
@@ -102,62 +216,106 @@ export default function Login() {
 
             <Box mt={2} rounded={'lg'} p={8} w={'80%'}>
               <Stack spacing={4}>
-                <FormControl id="email">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Email address
-                  </FormLabel>
-                  <Input
-                    type="email"
-                    placeholder="example@gmail.com"
-                    fontSize={'13px'}
-                  />
-                </FormControl>
-                <FormControl id="password">
-                  <FormLabel fontSize="15px" color={'gray.600'}>
-                    Password
-                  </FormLabel>
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    fontSize={'13px'}
-                  />
-                </FormControl>
-                <Stack spacing={2}>
-                  <Stack
-                    direction={{ base: 'column', sm: 'row' }}
-                    align={'start'}
-                    justify={'space-between'}
-                  >
-                    <Text color={'blue.400'} fontSize="13px">
-                      Forgot password?
-                    </Text>
-                  </Stack>
-                  <Button
-                    bg={'blue.400'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'blue.500',
-                    }}
-                  >
-                    Sign in
-                  </Button>
-                  <Flex
-                    mt={1}
-                    gap={1}
-                    fontSize="13px"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    <Text>Don't have an account? </Text>
-                    <Text
-                      cursor={'pointer'}
-                      fontWeight={'bold'}
-                      onClick={() => navigate('/auth/register')}
+                <Form method="POST">
+                  <FormControl id="email">
+                    <FormLabel fontSize="15px" color={'gray.600'}>
+                      Email address
+                    </FormLabel>
+                    <Input
+                      type="email"
+                      name="email"
+                      placeholder="example@gmail.com"
+                      fontSize={'13px'}
+                      defaultValue={actionData?.fields?.email}
+                      aria-invalid={Boolean(actionData?.fieldErrors?.email)}
+                      aria-errormessage={
+                        actionData?.fieldErrors?.email
+                          ? 'email-error'
+                          : undefined
+                      }
+                    />
+                    {actionData?.fieldErrors?.email ? (
+                      <Text
+                        className="form-validation-error"
+                        role="alert"
+                        id="email-error"
+                      >
+                        {actionData.fieldErrors.email}
+                      </Text>
+                    ) : null}
+                  </FormControl>
+                  <FormControl id="password">
+                    <FormLabel fontSize="15px" color={'gray.600'}>
+                      Password
+                    </FormLabel>
+                    <Input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      fontSize={'13px'}
+                      defaultValue={actionData?.fields?.password}
+                      aria-invalid={Boolean(actionData?.fieldErrors?.password)}
+                      aria-errormessage={
+                        actionData?.fieldErrors?.password
+                          ? 'password-error'
+                          : undefined
+                      }
+                    />
+                    {actionData?.fieldErrors?.password ? (
+                      <Text
+                        className="form-validation-error"
+                        role="alert"
+                        id="password-error"
+                      >
+                        {actionData.fieldErrors.password}
+                      </Text>
+                    ) : null}
+                    <Box id="form-error-message">
+                      {actionData?.formError ? (
+                        <Text className="form-validation-error" role="alert">
+                          {actionData.formError}
+                        </Text>
+                      ) : null}
+                    </Box>
+                  </FormControl>
+                  <Stack spacing={2}>
+                    <Stack
+                      direction={{ base: 'column', sm: 'row' }}
+                      align={'start'}
+                      justify={'space-between'}
                     >
-                      Sign Up here
-                    </Text>
-                  </Flex>
-                </Stack>
+                      <Text color={'blue.400'} fontSize="13px">
+                        Forgot password?
+                      </Text>
+                    </Stack>
+                    <Button
+                      type="submit"
+                      bg={'blue.400'}
+                      color={'white'}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Sign in
+                    </Button>
+                    <Flex
+                      mt={1}
+                      gap={1}
+                      fontSize="13px"
+                      justifyContent={'center'}
+                      alignItems="center"
+                    >
+                      <Text>Don't have an account? </Text>
+                      <Text
+                        cursor={'pointer'}
+                        fontWeight={'bold'}
+                        onClick={() => navigate('/auth/register')}
+                      >
+                        Sign Up here
+                      </Text>
+                    </Flex>
+                  </Stack>
+                </Form>
               </Stack>
               <Flex
                 justifyContent={'center'}

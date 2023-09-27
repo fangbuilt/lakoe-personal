@@ -10,7 +10,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
@@ -35,8 +35,15 @@ import {
 
 import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { getUserId } from '~/modules/auth/auth.service';
+import { db } from '~/libs/prisma/db.server';
 
-export async function loader({ params }: ActionArgs) {
+export async function loader({ request, params }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
   const getLocationData = await getAllDataLocation();
 
   //console.log("ini getdata:", getLocationData);
@@ -45,7 +52,21 @@ export async function loader({ params }: ActionArgs) {
   const { storeId } = params;
   const store_id = await getStoreid(storeId);
 
-  return { messages, store_id, getLocationData };
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return { messages, store_id, getLocationData };
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
