@@ -21,7 +21,7 @@ import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 import AdminDeclinedPopup from './AdminDeclinedPopup';
 import LoadingAttachmentAdmin from './loadingAttachmentLoading';
 
-export default function AdminRequestPopup(props: any) {
+export default function AdminRequestRefundPopup(props: any) {
   const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [statusUpdated, setStatusUpdated] = useState(dataWithdrawal.status);

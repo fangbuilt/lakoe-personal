@@ -21,10 +21,12 @@ import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
 import AdminDeclinedPopup from './AdminDeclinedPopup';
 import LoadingAttachmentAdmin from './loadingAttachmentLoading';
 
-export default function AdminRequestPopup(props: any) {
+export default function AdminApprovedRefundPopup(props: any) {
   const { dataWithdrawal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [statusUpdated, setStatusUpdated] = useState(dataWithdrawal.status);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -40,21 +42,17 @@ export default function AdminRequestPopup(props: any) {
     parseInt(dataWithdrawal.amount) - transferFee - tax
   );
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
   const openModal = () => {
     onOpen();
   };
-
   const handleApproveClick = async () => {
     try {
       setIsLoading(true);
-      await updateStatusWithdraw(dataWithdrawal.id, 'APPROVED');
-      setStatusUpdated('APPROVED');
-
+      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
+      setStatusUpdated('PROCESSING');
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -99,10 +97,9 @@ export default function AdminRequestPopup(props: any) {
                     <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                   </Text>
                   <Text>
-                    {moment(
-                      dataWithdrawal.createdAt,
-                      'YYYY-MM-DD HH:mm:ss'
-                    ).format('LLLL')}
+                    {moment(dataWithdrawal.da, 'YYYY-MM-DD HH:mm:ss').format(
+                      'LLLL'
+                    )}
                   </Text>
                 </Box>
 
@@ -132,16 +129,16 @@ export default function AdminRequestPopup(props: any) {
                     <Text width={'150px'}>Nama Pemilik</Text>
                     <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                   </Flex>
-                  <Button
-                    width={'100%'}
-                    textAlign={'center'}
-                    mt={'10px'}
-                    fontSize={'12px'}
-                    colorScheme="teal"
-                    padding={0}
-                  >
-                    Check
-                  </Button>
+                  {/* <Button
+                  width={"100%"}
+                  textAlign={"center"}
+                  mt={"10px"}
+                  fontSize={"12px"}
+                  colorScheme="teal"
+                  padding={0}
+                >
+                  Check
+                </Button> */}
                 </Box>
 
                 <Box mt={'20px'} fontSize={'12px'}>
@@ -158,7 +155,7 @@ export default function AdminRequestPopup(props: any) {
                       <Text width={'150px'}>Biaya Admin</Text>
                       <Text>:</Text>
                     </Flex>
-                    <Text>{formatRupiah(tax)}</Text>
+                    <Text>{tax}</Text>
                   </Flex>
                   <Text fontSize={'10px'} color={'grey'}>
                     *1% jumlah penarikan
@@ -182,17 +179,15 @@ export default function AdminRequestPopup(props: any) {
                   <Flex gap={'5px'} mt={'10px'}>
                     <Button
                       name="status"
-                      value="APPROVED"
+                      value="PROCESSING"
                       flex={'50%'}
                       fontSize={'12px'}
                       colorScheme="teal"
                       padding={0}
                       type="submit"
-                      onClick={() => {
-                        handleApproveClick();
-                      }}
+                      onClick={handleApproveClick}
                     >
-                      Approved
+                      Processing
                     </Button>
                     <Button
                       flex={'50%'}
@@ -211,6 +206,17 @@ export default function AdminRequestPopup(props: any) {
               </Box>
             </ModalBody>
             <ModalFooter>
+              <Button
+                colorScheme="teal"
+                mr={3}
+                onClick={onClose}
+                color={'white'}
+                border={'1px solid'}
+                borderColor={'gray.500'}
+                fontSize={'12px'}
+              >
+                Close
+              </Button>
               <Button
                 name="status"
                 value="DECLINED"

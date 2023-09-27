@@ -107,7 +107,11 @@ export async function getWithdrawalList() {
   return withdrawalList;
 }
 
-export async function updateStatusWithdraw(id: string, statusUpdated: string) {
+export async function updateStatusWithdraw(
+  id: string,
+  statusUpdated: string,
+  dateUpdated?: string
+) {
   try {
     const updatedStatus = await db.withdraw.update({
       where: {
@@ -115,6 +119,7 @@ export async function updateStatusWithdraw(id: string, statusUpdated: string) {
       },
       data: {
         status: statusUpdated,
+        updatedAt: dateUpdated,
       },
     });
     return updatedStatus;
@@ -134,7 +139,7 @@ export async function createWithdraw(
     const amount = parseFloat(data.amount);
 
     const user = await db.user.findUnique({
-      where: { id: '5' },
+      where: { id: '4' },
     });
 
     if (!user) {
@@ -153,6 +158,7 @@ export async function createWithdraw(
 
     const bankId = bankAccount.id;
 
+    const now = new Date();
     const withdraw = await db.withdraw.create({
       data: {
         store: {
@@ -167,6 +173,7 @@ export async function createWithdraw(
         approvedBy: {
           connect: { id: '1' },
         },
+        updatedAt: now,
       },
     });
 

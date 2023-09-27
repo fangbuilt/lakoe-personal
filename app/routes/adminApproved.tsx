@@ -3,7 +3,7 @@ import type { ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
 import AdminApproved from '~/components/AdminApproved';
-import { ImplementGridAdmin } from '~/layouts/Grid';
+import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import {
   createDeclinedReason,
   getWithdrawalList,
@@ -53,13 +53,13 @@ export async function action({ request }: ActionArgs) {
   return null;
 }
 
-export default function DasboardAdminRequest() {
+export default function DasboardAdminApproved() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdmin>
+    <ImplementGridAdminWithdraw>
       <Flex h={'100vh'} width={'100%'}>
         <AdminApproved dataWithdrawal={dataWithdrawal} />
       </Flex>
-    </ImplementGridAdmin>
+    </ImplementGridAdminWithdraw>
   );
 }

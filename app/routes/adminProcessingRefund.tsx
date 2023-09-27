@@ -8,7 +8,8 @@ import {
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import AdminProcessing from '~/components/AdminProcessing';
+import React from 'react';
+import AdminProcessingRefund from '~/components/AdminProcessingRefund';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import {
   createAttachmentAdmin,
@@ -85,12 +86,12 @@ export async function action({ request }: ActionArgs) {
   return redirect('/adminSuccess');
 }
 
-export default function DasboardAdminProcessing() {
+export default function DasboardAdminProcessingRefund() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
     <ImplementGridAdminWithdraw>
       <Flex h={'100vh'} width={'100%'}>
-        <AdminProcessing dataWithdrawal={dataWithdrawal} />
+        <AdminProcessingRefund dataWithdrawal={dataWithdrawal} />
       </Flex>
     </ImplementGridAdminWithdraw>
   );

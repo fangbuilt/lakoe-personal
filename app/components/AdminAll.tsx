@@ -108,7 +108,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdmin'}>
+                      <Link to={'/dashboardAdminWithdraw'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -237,6 +237,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       </Link>
                     </Box>
                   </Box>
+
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
                       <Link to={'/adminDeclined'}>

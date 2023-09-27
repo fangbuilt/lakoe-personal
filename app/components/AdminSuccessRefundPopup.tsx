@@ -3,9 +3,6 @@ import {
   Button,
   Divider,
   Flex,
-  FormControl,
-  FormLabel,
-  Input,
   ListItem,
   Modal,
   ModalBody,
@@ -16,26 +13,15 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Link } from '@remix-run/react';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function AdminDeclinedPopup(props: any) {
+import { LuZoomIn } from 'react-icons/lu';
+import { AdminSuccessNotification } from '~/modules/DashboardMailerlite/mailerliteAdminSuccess';
+
+export default function AdminSuccessRefundPopup(props: any) {
   const { dataWithdrawal } = props;
-  const [formData, setFormData] = useState({
-    actionType: 'create',
-    withdrawId: dataWithdrawal.id || '',
-    storeId: dataWithdrawal.store?.id || '',
-    reason: '',
-  });
-
-  const handleChange = (event: any) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -66,7 +52,7 @@ export default function AdminDeclinedPopup(props: any) {
           padding={'5px 15px'}
           borderRadius={'15px'}
         >
-          Declined
+          <LuZoomIn />
         </Text>
       </Flex>
 
@@ -99,7 +85,7 @@ export default function AdminDeclinedPopup(props: any) {
                   {moment(
                     dataWithdrawal.createdAt,
                     'YYYY-MM-DD HH:mm:ss'
-                  ).format('LLLL')}{' '}
+                  ).format('LLLL')}
                 </Text>
               </Box>
 
@@ -119,11 +105,11 @@ export default function AdminDeclinedPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: {dataWithdrawal.bankAccount.bank}</Text>
+                  <Text>:{dataWithdrawal.bankAccount.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>:{dataWithdrawal.bankAccount.accountNumber}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
@@ -138,14 +124,14 @@ export default function AdminDeclinedPopup(props: any) {
                     <Text width={'150px'}>Jumlah Penarikan</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text>{formattedAmount}</Text>
+                  <Text> {formattedAmount}</Text>
                 </Flex>
                 <Flex justifyContent={'space-between'}>
                   <Flex>
                     <Text width={'150px'}>Biaya Admin</Text>
                     <Text>:</Text>
                   </Flex>
-                  <Text> {tax}</Text>
+                  <Text>{tax} </Text>
                 </Flex>
                 <Text fontSize={'10px'} color={'grey'}>
                   *1% jumlah penarikan
@@ -168,66 +154,70 @@ export default function AdminDeclinedPopup(props: any) {
               </Box>
 
               <Box mt={'10px'}>
-                <form method="post">
-                  <FormControl>
-                    <Input type="hidden" name="actionType" value="create" />
-                    <Input
-                      type="hidden"
-                      name="withdrawId"
-                      value={formData.withdrawId}
-                      display={'none'}
-                    />
-                    <Input
-                      type="hidden"
-                      name="storeId"
-                      value={formData.storeId}
-                      display={'none'}
-                    />
-                    <FormLabel fontSize="12px" fontWeight={700}>
-                      Alasan Penolakan
-                    </FormLabel>
-                    <Input
-                      placeholder="Reason of declined..."
-                      type="text"
-                      name="reason"
-                      fontSize="10px"
-                      onChange={handleChange}
-                      value={formData.reason}
-                    />
-                  </FormControl>
-                  <Button
-                    type="submit"
-                    fontSize="12px"
-                    colorScheme="teal"
-                    width="100%"
-                    textAlign="center"
-                    mt="10px"
+                <Text fontWeight={700}>Bukti Transfer</Text>
+                <Box
+                  mt={'10px'}
+                  width={'100px'}
+                  height={'100px'}
+                  border={'1px solid gray'}
+                  display={'flex'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                >
+                  <Link
+                    to={
+                      'https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg'
+                    }
+                    target="_blank"
                   >
-                    Send email to Seller
-                  </Button>
-                </form>
+                    <Text fontWeight={'700'} color={'teal'}>
+                      Lihat Gambar
+                    </Text>
+                  </Link>
+                </Box>
+
+                <Button
+                  width={'100%'}
+                  textAlign={'center'}
+                  mt={'10px'}
+                  fontSize={'12px'}
+                  colorScheme="teal"
+                  padding={0}
+                  onClick={() => {
+                    AdminSuccessNotification(
+                      dataWithdrawal.store?.name,
+                      formattedAmount,
+                      dataWithdrawal.bankAccount
+                    );
+
+                    onClose();
+                  }}
+                >
+                  Send email to Seller
+                </Button>
               </Box>
 
               <Box mt={'10px'}>
                 <Text fontWeight={700}>Riwayat</Text>
                 <UnorderedList>
                   <ListItem>
-                    Permintaan ditolak oleh Admin A{' '}
+                    Penarikan diproses/diselesaikan oleh...
                     <ListItem ml={'20px'}>
-                      {moment(
-                        dataWithdrawal.updatedAt,
-                        'YYYY-MM-DD HH:mm:ss'
-                      ).format('LLLL')}{' '}
+                      6 September 2023 pukul 15:05
                     </ListItem>
                   </ListItem>
 
                   <ListItem>
-                    Permintaan dibuat{' '}
+                    Permintaan disetujui oleh Admin A
                     <ListItem ml={'20px'}>
-                      {moment(
-                        dataWithdrawal.createdAt,
-                        'YYYY-MM-DD HH:mm:ss'
-                      ).format('LLLL')}{' '}
+                      6 September 2023 pukul 15:00
+                    </ListItem>
+                  </ListItem>
+
+                  <ListItem>
+                    Permintaan dibuat
+                    <ListItem ml={'20px'}>
+                      6 September 2023 pukul 14:55
                     </ListItem>
                   </ListItem>
                 </UnorderedList>
@@ -236,7 +226,6 @@ export default function AdminDeclinedPopup(props: any) {
           </ModalBody>
           <ModalFooter>
             <Button
-              type="submit"
               colorScheme="teal"
               mr={3}
               onClick={onClose}
@@ -245,7 +234,7 @@ export default function AdminDeclinedPopup(props: any) {
               borderColor={'gray.500'}
               fontSize={'12px'}
             >
-              Selesai
+              Close
             </Button>
           </ModalFooter>
         </ModalContent>

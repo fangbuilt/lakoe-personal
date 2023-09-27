@@ -48,7 +48,6 @@ export default function AdminApprovedPopup(props: any) {
   const openModal = () => {
     onOpen();
   };
-
   const handleApproveClick = async () => {
     try {
       setIsLoading(true);
@@ -98,10 +97,9 @@ export default function AdminApprovedPopup(props: any) {
                     <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                   </Text>
                   <Text>
-                    {moment(
-                      dataWithdrawal.createdAt,
-                      'YYYY-MM-DD HH:mm:ss'
-                    ).format('LLLL')}
+                    {moment(dataWithdrawal.da, 'YYYY-MM-DD HH:mm:ss').format(
+                      'LLLL'
+                    )}
                   </Text>
                 </Box>
 
