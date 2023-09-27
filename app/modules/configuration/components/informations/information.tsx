@@ -12,18 +12,13 @@ import {
   Text,
   Image,
   AlertIcon,
-  //Center,
   Alert,
   AlertTitle,
   Center,
-  // Center,
 } from '@chakra-ui/react';
 import GalleryAdd from '~/assets/icon-pack/gallery-add.svg';
 import GalleryEdit from '~/assets/icon-pack/gallery-edit.svg';
-// import TickCircle from "~/assets/icon-pack/tick-circle.svg";
-// import CloseCircleRed from "~/assets/icon-pack/close-circle-red.svg";
 import Trash from '~/assets/icon-pack/trash.svg';
-// import type { ChangeEvent } from "react";
 import React, { useState } from 'react';
 import { Form } from '@remix-run/react';
 import type { FileWithPath } from 'react-dropzone';
@@ -31,6 +26,7 @@ import Dropzone from 'react-dropzone';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 import crypto from 'crypto';
+import Loading from '../loading';
 
 const CLOUDINARY_UPLOAD_PRESET = 'eenwxkso';
 const CLOUDINARY_CLOUD_NAME = 'djpxhz3vu';
@@ -39,16 +35,11 @@ export function Informations() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [showAlert, setShowAlert] = useState(false);
 
   const [slogan, setSlogan] = useState<string>('');
   const [namaToko, setNamaToko] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-
-  // const [sloganFilled, setSloganFilled] = useState(false);
-  // const [descriptionFilled, setDescriptionFilled] = useState(false);
-  // const [namaTokoFilled, setNamaTokoFilled] = useState(false);
 
   const characterLimitSlogan = 48;
   const characterLimitNamaToko = 48;
@@ -98,22 +89,17 @@ export function Informations() {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total ?? 1) * 100
-            );
-            setUploadProgress(progress);
-          },
         }
       );
 
-      // response.data.secure_url contains the URL of the uploaded image on Cloudinary
       console.log('Image uploaded:', response.data.secure_url);
       setUploadedImage(response.data.secure_url);
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
-      setIsUploading(false);
+      setTimeout(() => {
+        setIsUploading(false);
+      }, 5000);
     }
   };
 
@@ -124,18 +110,8 @@ export function Informations() {
       setUploadedImage(null);
 
       deleteImageFromCloudinary(uploadedImage);
+      console.log('ini adalah', uploadedImage);
     }
-  };
-
-  const generateSHA1 = (data: any) => {
-    const hash = crypto.createHash('sha1');
-    hash.update(data);
-    return hash.digest('hex');
-  };
-
-  const generateSignature = (publicId: string, apiSecret: string) => {
-    const timestamp = new Date().getTime();
-    return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
   };
 
   const deleteImageFromCloudinary = async (imageUrl: string | null) => {
@@ -151,7 +127,7 @@ export function Informations() {
       const apiKey = '398171867266613';
       const apiSecret = '4frGZZhXI0IgySCq2nWuYitfOyE';
       const signature = generateSHA1(generateSignature(publicId, apiSecret));
-
+      console.log('ini 1');
       // Send a DELETE request to Cloudinary
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/destroy`,
@@ -163,12 +139,23 @@ export function Informations() {
         }
       );
 
-      console.log('ini ini', response);
+      console.log('ini response', response);
 
       console.log('Image deleted from Cloudinary');
     } catch (error) {
       console.error('Error deleting image from Cloudinary:', error);
     }
+  };
+
+  const generateSHA1 = (data: any) => {
+    const hash = crypto.createHash('sha1');
+    hash.update(data);
+    return hash.digest('hex');
+  };
+
+  const generateSignature = (publicId: string, apiSecret: string) => {
+    const timestamp = new Date().getTime();
+    return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
   };
 
   return (
@@ -280,9 +267,6 @@ export function Informations() {
             borderRadius={'full'}
             bg={'#0086B4'}
             onClick={handleSaveButtonClick}
-            // onClick={() => {
-            //   setShowAlert(true);
-            // }}
           >
             Simpan
           </Button>
@@ -386,17 +370,18 @@ export function Informations() {
                           bg={'white'}
                           top={'98px'}
                           left={'98px'}
-                          onClick={handleRemove}
+                          onClick={() => handleRemove()}
                         >
                           <Image m={0} boxSize={'15px'} src={Trash} />
                         </Button>
                       </Box>
-                    ) : isUploading ? (
-                      <Box>
-                        <Text fontSize={'sm'}>Uploading...</Text>
-                        <Text fontSize={'sm'}>Progress: {uploadProgress}%</Text>
-                      </Box>
-                    ) : null}
+                    ) : (
+                      isUploading && (
+                        <Box>
+                          <Loading />
+                        </Box>
+                      )
+                    )}
                   </Box>
                 ) : (
                   <>

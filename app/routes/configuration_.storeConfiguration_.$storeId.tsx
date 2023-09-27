@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Tab,
   TabList,
@@ -9,13 +8,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
-// import {
-//   unstable_composeUploadHandlers as composeUploadHandlers,
-//   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-//   unstable_parseMultipartFormData as parseMultipartFormData,
-// } from "@remix-run/node";
-
-// import { uploadImage } from "../utils/uploadImage";
 import { db } from '~/libs/prisma/db.server';
 import { ImplementGrid } from '~/layouts/Grid';
 import { Informations } from '~/modules/configuration/components/informations/information';
