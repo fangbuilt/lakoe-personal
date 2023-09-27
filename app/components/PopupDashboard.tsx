@@ -52,6 +52,7 @@ export default function DashboardPopup({
     bankId: '',
     amount: '',
     bankAccount: '',
+    password: '',
   });
 
   const handleChange = (e: any) => {
@@ -196,7 +197,6 @@ export default function DashboardPopup({
                   onChange={(event) => {
                     handleChange(event);
                     handleAmount();
-                    // handleAmountRupiah();
                   }}
                   type="number"
                   ref={initialRef}

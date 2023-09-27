@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
@@ -12,16 +13,16 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData, useSubmit } from '@remix-run/react';
 import { useState } from 'react';
 import useSearchFilter from '~/hooks/useSearchOrder';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
-import { db } from '~/libs/prisma/db.server';
 import type { loader } from '~/routes/order';
+import { db } from '~/libs/prisma/db.server';
+import { ActionArgs } from '@remix-run/node';
 
 export function formatCurrency(price: number): string {
   const formattedAmount = new Intl.NumberFormat('id-ID', {
@@ -36,12 +37,33 @@ export function formatCurrency(price: number): string {
 
 export default function CardNewOrderBa() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { filteredOrders } = useSearchFilter();
+  // const { filteredOrders } = useSearchFilter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cardProduct = useLoaderData<typeof loader>();
   const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
+  const submit = useSubmit();
 
   const props = cardProduct.dataInvoice;
+
+  async function updateInvoiceAndHistoryStatusReadyToShip() {
+    try {
+      if (!selectedProps?.id) {
+        return console.log('Order ID not found!');
+      }
+
+      submit(
+        {
+          id: selectedProps.id,
+          status: 'READY_TO_SHIP',
+          actionType: 'updateInvoiceAndHistoryStatusReadyToShip',
+        },
+        { method: 'POST' }
+      );
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+      throw error;
+    }
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -53,7 +75,7 @@ export default function CardNewOrderBa() {
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const mailerData = {
-        email: 'miswaripujaayu+123qowiej@gmail.com',
+        email: 'aderino.2232510384+69@gmail.com',
         fields: {
           company: 'ADD MORE BALANCE', //company berperan sebagai "title" dalam mailerlite
           last_name:
@@ -77,16 +99,18 @@ export default function CardNewOrderBa() {
       );
       const responseData = await response.json();
       console.log('Data Email :', responseData);
+      alert('System sedang terkendala, cobalah beberapa saat lagi');
     } catch (error) {
       alert(error);
     }
   };
 
-  const systembalance = 100000; //saldo LAKOE
+  const systembalance = 1231029387; //saldo LAKOE
 
   const afterpacking = () => {
     if (systembalance > 50000) {
       handleOrderCourier();
+      updateInvoiceAndHistoryStatusReadyToShip();
     } else {
       handleBalanceNotif();
     }
@@ -100,19 +124,21 @@ export default function CardNewOrderBa() {
         'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
+        // shipper_contact_name: props[0].cart?.store?.users[0].name,
         shipper_contact_name: selectedProps?.cart?.store?.users[0].name,
         shipper_contact_phone: selectedProps?.cart?.store?.users[0].phone,
         shipper_contact_email: selectedProps?.cart?.store?.users[0].email,
-        shipper_organization: selectedProps?.cart?.store?.name,
+        shipper_organization: selectedProps?.cart?.store.name,
         origin_contact_name: selectedProps?.cart?.store?.users[0].name,
         origin_contact_phone: selectedProps?.cart?.store?.users[0].phone,
         origin_address: selectedProps?.cart?.store?.locations[0].address,
         origin_note: selectedProps?.cart?.store?.locations[0].addressNote,
+
         origin_coordinate: {
           latitude: -6.2253114,
           longitude: 106.7993735,
         },
-        origin_postal_code: '53371',
+        origin_postal_code: selectedProps?.cart?.store?.locations[0].postalCode,
         destination_contact_name: selectedProps?.receiverName,
         destination_contact_phone: selectedProps?.receiverPhone,
         destination_contact_email: selectedProps?.receiverEmail,
@@ -124,22 +150,23 @@ export default function CardNewOrderBa() {
           latitude: -6.28927,
           longitude: 106.77492000000007,
         },
-        courier_company: selectedProps?.courier?.courierName,
-        courier_type: selectedProps?.courier?.courierType,
-        courier_insurance: selectedProps?.courier?.courierInsurance,
-        delivery_type: selectedProps?.courier?.shippingType,
-        delivery_date: selectedProps?.courier?.deliveryDate,
-        delivery_time: selectedProps?.courier?.deliveryTime,
-        order_note: selectedProps?.courier?.description,
+        courier_company: 'grab',
+
+        courier_type: 'instant',
+        courier_insurance: true,
+        delivery_type: 'later',
+        delivery_date: '2024-09-24',
+        delivery_time: '12:00',
+        order_note: 'satukan semua pesanan kedalam satu packaging',
         metadata: {},
         items: [
           {
             id: 1,
-            name: 'haha baru lagi',
+            name: selectedProps?.cart.cartItems[0].product.name,
             image: '',
-            description: 'hahahahahahahaha',
-            value: 99000,
-            quantity: 2,
+            description: selectedProps?.cart.cartItems[0].product.description,
+            value: selectedProps?.price,
+            quantity: selectedProps?.cart.cartItems[0].qty,
             height: 10,
             length: 20,
             weight: 0.5,
@@ -230,8 +257,10 @@ export default function CardNewOrderBa() {
         requestOptions
       );
       const responseDataBITESHIP = await responsebiteship.json();
-      console.log('response biteship', responseDataBITESHIP);
-      alert(responseDataBITESHIP);
+
+      alert(
+        'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
+      );
     } catch (error) {
       alert(error);
     }
@@ -265,7 +294,6 @@ export default function CardNewOrderBa() {
                     fontSize={'14px'}
                     onClick={() => {
                       setModalText('Apakah sudah di pack dan siap dikirim?');
-                      console.log('data props', props);
                       setSelectedProps(props);
                       onOpen();
                     }}
@@ -331,19 +359,21 @@ export default function CardNewOrderBa() {
                       mt={3}
                       mx={3}
                     />
-                    <Text
-                      mt={4}
-                      id="fm500"
-                      fontSize={'16px'}
-                      textOverflow={'ellipsis'}
-                      overflow={'hidden'}
-                      whiteSpace={'nowrap'}
-                      fontWeight={'700'}
-                    >
-                      {props.cart?.cartItems.map((a) => a.product?.name)}
-                      <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                        {props.cart?.cartItems.map((a) => a.qty)} Barang
+                    <Link to={`/order/detail/${props.id}`}>
+                      <Text
+                        mt={4}
+                        id="fm500"
+                        fontSize={'16px'}
+                        textOverflow={'ellipsis'}
+                        overflow={'hidden'}
+                        whiteSpace={'nowrap'}
+                        fontWeight={'700'}
+                      >
+                        {props.cart?.cartItems.map((a) => a.product?.name)}
                       </Text>
+                    </Link>
+                    <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                      {props.cart?.cartItems.map((a) => a.qty)} Barang
                     </Text>
                   </Box>
                   <Box mt={4} w={'15%'}>
@@ -355,13 +385,16 @@ export default function CardNewOrderBa() {
                         Belanja
                       </Text>
                     </Flex>
-                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                    {/* <Text fontWeight={'bold'} fontSize={'14px'}>
                       {formatCurrency(
                         props.cart?.cartItems.reduce(
                           (total, a) => total + a.price * a.qty,
                           0
                         ) as number
                       )}
+                    </Text> */}
+                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                      {formatCurrency(props.price)}
                     </Text>
                   </Box>
                 </Flex>
