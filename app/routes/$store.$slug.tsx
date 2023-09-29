@@ -257,6 +257,7 @@ export default function Checkout() {
 
   let comment = 'Currently placing a new order';
   let spinner = 'none';
+  let close = 'block';
 
   if (count === 0) {
     comment = 'Pilih berapa banyak produk yang ingin dibeli';
@@ -274,6 +275,7 @@ export default function Checkout() {
     comment = 'Harap pilih metode pembayaran';
   } else {
     spinner = 'block';
+    close = 'none';
   }
   console.log('form : ', form);
 
@@ -316,7 +318,12 @@ export default function Checkout() {
         <Box>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalCheckout text={comment} displaySpinner={spinner}>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
+              <Button
+                display={close}
+                colorScheme="blue"
+                mr={3}
+                onClick={onClose}
+              >
                 Close
               </Button>
             </ModalCheckout>
