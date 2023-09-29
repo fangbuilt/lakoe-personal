@@ -102,6 +102,41 @@ export async function loader({ request }: LoaderArgs) {
   }
 }
 
+// export async function action({ request }: ActionArgs) {
+//   if (request.method.toLowerCase() === 'patch') {
+//     const formData = await request.formData();
+
+//     const id = formData.get('id') as string;
+//     const price = formData.get('price');
+//     const stock = formData.get('stock');
+
+//     await updateInvoiceStatus({ id, price, stock });
+//   }
+
+//   return redirect('/order');
+// }
+
+// export async function loader() {
+//   const apiKey = process.env.BITESHIP_API_KEY;
+//   const dataProductReadyToShip = await getDataProductReadyToShip();
+
+//   const [canceledService] = await Promise.all([
+//     CanceledService(),
+//     // ready(),
+//     //your order service here !
+//   ]);
+//   const dataInvoice = await getInvoiceByStatus();
+
+//   return json({
+//     canceledService,
+//     dataInvoice,
+//     dataShipping: await getDataInShipping(),
+//     dataProductReadyToShip,
+//     apiKey,
+//     // your return order service here !
+//   });
+// }
+
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
 
@@ -110,10 +145,10 @@ export async function action({ request }: ActionArgs) {
   const status = formData.get('status') as string;
   const actionType = formData.get('actionType') as string;
 
-  console.log('yg kamu cari', id, actionType, status);
+  // console.log('yg kamu cari', id, actionType, status);
 
   if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
-    console.log('masuk sini');
+    // console.log('masuk sini');
 
     await db.invoiceHistory.create({
       data: {
@@ -132,7 +167,7 @@ export async function action({ request }: ActionArgs) {
     });
 
     // alert
-    console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
+    // console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
   }
 
   if (isMootaIP(requestIP)) {
