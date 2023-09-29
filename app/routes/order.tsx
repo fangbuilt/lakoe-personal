@@ -102,6 +102,41 @@ export async function loader({ request }: LoaderArgs) {
   }
 }
 
+// export async function action({ request }: ActionArgs) {
+//   if (request.method.toLowerCase() === 'patch') {
+//     const formData = await request.formData();
+
+//     const id = formData.get('id') as string;
+//     const price = formData.get('price');
+//     const stock = formData.get('stock');
+
+//     await updateInvoiceStatus({ id, price, stock });
+//   }
+
+//   return redirect('/order');
+// }
+
+// export async function loader() {
+//   const apiKey = process.env.BITESHIP_API_KEY;
+//   const dataProductReadyToShip = await getDataProductReadyToShip();
+
+//   const [canceledService] = await Promise.all([
+//     CanceledService(),
+//     // ready(),
+//     //your order service here !
+//   ]);
+//   const dataInvoice = await getInvoiceByStatus();
+
+//   return json({
+//     canceledService,
+//     dataInvoice,
+//     dataShipping: await getDataInShipping(),
+//     dataProductReadyToShip,
+//     apiKey,
+//     // your return order service here !
+//   });
+// }
+
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
 

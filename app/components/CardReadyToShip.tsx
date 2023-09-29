@@ -32,7 +32,7 @@ export default function CardReadyToShip() {
     <>
       {/* CARD START HERE */}
 
-      {cardProduct.dataProductReadyToShip.reverse().map((data) => (
+      {cardProduct.dataProductReadyToShip.map((data) => (
         <Card mb={5} boxShadow={'xs'} key={data.id}>
           <Box key={data.id}>
             <Box mt={5}>
@@ -62,6 +62,13 @@ export default function CardReadyToShip() {
                     >
                       Tracking Pengiriman
                     </Button>
+                    {modalIsOpen && (
+                      <ModalTracking
+                        isOpen={modalIsOpen}
+                        onClose={closeModal}
+                        selectedCardId={selectedCardId}
+                      />
+                    )}
                     {/*  */}
                   </Box>
                 </Flex>
