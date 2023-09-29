@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
-import { json, redirect, type ActionArgs } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
+import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
   MootaOrderStatusUpdate,
@@ -19,6 +20,8 @@ import NavOrder from '~/layouts/NavOrder';
 import { db } from '~/libs/prisma/db.server';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
+import { getUserId } from '~/modules/auth/auth.service';
+import SuccesService from '~/modules/order/orderSuccessService';
 
 // export async function action({ request }: ActionArgs) {
 //   if (request.method.toLowerCase() === 'patch') {
@@ -55,26 +58,84 @@ import getDataInShipping from '~/modules/order/orderShippingService';
 //   });
 // }
 
-export async function loader() {
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-  ]);
+  const [unpaidCardAll, unpaidCard, canceledService, successedService] =
+    await Promise.all([
+      getAllProductUnpid(),
+      getProductUnpid(),
+      CanceledService(),
+      SuccesService(),
+    ]);
   const dataInvoice = await getInvoiceByStatus();
-  return json({
-    unpaidCardAll,
-    unpaidCard,
-    canceledService,
-    dataInvoice,
-    dataShipping: await getDataInShipping(),
-    dataProductReadyToShip,
-    apiKey,
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
   });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return json({
+      unpaidCardAll,
+      unpaidCard,
+      canceledService,
+      successedService,
+      dataInvoice,
+      dataShipping: await getDataInShipping(),
+      dataProductReadyToShip,
+      apiKey,
+    });
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
+
+// export async function action({ request }: ActionArgs) {
+//   if (request.method.toLowerCase() === 'patch') {
+//     const formData = await request.formData();
+
+//     const id = formData.get('id') as string;
+//     const price = formData.get('price');
+//     const stock = formData.get('stock');
+
+//     await updateInvoiceStatus({ id, price, stock });
+//   }
+
+//   return redirect('/order');
+// }
+
+// export async function loader() {
+//   const apiKey = process.env.BITESHIP_API_KEY;
+//   const dataProductReadyToShip = await getDataProductReadyToShip();
+
+//   const [canceledService] = await Promise.all([
+//     CanceledService(),
+//     // ready(),
+//     //your order service here !
+//   ]);
+//   const dataInvoice = await getInvoiceByStatus();
+
+//   return json({
+//     canceledService,
+//     dataInvoice,
+//     dataShipping: await getDataInShipping(),
+//     dataProductReadyToShip,
+//     apiKey,
+//     // your return order service here !
+//   });
+// }
 
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
@@ -84,10 +145,10 @@ export async function action({ request }: ActionArgs) {
   const status = formData.get('status') as string;
   const actionType = formData.get('actionType') as string;
 
-  console.log('yg kamu cari', id, actionType, status);
+  // console.log('yg kamu cari', id, actionType, status);
 
   if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
-    console.log('masuk sini');
+    // console.log('masuk sini');
 
     await db.invoiceHistory.create({
       data: {
@@ -106,7 +167,7 @@ export async function action({ request }: ActionArgs) {
     });
 
     // alert
-    console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
+    // console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
   }
 
   if (isMootaIP(requestIP)) {

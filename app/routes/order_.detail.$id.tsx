@@ -5,22 +5,45 @@ import { useLoaderData } from '@remix-run/react';
 import type { ITracking } from '~/interfaces/order/orderTracking';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import { ImplementGrid } from '~/layouts/Grid';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import StatusOrderDetail from '~/modules/order/components/statusOrderDetail';
 import {
   getInvoiceById,
   updateStatusInvoice,
+  updateStatusInvoice2,
 } from '~/modules/order/order.service';
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params, request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
   const { id } = params;
 
-  try {
-    const apiKey = process.env.BITESHIP_API_KEY as string;
-    const dataCart = await getInvoiceById(id as string);
-    return { dataCart, apiKey };
-  } catch (error) {
-    console.error('Loader error:', error);
-    throw error;
+  const apiKey = process.env.BITESHIP_API_KEY as string;
+  const dataCart = await getInvoiceById(id as string);
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    try {
+      return { dataCart, apiKey };
+    } catch (error) {
+      console.error('Loader error:', error);
+      throw error;
+    }
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
   }
 }
 
@@ -36,6 +59,20 @@ export async function action({ request }: ActionArgs) {
     };
 
     await updateStatusInvoice(validateDataUpdate);
+    return redirect('/order/detail/' + id);
+  }
+
+  if (request.method.toLowerCase() === 'post') {
+    const formData = await request.formData();
+    const status = formData.get('status') as string;
+    const id = formData.get('id') as string;
+
+    const validateDataUpdate = {
+      id,
+      status,
+    };
+
+    await updateStatusInvoice2(validateDataUpdate);
     return redirect('/order/detail/' + id);
   }
 }

@@ -1,17 +1,14 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
-  Card,
   Flex,
-  Stack,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
+  Stack,
+  Card,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
 import { Informations } from '~/modules/configuration/components/informations/information';
@@ -23,34 +20,32 @@ import createLocation, {
   updateMessage,
   deleteMessage,
   createMessage,
-  getStoreid,
   deleteLocation,
   updateLocation,
+  getStoreId,
 } from '~/modules/configuration/configuration.service';
-
 import {
   DeleteButton,
   UpdateButton,
   CreateButton,
 } from '~/modules/configuration/components/CrudModal';
-
+import type { ActionArgs} from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 
 export async function loader({ params }: ActionArgs) {
   const getLocationData = await getAllDataLocation();
 
-  //console.log("ini getdata:", getLocationData);
-
   const messages = await getMessages();
   const { storeId } = params;
-  const store_id = await getStoreid(storeId);
+  const store_id = await getStoreId(storeId);
 
   return { messages, store_id, getLocationData };
 }
 
 export async function action({ request }: ActionArgs) {
-  //ini adalah action location ===============================================
   const formData = await request.formData();
   console.log('ini isi dari formData', formData);
 
@@ -153,16 +148,20 @@ export async function action({ request }: ActionArgs) {
     await deleteMessage(id);
   } else if (action === 'update') {
     const id = formData.get('id') as string;
-    const updatedName = formData.get('updatedName') as string;
-    const updatedContent = formData.get('updatedContent') as string;
+    const name = formData.get('updatedName') as string;
+    const content = formData.get('updatedContent') as string;
 
-    await updateMessage(id, updatedName, updatedContent);
+    const validatedData = updateMessageSchema.parse({ id, name, content });
+
+    await updateMessage(validatedData);
   }
 
   return null;
 }
+
 export default function StoreConfiguration() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <ImplementGrid>
       <Flex h={'105vh'} mt={5}>
@@ -197,10 +196,13 @@ export default function StoreConfiguration() {
           </TabList>
 
           <TabPanels>
+            {/* INI BAGIAN rifki */}
             <Informations />
 
+            {/* INI BAGIAN BAGZA */}
             <Locations />
 
+            {/* INI BAGIAN MIKHAEL DAN HELEN */}
             <TabPanel>
               <Flex
                 justifyContent={'space-between'}

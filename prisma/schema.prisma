@@ -11,6 +11,8 @@ datasource db {
   url          = env("DATABASE_URL")
 }
 
+
+
 // your beautiful schema goes below :
 model User {
   id                     String                  @id @unique @default(uuid())
@@ -220,7 +222,7 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product         @relation(fields: [productId], references: [id])
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
@@ -233,7 +235,7 @@ model Variant {
 model VariantOption {
   id                  String               @id @unique @default(uuid())
   name                String
-  variant             Variant?             @relation(fields: [variantId], references: [id])
+  variant             Variant?             @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantId           String
   cartItems           CartItem[]
   variantOptionValues VariantOptionValue[]
@@ -250,7 +252,7 @@ model VariantOptionValue {
   weight          Float
   stock           Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantOptionId String
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())
@@ -293,7 +295,7 @@ model CartItem {
   id              String         @id @unique @default(uuid())
   qty             Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantOptionId String
   cart            Cart?          @relation(fields: [cartId], references: [id])
   cartId          String
@@ -332,7 +334,7 @@ model Invoice {
   cart                   Cart?                   @relation(fields: [cartId], references: [id])
   cartId                 String
   courier                Courier?                @relation(fields: [courierId], references: [id])
-  courierId              String
+  courierId              String                  @unique
   user                   User?                   @relation(fields: [userId], references: [id])
   userId                 String?
   payment                Payment?                @relation(fields: [paymentId], references: [id])
@@ -365,7 +367,7 @@ model Payment {
 }
 
 model Courier {
-  id                           String    @id @unique @default(uuid())
+  id                           String   @id @unique @default(uuid())
   availableForCashOnDelivery   Boolean?
   availableForProofOfDelivery  Boolean?
   availableForInstantWaybillId Boolean?
@@ -386,9 +388,9 @@ model Courier {
   trackingId                   String
   deliveryDate                 String
   deliveryTime                 String
-  invoices                     Invoice[]
-  createdAt                    DateTime  @default(now())
-  updatedAt                    DateTime  @default(now())
+  invoice                      Invoice?
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @default(now())
 
   @@map("couriers")
 }
@@ -423,7 +425,7 @@ model BankAccount {
 model ProductAttachment {
   id        String   @id @unique @default(uuid())
   url       String
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
