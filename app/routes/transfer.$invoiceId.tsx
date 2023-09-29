@@ -4,8 +4,15 @@ import {
   Card,
   Center,
   Heading,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Spinner,
   Text,
   useClipboard,
+  useDisclosure,
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
 import { Link, useLoaderData, useParams } from '@remix-run/react';
@@ -43,9 +50,40 @@ export default function PayTransfer() {
     bankAccount = '7439861';
   }
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
       <Box marginInline={'10%'}>
+        <Box>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader fontWeight={'bold'} textAlign={'center'}>
+                Page Loading
+              </ModalHeader>
+              {/* <ModalCloseButton /> */}
+              <ModalBody>
+                <Box
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  mb={5}
+                >
+                  <Spinner
+                    w={10}
+                    h={10}
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="xl"
+                  />
+                </Box>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </Box>
         <Card boxShadow={'dark-lg'} m={5}>
           <Box
             p={9}
@@ -99,7 +137,7 @@ export default function PayTransfer() {
                   </Box>
                   <Box mt={'20px'}>
                     <Text>Konfirmasikan Pembayaran Anda di:</Text>
-                    <Link to={`/payment/${invoiceId}`}>
+                    <Link to={`/payment/${invoiceId}`} onClick={onOpen}>
                       {/* <Link to={`#`} onClick={onOpen}> */}
                       <Text display={'inline'} color={'blue'} ms={1}>
                         Konfirmasi Pembayaran
