@@ -180,7 +180,6 @@ export function Informations() {
                 fontSize={'13px'}
                 placeholder="Buat slogan untuk toko"
                 py={-5}
-                // value={slogan}
                 name="slogan"
                 onChange={handleSloganChange}
                 maxLength={characterLimitSlogan}
@@ -206,7 +205,6 @@ export function Informations() {
                 h={'145px'}
                 resize={'none'}
                 placeholder="Tuliskan deskripsi toko disini"
-                // value={description}
                 name="description"
                 onChange={handleDescriptionFilled}
                 maxLength={characterLimitDescription}
@@ -229,7 +227,6 @@ export function Informations() {
               <Input
                 fontSize={'13px'}
                 placeholder="Buat Nama Toko"
-                // value={namaToko}
                 name="name"
                 onChange={handleTokoFilled}
                 maxLength={characterLimitNamaToko}
