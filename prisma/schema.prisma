@@ -9,7 +9,10 @@ datasource db {
   provider     = "mysql"
   relationMode = "prisma"
   url          = env("DATABASE_URL")
+
 }
+
+
 
 // your beautiful schema goes below :
 model User {
@@ -19,7 +22,7 @@ model User {
   phone                  String                  @unique
   password               String
   store                  Store?                  @relation(fields: [storeId], references: [id])
-  storeId                String?
+  storeId                String?                 
   role                   Role?                   @relation(fields: [roleId], references: [id])
   roleId                 String
   profile                Profile?
@@ -220,7 +223,7 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product         @relation(fields: [productId], references: [id])
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
@@ -233,7 +236,7 @@ model Variant {
 model VariantOption {
   id                  String               @id @unique @default(uuid())
   name                String
-  variant             Variant?             @relation(fields: [variantId], references: [id])
+  variant             Variant?             @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantId           String
   cartItems           CartItem[]
   variantOptionValues VariantOptionValue[]
@@ -250,7 +253,7 @@ model VariantOptionValue {
   weight          Float
   stock           Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantOptionId String
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())
@@ -293,7 +296,7 @@ model CartItem {
   id              String         @id @unique @default(uuid())
   qty             Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantOptionId String
   cart            Cart?          @relation(fields: [cartId], references: [id])
   cartId          String
@@ -423,7 +426,7 @@ model BankAccount {
 model ProductAttachment {
   id        String   @id @unique @default(uuid())
   url       String
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

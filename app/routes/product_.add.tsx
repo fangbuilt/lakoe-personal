@@ -1,7 +1,14 @@
 import { Stack } from '@chakra-ui/react';
-import { redirect, type ActionArgs } from '@remix-run/node';
+import {
+  type LoaderArgs,
+  type ActionArgs,
+  redirect,
+  json,
+} from '@remix-run/node';
 import { Form } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import { Action } from '~/modules/product/components/Action';
 import { Price } from '~/modules/product/components/Price';
 import { ProductDetail } from '~/modules/product/components/ProductDetail';
@@ -10,30 +17,38 @@ import { ProductManagement } from '~/modules/product/components/ProductManagemen
 // import { ProductVariant } from '~/modules/product/components/ProductVariant';
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
 import { createProduct } from '~/modules/product/product.service';
-import { uploadImage } from '~/utils/uploadImage';
-import {
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from '@remix-run/node';
-// import { useState } from 'react';
+
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return json({});
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
+}
 
 export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'post') {
-    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
-      if (name !== 'mainPhoto' && name !== 'photo2') {
-        return undefined;
-      }
+    const formData = await request.formData();
 
-      const uploadedImage = await uploadImage(data);
-
-      return uploadedImage.secure_url;
-    }, createMemoryUploadHandler());
-
-    const formData = await parseMultipartFormData(request, uploadHandler);
     const imageUrl = formData.get('mainPhoto') as string;
     const imageUrl2 = formData.get('photo2') as string;
     const height = parseFloat(formData.get('height') as string);
+    const description = 'bro bro';
     console.log('image', imageUrl);
     console.log('image2', imageUrl2);
 
@@ -41,7 +56,7 @@ export async function action({ request }: ActionArgs) {
       url: imageUrl,
       url2: imageUrl2,
       name: formData.get('name'),
-      description: formData.get('description'),
+      description: description,
       minimumOrder: Number(formData.get('min_order')),
       price: parseFloat(formData.get('price') as string),
       stock: parseInt(formData.get('stock') as string),
