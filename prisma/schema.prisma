@@ -22,7 +22,7 @@ model User {
   phone                  String                  @unique
   password               String
   store                  Store?                  @relation(fields: [storeId], references: [id])
-  storeId                String?                 
+  storeId                String?
   role                   Role?                   @relation(fields: [roleId], references: [id])
   roleId                 String
   profile                Profile?
