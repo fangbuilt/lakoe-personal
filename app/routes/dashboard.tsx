@@ -120,7 +120,13 @@ export async function action({ request }: ActionArgs) {
         },
       });
       if (store) {
-        const newCredit = store.credit - amount;
+        let newCredit = 0;
+
+        if (store.credit > amount) {
+          newCredit = store.credit - amount;
+        } else {
+          throw new Error();
+        }
 
         await db.store.update({
           where: {
@@ -219,9 +225,10 @@ export default function Dashboard() {
               {data.map((item) => (
                 <DashboardPopup
                   key={item.id}
-                  bankAccount={item.bankAccounts}
+                  dataBank={item.bankAccounts}
                   storeName={item.name}
                   createdAt={createdAtArray}
+                  creditSaldo={item.credit}
                 />
               ))}
             </Box>

@@ -26,9 +26,10 @@ import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMai
 import moment from 'moment';
 
 export default function DashboardPopup({
-  bankAccount,
+  dataBank,
   storeName,
   createdAt,
+  creditSaldo,
 }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
@@ -42,6 +43,7 @@ export default function DashboardPopup({
 
   const [alertAmountMessage, setAlertAmountMessage] = useState('');
   const [alertBankMessage, setAlertBankMessage] = useState('');
+  // const [isBankConfirmed, setIsBankConfirmed] = useState(true);
 
   const createWithdrawal = moment(createdAt, 'YYYY-MM-DD HH:mm:ss').format(
     'LLLL'
@@ -55,6 +57,12 @@ export default function DashboardPopup({
     password: '',
   });
 
+  const splitBankAccount = formData.bankAccount.split(' - ');
+  const accountName = splitBankAccount[2];
+  const bankName = splitBankAccount[1];
+  const accountNumber = splitBankAccount[3];
+  const bankAccountPreview = splitBankAccount.slice(1, 4).join(' - ');
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -63,17 +71,44 @@ export default function DashboardPopup({
   const handleAmount = () => {
     const { amount } = formData;
     const parsedAmount = parseFloat(amount);
+    const parsedCredit = parseFloat(String(Number(creditSaldo) / 10));
 
     if (isNaN(parsedAmount)) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Amount harus berupa angka');
     } else if (parsedAmount < 10000) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Penarikan minimal Rp.100.000');
-    } else if (parsedAmount > 250000) {
+    } else if (parsedAmount > 2500000) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Jumlah amount melebihi batas maksimal');
+    } else if (parsedAmount > parsedCredit) {
+      setIsFormValidation(false);
+      setAlertAmountMessage('Saldo Anda tidak mencukupi!');
+      setAlertMessage('Saldo Anda tidak mencukupi!');
     } else {
+      setIsFormValidation(true);
       setAlertAmountMessage('');
     }
   };
+
+  // const handleConfirmBank = () => {
+  //   const bankId = formData.bankId;
+  //   const bankAccountParts = formData.bankAccount.split(" - ");
+  //   const confirmBankId =
+  //     bankAccountParts.length > 0 ? bankAccountParts[0] : "";
+
+  //   console.log("bankId:", bankId);
+  //   console.log("confirmBankId:", confirmBankId);
+
+  //   if (bankId === confirmBankId) {
+  //     setIsFormValidation(true); // Set to true when the bank is confirmed
+  //     setAlertBankMessage("Konfirmasi Bank sinkron.");
+  //   } else {
+  //     setIsFormValidation(false); // Set to false when the bank is not confirmed
+  //     setAlertBankMessage("Konfirmasi Bank tidak sinkron.");
+  //   }
+  // };
 
   const toggleTarikKredit = () => {
     const { actionType, amount, bankAccount, bankId } = formData;
@@ -102,12 +137,6 @@ export default function DashboardPopup({
       bankAccount.split(' - ')[0]
     );
   };
-
-  const splitBankAccount = formData.bankAccount.split(' - ');
-  const accountName = splitBankAccount[2];
-  const bankName = splitBankAccount[1];
-  const accountNumber = splitBankAccount[3];
-  const bankAccountPreview = splitBankAccount.slice(1, 4).join(' - ');
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -232,13 +261,16 @@ export default function DashboardPopup({
                 <Select
                   fontSize={'13px'}
                   name="bankId"
-                  onChange={handleChange}
+                  onChange={(event) => {
+                    handleChange(event);
+                    // handleConfirmBank();
+                  }}
                   value={formData.bankId}
                 >
-                  <option value={bankAccount.id}>Select Bank Account</option>
-                  {bankAccount.map((dataBank: any) => (
-                    <option value={`${dataBank.id}`} key={dataBank.id}>
-                      {`${dataBank.accountName} - ${dataBank.bank} - ${dataBank.accountNumber}`}
+                  <option value="">Select Bank Account</option>
+                  {dataBank.map((dataBank: any) => (
+                    <option value={dataBank.id} key={dataBank.id}>
+                      {`${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
                     </option>
                   ))}
                 </Select>
@@ -265,16 +297,16 @@ export default function DashboardPopup({
                 <Select
                   fontSize={'13px'}
                   name="bankAccount"
-                  onChange={handleChange}
+                  onChange={(event) => {
+                    handleChange(event);
+                    // handleConfirmBank();
+                  }}
                   value={formData.bankAccount}
                 >
                   <option value="">Confirm Your Bank Account</option>
-                  {bankAccount.map((dataBank: any) => (
-                    <option
-                      key={dataBank.id}
-                      value={`${dataBank.id} - ${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
-                    >
-                      {`${dataBank.accountName} - ${dataBank.bank} - ${dataBank.accountNumber}`}
+                  {dataBank.map((dataBank: any) => (
+                    <option key={dataBank.id} value={dataBank.id}>
+                      {`${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
                     </option>
                   ))}
                 </Select>
@@ -318,7 +350,9 @@ export default function DashboardPopup({
                   onClick={() => {
                     toggleTarikKredit();
                     handleAmount();
+                    // handleConfirmBank();
                   }}
+                  isDisabled={!isFormValidation}
                 >
                   Tarik Kredit
                 </Button>
