@@ -23,7 +23,7 @@ import createLocation, {
   updateMessage,
   deleteMessage,
   createMessage,
-  getStoreid,
+  getStoreId,
   deleteLocation,
 } from '~/modules/configuration/configuration.service';
 
@@ -37,20 +37,25 @@ import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
 import { getUserId } from '~/modules/auth/auth.service';
 import { db } from '~/libs/prisma/db.server';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   if (!userId) {
     return redirect('/auth/login');
   }
 
+  const auth = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
   const getLocationData = await getAllDataLocation();
 
-  //console.log("ini getdata:", getLocationData);
-
-  const messages = await getMessages();
-  const { storeId } = params;
-  const store_id = await getStoreid(storeId);
+  const store = auth?.storeId;
+  const store_id = await getStoreId(store);
+  const messages = await getMessages(store);
 
   const role = await db.user.findFirst({
     where: {
@@ -145,7 +150,7 @@ export async function action({ request }: ActionArgs) {
     return redirect(redirectURL);
   }
 
-  //==================================================================
+  //ini action template message ==================================================================
 
   const action = formData.get('action');
 
@@ -160,10 +165,12 @@ export async function action({ request }: ActionArgs) {
     await deleteMessage(id);
   } else if (action === 'update') {
     const id = formData.get('id') as string;
-    const updatedName = formData.get('updatedName') as string;
-    const updatedContent = formData.get('updatedContent') as string;
+    const name = formData.get('updatedName') as string;
+    const content = formData.get('updatedContent') as string;
 
-    await updateMessage(id, updatedName, updatedContent);
+    const validatedData = updateMessageSchema.parse({ id, name, content });
+
+    await updateMessage(validatedData);
   }
 
   return null;
