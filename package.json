@@ -40,6 +40,7 @@
     "@uidotdev/usehooks": "^2.2.0",
     "@vercel/node": "^2.10.3",
     "bcryptjs": "^2.4.3",
+    "axios": "^1.5.0",
     "cloudinary": "^1.40.0",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",

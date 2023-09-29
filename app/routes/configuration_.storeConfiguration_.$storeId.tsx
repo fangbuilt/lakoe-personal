@@ -1,21 +1,20 @@
 import {
+  Card,
   Flex,
+  Stack,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
-  Stack,
-  Card,
 } from '@chakra-ui/react';
+import type { ActionArgs } from '@remix-run/node';
+import { db } from '~/libs/prisma/db.server';
 import { ImplementGrid } from '~/layouts/Grid';
-import Locations from '~/modules/configuration/components/location/Locations';
 import { Informations } from '~/modules/configuration/components/informations/information';
 import createLocation, {
   getAllDataLocation,
-  createStoreInformation,
-  updateStoreInformation,
   getMessages,
   updateMessage,
   deleteMessage,
@@ -24,16 +23,16 @@ import createLocation, {
   updateLocation,
   getStoreId,
 } from '~/modules/configuration/configuration.service';
-import {
-  DeleteButton,
-  UpdateButton,
-  CreateButton,
-} from '~/modules/configuration/components/CrudModal';
-import type { ActionArgs} from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import Scroll from '~/modules/configuration/components/Scroll';
 import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
+import Locations from '~/modules/configuration/components/location/Locations';
+import {
+  CreateButton,
+  UpdateButton,
+  DeleteButton,
+} from '~/modules/configuration/components/CrudModal';
+import Scroll from '~/modules/configuration/components/Scroll';
 
 export async function loader({ params }: ActionArgs) {
   const getLocationData = await getAllDataLocation();
@@ -46,11 +45,11 @@ export async function loader({ params }: ActionArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
+  // action BAGZA==============================
   const formData = await request.formData();
   console.log('ini isi dari formData', formData);
 
-  const actionType = formData.get('actionType');
-  console.log('ini isi dari actionType', actionType);
+  const action = formData.get('action');
 
   const name = formData.get('name');
   const address = formData.get('address');
@@ -67,14 +66,7 @@ export async function action({ request }: ActionArgs) {
   console.log('ini isi dari poscode :', postalCode);
   console.log('ini isi dari isman :', isMainLocation);
 
-  //ini action rifki===========================
-  const nameStore = formData.get('namestore');
-  const slogan = formData.get('slogan');
-  const description = formData.get('description');
-  const domain = `lakoe.store/${name}`;
-  const logoAttachment = formData.get('logoAttachment');
-
-  if (actionType === 'createlocation') {
+  if (action === 'createlocation') {
     console.log('data berhasil masuk!');
 
     await createLocation({
@@ -89,10 +81,13 @@ export async function action({ request }: ActionArgs) {
     const redirectURL = `/configuration/storeConfiguration/1 `;
 
     return redirect(redirectURL);
-  } else if (actionType === 'deletelocation') {
+  } else if (action === 'deletelocation') {
     const id = formData.get('id') as string;
     await deleteLocation(id);
-  } else if (actionType === 'editlocation') {
+    const redirectURL = `/configuration/storeConfiguration/1 `;
+
+    return redirect(redirectURL);
+  } else if (action === 'editlocation') {
     console.log('masuk ok!');
     const id = formData.get('id') as string;
 
@@ -106,36 +101,37 @@ export async function action({ request }: ActionArgs) {
       isMainLocation,
     });
   }
+  //==========================================================
+  if (action === 'createInformation') {
+    const slogan = formData.get('slogan') as string;
+    const description = formData.get('description') as string;
+    const name = formData.get('name') as string;
+    const domain = `lakoe.store/${name}`;
+    const logoAttachment = formData.get('logoAttachment') as string;
+    console.log('ini logoAttachment', logoAttachment);
 
-  //=======================================================================
+    const data = {
+      slogan,
+      description,
+      name,
+      domain,
+      logoAttachment,
+    };
 
-  if (actionType === 'createinformation') {
-    const storeId = '';
-    if (storeId) {
-      await updateStoreInformation(storeId, {
-        storeId: storeId,
-        name: nameStore,
-        slogan,
-        description,
-        domain,
-        logoAttachment,
-      });
-    } else {
-      await createStoreInformation({
-        name: nameStore,
-        slogan,
-        description,
-        domain,
-        logoAttachment,
-      });
-    }
+    await db.store.create({
+      data: {
+        slogan: data.slogan,
+        domain: data.domain,
+        name: data.name,
+        logoAttachment: data.logoAttachment,
+        description: data.description,
+      },
+    });
+
     const redirectURL = `/configuration/storeConfiguration/1 `;
+
     return redirect(redirectURL);
   }
-
-  //==================================================================
-
-  const action = formData.get('action');
 
   if (action === 'create') {
     const name = formData.get('name') as string;
