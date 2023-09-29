@@ -1,6 +1,6 @@
+import { db } from '~/libs/prisma/db.server';
 import type { z } from 'zod';
 import type { MootaOrderSchema } from './order.schema';
-import { db } from '~/libs/prisma/db.server';
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
