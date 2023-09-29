@@ -38,5 +38,6 @@ export interface IProductAttachment {
 }
 
 export interface IStore {
+  id: string;
   name: string;
 }

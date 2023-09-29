@@ -262,7 +262,7 @@ export default function ProductModal(props: IProduct) {
               Batalkan
             </Button>
             <Form method="DELETE">
-              <Input type="hidden" name="id" value={props.id} />
+              <input type="hidden" name="id" value={props.id} />
               <Button
                 colorScheme="#0086B4"
                 bgColor={'#0086B4'}

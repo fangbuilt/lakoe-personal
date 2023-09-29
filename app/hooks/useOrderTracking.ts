@@ -1,6 +1,6 @@
 import { useLoaderData } from '@remix-run/react';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 import type { loader } from '~/routes/order';
 
@@ -8,6 +8,7 @@ export default function useOrderTracking(trackingId: string) {
   const data = useLoaderData<typeof loader>();
   const [orderTrackingsData, setOrderTrackingsData] =
     useState<IBiteshipTracking>();
+
   const [orderMultiTrackingsData, setOrderMultiTrackingsData] = useState<
     IBiteshipTracking[]
   >([]);
@@ -19,14 +20,13 @@ export default function useOrderTracking(trackingId: string) {
           `https://api.biteship.com/v1/trackings/${trackingId}`,
           {
             headers: {
-              authorization: data.api_key,
+              authorization: data.apiKey,
             },
           }
         );
 
-        setOrderTrackingsData(response.data); // Update the state with Biteship data
-
-        setOrderMultiTrackingsData(response.data.history); // Update the state with Biteship data
+        setOrderTrackingsData(response.data);
+        setOrderMultiTrackingsData(response.data.history);
       } catch (err) {
         console.error(err);
       }

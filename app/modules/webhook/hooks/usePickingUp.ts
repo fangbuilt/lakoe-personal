@@ -6,7 +6,16 @@ const mailerlite = new MailerLite({
   api_key: process.env.MAILERLITE_API_KEY as string,
 });
 
-export function pickingUp(email: string, name: string, waybill: string) {
+export function pickingUp(
+  email: string,
+  name: string,
+  waybill: string,
+  invoiceNumber: string,
+  courierName: string,
+  productName: string,
+  quantity: number,
+  variants: string
+): void {
   const emailAddress = `${email}`;
   const date = new Date().getTime();
   const username = `${date}`;
@@ -27,6 +36,12 @@ export function pickingUp(email: string, name: string, waybill: string) {
       // This is where you can make custom fields variable for email template display
       name: `${name}`,
       waybill: `${waybill}`,
+      invoicenumber: `${invoiceNumber}`,
+      couriername: `${courierName}`,
+      productname: `${productName}`,
+      quantity: `${quantity}`,
+      variant: `${variants}`,
+
       // address: `${address}`,
     },
     groups: ['98353352732051296'], // This is where you need to categorize which group it should go for email automation trigger
