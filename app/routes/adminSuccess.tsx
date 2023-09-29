@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import type { LoaderArgs} from '@remix-run/node';
+import type { LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminSuccess from '~/components/AdminSuccess';
