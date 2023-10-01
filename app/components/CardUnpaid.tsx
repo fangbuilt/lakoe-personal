@@ -1,23 +1,23 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   Card,
   Flex,
   Img,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+  // Accordion,
+  // AccordionButton,
+  // AccordionIcon,
+  // AccordionItem,
+  // AccordionPanel,
+  // Modal,
+  // ModalBody,
+  // ModalCloseButton,
+  // ModalContent,
+  // ModalFooter,
+  // ModalHeader,
+  // ModalOverlay,
+  // useDisclosure,
   Text,
-  useDisclosure,
   Input,
   InputGroup,
   InputLeftElement,
@@ -33,26 +33,33 @@ import {
 import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
-import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 
-import { Link, useLoaderData } from '@remix-run/react';
+// import {  useLoaderData } from '@remix-run/react';
 import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
-import type { loader } from '~/routes/order';
+// import type { loader } from '~/routes/order';
+import { useState } from 'react';
+import ModalWhatsapp from './modalProps/modalWhatsapp';
 
-export default function UnpaidCard(props: any) {
-  console.log('props UnpaidCard ssssssssssss', props);
+export default function UnpaidCard() {
   const { filteredOrder, setSearchQuery } = UseSearchProductUnpaid();
   const { getSelectedCourier, selectedCouriers, toggleCourier } =
     useFilterCourier();
+
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
-  const { getTemplateMessages } = useLoaderData<typeof loader>();
+  // const { getTemplateMessages } = useLoaderData<typeof loader>();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [, setSelectedCardId] = useState<string>('');
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
   return (
     <>
       {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
@@ -335,54 +342,19 @@ export default function UnpaidCard(props: any) {
                         borderRadius={'full'}
                         fontSize={'14px'}
                         onClick={() => {
-                          onOpen();
+                          setSelectedCardId(item.id);
+                          openModal();
                         }}
                       >
                         Hubungi Pembeli
                       </Button>
-                      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                        <ModalOverlay background={'whiteAlpha.50'} />
-                        <ModalContent>
-                          <ModalHeader>
-                            Send Message ke {item.receiverName}
-                          </ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <Accordion allowToggle>
-                              {getTemplateMessages.map((itemtemp) => (
-                                <AccordionItem key={itemtemp.id}>
-                                  <Text>
-                                    <AccordionButton>
-                                      <Box as="span" flex="1" textAlign="left">
-                                        Pesan {itemtemp.name}
-                                      </Box>
-                                      <AccordionIcon />
-                                    </AccordionButton>
-                                  </Text>
-                                  <AccordionPanel pb={4}>
-                                    {itemtemp.content}
-                                    <Button
-                                      colorScheme={'whatsapp'}
-                                      float={'right'}
-                                    >
-                                      <Link
-                                        to={createWhatsAppTemplateMessageUnpaid(
-                                          item.receiverPhone ?? '',
-                                          itemtemp.content
-                                        )}
-                                        target="_blank"
-                                      >
-                                        Kirim
-                                      </Link>
-                                    </Button>
-                                  </AccordionPanel>
-                                </AccordionItem>
-                              ))}
-                            </Accordion>
-                          </ModalBody>
-                          <ModalFooter></ModalFooter>
-                        </ModalContent>
-                      </Modal>
+                      <ModalWhatsapp
+                        isOpen={modalIsOpen}
+                        onClose={closeModal}
+                        selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
+                        itemName={item.receiverName}
+                        itemPhone={item.receiverPhone}
+                      />
                       {/*  */}
                     </Flex>
                     <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>

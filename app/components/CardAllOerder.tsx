@@ -1,76 +1,133 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  // Accordion,
-  // AccordionButton,
-  // AccordionIcon,
-  // AccordionItem,
-  // AccordionPanel,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
   Card,
-  Center,
-  Checkbox,
   Flex,
   Img,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useDisclosure,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  // Modal,
-  // ModalBody,
-  // ModalCloseButton,
-  // ModalContent,
-  // ModalFooter,
-  // ModalHeader,
-  // ModalOverlay,
-  Text,
-  // useDisclosure,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Image,
+  Checkbox,
+  Center,
 } from '@chakra-ui/react';
-// import { Link } from '@remix-run/react';
-import Empty from '../assets/icon-pack/empty-dot.svg';
-// import { whatsappConfiguration } from '../utils/TemplateMessage';
+
+import { Form, Link, useLoaderData } from '@remix-run/react';
+import type { loader } from '~/routes/order';
+import React, { useState } from 'react';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
-import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
-import searchFilter from '~/hooks/useSearchOrder';
-import OrderUnpaidModal from './modalProps/modalWhatsapp';
-import { useState } from 'react';
-
-export default function CardCenceledCopy(props: any) {
-  console.log('props CardCanceled', props);
-  function formatCurrency(price: number): string {
-    return price.toLocaleString('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  }
-
-  // const { isOpen, onOpen, onClose } = useDisclosure(); // modal
-  const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
-  const { selectedCouriers, toggleCourier, getSelectedCourier } =
-    useFilterCourier(); // courier selected
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter(); // sort selcted
-
+import Empty from '../assets/icon-pack/empty-dot.svg';
+import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
+import type {
+  Item,
+  ItemName,
+  ItemSend,
+  ItemTemplate,
+} from '~/type/StatusColorMap';
+import {
+  statusToColor,
+  statusToSendBuyer,
+  statusNameButton,
+  statusToTemplate,
+} from '~/type/StatusColorMap';
+import UseSearchAll from '~/hooks/useSearchOrderAll';
+import ModalTracking from './orderTrackingModal';
+import UnpaidCard from './CardUnpaid';
+import CardReadyToShip from './CardReadyToShip';
+import CardCenceled from './CardCanceled';
+import ModalWhatsapp from './modalProps/modalWhatsapp';
+import CardInShipping from './CardInShipping';
+import ModalInShipping from './ModalInShipping';
+import type { IBiteshipTracking } from '~/interfaces/orderTracking';
+import { ModalComponent } from './CardNewOrderBa';
+import HooksMasRino from './HooksMasRino';
+export default function CardAllOrder(props: {
+  dataTracking: IBiteshipTracking;
+}) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { filteredOrders, setSearchQuery, searchQuery } = UseSearchAll();
+  const { getTemplateMessages } = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [, setSelectedCardId] = useState<string>('');
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-
+  const [selectedCardId, setSelectedCardId] = useState<string>('');
+  const [isUnpaidModalOpen, setIsUnpaidModalOpen] = useState(false);
+  const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
+  const [isOrderNewOrderModalOpen, setIsOrderNewOrderModalOpen] =
+    useState(false);
+  const [isOrderCancelledModalOpen, setIsOrderCancelledModalOpen] =
+    useState(false);
+  const [isOrderInTransitModalOpen, setIsOrderInTransitModalOpen] =
+    useState(false);
+  const [isOrderCompletedModalOpen, setIsOrderCompletedModalOpen] =
+    useState(false);
+  const [modalText, setModalText] = useState('');
   const closeModal = () => {
     setModalIsOpen(false);
+    setIsUnpaidModalOpen(false);
+    setIsNewOrderModalOpen(false);
+    setIsOrderNewOrderModalOpen(false);
+    setIsOrderCancelledModalOpen(false);
+    setIsOrderInTransitModalOpen(false);
+    setIsOrderCompletedModalOpen(false);
   };
+
+  const {
+    filteredOrdersList,
+    getSelectedCourier,
+    selectedCouriers,
+    toggleCourier,
+    setSelectedCouriers,
+  } = useFilterCourier();
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortFilter();
+
+  //Button color
+  const defaultItem: Item = {
+    status: 'UNPAID',
+  };
+  const item: Item = defaultItem;
+  //button send Template
+  const defaultItemSend: ItemSend = {
+    status: 'UNPAID',
+  };
+  const itemSend: ItemSend = defaultItemSend;
+  //button status
+  const defaultItemName: ItemName = {
+    status: 'UNPAID',
+  };
+  const itemName: ItemName = defaultItemName;
+
+  const defaultITemplates: ItemTemplate = {
+    status: 'UNPAID',
+  };
+  const itemTemplate: ItemTemplate = defaultITemplates;
+  const { setSelectedProps, afterpacking } = HooksMasRino();
+
   return (
     <>
-      {/* start filter */}
+      {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
+
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
@@ -109,6 +166,7 @@ export default function CardCenceledCopy(props: any) {
               width={'100%'}
               color={getSelectedCourier() > 0 ? 'black' : '#909090'}
               fontWeight={'normal'}
+              // me={2}
             >
               <Text fontSize="14px" textAlign="left">
                 {getSelectedCourier() > 0
@@ -192,7 +250,6 @@ export default function CardCenceledCopy(props: any) {
               </MenuItem>
             </MenuList>
           </Menu>
-
           <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
@@ -303,129 +360,143 @@ export default function CardCenceledCopy(props: any) {
           </Menu>
         </Box>
       </Box>
+
+      {/* CARD START HERE */}
       {filteredOrders.length === 0 ? (
         <Box marginTop={'70px'}>
           <Center>
-            <Box textAlign="center" mt={5} display={'flex'}>
-              <Image src={ReceiptSearch} />
-              <Text fontSize="16px" mt={1}>
-                Oops, pesanan yang kamu cari tidak ditemukan.
-                <Text fontSize={'12px'} color={'#909090'} textAlign={'left'}>
-                  Coba bisa cari dengan kata kunci lain
-                </Text>
-              </Text>
-            </Box>
+            <Image src={SearchProduct} width={'50px'} />
+            <Text>No Data</Text>
           </Center>
         </Box>
       ) : (
-        <Box>
-          {filteredOrders.map((data) => (
-            <Card mb={5} mt={5} boxShadow={'xs'} key={data.id}>
-              <Box>
+        <Box marginTop={'10px'}>
+          {filteredOrders.map((item, index) => (
+            // eslint-disable-next-line react/jsx-key
+            <Card mb={5} boxShadow={'xs'}>
+              <Box key={index}>
                 <Box mt={5}>
                   <Box>
                     <Flex justifyContent={'space-between'} px={2}>
                       <Button
-                        bg={'#EA3829'}
+                        bg={statusToColor[item.status] || ''}
                         color={'white'}
+                        textShadow={'1px 1px 1px gray'}
                         fontWeight={'bold'}
                         colorScheme="red.500"
                         size={'sm'}
                         pointerEvents={'none'}
                       >
-                        {data.status === 'ORDER_CANCELLED' ? 'Dibatalkan' : ''}
+                        {/* {item.status} */}
+                        {statusNameButton[item.status] || ''}
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-
                       <Button
                         bg={'transparent'}
                         border={'1px solid #D5D5D5'}
                         borderRadius={'full'}
                         fontSize={'14px'}
-                        height={'32px'}
                         onClick={() => {
-                          setSelectedCardId(data.id);
-                          openModal();
+                          setSelectedCardId(item.id);
+                          if (item.status === 'UNPAID') {
+                            setIsUnpaidModalOpen(true);
+                          }
+                          if (item.status === 'NEW_ORDER') {
+                            setModalText(
+                              'Apakah sudah di pack dan siap dikirim?'
+                            );
+                            setIsOrderNewOrderModalOpen(true);
+                          }
+                          if (item.status === 'READY_TO_SHIP') {
+                            setIsNewOrderModalOpen(true);
+                          }
+                          if (item.status === 'ORDER_CANCELLED') {
+                            setIsOrderCancelledModalOpen(true);
+                          }
+                          if (item.status === 'IN_TRANSIT') {
+                            setIsOrderInTransitModalOpen(true);
+                          }
+                          if (item.status === 'ORDER_COMPLETED') {
+                            setIsOrderCompletedModalOpen(true);
+                          }
                         }}
-                        py={4}
+                        value={statusToSendBuyer[item.status] || ''}
                       >
-                        Hubungi Pembeli
+                        {statusToSendBuyer[item.status] || ''}
                       </Button>
-                      <OrderUnpaidModal
-                        isOpen={modalIsOpen}
-                        onClose={closeModal}
-                        selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
-                        itemName={data.receiverName}
-                        itemPhone={data.receiverPhone}
-                      />
-                      {/* <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                        <ModalOverlay bg={'whiteAlpha.50'} />
-                        <ModalContent>
-                          <ModalHeader>
-                            Send Message To {data.receiverName}{' '}
-                          </ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <Accordion allowToggle>
-                              {data.cart?.store?.messageTemplates.map(
-                                (item) => (
-                                  <AccordionItem key={item.name}>
-                                    <Text>
-                                      <AccordionButton>
-                                        <Box
-                                          as="span"
-                                          flex="1"
-                                          textAlign="left"
-                                        >
-                                          Template Message {item.id}
-                                        </Box>
-                                        <AccordionIcon />
-                                      </AccordionButton>
-                                    </Text>
-                                    <AccordionPanel pb={4}>
-                                      {item.content}
-                                      <Button
-                                        colorScheme={'whatsapp'}
-                                        float={'right'}
-                                      >
-                                        <Link
-                                          to={whatsappConfiguration(
-                                            data.receiverPhone,
-                                            item.content
-                                          )}
-                                        >
-                                          Kirim
-                                        </Link>
-                                      </Button>
-                                    </AccordionPanel>
-                                  </AccordionItem>
-                                )
-                              )}
-                            </Accordion>
-                          </ModalBody>
-                          <ModalFooter></ModalFooter>
-                        </ModalContent>
-                      </Modal> */}
+
+                      {/* Tampilkan modal berdasarkan status */}
+                      {isUnpaidModalOpen && item.status === 'UNPAID' && (
+                        <ModalWhatsapp
+                          isOpen={isUnpaidModalOpen}
+                          onClose={closeModal}
+                          selectedCardId={item.id}
+                          itemName={item.receiverName}
+                          itemPhone={item.receiverPhone}
+                        />
+                      )}
+                      {isOrderNewOrderModalOpen &&
+                        item.status === 'NEW_ORDER' && (
+                          <ModalComponent
+                            isOpen={isOrderNewOrderModalOpen}
+                            onClose={closeModal}
+                            modalText={modalText}
+                            onConfirm={afterpacking}
+                          />
+                        )}
+                      {isNewOrderModalOpen &&
+                        item.status === 'READY_TO_SHIP' && (
+                          <ModalTracking
+                            onClose={closeModal}
+                            isOpen={isNewOrderModalOpen}
+                            selectedCardId={item.id}
+                          />
+                        )}
+                      {isOrderCancelledModalOpen &&
+                        item.status === 'ORDER_CANCELLED' && (
+                          <ModalWhatsapp
+                            onClose={closeModal}
+                            isOpen={isOrderCancelledModalOpen}
+                            selectedCardId={item.id}
+                            itemName={item.receiverName}
+                            itemPhone={item.receiverPhone}
+                          />
+                        )}
+                      {isOrderInTransitModalOpen &&
+                        item.status === 'IN_TRANSIT' && (
+                          <ModalInShipping
+                            onClose={closeModal}
+                            isOpen={isOrderInTransitModalOpen}
+                            data={props.dataTracking}
+                            selectedCardId={selectedCardId}
+                          />
+                        )}
+                      {isOrderCompletedModalOpen &&
+                        item.status === 'ORDER_COMPLETED' && (
+                          <ModalWhatsapp
+                            isOpen={isOrderCompletedModalOpen}
+                            onClose={closeModal}
+                            selectedCardId={item.id}
+                            itemName={item.receiverName}
+                            itemPhone={item.receiverPhone}
+                          />
+                        )}
                     </Flex>
                     <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                      INV/{data.invoiceNumber}
+                      {item.invoiceNumber}
                     </Text>
                     <hr />
-
                     <Flex justifyContent={'space-between'}>
-                      <Box display={'flex'} gap={3} w={'80%'}>
+                      <Box display={'flex'} w={'80%'}>
                         <Img
                           w={'52px'}
                           h={'52px'}
                           display={'inline'}
-                          borderRadius={'md'}
-                          src={
-                            data.cart?.cartItems[0]?.product?.attachments[0]
-                              ?.url
-                          }
+                          src={`${item.cart?.cartItems.map((item) =>
+                            item.product?.attachments.map((item) => item.url)
+                          )}`}
                           mt={3}
-                          ms={2}
                         />
                         <Text
                           mt={4}
@@ -436,16 +507,17 @@ export default function CardCenceledCopy(props: any) {
                           whiteSpace={'nowrap'}
                           fontWeight={'700'}
                         >
-                          {data.cart?.cartItems.map(
+                          {item.cart?.cartItems.map(
                             (item) => item.product?.name
                           )}
                           <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                            {data.cart?.cartItems.map((item) => item.qty)}{' '}
+                            {item.cart?.cartItems.map((item) => item.qty)}{' '}
                             Barang
+                            {/* desk {item.cart?.cartItems.map((item) =>item.product.description)} */}
                           </Text>
                         </Text>
                       </Box>
-                      <Box mt={4} w={'18%'}>
+                      <Box mt={4} w={'15%'}>
                         <Flex gap={1}>
                           <Text color={'#909090'} fontSize={'14px'}>
                             Total
@@ -455,7 +527,8 @@ export default function CardCenceledCopy(props: any) {
                           </Text>
                         </Flex>
                         <Text fontWeight={'bold'} fontSize={'14px'}>
-                          {formatCurrency(data.price)}
+                          {/* {formatter.format(item.price)} */}
+                          Rp {item.price.toLocaleString('id-ID')}
                         </Text>
                       </Box>
                     </Flex>
@@ -466,6 +539,8 @@ export default function CardCenceledCopy(props: any) {
           ))}
         </Box>
       )}
+
+      {/* END CARD */}
     </>
   );
 }

@@ -12,19 +12,24 @@ import {
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import type { loader } from '~/routes/order';
-import CardCanceled from '../components/CardCanceled';
 import ScrollBox from '../components/ScrollBox';
 import CardReadyToShip from '~/components/CardReadyToShip';
-import UnpaidAllCard from '~/components/CardUnpaidAll';
-import UnpaidCard from '~/components/CardUnpaid';
-import CardUnpaidCollection from '~/components/CardUnpaidCollection';
-import CardUnpaidCollection2 from '~/components/CardUnpaidCollection2';
-import UnpaidAllCardCopy from '~/components/CardUnpaidAllcopy';
-import UnpaidCardCopy from '~/components/CardUnpaidcopy';
-import CardCenceledCopy from '~/components/CardCanceledcopy';
+// import CardCanceled from '../components/CardCanceled';
+// import UnpaidAllCard from '~/components/CardUnpaidAll';
+// import UnpaidCard from '~/components/CardUnpaid';
+// import CardUnpaidCollection from '~/components/CardUnpaidCollection';
+// import CardUnpaidCollection2 from '~/components/CardUnpaidCollection2';
+// import UnpaidAllCardCopy from '~/components/CardUnpaidAll';
+// import UnpaidCardCopy from '~/components/CardUnpaid';
+// import CardCenceledCopy from '~/components/CardCanceled';
 import CardInShipping from '~/components/CardInShipping';
 import CardSuccesOrder from '~/components/CardSuccesOrder';
 import CardNewOrderBa from '~/components/CardNewOrderBa';
+import CardAllOrder from '~/components/CardAllOerder';
+import UnpaidCard from '~/components/CardUnpaid';
+import CardCenceled from '../components/CardCanceled';
+// import UnpaidAllCard from '~/components/CardAllOerder';
+// import CardAllOrder from '~/components/CardAllOerder';
 
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
@@ -219,7 +224,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                 <ScrollBox>
                   <TabPanel>
                     {/* <UnpaidAllCard /> */}
-                    <UnpaidAllCardCopy />
+                    <CardAllOrder />
                     {/* <CardUnpaidCollection /> */}
                     {/* <CardUnpaidCollection2 /> */}
                   </TabPanel>
@@ -227,7 +232,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <UnpaidCardCopy />
+                    <UnpaidCard />
                   </TabPanel>
                 </ScrollBox>
 
@@ -257,7 +262,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardCenceledCopy />
+                    <CardCenceled />
                   </TabPanel>
                 </ScrollBox>
 

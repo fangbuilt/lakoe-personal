@@ -15,8 +15,7 @@ export function formatCurrency(price: number): string {
   return formattedAmount;
 }
 
-export default function CardReadyToShip(props: any) {
-  console.log('props CardReadyToShip', props);
+export default function CardReadyToShip() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [, setSelectedCardId] = useState<string>('');
 
