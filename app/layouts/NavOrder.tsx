@@ -30,7 +30,7 @@ import UnpaidCard from '~/components/CardUnpaid';
 import CardCenceled from '../components/CardCanceled';
 // import UnpaidAllCard from '~/components/CardAllOerder';
 // import CardAllOrder from '~/components/CardAllOerder';
-
+import CardSuccessed from '~/components/CardSuccessed';
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
   const { unpaidCard } = useLoaderData<typeof loader>();
@@ -256,7 +256,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardSuccesOrder />
+                    <CardSuccessed />
                   </TabPanel>
                 </ScrollBox>
 

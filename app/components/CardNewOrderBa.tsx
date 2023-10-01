@@ -16,10 +16,9 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link, useLoaderData, useSubmit } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import useSearchFilter from '~/hooks/useSearchOrder';
-import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
+import NewOrderHooks from '~/modules/webhook/hooks/NewOrderHooks';
 import type { loader } from '~/routes/order';
 import { db } from '~/libs/prisma/db.server';
 import { ActionArgs } from '@remix-run/node';

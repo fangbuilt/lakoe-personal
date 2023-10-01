@@ -24,7 +24,6 @@ export function UseBiteshipTrack(trackingNumber: string) {
 
       setTrackingInfo(response.data);
       setTrackingInfoArray(response.data.history);
-      // }
     } catch (err) {
       setError(null);
     }
