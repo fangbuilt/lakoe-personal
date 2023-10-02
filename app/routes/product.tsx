@@ -1,18 +1,38 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import ProductBody from '~/components/product/ProductBody';
 import { ImplementGrid } from '~/layouts/Grid';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import {
   deleteProduct,
   getProduct,
   update,
-  disableProduct,
 } from '~/modules/product/product.service';
 
-export async function loader() {
-  return await getProduct();
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return await getProduct();
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -20,7 +40,8 @@ export async function action({ request }: ActionArgs) {
     const formData = await request.formData();
     const id = formData.get('id') as string;
 
-    await deleteProduct(id);
+    const isDeleted = await deleteProduct(id);
+    console.log(isDeleted);
   }
 
   if (request.method.toLowerCase() === 'patch') {
@@ -49,6 +70,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function Product() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <ImplementGrid>
       <Stack mt={'7.5vh'} spacing={4}>

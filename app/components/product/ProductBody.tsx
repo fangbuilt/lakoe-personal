@@ -12,11 +12,10 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
-import { useFilterProducts } from '~/hooks/product/useFilterProducts';
-import { useSortProducts } from '~/hooks/product/useSortProducts';
-import useSearchProducts from '~/hooks/product/useSearchProducts';
 import useDebounce from '~/hooks/product/useDebounce';
-import type { IProduct } from '~/interfaces/product/product';
+import { useFilterProducts } from '~/hooks/product/useFilterProducts';
+import useSearchProducts from '~/hooks/product/useSearchProducts';
+import { useSortProducts } from '~/hooks/product/useSortProducts';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import ProductTab from './ProductTab';
@@ -25,10 +24,12 @@ import ProductEmpty from './ProductEmpty';
 import ProductEmptyActive from './ProductEmptyActive';
 import ProductEmptyNonActive from './ProductEmptyNonActive';
 import ProductModalSelect from './ProductModalSelect';
+import type { IProduct } from '~/interfaces/product/product';
 
 interface IProductBodyProps {
   product: IProduct[];
 }
+
 export default function ProductBody(props: IProductBodyProps) {
   const { product } = props;
   const [activeTab, setActiveTab] = useState(0);
@@ -91,6 +92,7 @@ export default function ProductBody(props: IProductBodyProps) {
                 fontSize={'14px'}
                 color={'white'}
                 colorScheme={'#0086B4'}
+                gap={1}
               >
                 <Image src={AddCircle} />
                 Tambah Produk

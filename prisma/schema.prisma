@@ -6,9 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  relationMode = "prisma"
+  url          = env("DATABASE_URL")
 }
+
+
 
 // your beautiful schema goes below :
 model User {
@@ -31,6 +34,8 @@ model User {
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
+  @@index([storeId])
+  @@index([roleId])
   @@map("users")
 }
 
@@ -42,6 +47,7 @@ model AttachmentAdmin {
   withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
   withdrawId String
 
+  @@index([withdrawId])
   @@map("attachments_admin")
 }
 
@@ -60,6 +66,9 @@ model Withdraw {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
 
+  @@index([storeId])
+  @@index([bankId])
+  @@index([approvedById])
   @@map("withdraws")
 }
 
@@ -81,6 +90,7 @@ model Profile {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
+  @@index([userId])
   @@map("profiles")
 }
 
@@ -128,6 +138,8 @@ model StoreDecoration {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @default(now())
 
+  @@index([storeId])
+  @@index([decorationId])
   @@map("stores_decorations")
 }
 
@@ -142,6 +154,7 @@ model OperationHour {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
+  @@index([storeId])
   @@map("operation_hours")
 }
 
@@ -154,6 +167,7 @@ model MessageTemplate {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
+  @@index([storeId])
   @@map("message_templates")
 }
 
@@ -164,9 +178,9 @@ model Location {
   addressNote    String?
   latitude       String
   longtitude     String
-  postalCode     String
+  postalCode     String?
   cityDistrict   String
-  isMainLocation Boolean
+  isMainLocation Boolean?
   store          Store?   @relation(fields: [storeId], references: [id])
   storeId        String
   profile        Profile? @relation(fields: [profileId], references: [id])
@@ -174,6 +188,8 @@ model Location {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 
+  @@index([storeId])
+  @@index([profileId])
   @@map("locations")
 }
 
@@ -197,32 +213,36 @@ model Product {
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @default(now())
 
+  @@index([storeId])
+  @@index([categoryId])
   @@map("products")
 }
 
 model Variant {
   id             String          @id @unique @default(uuid())
-  name           String
+  name          String
   isActive       Boolean
-  product        Product         @relation(fields: [productId], references: [id])
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @default(now())
 
+  @@index([productId])
   @@map("variants")
 }
 
 model VariantOption {
   id                  String               @id @unique @default(uuid())
   name                String
-  variant             Variant?             @relation(fields: [variantId], references: [id])
+  variant             Variant?             @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantId           String
   cartItems           CartItem[]
   variantOptionValues VariantOptionValue[]
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @default(now())
 
+  @@index([variantId])
   @@map("variant_options")
 }
 
@@ -232,12 +252,13 @@ model VariantOptionValue {
   weight          Float
   stock           Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantOptionId String
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @default(now())
 
+  @@index([variantOptionId])
   @@map("variant_option_values")
 }
 
@@ -265,6 +286,8 @@ model Cart {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
+  @@index([userId])
+  @@index([storeId])
   @@map("carts")
 }
 
@@ -272,7 +295,7 @@ model CartItem {
   id              String         @id @unique @default(uuid())
   qty             Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id])
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantOptionId String
   cart            Cart?          @relation(fields: [cartId], references: [id])
   cartId          String
@@ -283,6 +306,10 @@ model CartItem {
   product         Product?       @relation(fields: [productId], references: [id])
   productId       String?
 
+  @@index([variantOptionId])
+  @@index([cartId])
+  @@index([userId])
+  @@index([productId])
   @@map("cart_items")
 }
 
@@ -307,7 +334,7 @@ model Invoice {
   cart                   Cart?                   @relation(fields: [cartId], references: [id])
   cartId                 String
   courier                Courier?                @relation(fields: [courierId], references: [id])
-  courierId              String
+  courierId              String                  @unique
   user                   User?                   @relation(fields: [userId], references: [id])
   userId                 String?
   payment                Payment?                @relation(fields: [paymentId], references: [id])
@@ -317,6 +344,10 @@ model Invoice {
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
+  @@index([cartId])
+  @@index([courierId])
+  @@index([userId])
+  @@index([paymentId])
   @@map("invoices")
 }
 
@@ -331,11 +362,12 @@ model Payment {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
 
+  @@index([userId])
   @@map("payments")
 }
 
 model Courier {
-  id                           String    @id @unique @default(uuid())
+  id                           String   @id @unique @default(uuid())
   availableForCashOnDelivery   Boolean?
   availableForProofOfDelivery  Boolean?
   availableForInstantWaybillId Boolean?
@@ -356,9 +388,9 @@ model Courier {
   trackingId                   String
   deliveryDate                 String
   deliveryTime                 String
-  invoices                     Invoice[]
-  createdAt                    DateTime  @default(now())
-  updatedAt                    DateTime  @default(now())
+  invoice                      Invoice?
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @default(now())
 
   @@map("couriers")
 }
@@ -371,6 +403,7 @@ model InvoiceHistory {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
+  @@index([invoiceId])
   @@map("invoice_histories")
 }
 
@@ -385,17 +418,19 @@ model BankAccount {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @default(now())
 
+  @@index([storeId])
   @@map("bank_accounts")
 }
 
 model ProductAttachment {
   id        String   @id @unique @default(uuid())
   url       String
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
+  @@index([productId])
   @@map("product_attachments")
 }
 
@@ -409,6 +444,7 @@ model ConfirmationPayment {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
 
+  @@index([invoiceId])
   @@map("confirmation_payments")
 }
 
@@ -422,6 +458,8 @@ model BiteshipTrackingLimit {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 
+  @@index([userId])
+  @@index([invoiceId])
   @@map("biteship_tracking_limits")
 }
 
@@ -435,5 +473,7 @@ model AdminDecline {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
 
+  @@index([storeId])
+  @@index([withdrawId])
   @@map("admin_decline")
 }

@@ -47,23 +47,28 @@ export default function ProductCard(props: IProductCardProps) {
         <Box display={'flex'} gap={3}>
           <Box display={'flex'} gap={3}>
             <Image
-              src={product.attachments[0].url}
+              src={product.attachments[0]?.url}
               w={'100px'}
               h={'100px'}
               borderRadius={'8px'}
               objectFit={'cover'}
             />
             <Box>
-              <Text
-                fontSize={'18px'}
-                color={'#1D1D1D'}
-                w={'375px'}
-                whiteSpace={'nowrap'}
-                overflow={'hidden'}
-                textOverflow={'ellipsis'}
-              >
-                {product.name}
-              </Text>
+              <Box display={'flex'}>
+                <Text
+                  fontSize={'18px'}
+                  color={'#1D1D1D'}
+                  w={'375px'}
+                  whiteSpace={'nowrap'}
+                  overflow={'hidden'}
+                  textOverflow={'ellipsis'}
+                >
+                  {product.name}
+                </Text>
+                <Box ms={'65px'}>
+                  <Checkbox />
+                </Box>
+              </Box>
               <Box display={'flex'} alignItems={'center'} gap={2} mb={2}>
                 <Text fontSize={'16px'}>
                   Rp

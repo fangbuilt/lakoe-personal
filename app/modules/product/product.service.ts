@@ -24,6 +24,18 @@ export async function createProduct(data: any, storeId: any) {
             {
               url: data.url,
             },
+            {
+              url: data.url2,
+            },
+            {
+              url: data.url3,
+            },
+            {
+              url: data.url4,
+            },
+            {
+              url: data.url5,
+            },
           ],
         },
 
@@ -80,6 +92,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
+      store: true,
       attachments: true,
       variants: {
         include: {
@@ -122,6 +135,7 @@ export async function getProductByCategoryId(id: any) {
       categoryId: id,
     },
     include: {
+      store: true,
       attachments: true,
       variants: {
         include: {
@@ -135,15 +149,6 @@ export async function getProductByCategoryId(id: any) {
     },
   });
   return data;
-}
-
-export async function deleteProduct(id: string) {
-  const deleteProduct = await db.product.delete({
-    where: {
-      id,
-    },
-  });
-  return deleteProduct;
 }
 
 export async function update(data: any): Promise<any> {
@@ -176,7 +181,7 @@ export async function update(data: any): Promise<any> {
   return update;
 }
 
-export async function updateIsActive(data: { id: string; isActive: boolean }) {
+export async function updateIsActive(data: any) {
   const status = await db.product.update({
     data: {
       isActive: data.isActive,
@@ -188,14 +193,38 @@ export async function updateIsActive(data: { id: string; isActive: boolean }) {
   return status;
 }
 
-export async function disableProduct(id: string) {
-  const disabledProduct = await db.product.update({
-    data: {
-      isActive: false,
-    },
-    where: {
-      id,
+export async function getProductTest() {
+  const data = await db.product.findMany({
+    orderBy: {
+      createdAt: 'desc',
     },
   });
-  return disabledProduct;
+  return data;
+}
+
+export async function deleteProduct(id: any) {
+  const getProductInvoice = await db.invoice.findFirst({
+    where: {
+      cart: {
+        cartItems: {
+          some: {
+            productId: id,
+          },
+        },
+      },
+    },
+  });
+  console.log('ini id product', getProductInvoice);
+  if (!getProductInvoice) {
+    await db.product.delete({
+      where: {
+        id: id,
+      },
+    });
+    const isSuccess = true;
+    return isSuccess;
+  } else {
+    const isSuccess = false;
+    return isSuccess;
+  }
 }

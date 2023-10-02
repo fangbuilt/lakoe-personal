@@ -12,10 +12,11 @@ import {
   Modal,
   ModalContent,
   ModalOverlay,
+  Switch,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
+import { Form, Link } from '@remix-run/react';
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Copy from '~/assets/icon-pack/copy.svg';
 import Edit from '~/assets/icon-pack/edit.svg';
@@ -61,15 +62,22 @@ export default function ProductModal(props: IProduct) {
         >
           Ubah Stok
         </Button>
-        <Button
-          borderRadius={'50px'}
-          size="sm"
-          variant="outline"
-          fontSize={'14px'}
+        <Link
+          target="_blank"
+          to={`/${props.store.name.replace(/ /g, '-').toLowerCase()}/${
+            props.slug
+          }`}
         >
-          <Image src={Link2} />
-          Lihat Halaman
-        </Button>
+          <Button
+            borderRadius={'50px'}
+            size="sm"
+            variant="outline"
+            fontSize={'14px'}
+          >
+            <Image src={Link2} />
+            Lihat Halaman
+          </Button>
+        </Link>
         <Menu>
           <MenuButton
             as={Button}
@@ -95,6 +103,17 @@ export default function ProductModal(props: IProduct) {
             </MenuItem>
           </MenuList>
         </Menu>
+        <Form method="PATCH">
+          <input type="hidden" value={props.id} name="id" />
+          <Button type="submit" variant={'ghost'}>
+            <Switch
+              size={'md'}
+              isChecked={props.isActive}
+              name="isActive"
+              value={props.isActive.toString()}
+            />
+          </Button>
+        </Form>
       </Box>
 
       {/* Change Price */}
@@ -243,7 +262,7 @@ export default function ProductModal(props: IProduct) {
               Batalkan
             </Button>
             <Form method="DELETE">
-              <Input type="hidden" name="id" value={props.id} />
+              <input type="hidden" name="id" value={props.id} />
               <Button
                 colorScheme="#0086B4"
                 bgColor={'#0086B4'}
