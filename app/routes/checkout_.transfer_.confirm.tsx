@@ -13,7 +13,7 @@ export default function TransferConfirm() {
       >
         <Box gap={2} display={'flex'} alignItems={'center'}>
           <Text fontWeight={'bold'} color={'#3b5355'} fontSize={'40px'}>
-            Cave
+            Lakoe
           </Text>
         </Box>
         <Text fontWeight={'bold'} fontSize={'xl'}>
@@ -22,7 +22,7 @@ export default function TransferConfirm() {
         <Card mt={'20px'} boxShadow={'dark-lg'}>
           <Box paddingInline={'30px'} paddingBlock={'40px'}>
             <Text>
-              Terima kasih Bro telah melakukan konfirmasi pembayaran, Order anda
+              Terima kasih telah melakukan konfirmasi pembayaran, Order anda
               akan segera kami proses.
             </Text>
           </Box>

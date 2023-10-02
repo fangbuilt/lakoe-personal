@@ -16,22 +16,26 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
 import moment from 'moment';
 import React, { useState } from 'react';
 
-import { LuZoomIn } from 'react-icons/lu';
 import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 
 export default function AdminDeclinedPopup(props: any) {
   const { dataWithdrawal } = props;
   const [formData, setFormData] = useState({
-    reasonAdminDeclained: '',
+    actionType: 'create',
+    withdrawId: dataWithdrawal.id || '',
+    storeId: dataWithdrawal.store?.id || '',
+    reason: '',
   });
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (event: any) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,7 +68,7 @@ export default function AdminDeclinedPopup(props: any) {
           padding={'5px 15px'}
           borderRadius={'15px'}
         >
-          <LuZoomIn />
+          Declined
         </Text>
       </Flex>
 
@@ -166,33 +170,48 @@ export default function AdminDeclinedPopup(props: any) {
               </Box>
 
               <Box mt={'10px'}>
-                <Form>
+                <form method="post">
                   <FormControl>
-                    <FormLabel fontSize={'12px'} fontWeight={700}>
+                    <Input type="hidden" name="actionType" value="create" />
+                    <Input
+                      type="hidden"
+                      name="withdrawId"
+                      value={formData.withdrawId}
+                      display={'none'}
+                    />
+                    <Input
+                      type="hidden"
+                      name="storeId"
+                      value={formData.storeId}
+                      display={'none'}
+                    />
+                    <FormLabel fontSize="12px" fontWeight={700}>
                       Alasan Penolakan
                     </FormLabel>
                     <Input
+                      placeholder="Reason of declined..."
                       type="text"
-                      name="reasondAdminDeclined"
-                      value={formData.reasonAdminDeclained}
-                      fontSize={'10px'}
-                      onChange={(event) => handleChange(event)}
+                      name="reason"
+                      fontSize="10px"
+                      onChange={handleChange}
+                      value={formData.reason}
                     />
                   </FormControl>
                   <Button
-                    fontSize={'12px'}
+                    type="submit"
+                    fontSize="12px"
                     colorScheme="teal"
-                    width={'100%'}
-                    textAlign={'center'}
-                    mt={'10px'}
+                    width="100%"
+                    textAlign="center"
+                    mt="10px"
                     onClick={() => {
+                      AdminDeclinedNotification(formData.reason);
                       onClose();
-                      AdminDeclinedNotification(formData.reasonAdminDeclained);
                     }}
                   >
                     Send email to Seller
                   </Button>
-                </Form>
+                </form>
               </Box>
 
               <Box mt={'10px'}>

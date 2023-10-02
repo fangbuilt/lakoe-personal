@@ -19,18 +19,32 @@ export default function useCopyToClipboard() {
     borderRadius: 'var(--rounded-md, 8px)',
   };
 
-  const [isCopied, setCopied] = useState(false);
+  const [isCopied1, setIsCopied1] = useState(false);
+  const [isCopied2, setIsCopied2] = useState(false);
+  const [isCopied3, setIsCopied3] = useState(false);
 
-  const handleCopyClick = (textCopy: string) => {
+  const handleCopyClick = (
+    textCopy: string,
+    setIsCopied: (value: boolean) => void
+  ) => {
     const textToCopy = textCopy;
 
     navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopied(true);
+      setIsCopied(true);
       setTimeout(() => {
-        setCopied(false);
-      }, 1000);
+        setIsCopied(false);
+      }, 3000);
     });
   };
 
-  return { toastStyle, isCopied, handleCopyClick };
+  return {
+    toastStyle,
+    isCopied1,
+    isCopied2,
+    isCopied3,
+    setIsCopied1,
+    setIsCopied2,
+    setIsCopied3,
+    handleCopyClick,
+  };
 }
