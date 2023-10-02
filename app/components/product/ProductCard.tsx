@@ -1,28 +1,38 @@
 import { Box, Checkbox, Switch, Text, Image } from '@chakra-ui/react';
-import { useState, type ReactNode } from 'react';
+import { Form } from '@remix-run/react';
+import { useState, type ReactNode, useEffect } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
 import { db } from '~/libs/prisma/db.server';
 
 interface IProductCardProps {
   product: IProduct;
+  isSelected: boolean;
+  isActive: boolean;
+  onSelectChange: (isSelected: boolean) => void;
   children?: ReactNode;
-  isChecked: boolean;
 }
 
 export default function ProductCard(props: IProductCardProps) {
-  const { product, children, isChecked } = props;
+  const { product, children, isSelected, onSelectChange } = props;
   const [isActive, setIsActive] = useState(product.isActive);
+
+  useEffect(() => {
+    setIsActive(product.isActive);
+  }, [product.isActive]);
+
   const handleSwitchChange = async () => {
-    await db.product.update({
-      where: {
-        id: product.id,
-      },
-      data: {
-        isActive: !isActive,
-      },
-    });
-    setIsActive(!isActive);
+    if (product) {
+      await db.product.update({
+        where: {
+          id: product.id,
+        },
+        data: {
+          isActive: !isActive,
+        },
+      });
+      setIsActive(!isActive);
+    }
   };
 
   return (
@@ -106,13 +116,20 @@ export default function ProductCard(props: IProductCardProps) {
             py={1}
             gap={10}
           >
-            <Checkbox size="lg" isChecked={isChecked} />
-            <Switch
-              type="submit"
-              size="md"
-              isChecked={isActive}
-              onChange={handleSwitchChange}
+            <Checkbox
+              size="lg"
+              isChecked={isSelected}
+              onChange={(e) => onSelectChange(e.target.checked)}
             />
+            <Form method="PATCH">
+              <Switch
+                id="isActive"
+                type="submit"
+                size="md"
+                isChecked={isActive}
+                onChange={handleSwitchChange}
+              />
+            </Form>
           </Box>
         </Box>
       </Box>

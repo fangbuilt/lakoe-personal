@@ -92,7 +92,6 @@ export async function getProduct() {
       },
     },
   });
-  // console.log("ini", data);
   return data;
 }
 
