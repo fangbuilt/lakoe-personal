@@ -19,7 +19,7 @@ model User {
   phone                  String                  @unique
   password               String
   store                  Store?                  @relation(fields: [storeId], references: [id])
-  storeId                String?                 
+  storeId                String?
   role                   Role?                   @relation(fields: [roleId], references: [id])
   roleId                 String
   profile                Profile?
@@ -339,7 +339,7 @@ model Invoice {
   userId                 String?
   payment                Payment?                @relation(fields: [paymentId], references: [id])
   paymentId              String
-  biteshipTrackinglimits BiteshipTrackingLimit[]
+  biteshipTrackinglimits BiteshipTrackingLimit?
   invoiceHistories       InvoiceHistory[]
   refund                 Refund[]
   createdAt              DateTime                @default(now())
@@ -455,7 +455,7 @@ model BiteshipTrackingLimit {
   user           User?    @relation(fields: [userId], references: [id])
   userId         String
   invoice        Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId      String
+  invoiceId      String   @unique
   nextAccessTime DateTime
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
