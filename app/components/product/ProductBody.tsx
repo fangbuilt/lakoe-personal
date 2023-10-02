@@ -16,7 +16,6 @@ import useDebounce from '~/hooks/product/useDebounce';
 import { useFilterProducts } from '~/hooks/product/useFilterProducts';
 import useSearchProducts from '~/hooks/product/useSearchProducts';
 import { useSortProducts } from '~/hooks/product/useSortProducts';
-import type { IProduct } from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import ProductTab from './ProductTab';
@@ -24,10 +23,12 @@ import { useEffect, useState } from 'react';
 import ProductEmpty from './ProductEmpty';
 import ProductEmptyActive from './ProductEmptyActive';
 import ProductEmptyNonActive from './ProductEmptyNonActive';
+import type { IProduct } from '~/interfaces/product/product';
 
 interface IProductBodyProps {
   product: IProduct[];
 }
+
 export default function ProductBody(props: IProductBodyProps) {
   const { product } = props;
   const [activeTab, setActiveTab] = useState(0);

@@ -92,7 +92,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
-      // store: true,
+      store: true,
       attachments: true,
       variants: {
         include: {

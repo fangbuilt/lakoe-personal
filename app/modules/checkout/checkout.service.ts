@@ -2,35 +2,57 @@ import { redirect } from '@remix-run/node';
 import { db } from '../../libs/prisma/db.server';
 
 export async function getCheckoutDetail(data: any) {
-  const product = await db.product.findUnique({
-    where: {
-      slug: data.slug,
-      store: {
-        name: {
-          equals: data.store,
-          mode: 'insensitive',
+  try {
+    const product = await db.product.findUnique({
+      where: {
+        slug: data.slug,
+        store: {
+          name: {
+            equals: data.store,
+          },
         },
       },
-    },
-    include: {
-      store: {
-        include: {
-          users: true,
+      include: {
+        store: {
+          include: {
+            users: true,
+          },
         },
-      },
-      attachments: true,
-      variants: {
-        include: {
-          variantOptions: {
-            include: {
-              variantOptionValues: true,
+        attachments: true,
+        variants: {
+          include: {
+            variantOptions: {
+              include: {
+                variantOptionValues: true,
+              },
             },
           },
         },
       },
-    },
-  });
-  return product;
+    });
+
+    const invoices = await db.invoice.findMany({
+      where: {
+        status: 'UNPAID',
+      },
+    });
+
+    let unique = Math.floor(Math.random() * (200 - 100)) + 100;
+
+    const matchingInvoices = invoices.filter((invoice) => {
+      return invoice.price % 1000 === unique;
+    });
+
+    if (matchingInvoices.length > 0) {
+      // Update unique if needed
+      unique = Math.floor(Math.random() * (200 - 100)) + 100;
+    }
+
+    return { product, unique };
+  } catch (error) {
+    console.log(error);
+    return redirect(`/error-page/${data.store}/${data.slug}`);
+  }
 }
 
 export async function createCheckout(data: any) {
@@ -68,9 +90,9 @@ export async function createCheckout(data: any) {
 
   await db.variantOptionValue.update({
     where: {
-      id: data.update.valueId as string,
+      id: data.updateStock.valueId as string,
     },
-    data: { stock: data.update.stock as number },
+    data: { stock: data.updateStock.stock as number, updatedAt: new Date() },
   });
 
   return redirect(`/transfer/${invoice.id}`);

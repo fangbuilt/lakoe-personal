@@ -10,33 +10,11 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 
-import { useEffect, useState } from 'react';
 // import count from "~/components/count";
 
-const dataCourier = [
-  // "gojek",
-  // "grab",
-  // "deliveree",
-  'jne',
-  'tiki',
-  // "ninja",
-  // "lion",
-  'sicepat',
-  // "rara",
-  'jnt',
-  // "idexpress",
-  // "rpx",
-  // "jdl",
-  // "wahana",
-  'pos',
-  'anteraja',
-  // "sap",
-  // "paxel",
-  // "mrspeedy",
-  // "borzo",
-  // "lalamove",
-];
+const dataCourier = ['jne', 'tiki', 'sicepat', 'jnt', 'pos', 'anteraja'];
 
 interface CourierService {
   available_for_cash_on_delivery: true;
@@ -58,7 +36,7 @@ interface CourierService {
   type: string;
 }
 
-export default function CheckoutCourier(props: any) {
+export default function CheckoutCourierBuyer(props: any) {
   const [postalCode, setPostalCode] = useState();
   // const [courier, setCourier] = useState("");
   const [rates, setRates] = useState('');
