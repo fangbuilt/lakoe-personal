@@ -6,10 +6,16 @@ export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
     where: {
       status: 'UNPAID',
+      courier: {
+        courierName: {
+          in: ['jne', 'poa', 'tiki'],
+        },
+      },
     },
     include: {
       user: true,
       payment: true,
+      courier: true,
       cart: {
         include: {
           store: {

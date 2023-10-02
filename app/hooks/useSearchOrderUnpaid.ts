@@ -19,10 +19,14 @@ export default function UseSearchProductUnpaid() {
           .flat() || [];
       const invoiceNumber = items.invoiceNumber?.toLowerCase() || '';
 
+      const kurirSearch = filteredOrder.map(
+        (item) => item.courier?.courierName
+      );
+      console.log('ini kururrrrrrrrr', kurirSearch);
       return (
         productName.some((name) => name && name.indexOf(lowerQuery) !== -1) ||
-        invoiceNumber.indexOf(lowerQuery) !== -1
-        // || kurirSearch.indexOf(lowerQuery) !== -1
+        invoiceNumber.indexOf(lowerQuery) !== -1 ||
+        kurirSearch.indexOf(lowerQuery) !== -1
       );
     });
     setFilteredOrder(filtered);
