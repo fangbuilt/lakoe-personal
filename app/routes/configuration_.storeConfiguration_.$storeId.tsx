@@ -101,7 +101,7 @@ export async function action({ request }: ActionArgs) {
       isMainLocation,
     });
   }
-  //==========================================================
+  //======================================================
   if (action === 'createInformation') {
     const slogan = formData.get('slogan') as string;
     const description = formData.get('description') as string;
