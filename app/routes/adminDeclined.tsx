@@ -1,37 +1,19 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminDeclined from '~/components/AdminDeclined';
 import { ImplementGridAdmin } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
+import { authorize } from '~/middleware/authorization';
 import {
   createDeclinedReason,
   getReasonDeclined,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '1');
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return await getReasonDeclined();
-  } else if (role?.roleId === '2') {
-    return redirect('/dashboard');
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  return await getReasonDeclined();
 }
 
 export async function action({ request }: ActionArgs) {

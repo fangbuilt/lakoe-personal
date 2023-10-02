@@ -1,5 +1,5 @@
 import { Stack } from '@chakra-ui/react';
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import { Action } from '~/modules/product/components/Action';
@@ -18,31 +18,13 @@ import {
   redirect,
   json,
 } from '@remix-run/node';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
+import { authorize } from '~/middleware/authorization';
 // import { useState } from 'react';
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return json({});
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  return json({});
 }
 
 export async function action({ request }: ActionArgs) {

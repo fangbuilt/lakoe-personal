@@ -10,7 +10,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
@@ -37,36 +37,33 @@ import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
 import { getUserId } from '~/modules/auth/auth.service';
 import { db } from '~/libs/prisma/db.server';
+import { authorize } from '~/middleware/authorization';
 
-export async function loader({ request, params }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
 
-  const getLocationData = await getAllDataLocation();
+  const userId = getUserId(request);
 
-  //console.log("ini getdata:", getLocationData);
-
-  const messages = await getMessages();
-  const { storeId } = params;
-  const store_id = await getStoreid(storeId);
-
-  const role = await db.user.findFirst({
+  const user = await db.user.findFirst({
     where: {
-      id: userId as string,
+      id: String(userId),
+    },
+    include: {
+      store: true,
     },
   });
 
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return { messages, store_id, getLocationData };
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  const getLocationDataPromise = getAllDataLocation();
+  const messagesPromise = getMessages();
+  const storeIdPromise = getStoreid(user?.storeId);
+
+  const [getLocationData, messages, store_id] = await Promise.all([
+    getLocationDataPromise,
+    messagesPromise,
+    storeIdPromise,
+  ]);
+
+  return { messages, store_id, getLocationData };
 }
 
 export async function action({ request }: ActionArgs) {
@@ -168,6 +165,7 @@ export async function action({ request }: ActionArgs) {
 
   return null;
 }
+
 export default function StoreConfiguration() {
   const data = useLoaderData<typeof loader>();
   return (

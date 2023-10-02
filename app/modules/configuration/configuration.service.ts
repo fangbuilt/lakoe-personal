@@ -72,7 +72,7 @@ export async function getMessages() {
 
 export async function getStoreid(id: any) {
   // export async function login(data: z.infer<typeof checkoutSchema>) {}
-  return await db.store.findUnique({
+  return await db.store.findFirst({
     where: {
       id,
     },
