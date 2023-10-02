@@ -47,10 +47,7 @@ export async function loader({ params }: ActionArgs) {
 export async function action({ request }: ActionArgs) {
   // action BAGZA==============================
   const formData = await request.formData();
-  console.log('ini isi dari formData', formData);
-
-  const actionType = formData.get('actionType');
-  console.log('ini isi dari actionType', actionType);
+  const action = formData.get('action');
 
   const name = formData.get('name');
   const address = formData.get('address');
@@ -67,7 +64,7 @@ export async function action({ request }: ActionArgs) {
   console.log('ini isi dari poscode :', postalCode);
   console.log('ini isi dari isman :', isMainLocation);
 
-  if (actionType === 'createlocation') {
+  if (action === 'createlocation') {
     console.log('data berhasil masuk!');
 
     await createLocation({
@@ -82,10 +79,10 @@ export async function action({ request }: ActionArgs) {
     const redirectURL = `/configuration/storeConfiguration/1 `;
 
     return redirect(redirectURL);
-  } else if (actionType === 'deletelocation') {
+  } else if (action === 'deletelocation') {
     const id = formData.get('id') as string;
     await deleteLocation(id);
-  } else if (actionType === 'editlocation') {
+  } else if (action === 'editlocation') {
     console.log('masuk ok!');
     const id = formData.get('id') as string;
 
@@ -100,8 +97,7 @@ export async function action({ request }: ActionArgs) {
     });
   }
   //==========================================================
-  if (request.method.toLowerCase() === 'post') {
-    const formData = await request.formData();
+  if (action === 'createInpormation') {
     const slogan = formData.get('slogan') as string;
     const description = formData.get('description') as string;
     const name = formData.get('name') as string;
@@ -123,12 +119,11 @@ export async function action({ request }: ActionArgs) {
         domain: data.domain,
         name: data.name,
         logoAttachment: data.logoAttachment,
+
         description: data.description,
       },
     });
   }
-
-  const action = formData.get('action');
 
   if (action === 'create') {
     const name = formData.get('name') as string;
