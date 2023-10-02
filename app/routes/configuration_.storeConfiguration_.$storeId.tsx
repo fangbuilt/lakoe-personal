@@ -47,6 +47,8 @@ export async function loader({ params }: ActionArgs) {
 export async function action({ request }: ActionArgs) {
   // action BAGZA==============================
   const formData = await request.formData();
+  console.log('ini isi dari formData', formData);
+
   const action = formData.get('action');
 
   const name = formData.get('name');
@@ -82,6 +84,9 @@ export async function action({ request }: ActionArgs) {
   } else if (action === 'deletelocation') {
     const id = formData.get('id') as string;
     await deleteLocation(id);
+    const redirectURL = `/configuration/storeConfiguration/1 `;
+
+    return redirect(redirectURL);
   } else if (action === 'editlocation') {
     console.log('masuk ok!');
     const id = formData.get('id') as string;
@@ -96,8 +101,8 @@ export async function action({ request }: ActionArgs) {
       isMainLocation,
     });
   }
-  //==========================================================
-  if (action === 'createInpormation') {
+  //======================================================
+  if (action === 'createInformation') {
     const slogan = formData.get('slogan') as string;
     const description = formData.get('description') as string;
     const name = formData.get('name') as string;
@@ -113,7 +118,7 @@ export async function action({ request }: ActionArgs) {
       logoAttachment,
     };
 
-    return await db.store.create({
+    await db.store.create({
       data: {
         slogan: data.slogan,
         domain: data.domain,
@@ -123,6 +128,10 @@ export async function action({ request }: ActionArgs) {
         description: data.description,
       },
     });
+
+    const redirectURL = `/configuration/storeConfiguration/1 `;
+
+    return redirect(redirectURL);
   }
 
   if (action === 'create') {
