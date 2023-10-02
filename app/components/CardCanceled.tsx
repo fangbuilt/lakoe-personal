@@ -40,7 +40,6 @@ import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import searchFilter from '~/hooks/useSearchOrder';
 
 export default function CardCenceled(props: any) {
-  console.log('props CardCanceled', props);
   function formatCurrency(price: number): string {
     return price.toLocaleString('id-ID', {
       style: 'currency',

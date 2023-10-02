@@ -43,7 +43,6 @@ import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 import type { loader } from '~/routes/order';
 
 export default function UnpaidCard(props: any) {
-  console.log('props UnpaidCard ssssssssssss', props);
   const { filteredOrder, setSearchQuery } = UseSearchProductUnpaid();
   const { getSelectedCourier, selectedCouriers, toggleCourier } =
     useFilterCourier();
