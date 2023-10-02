@@ -113,64 +113,6 @@ export function getStatusLacakButton(status: string) {
   }
 }
 
-export function useStatusLacakPengiriman(
-  status: string,
-  dataTracking: ITracking
-) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  function openModal() {
-    setModalIsOpen(true);
-  }
-
-  function closeModal() {
-    setModalIsOpen(false);
-  }
-
-  if (status.toUpperCase() === 'IN_TRANSIT') {
-    return (
-      <>
-        <Button
-          fontSize={'14px'}
-          fontWeight={'700'}
-          lineHeight={'20px'}
-          color={'#0086B4'}
-          background={'#FFFFFF)'}
-          colorScheme="#FFFFFF)"
-          w={'120px'}
-          onClick={openModal}
-        >
-          Lacak Pengiriman
-        </Button>
-        {modalIsOpen && (
-          <ModalInShipping
-            isOpen={modalIsOpen}
-            onClose={closeModal}
-            data={dataTracking}
-          />
-        )}
-      </>
-    );
-  }
-
-  if (status.toUpperCase() === 'ORDER_COMPLETED') {
-    return (
-      <Button
-        fontSize={'14px'}
-        fontWeight={'700'}
-        lineHeight={'20px'}
-        color={'#0086B4'}
-        background={'#FFFFFF)'}
-        colorScheme="#FFFFFF)"
-        w={'120px'}
-      >
-        Lacak Pengiriman
-      </Button>
-    );
-  }
-  return null;
-}
-
 export default function StatusOrderDetail({
   data,
   dataTracking,
@@ -187,27 +129,42 @@ export default function StatusOrderDetail({
     filterStepsByStatus,
   } = useOrderDetail();
 
-  const { toastStyle } = useCopyToClipboard();
-  const { isCopied: isCopied1, handleCopyClick: handleCopyClick1 } =
-    useCopyToClipboard();
-  const { isCopied: isCopied2, handleCopyClick: handleCopyClick2 } =
-    useCopyToClipboard();
-  const { isCopied: isCopied3, handleCopyClick: handleCopyClick3 } =
-    useCopyToClipboard();
+  const {
+    toastStyle,
+    isCopied1,
+    isCopied2,
+    isCopied3,
+    setIsCopied1,
+    setIsCopied2,
+    setIsCopied3,
+    handleCopyClick,
+  } = useCopyToClipboard();
+
   const handleCopyInvoiceClick = () => {
-    handleCopyClick1(data.invoiceNumber);
+    handleCopyClick(data.invoiceNumber, setIsCopied1);
   };
+
   const handleCopyResiClick = () => {
-    handleCopyClick2(data.waybill);
+    handleCopyClick(data.waybill, setIsCopied2);
   };
+
   const handleCopyAddressClick = () => {
-    handleCopyClick3(data.receiverAddress);
+    handleCopyClick(data.receiverAddress, setIsCopied3);
   };
 
   const [modalText, setModalText] = useState('');
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenModal1,
+    onOpen: onOpenModal1,
+    onClose: onCloseModal1,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenModal2,
+    onOpen: onOpenModal2,
+    onClose: onCloseModal2,
+  } = useDisclosure();
 
-  const systembalance = 1000;
+  const systembalance = 100000;
 
   const afterpacking = () => {
     if (systembalance > 50000) {
@@ -259,59 +216,61 @@ export default function StatusOrderDetail({
       const baseUrl = 'https://api.biteship.com';
       const endpoint = '/v1/orders';
       const apiKey =
-        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmlub3B1amEiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUwMjM4NjZ9.V0mGHUqraz6uvr0_uYGyKcTFLTXQq5JqESQSvvmXA2Y'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
+        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmlub3B1amEiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUwMjM4NjZ9.V0mGHUqraz6uvr0_uYGyKcTFLTXQq5JqESQSvvmXA2Y'; //hapus dan gunakan processa.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
-      const orderData = {
-        shipper_contact_name: data.cart.store.users.map((a) => a.name),
-        shipper_contact_phone: data.cart.store.users.map((a) => a.phone),
-        shipper_contact_email: data.cart.store.users.map((a) => a.email),
-        shipper_organization: data.cart.store.name,
-        origin_contact_name: data.cart.store.users.map((a) => a.name),
-        origin_contact_phone: data.cart.store.users.map((a) => a.phone),
-        origin_address: data.cart.store.locations.map((a) => a.address),
-        origin_note: data.cart.store.locations.map((a) => a.addressNote),
+      const dataforBiteShip = {
+        shipper_contact_name: data?.cart?.user?.name,
+        shipper_contact_phone: data?.cart?.user.phone,
+        shipper_contact_email: data?.cart?.user.email,
+        shipper_organization: data?.cart?.store?.name,
+        origin_contact_name: data?.cart?.user?.name,
+        origin_contact_phone: data?.cart?.user.phone,
+        origin_address: data?.cart?.store?.locations[0].address,
+        origin_note: data?.cart?.store?.locations[0].addressNote,
+
         origin_coordinate: {
-          latitude: data.cart.store.locations.map((a) => a.latitude),
-          longitude: data.cart.store.locations.map((a) => a.longtitude),
+          latitude: -6.2253114,
+          longitude: 106.7993735,
         },
-        origin_postal_code: data.cart.store.locations.map((a) => a.postalCode),
-        destination_contact_name: data.receiverName,
-        destination_contact_phone: data.receiverPhone,
-        destination_contact_email: data.receiverEmail,
-        destination_address: data.receiverAddress,
-        destination_postal_code: data.receiverPostalCode,
-        destination_note: data.receiverAddressNote,
-        destination_cash_proof_of_delivery:
-          data.courier.availableForCashOnDelivery,
+        origin_postal_code: '12440',
+        destination_contact_name: data?.receiverName,
+        destination_contact_phone: data?.receiverPhone,
+        destination_contact_email: data?.receiverEmail,
+        destination_address: data?.receiverAddress,
+        destination_postal_code: data?.receiverPostalCode,
+        destination_note:
+          'antar sampai tujuan dan jangan diturunkan ditengah jalan',
+        destination_cash_proof_of_delivery: true,
         destination_coordinate: {
-          latitude: data.receiverLatitude,
-          longitude: data.receiverLongitude,
+          latitude: -6.28927,
+          longitude: 106.77492000000007,
         },
-        courierName: data.courier.courierName,
-        courierService: data.courier.courierServiceCode,
-        courier_insurance: data.courier.courierInsurance,
-        delivery_type: data.courier.courierType,
-        delivery_date: data.courier.deliveryDate,
-        delivery_time: data.courier.deliveryTime,
-        order_note: data.courier.description,
+        courier_company: 'grab',
+
+        courier_type: 'instant',
+        courier_insurance: true,
+        delivery_type: 'later',
+        delivery_date: '2024-09-24',
+        delivery_time: '12:00',
+        order_note: 'satukan semua pesanan kedalam satu packaging',
         metadata: {},
         items: [
           {
-            id: data.cart.cartItems.map((c) => c.product.id),
-            name: data.cart.cartItems.map((c) => c.product.name),
+            id: 1,
+            name: data?.cart.cartItems[0].product.name,
             image: '',
-            description: data.cart.cartItems.map((j) => j.product.description),
-            value: data.cart.cartItems.map((a) => a.price * a.qty),
-            quantity: data.cart.cartItems.map((a) => a.qty),
-            height: data.cart.cartItems.map((n) => n.product.height),
-            length: data.cart.cartItems.map((c) => c.product.length),
-            weight: data.cart.cartItems.map((o) => o.product.description),
-            width: data.cart.cartItems.map((k) =>
-              k.variantOption.variantOptionValues.map((vov) => vov.weight)
-            ),
+            description: data?.cart.cartItems[0].product.description,
+            value: data?.cart.cartItems[0].price,
+            quantity: 2,
+            height: 10,
+            length: 20,
+            weight: 0.5,
+            width: 15,
           },
         ],
       };
+
+      const orderDataJSON = JSON.stringify(dataforBiteShip);
 
       const requestOptions = {
         method: 'POST',
@@ -319,20 +278,58 @@ export default function StatusOrderDetail({
           Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(orderData),
+        body: orderDataJSON,
       };
 
-      const response = await fetch(`${baseUrl}${endpoint}`, requestOptions);
-      const responseData = await response.json();
-
-      alert(responseData);
+      await fetch(`${baseUrl}${endpoint}`, requestOptions);
+      alert(
+        'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
+      );
     } catch (error) {
       alert(error);
     }
   };
-
   const stepCount = filterStepsByStatus(data?.status).length;
   const stepHeight = 65;
+  const sortedHistories = data.invoiceHistories.slice().sort((a, b) => {
+    return b.id.localeCompare(a.id);
+  });
+
+  const handleCancelNotif = async () => {
+    try {
+      const mailerBaseUrl = 'https://connect.mailerlite.com';
+      const mailerEndPoint = '/api/subscribers';
+      const mailerApiKey =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
+
+      const mailerData = {
+        email: `angga.ardiansyah955+${new Date().getTime()}@gmail.com`,
+        fields: {
+          company: 'ORDER CANCELED',
+          last_name: 'this order have been canceled from the seller',
+        },
+        groups: ['98713000939095999'],
+      };
+
+      const mailerRequest = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${mailerApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(mailerData),
+      };
+
+      const response = await fetch(
+        `${mailerBaseUrl}${mailerEndPoint}`,
+        mailerRequest
+      );
+      const responseData = await response.json();
+      console.log('Data Email :', responseData);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const products = data.cart.cartItems.map((cartItem) => {
     return { ...cartItem, cartItem };
@@ -394,7 +391,7 @@ export default function StatusOrderDetail({
 
   function useStatusLacakPengiriman(status: string, dataTracking: ITracking) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
+    const [selectedCardId] = useState<string>('');
     function openModal() {
       setModalIsOpen(true);
     }
@@ -423,6 +420,7 @@ export default function StatusOrderDetail({
               isOpen={modalIsOpen}
               onClose={closeModal}
               data={dataTracking}
+              selectedCardId={selectedCardId}
             />
           )}
         </>
@@ -467,7 +465,9 @@ export default function StatusOrderDetail({
                 <Image src={circle} />
                 <Text>Nomor Invoice berhasil disalin</Text>
               </Box>
-              <Text>OK</Text>
+              <Text onClick={() => setIsCopied1(false)} cursor={'pointer'}>
+                OK
+              </Text>
             </Box>
           )}
           {isCopied2 && (
@@ -476,7 +476,9 @@ export default function StatusOrderDetail({
                 <Image src={circle} />
                 <Text>Nomor Resi berhasil disalin</Text>
               </Box>
-              <Text>OK</Text>
+              <Text onClick={() => setIsCopied2(false)} cursor={'pointer'}>
+                OK
+              </Text>
             </Box>
           )}
           {isCopied3 && (
@@ -485,7 +487,9 @@ export default function StatusOrderDetail({
                 <Image src={circle} />
                 <Text>Alamat berhasil disalin</Text>
               </Box>
-              <Text>OK</Text>
+              <Text onClick={() => setIsCopied3(false)} cursor={'pointer'}>
+                OK
+              </Text>
             </Box>
           )}
         </Flex>
@@ -587,8 +591,7 @@ export default function StatusOrderDetail({
                       <StepDescription
                         style={{ fontWeight: '500', fontSize: '12px' }}
                       >
-                        {dateConversion(data.invoiceHistories[index].createdAt)}{' '}
-                        WIB
+                        {dateConversion(sortedHistories[index].createdAt)} WIB
                       </StepDescription>
                     </Box>
 
@@ -644,6 +647,7 @@ export default function StatusOrderDetail({
                 justifyContent={'center'}
                 alignItems={'center'}
                 src={copy}
+                // onClick={handleCopyInvoiceClick}
                 onClick={handleCopyInvoiceClick}
                 style={{ cursor: 'pointer' }}
                 color={'gray.900'}
@@ -894,7 +898,7 @@ export default function StatusOrderDetail({
                   fontWeight={'700'}
                   lineHeight={'20px'}
                 >
-                  08298123128974213
+                  {data.courier.courierName} - {data.courier.courierServiceName}
                 </Text>
                 <Text
                   color={`var(--text-dark, #1D1D1D)`}
@@ -902,7 +906,7 @@ export default function StatusOrderDetail({
                   fontWeight={'700'}
                   lineHeight={'20px'}
                 >
-                  Tes Dulu Nggak sih
+                  {data.waybill}
                 </Text>
                 <Box display={'flex'} flexDirection={'column'}>
                   <Text
@@ -1041,6 +1045,12 @@ export default function StatusOrderDetail({
                 borderRadius={`var(--rounded-full, 9999px)`}
                 border={`1px solid var(--red-800, #EA3829)`}
                 background={`var(--gray-50, #FFF)`}
+                onClick={() => {
+                  setModalText(
+                    'Apakah anda yakin untuk membatalkan proses ini?'
+                  );
+                  onOpenModal1();
+                }}
               >
                 <Text
                   color={`var(--text-red, #EA3829)`}
@@ -1052,6 +1062,47 @@ export default function StatusOrderDetail({
                 </Text>
               </Button>
             </Box>
+            <Modal
+              blockScrollOnMount={false}
+              isOpen={isOpenModal1}
+              onClose={() => {
+                setModalText('');
+                onCloseModal1();
+              }}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Tolak Pesanan</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Text fontWeight="bold" mb="1rem">
+                    {modalText}
+                  </Text>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="blue"
+                    mr={3}
+                    onClick={() => {
+                      setModalText('');
+                      onCloseModal1();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Form method="post">
+                    <Input name="id" type="hidden" value={data.id} />
+                    <Button
+                      variant="ghost"
+                      onClick={handleCancelNotif}
+                      type="submit"
+                    >
+                      Tolak Pesanan
+                    </Button>
+                  </Form>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
             <Box>
               <Button
                 display={'flex'}
@@ -1066,7 +1117,7 @@ export default function StatusOrderDetail({
                   setModalText(
                     'Apakah anda yakin untuk melanjutkan proses ini?'
                   );
-                  onOpen();
+                  onOpenModal2();
                 }}
               >
                 <Text
@@ -1081,10 +1132,10 @@ export default function StatusOrderDetail({
             </Box>
             <Modal
               blockScrollOnMount={false}
-              isOpen={isOpen}
+              isOpen={isOpenModal2}
               onClose={() => {
                 setModalText('');
-                onClose();
+                onCloseModal2();
               }}
             >
               <ModalOverlay />
@@ -1102,7 +1153,7 @@ export default function StatusOrderDetail({
                     mr={3}
                     onClick={() => {
                       setModalText('');
-                      onClose();
+                      onCloseModal2();
                     }}
                   >
                     Cancel

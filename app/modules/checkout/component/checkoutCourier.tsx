@@ -251,6 +251,7 @@ export default function CheckoutCourier(props: any) {
             placeholder="Pilih Provinsi"
             value={selectedProvince}
             onChange={(e) => setSelectedProvince(e.target.value)}
+            required
           >
             {provinsiOption.map((option) => (
               <option key={option.id} value={option.id + ',' + option.name}>
@@ -265,6 +266,7 @@ export default function CheckoutCourier(props: any) {
             placeholder="Pilih Kabupaten"
             value={selectedKabupaten}
             onChange={handleKabupatenChange}
+            required
           >
             {kabupatenOption.map((kabupaten) => (
               <option
@@ -282,6 +284,7 @@ export default function CheckoutCourier(props: any) {
             placeholder="Pilih Kecamatan"
             value={selectedKecamatan}
             onChange={handleKecamatanChange}
+            required
           >
             {kecamatanOption.map((kecamatan) => (
               <option
@@ -304,6 +307,7 @@ export default function CheckoutCourier(props: any) {
                 postalCode: e.target.value,
               })
             }
+            required
           />
 
           <Input
@@ -311,6 +315,7 @@ export default function CheckoutCourier(props: any) {
             type="text"
             name="description"
             placeholder="Masukkan Catatan Pemesanan"
+            required
           />
 
           <Box>
@@ -322,6 +327,7 @@ export default function CheckoutCourier(props: any) {
                 bgColor={'#fcfcfc'}
                 name="courier"
                 onChange={(e) => handleChangeCourier(e.target.value)}
+                required
               >
                 <option hidden>Pilih Kurir</option>
                 {dataCourier.map((data, index) => (
@@ -338,6 +344,7 @@ export default function CheckoutCourier(props: any) {
                 onChange={(e) => {
                   handleRatesChange(e);
                 }}
+                required
               >
                 <option hidden>Pilih Tipe Pengiriman</option>
                 {courierService.map((data, index) => (
@@ -348,12 +355,11 @@ export default function CheckoutCourier(props: any) {
               </Select>
             </Box>
           </Box>
-
           <Text>Harga Ongkir : {rates} </Text>
           <Box>
             <Box>
               <Text fontWeight={'bold'}>Metode Pembayaran</Text>
-              <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3}>
+              <RadioGroup name="payment" bgColor={'#fcfcfc'} p={3} id="payment">
                 <Stack gap={2}>
                   <Radio value="BCA">
                     <Flex gap={2} alignItems={'center'}>
@@ -428,11 +434,13 @@ export default function CheckoutCourier(props: any) {
                     type="hidden"
                     name="totalPrice"
                     value={props.totalPrice}
+                    readOnly
                   />
                   <Input
                     type="hidden"
                     name="totalPriceUnique"
                     value={props.totalPriceUnique}
+                    readOnly
                   />
                 </Box>
               </Box>
@@ -449,18 +457,21 @@ export default function CheckoutCourier(props: any) {
             name="selectedProvinceName"
             placeholder="Phone Number"
             value={selectedProvinceName}
+            readOnly
           />
           <Input
             hidden
             name="selectedKabupatenName"
             placeholder="Phone Number"
             value={selectedKabupatenName}
+            readOnly
           />
           <Input
             hidden
             name="selectedKecamatanName"
             placeholder="Phone Number"
             value={selectedKecamatanName}
+            readOnly
           />
         </Box>
       </Box>

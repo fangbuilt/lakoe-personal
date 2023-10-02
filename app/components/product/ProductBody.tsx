@@ -11,16 +11,19 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import { useEffect, useState } from 'react';
 import AddCircle from '~/assets/icon-pack/add-circle.svg';
 import useDebounce from '~/hooks/product/useDebounce';
 import { useFilterProducts } from '~/hooks/product/useFilterProducts';
 import useSearchProducts from '~/hooks/product/useSearchProducts';
 import { useSortProducts } from '~/hooks/product/useSortProducts';
-import type { IProduct } from '~/interfaces/product/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import ProductTab from './ProductTab';
+import { useEffect, useState } from 'react';
+import ProductEmpty from './ProductEmpty';
+import ProductEmptyActive from './ProductEmptyActive';
+import ProductEmptyNonActive from './ProductEmptyNonActive';
+import type { IProduct } from '~/interfaces/product/product';
 
 interface IProductBodyProps {
   product: IProduct[];
@@ -28,28 +31,20 @@ interface IProductBodyProps {
 
 export default function ProductBody(props: IProductBodyProps) {
   const { product } = props;
-  const [, setActiveTab] = useState(0);
-  const { searchProducts, setSearchQuery } = useSearchProducts(product);
+  const [activeTab, setActiveTab] = useState(0);
+  const { searchProducts, setSearchQuery } = useSearchProducts(
+    product,
+    activeTab
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const { selectedCategories, toggleCategory, getSelectedCategoryCount } =
     useFilterProducts();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortProducts();
-
-  // const filteredProducts =
-  //   activeTab === 1
-  //     ? product.filter((a) => a.isActive)
-  //     : activeTab === 2
-  //       ? product.filter((a) => !a.isActive)
-  //       : product;
-
-  // console.log('props product body',props)
-
   useEffect(() => {
     setSearchQuery(debouncedSearchTerm);
   }, [debouncedSearchTerm, setSearchQuery]);
-
   return (
     <>
       <Box w={'100%'} bgColor={'white'} borderRadius={10}>
@@ -69,6 +64,7 @@ export default function ProductBody(props: IProductBodyProps) {
                 fontSize={'14px'}
                 color={'white'}
                 colorScheme={'#0086B4'}
+                gap={1}
               >
                 <Image src={AddCircle} />
                 Tambah Produk
@@ -77,6 +73,7 @@ export default function ProductBody(props: IProductBodyProps) {
           </Box>
         </Box>
         <Tabs w={'100%'} onChange={(index) => setActiveTab(index)}>
+          {/* <Tabs w={'100%'}> */}
           <TabList px={1}>
             <Tab>
               <Text fontSize={'16px'}>Semua</Text>
@@ -100,64 +97,82 @@ export default function ProductBody(props: IProductBodyProps) {
           />
           <TabPanels>
             <TabPanel>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Text fontSize={'18px'} fontWeight={'bold'}>
-                  {searchProducts.length} Produk
-                </Text>
-                <Box display={'flex'} gap={2}>
-                  <Text fontSize={'14px'}>Pilih Semua</Text>
-                  <Checkbox defaultChecked></Checkbox>
-                </Box>
-              </Box>
-              {searchProducts.map((a) => (
-                <ProductCard key={a.id} product={a}>
-                  <ProductModal {...a} />
-                </ProductCard>
-              ))}
+              {searchProducts.length === 0 ? (
+                <ProductEmpty />
+              ) : (
+                <>
+                  <Box
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                  >
+                    <Text fontSize={'18px'} fontWeight={'bold'}>
+                      {searchProducts.length} Produk
+                    </Text>
+                    <Box display={'flex'} gap={2}>
+                      <Text fontSize={'14px'}>Pilih Semua</Text>
+                      <Checkbox defaultChecked></Checkbox>
+                    </Box>
+                  </Box>
+                  {searchProducts.map((a) => (
+                    <ProductCard key={a.id} product={a}>
+                      <ProductModal {...a} />
+                    </ProductCard>
+                  ))}
+                </>
+              )}
             </TabPanel>
             <TabPanel>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Text fontSize={'18px'} fontWeight={'bold'}>
-                  {searchProducts.length} Produk
-                </Text>
-                <Box display={'flex'} gap={2}>
-                  <Text fontSize={'14px'}>Pilih Semua</Text>
-                  <Checkbox defaultChecked></Checkbox>
-                </Box>
-              </Box>
-              {searchProducts.map((a) => (
-                <ProductCard key={a.id} product={a}>
-                  <ProductModal {...a} />
-                </ProductCard>
-              ))}
+              {searchProducts.length === 0 ? (
+                <ProductEmptyActive />
+              ) : (
+                <>
+                  <Box
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                  >
+                    <Text fontSize={'18px'} fontWeight={'bold'}>
+                      {searchProducts.length} Produk
+                    </Text>
+                    <Box display={'flex'} gap={2}>
+                      <Text fontSize={'14px'}>Pilih Semua</Text>
+                      <Checkbox defaultChecked></Checkbox>
+                    </Box>
+                  </Box>
+                  {searchProducts.map((a) => (
+                    <ProductCard key={a.id} product={a}>
+                      <ProductModal {...a} />
+                    </ProductCard>
+                  ))}
+                </>
+              )}
             </TabPanel>
             <TabPanel>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Text fontSize={'18px'} fontWeight={'bold'}>
-                  {searchProducts.length} Produk
-                </Text>
-                <Box display={'flex'} gap={2}>
-                  <Text fontSize={'14px'}>Pilih Semua</Text>
-                  <Checkbox defaultChecked></Checkbox>
-                </Box>
-              </Box>
-              {searchProducts.map((a) => (
-                <ProductCard key={a.id} product={a}>
-                  <ProductModal {...a} />
-                </ProductCard>
-              ))}
+              {searchProducts.length === 0 ? (
+                <ProductEmptyNonActive />
+              ) : (
+                <>
+                  <Box
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                  >
+                    <Text fontSize={'18px'} fontWeight={'bold'}>
+                      {searchProducts.length} Produk
+                    </Text>
+                    <Box display={'flex'} gap={2}>
+                      <Text fontSize={'14px'}>Pilih Semua</Text>
+                      <Checkbox defaultChecked></Checkbox>
+                    </Box>
+                  </Box>
+                  {searchProducts.map((a) => (
+                    <ProductCard key={a.id} product={a}>
+                      <ProductModal {...a} />
+                    </ProductCard>
+                  ))}
+                </>
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>
