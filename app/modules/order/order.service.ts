@@ -1,6 +1,6 @@
-import { db } from '~/libs/prisma/db.server';
 import type { z } from 'zod';
 import type { MootaOrderSchema } from './order.schema';
+import { db } from '~/libs/prisma/db.server';
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
@@ -126,11 +126,6 @@ export async function getInvoiceById(id: any) {
       cart: {
         include: {
           user: true,
-          store: {
-            include: {
-              locations: true,
-            },
-          },
           cartItems: {
             include: {
               variantOption: {
@@ -356,25 +351,6 @@ export async function updateStatusInvoice(data: any) {
       invoiceHistories: {
         create: {
           status: 'READY_TO_SHIP',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      },
-    },
-    where: {
-      id: id,
-    },
-  });
-}
-
-export async function updateStatusInvoice2(data: any) {
-  const { id } = data;
-  await db.invoice.update({
-    data: {
-      status: 'ORDER_CANCELLED',
-      invoiceHistories: {
-        create: {
-          status: 'ORDER_CANCELLED',
           createdAt: new Date(),
           updatedAt: new Date(),
         },

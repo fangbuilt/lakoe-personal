@@ -16,7 +16,7 @@ import {
 import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
-import { SelectBankOption } from './selectBankOption';
+import { SelectBankOption } from './SelectBankOption';
 
 export default function PopupBank() {
   const { isOpen, onOpen, onClose } = useDisclosure();

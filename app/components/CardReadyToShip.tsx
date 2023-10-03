@@ -1,5 +1,5 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
-import { Link, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import type { loader } from '~/routes/order';
 import ModalTracking from './orderTrackingModal';
@@ -17,7 +17,7 @@ export function formatCurrency(price: number): string {
 
 export default function CardReadyToShip() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedCardId, setSelectedCardId] = useState<string>('');
+  const [, setSelectedCardId] = useState<string>('');
 
   const cardProduct = useLoaderData<typeof loader>();
 
@@ -28,6 +28,7 @@ export default function CardReadyToShip() {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+
   return (
     <>
       {/* CARD START HERE */}
@@ -56,19 +57,17 @@ export default function CardReadyToShip() {
                       borderRadius={'full'}
                       fontSize={'14px'}
                       onClick={() => {
-                        setSelectedCardId(data.courier?.trackingId as string);
+                        setSelectedCardId(data.id);
                         openModal();
                       }}
                     >
                       Tracking Pengiriman
                     </Button>
-                    {modalIsOpen && (
-                      <ModalTracking
-                        isOpen={modalIsOpen}
-                        onClose={closeModal}
-                        selectedCardId={selectedCardId}
-                      />
-                    )}
+                    <ModalTracking
+                      isOpen={modalIsOpen}
+                      onClose={closeModal}
+                      selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
+                    />
                     {/*  */}
                   </Box>
                 </Flex>
@@ -76,63 +75,54 @@ export default function CardReadyToShip() {
                   {data.invoiceNumber}
                 </Text>
                 <hr />
-                <Link to={'detail/' + data.id}>
-                  <Flex justifyContent={'space-between'}>
-                    <Box display={'flex'} gap={3} w={'80%'}>
-                      {data.cart?.cartItems.map((item, index) => (
-                        <Img
-                          key={index}
-                          w={'52px'}
-                          h={'52px'}
-                          display={'inline'}
-                          borderRadius={'md'}
-                          src={item.product?.attachments[0]?.url}
-                          mt={3}
-                        />
-                      ))}
-                      <Text
-                        mt={4}
-                        id="fm500"
-                        fontSize={'16px'}
-                        textOverflow={'ellipsis'}
-                        overflow={'hidden'}
-                        whiteSpace={'nowrap'}
-                        fontWeight={'700'}
-                      >
-                        {data.cart?.cartItems.map((item) => item.product?.name)}
-                        <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                          {data.cart?.cartItems.map((item) => item.qty)} Barang
-                        </Text>
+
+                <Flex justifyContent={'space-between'}>
+                  <Box display={'flex'} gap={3} w={'80%'}>
+                    {data.cart?.cartItems.map((item, index) => (
+                      <Img
+                        key={index}
+                        w={'52px'}
+                        h={'52px'}
+                        display={'inline'}
+                        borderRadius={'md'}
+                        src={item.product?.attachments[0]?.url}
+                        mt={3}
+                      />
+                    ))}
+                    <Text
+                      mt={4}
+                      id="fm500"
+                      fontSize={'16px'}
+                      textOverflow={'ellipsis'}
+                      overflow={'hidden'}
+                      whiteSpace={'nowrap'}
+                      fontWeight={'700'}
+                    >
+                      {data.cart?.cartItems.map((item) => item.product?.name)}
+                      <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                        {data.cart?.cartItems.map((item) => item.qty)} Barang
                       </Text>
-                    </Box>
-                    <Box mt={4} w={'15%'}>
-                      <Flex gap={1}>
-                        <Text color={'#909090'} fontSize={'14px'}>
-                          Total
-                        </Text>
-                        <Text color={'#909090'} fontSize={'14px'}>
-                          Belanja
-                        </Text>
-                      </Flex>
-                      <Text fontWeight={'bold'} fontSize={'14px'}>
-                        {formatCurrency(data.price)}
+                    </Text>
+                  </Box>
+                  <Box mt={4} w={'15%'}>
+                    <Flex gap={1}>
+                      <Text color={'#909090'} fontSize={'14px'}>
+                        Total
                       </Text>
-                    </Box>
-                  </Flex>
-                </Link>
+                      <Text color={'#909090'} fontSize={'14px'}>
+                        Belanja
+                      </Text>
+                    </Flex>
+                    <Text fontWeight={'bold'} fontSize={'14px'}>
+                      {formatCurrency(data.price)}
+                    </Text>
+                  </Box>
+                </Flex>
               </Box>
             </Box>
           </Box>
         </Card>
       ))}
-
-      {modalIsOpen && (
-        <ModalTracking
-          isOpen={modalIsOpen}
-          onClose={closeModal}
-          selectedCardId={selectedCardId}
-        />
-      )}
 
       {/* END CARD */}
     </>
