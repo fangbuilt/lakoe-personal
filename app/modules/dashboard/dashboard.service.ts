@@ -6,14 +6,14 @@ export async function getStoreData(id: string) {
   return json(
     await db.store.findMany({
       where: {
-        id: '4',
+        id: id,
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '4',
+                storeId: id,
               },
             },
           },
@@ -28,7 +28,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '4',
+        storeId: storeId,
       },
     })
   );
@@ -58,7 +58,7 @@ export async function createBank(data: any) {
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '4' },
+        connect: { id: data.storeId },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -139,7 +139,7 @@ export async function createWithdraw(
     const amount = parseFloat(data.amount);
 
     const user = await db.user.findUnique({
-      where: { id: '4' },
+      where: { id: approvedById },
     });
 
     if (!user) {
@@ -162,7 +162,7 @@ export async function createWithdraw(
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '4' },
+          connect: { id: storeId },
         },
         amount: amount,
         status: 'REQUEST',
@@ -171,7 +171,7 @@ export async function createWithdraw(
           connect: { id: bankId },
         },
         approvedBy: {
-          connect: { id: '1' },
+          connect: { id: approvedById },
         },
         updatedAt: now,
       },

@@ -67,7 +67,7 @@ export async function action({ request }: ActionArgs) {
 
       const store = await db.store.findUnique({
         where: {
-          id: '4',
+          id: storeId as string,
         },
       });
       if (store) {
@@ -75,7 +75,7 @@ export async function action({ request }: ActionArgs) {
 
         await db.store.update({
           where: {
-            id: '4',
+            id: storeId as string,
           },
           data: {
             credit: newCredit,
