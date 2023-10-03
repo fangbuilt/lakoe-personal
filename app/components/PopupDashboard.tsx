@@ -332,7 +332,7 @@ export default function DashboardPopup({
                     toggleTarikKredit();
                     handleAmount();
                   }}
-                  isDisabled={!isFormValidation}
+                  // isDisabled={!isFormValidation}
                 >
                   Tarik Kredit
                 </Button>

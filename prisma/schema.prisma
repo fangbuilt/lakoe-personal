@@ -487,7 +487,7 @@ model AdminDecline {
   withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
   withdrawId String
   bankAccount       BankAccount? @relation(fields: [bankAccountId], references: [id])
-  bankAccountId     String @unique
+  bankAccountId     String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
 

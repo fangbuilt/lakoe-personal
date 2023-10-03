@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
 import AdminApproved from '~/components/AdminApproved';
@@ -58,7 +58,7 @@ export async function action({ request }: ActionArgs) {
       console.error('Error creating declined reason:', error);
     }
   }
-  return null;
+  return redirect('/adminApproved');
 }
 
 export default function DasboardAdminApproved() {

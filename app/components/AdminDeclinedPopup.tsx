@@ -21,12 +21,12 @@ import React, { useState } from 'react';
 import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 
 export default function AdminDeclinedPopup(props: any) {
-  const { dataRefund } = props;
+  const { dataWithdrawal } = props;
   const [formData, setFormData] = useState({
     actionType: 'create',
-    withdrawId: dataRefund.id || '',
-    storeId: dataRefund.store?.id || '',
-    bankAccountId: dataRefund.bankAccount?.id || '',
+    withdrawId: dataWithdrawal.id || '',
+    storeId: dataWithdrawal.store?.id || '',
+    bankAccountId: dataWithdrawal.bankAccount?.id || '',
     reason: '',
   });
 
@@ -51,10 +51,10 @@ export default function AdminDeclinedPopup(props: any) {
   }
 
   const transferFee = 10000;
-  const tax = (parseInt(dataRefund.amount) * 1) / 100;
-  const formattedAmount = formatRupiah(parseInt(dataRefund.amount));
+  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
   const withdarwalTotal = formatRupiah(
-    parseInt(dataRefund.amount) - transferFee - tax
+    parseInt(dataWithdrawal.amount) - transferFee - tax
   );
 
   return (
@@ -94,24 +94,26 @@ export default function AdminDeclinedPopup(props: any) {
             >
               <Box>
                 <Text display={'flex'}>
-                  Nomor Penarikan: <Text fontWeight={700}>{dataRefund.id}</Text>
+                  Nomor Penarikan:{' '}
+                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                 </Text>
                 <Text>
-                  {moment(dataRefund.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
-                    'LLLL'
-                  )}{' '}
+                  {moment(
+                    dataWithdrawal.createdAt,
+                    'YYYY-MM-DD HH:mm:ss'
+                  ).format('LLLL')}{' '}
                 </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {dataRefund.invoice.receiverName}
+                    {dataWithdrawal.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataRefund.store?.name}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{dataRefund.status}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
                 </Box>
               </Flex>
 
@@ -119,15 +121,15 @@ export default function AdminDeclinedPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: {dataRefund.invoice.payment.bank}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {dataRefund.invoice.payment.accountNumber}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {dataRefund.invoice.receiverName}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
                 </Flex>
               </Box>
 
@@ -172,17 +174,17 @@ export default function AdminDeclinedPopup(props: any) {
                   <FormControl>
                     <Input type="hidden" name="actionType" value="create" />
                     <Input
-                      type="hidden"
+                      type="text"
                       name="withdrawId"
                       value={formData.withdrawId}
                     />
                     <Input
-                      type="hidden"
+                      type="text"
                       name="storeId"
                       value={formData.storeId}
                     />
                     <Input
-                      type="hidden"
+                      type="text"
                       name="bankAccountId"
                       value={formData.bankAccountId}
                     />
@@ -222,7 +224,7 @@ export default function AdminDeclinedPopup(props: any) {
                     Permintaan ditolak oleh Admin A{' '}
                     <ListItem ml={'20px'}>
                       {moment(
-                        dataRefund.updatedAt,
+                        dataWithdrawal.updatedAt,
                         'YYYY-MM-DD HH:mm:ss'
                       ).format('LLLL')}{' '}
                     </ListItem>
@@ -232,7 +234,7 @@ export default function AdminDeclinedPopup(props: any) {
                     Permintaan dibuat{' '}
                     <ListItem ml={'20px'}>
                       {moment(
-                        dataRefund.createdAt,
+                        dataWithdrawal.createdAt,
                         'YYYY-MM-DD HH:mm:ss'
                       ).format('LLLL')}{' '}
                     </ListItem>
