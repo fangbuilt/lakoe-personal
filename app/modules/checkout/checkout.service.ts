@@ -8,7 +8,7 @@ export async function getCheckoutDetail(data: any) {
       store: {
         name: {
           equals: data.store,
-          mode: 'insensitive',
+          // mode: 'insensitive',
         },
       },
     },
