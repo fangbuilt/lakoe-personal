@@ -95,7 +95,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdmin'}>
+                      <Link to={'/dashboardAdminWithdraw'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text

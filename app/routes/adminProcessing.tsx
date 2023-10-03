@@ -11,7 +11,7 @@ import { useLoaderData } from '@remix-run/react';
 import AdminProcessing from '~/components/AdminProcessing';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import {
-  createAttachmentAdmin,
+  createAttachmentWithdraw,
   getWithdrawalList,
   updateStatusWithdraw,
 } from '~/modules/dashboard/dashboard.service';
@@ -62,7 +62,7 @@ export async function action({ request }: ActionArgs) {
         });
       }
 
-      const createAttachment = await createAttachmentAdmin(
+      const createAttachment = await createAttachmentWithdraw(
         imgSource,
         withdrawIdAttachment
       );

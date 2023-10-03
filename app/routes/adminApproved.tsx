@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
 import AdminApproved from '~/components/AdminApproved';
@@ -34,23 +34,31 @@ export async function action({ request }: ActionArgs) {
 
   const withdrawId = formData.get('withdrawId');
   const storeId = formData.get('storeId');
+  const bankAccountId = formData.get('bankAccountId');
   const reason = formData.get('reason');
 
-  if (actionType === 'create' && withdrawId && storeId && reason) {
+  if (
+    actionType === 'create' &&
+    withdrawId &&
+    storeId &&
+    bankAccountId &&
+    reason
+  ) {
     try {
       const createReasonResult = await createDeclinedReason(
         {
           reason: reason as string,
         },
         withdrawId as string,
-        storeId as string
+        storeId as string,
+        bankAccountId as string
       );
       console.log('This is the declined reason', createReasonResult);
     } catch (error) {
       console.error('Error creating declined reason:', error);
     }
   }
-  return null;
+  return redirect('/adminApproved');
 }
 
 export default function DasboardAdminApproved() {

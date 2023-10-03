@@ -6,18 +6,17 @@ import {
   FormControl,
   FormLabel,
   Input,
-  ListItem,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalOverlay,
   Text,
-  UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { useState } from 'react';
+import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 
 export default function AdminDeclinedPopup(props: any) {
   const { dataWithdrawal } = props;
@@ -25,6 +24,7 @@ export default function AdminDeclinedPopup(props: any) {
     actionType: 'create',
     withdrawId: dataWithdrawal.id || '',
     storeId: dataWithdrawal.store?.id || '',
+    bankAccountId: dataWithdrawal.bankAccount?.id || '',
     reason: '',
   });
 
@@ -123,7 +123,7 @@ export default function AdminDeclinedPopup(props: any) {
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>:{dataWithdrawal.bankAccount.accountNumber}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
@@ -172,16 +172,22 @@ export default function AdminDeclinedPopup(props: any) {
                   <FormControl>
                     <Input type="hidden" name="actionType" value="create" />
                     <Input
-                      type="hidden"
+                      type="text"
                       name="withdrawId"
                       value={formData.withdrawId}
-                      display={'none'}
+                      hidden
                     />
                     <Input
-                      type="hidden"
+                      type="text"
                       name="storeId"
                       value={formData.storeId}
-                      display={'none'}
+                      hidden
+                    />
+                    <Input
+                      type="text"
+                      name="bankAccountId"
+                      value={formData.bankAccountId}
+                      hidden
                     />
                     <FormLabel fontSize="12px" fontWeight={700}>
                       Alasan Penolakan
@@ -202,36 +208,40 @@ export default function AdminDeclinedPopup(props: any) {
                     width="100%"
                     textAlign="center"
                     mt="10px"
+                    onClick={() => {
+                      AdminDeclinedNotification(formData.reason);
+                      onClose();
+                    }}
                   >
                     Send email to Seller
                   </Button>
                 </form>
               </Box>
 
-              <Box mt={'10px'}>
+              {/* <Box mt={"10px"}>
                 <Text fontWeight={700}>Riwayat</Text>
                 <UnorderedList>
                   <ListItem>
-                    Permintaan ditolak oleh Admin A{' '}
-                    <ListItem ml={'20px'}>
+                    Permintaan ditolak oleh Admin A{" "}
+                    <ListItem ml={"20px"}>
                       {moment(
                         dataWithdrawal.updatedAt,
-                        'YYYY-MM-DD HH:mm:ss'
-                      ).format('LLLL')}{' '}
+                        "YYYY-MM-DD HH:mm:ss"
+                      ).format("LLLL")}{" "}
                     </ListItem>
                   </ListItem>
 
                   <ListItem>
-                    Permintaan dibuat{' '}
-                    <ListItem ml={'20px'}>
+                    Permintaan dibuat{" "}
+                    <ListItem ml={"20px"}>
                       {moment(
                         dataWithdrawal.createdAt,
-                        'YYYY-MM-DD HH:mm:ss'
-                      ).format('LLLL')}{' '}
+                        "YYYY-MM-DD HH:mm:ss"
+                      ).format("LLLL")}{" "}
                     </ListItem>
                   </ListItem>
                 </UnorderedList>
-              </Box>
+              </Box> */}
             </Box>
           </ModalBody>
           <ModalFooter>

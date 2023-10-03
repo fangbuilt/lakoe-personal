@@ -3,25 +3,22 @@ import {
   Button,
   Divider,
   Flex,
-  ListItem,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalOverlay,
   Text,
-  UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
 import moment from 'moment';
 import React from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
-import { AdminSuccessNotification } from '~/modules/DashboardMailerlite/mailerliteAdminSuccess';
+import { AdminRefundNotification } from '~/modules/DashboardMailerlite/mailerliteAdminRefund';
 
 export default function AdminSuccessRefundPopup(props: any) {
-  const { dataWithdrawal } = props;
+  const { dataRefund } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -35,10 +32,10 @@ export default function AdminSuccessRefundPopup(props: any) {
   }
 
   const transferFee = 10000;
-  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
-  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
+  const tax = (parseInt(dataRefund.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataRefund.amount));
   const withdarwalTotal = formatRupiah(
-    parseInt(dataWithdrawal.amount) - transferFee - tax
+    parseInt(dataRefund.amount) - transferFee - tax
   );
 
   return (
@@ -78,26 +75,28 @@ export default function AdminSuccessRefundPopup(props: any) {
             >
               <Box>
                 <Text display={'flex'}>
-                  Nomor Penarikan:{' '}
-                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
+                  Nomor Penarikan: <Text fontWeight={700}>{dataRefund.id}</Text>
                 </Text>
                 <Text>
-                  {moment(
-                    dataWithdrawal.createdAt,
-                    'YYYY-MM-DD HH:mm:ss'
-                  ).format('LLLL')}
+                  {moment(dataRefund.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
+                    'LLLL'
+                  )}
                 </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {dataWithdrawal.bankAccount.accountName}
+                    {dataRefund.invoice.receiverName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
+                  <Text fontSize={'12px'}>
+                    {dataRefund.invoice.receiverEmail}
+                  </Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
+                  <Text fontSize={'12px'}>
+                    {dataRefund.invoice.receiverPhone}
+                  </Text>
                 </Box>
               </Flex>
 
@@ -105,15 +104,15 @@ export default function AdminSuccessRefundPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>:{dataWithdrawal.bankAccount.bank}</Text>
+                  <Text>: {dataRefund.invoice.payment.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
+                  <Text>: {dataRefund.invoice.payment.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
+                  <Text>: {dataRefund.invoice.receiverName}</Text>
                 </Flex>
               </Box>
 
@@ -154,27 +153,27 @@ export default function AdminSuccessRefundPopup(props: any) {
               </Box>
 
               <Box mt={'10px'}>
-                <Text fontWeight={700}>Bukti Transfer</Text>
+                {/* <Text fontWeight={700}>Bukti Transfer</Text>
                 <Box
-                  mt={'10px'}
-                  width={'100px'}
-                  height={'100px'}
-                  border={'1px solid gray'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
+                  mt={"10px"}
+                  width={"100px"}
+                  height={"100px"}
+                  border={"1px solid gray"}
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
                 >
                   <Link
                     to={
-                      'https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg'
+                      "https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg"
                     }
                     target="_blank"
                   >
-                    <Text fontWeight={'700'} color={'teal'}>
+                    <Text fontWeight={"700"} color={"teal"}>
                       Lihat Gambar
                     </Text>
                   </Link>
-                </Box>
+                </Box> */}
 
                 <Button
                   width={'100%'}
@@ -184,11 +183,7 @@ export default function AdminSuccessRefundPopup(props: any) {
                   colorScheme="teal"
                   padding={0}
                   onClick={() => {
-                    AdminSuccessNotification(
-                      dataWithdrawal.store?.name,
-                      formattedAmount,
-                      dataWithdrawal.bankAccount
-                    );
+                    AdminRefundNotification();
 
                     onClose();
                   }}
@@ -197,7 +192,7 @@ export default function AdminSuccessRefundPopup(props: any) {
                 </Button>
               </Box>
 
-              <Box mt={'10px'}>
+              {/* <Box mt={'10px'}>
                 <Text fontWeight={700}>Riwayat</Text>
                 <UnorderedList>
                   <ListItem>
@@ -221,7 +216,7 @@ export default function AdminSuccessRefundPopup(props: any) {
                     </ListItem>
                   </ListItem>
                 </UnorderedList>
-              </Box>
+              </Box> */}
             </Box>
           </ModalBody>
           <ModalFooter>

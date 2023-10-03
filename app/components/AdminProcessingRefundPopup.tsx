@@ -20,13 +20,13 @@ import type { ChangeEvent } from 'react';
 import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
-import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
+import { updateStatusRefund } from '~/modules/dashboard/dashboard.service';
 import LoadingAttachmentAdmin from './loadingAttachmentLoading';
 
 export default function AdminProcessingRefundPopup(props: any) {
-  const { withdrawalData } = props;
+  const { dataRefund } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [statusUpdated, setStatusUpdated] = useState(withdrawalData.status);
+  const [statusUpdated, setStatusUpdated] = useState(dataRefund.status);
   const [selectImage, setSelectImage] = useState<string | undefined | null>(
     null
   );
@@ -73,17 +73,17 @@ export default function AdminProcessingRefundPopup(props: any) {
   }
 
   const transferFee = 10000;
-  const tax = (parseInt(withdrawalData.amount) * 1) / 100;
-  const formattedAmount = formatRupiah(parseInt(withdrawalData.amount));
+  const tax = (parseInt(dataRefund.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataRefund.amount));
   const withdarwalTotal = formatRupiah(
-    parseInt(withdrawalData.amount) - transferFee - tax
+    parseInt(dataRefund.amount) - transferFee - tax
   );
 
   const handleApproveClick = async () => {
     try {
       setIsLoading(true);
-      await updateStatusWithdraw(withdrawalData.id, 'PROCESSING');
-      setStatusUpdated('PROCESSING');
+      await updateStatusRefund(dataRefund.id, 'SUCCESS');
+      setStatusUpdated('SUCCESS');
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -131,25 +131,28 @@ export default function AdminProcessingRefundPopup(props: any) {
             >
               <Box>
                 <Text display={'flex'}>
-                  Nomor Penarikan:{' '}
-                  <Text fontWeight={700}>{withdrawalData.id}</Text>
+                  Nomor Penarikan: <Text fontWeight={700}>{dataRefund.id}</Text>
                 </Text>
                 <Text>
-                  {moment(
-                    withdrawalData.createdAt,
-                    'YYYY-MM-DD HH:mm:ss'
-                  ).format('LLLL')}{' '}
+                  {moment(dataRefund.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
+                    'LLLL'
+                  )}{' '}
                 </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {withdrawalData.bankAccount.accountName}
+                    {dataRefund.invoice.receiverName}
                   </Text>
-                  <Text fontSize={'12px'}>{withdrawalData.store?.name}</Text>
+                  <Text fontSize={'12px'}>
+                    {dataRefund.invoice.receiverEmail}
+                  </Text>
                 </Box>
                 <Box>
+                  <Text fontSize={'12px'}>
+                    {dataRefund.invoice.receiverPhone}
+                  </Text>
                   <Text fontSize={'12px'}>{statusUpdated}</Text>
                 </Box>
               </Flex>
@@ -158,15 +161,15 @@ export default function AdminProcessingRefundPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: {withdrawalData.bankAccount.bank}</Text>
+                  <Text>: {dataRefund.invoice.payment.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {withdrawalData.bankAccount.accountNumber}</Text>
+                  <Text>: {dataRefund.invoice.payment.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {withdrawalData.bankAccount.accountName}</Text>
+                  <Text>: {dataRefund.invoice.receiverName}</Text>
                 </Flex>
               </Box>
 
@@ -208,11 +211,7 @@ export default function AdminProcessingRefundPopup(props: any) {
               <Box>
                 <Form method="post" encType="multipart/form-data">
                   {/* <Input type="hidden" name="actionType" value="create" /> */}
-                  <Input
-                    type="hidden"
-                    name="withdrawId"
-                    value={withdrawalData.id}
-                  />
+                  <Input type="hidden" name="refundId" value={dataRefund.id} />
                   <Text fontWeight={700}>Bukti Transfer</Text>
 
                   {!isAlertValidation && (
@@ -264,7 +263,7 @@ export default function AdminProcessingRefundPopup(props: any) {
 
               <Form method="patch">
                 {/* <Input type="hidden" name="actionType" value="update" /> */}
-                <Input type="hidden" name="id" value={withdrawalData.id} />
+                <Input type="hidden" name="id" value={dataRefund.id} />
                 <Box mt={'10px'}>
                   <Button
                     width={'100%'}

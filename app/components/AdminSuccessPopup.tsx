@@ -3,17 +3,14 @@ import {
   Button,
   Divider,
   Flex,
-  ListItem,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalOverlay,
   Text,
-  UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
 import moment from 'moment';
 import React from 'react';
 
@@ -154,27 +151,27 @@ export default function AdminSuccessPopup(props: any) {
               </Box>
 
               <Box mt={'10px'}>
-                <Text fontWeight={700}>Bukti Transfer</Text>
+                {/* <Text fontWeight={700}>Bukti Transfer</Text>
                 <Box
-                  mt={'10px'}
-                  width={'100px'}
-                  height={'100px'}
-                  border={'1px solid gray'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
+                  mt={"10px"}
+                  width={"100px"}
+                  height={"100px"}
+                  border={"1px solid gray"}
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
                 >
                   <Link
                     to={
-                      'https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg'
+                      "https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg"
                     }
                     target="_blank"
                   >
-                    <Text fontWeight={'700'} color={'teal'}>
+                    <Text fontWeight={"700"} color={"teal"}>
                       Lihat Gambar
                     </Text>
                   </Link>
-                </Box>
+                </Box> */}
 
                 <Button
                   width={'100%'}
@@ -184,43 +181,13 @@ export default function AdminSuccessPopup(props: any) {
                   colorScheme="teal"
                   padding={0}
                   onClick={() => {
-                    AdminSuccessNotification(
-                      dataWithdrawal.store?.name,
-                      formattedAmount,
-                      dataWithdrawal.bankAccount
-                    );
+                    AdminSuccessNotification(formattedAmount);
 
                     onClose();
                   }}
                 >
                   Send email to Seller
                 </Button>
-              </Box>
-
-              <Box mt={'10px'}>
-                <Text fontWeight={700}>Riwayat</Text>
-                <UnorderedList>
-                  <ListItem>
-                    Penarikan diproses/diselesaikan oleh...
-                    <ListItem ml={'20px'}>
-                      6 September 2023 pukul 15:05
-                    </ListItem>
-                  </ListItem>
-
-                  <ListItem>
-                    Permintaan disetujui oleh Admin A
-                    <ListItem ml={'20px'}>
-                      6 September 2023 pukul 15:00
-                    </ListItem>
-                  </ListItem>
-
-                  <ListItem>
-                    Permintaan dibuat
-                    <ListItem ml={'20px'}>
-                      6 September 2023 pukul 14:55
-                    </ListItem>
-                  </ListItem>
-                </UnorderedList>
               </Box>
             </Box>
           </ModalBody>

@@ -51,8 +51,8 @@ export default function AdminApprovedPopup(props: any) {
   const handleApproveClick = async () => {
     try {
       setIsLoading(true);
-      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
-      setStatusUpdated('PROCESSING');
+      await updateStatusWithdraw(dataWithdrawal.id, 'WITHDRAW_PROCESSING');
+      setStatusUpdated('WITHDRAW_PROCESSING');
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
