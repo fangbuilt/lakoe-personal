@@ -3,53 +3,63 @@ import crypto from 'crypto';
 import { json, redirect } from '@remix-run/node';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
-
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
-  getDataProductReadyToShip,
-  getInvoiceByStatus,
-  getProductUnpid,
+  // getDataProductReadyToShip,
+  // getInvoiceByStatus,
+  // getProductUnpid,
   updateInvoiceStatus,
-  getTemplateMessage,
-  SuccesService,
 } from '~/modules/order/order.service';
 
 import { Flex } from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
+import { useParams } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
-import NavOrder from '~/layouts/NavOrder';
+// import NavOrder from "~/layouts/NavOrder";
 
 import { db } from '~/libs/prisma/db.server';
 import CanceledService from '~/modules/order/orderCanceledService';
-import getDataInShipping from '~/modules/order/orderShippingService';
+// import getDataInShipping from "~/modules/order/orderShippingService";
 import { getUserId } from '~/modules/auth/auth.service';
+// import SuccesService from "~/modules/order/orderSuccessService";
+import NavOrderNew from '~/layouts/NavOrderNew';
+import { getProductUnpidNew } from '~/modules/order/order.servicenew';
+// import OrderSevice from "~/modules/order/orderService";
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
+export async function loader({ request, params }: LoaderArgs) {
+  // console.log("Request", request);
+  const status = params.status as string;
+  console.log('params :', status);
+
+  const url = new URL(request.url);
+  let searchTerm = url.searchParams.get('search') as string;
+  let searchFilter2 = url.searchParams.get('searchFilter2') as string;
+
+  console.log('dapat gak daatanya', searchFilter2);
+
+  if (!searchTerm) {
+    searchTerm = '';
   }
 
+  console.log('searchTerm', searchTerm);
+
+  const userId = await getUserId(request);
+  if (!userId) {
+    throw redirect('/auth/login');
+  }
+
+  const dataGet = await getProductUnpidNew(searchTerm, status);
   const apiKey = process.env.BITESHIP_API_KEY;
   // const dataProductReadyToShip = await getDataProductReadyToShip();
-  //jangan ampai terbalik posisi untuk menampilkan data load
-  const [
-    unpaidCardAll,
-    unpaidCard,
-    canceledService,
-    getTemplateMessages,
-    dataProductReadyToShip,
-    succesService,
-  ] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-    getTemplateMessage(),
-    getDataProductReadyToShip(),
-    SuccesService(),
-  ]);
-  const dataInvoice = await getInvoiceByStatus();
+
+  const canceledService = await CanceledService(searchTerm);
+  const unpaidCardAll = await getAllProductUnpid();
+  // const [unpaidCardAll, unpaidCard, successedService] = await Promise.all([
+  //   getAllProductUnpid(),
+  //   getProductUnpid(),
+  //   SuccesService(),
+  // ]);
+  // const dataInvoice = await getInvoiceByStatus();
 
   const role = await db.user.findFirst({
     where: {
@@ -58,61 +68,27 @@ export async function loader({ request }: LoaderArgs) {
   });
 
   if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
+    throw redirect('/dashboardAdmin');
   } else if (role?.roleId === '2') {
-    return json({
+    const dataJson = json({
+      searchTerm,
+      dataGet,
       unpaidCardAll,
-      unpaidCard,
+      // unpaidCard,
       canceledService,
-      getTemplateMessages,
-      dataProductReadyToShip,
-      succesService,
       // successedService,
-      dataInvoice,
-      dataShipping: await getDataInShipping(),
+      // dataInvoice,
+      // dataShipping: await getDataInShipping(),
+      // dataProductReadyToShip,
       apiKey,
     });
+    return dataJson;
   } else if (role?.roleId === '3') {
-    return redirect('/checkout');
+    throw redirect('/checkout');
   } else {
-    return redirect('/logout');
+    throw redirect('/logout');
   }
 }
-
-// export async function action({ request }: ActionArgs) {
-//   if (request.method.toLowerCase() === 'patch') {
-//     const formData = await request.formData();
-
-//     const id = formData.get('id') as string;
-//     const price = formData.get('price');
-//     const stock = formData.get('stock');
-
-//     await updateInvoiceStatus({ id, price, stock });
-//   }
-
-//   return redirect('/order');
-// }
-
-// export async function loader() {
-//   const apiKey = process.env.BITESHIP_API_KEY;
-//   const dataProductReadyToShip = await getDataProductReadyToShip();
-
-//   const [canceledService] = await Promise.all([
-//     CanceledService(),
-//     // ready(),
-//     //your order service here !
-//   ]);
-//   const dataInvoice = await getInvoiceByStatus();
-
-//   return json({
-//     canceledService,
-//     dataInvoice,
-//     dataShipping: await getDataInShipping(),
-//     dataProductReadyToShip,
-//     apiKey,
-//     // your return order service here !
-//   });
-// }
 
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
@@ -190,22 +166,27 @@ export async function action({ request }: ActionArgs) {
 }
 
 function isMootaIP(requestIP: string) {
-  const allowedIPs = process.env.ALLOWED_IPS?.split(',') || [];
+  const allowedIPs = process.env.ALLOWED_IPS?.split(',') ?? [];
   return allowedIPs.includes(requestIP);
 }
+
 function verifySignature(secretKey: string, data: string, signature: string) {
   const hmac = crypto.createHmac('sha256', secretKey);
   const computedSignature = hmac.update(data).digest('hex');
+  console.log('computedSignature', computedSignature);
   return computedSignature === signature;
 }
 
-export default function Order() {
-  const data = useLoaderData<typeof loader>();
+export default function OrderNew() {
+  const { status } = useParams();
+  console.log('status', status);
+
+  // const data = useLoaderData<typeof loader>();
 
   return (
     <ImplementGrid>
       <Flex align={'center'} justify={'center'} h={'100vh'}>
-        <NavOrder cardProduct={data} />
+        <NavOrderNew />
       </Flex>
     </ImplementGrid>
   );

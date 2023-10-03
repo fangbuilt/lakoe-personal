@@ -57,7 +57,11 @@ export default function ModalWhatsapp(props: SendProps) {
                     </AccordionButton>
                   </Text>
                   <AccordionPanel pb={4}>
-                    {itemtemp.content}
+                    {itemtemp.content && (
+                      <div
+                        dangerouslySetInnerHTML={{ __html: itemtemp.content }}
+                      />
+                    )}
                     <Button colorScheme={'whatsapp'} float={'right'}>
                       <Link
                         to={createWhatsAppTemplateMessageUnpaid(

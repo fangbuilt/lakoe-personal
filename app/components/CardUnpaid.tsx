@@ -28,10 +28,11 @@ import {
   Image,
   Checkbox,
   Center,
+  Divider,
 } from '@chakra-ui/react';
-// import { Form, Link } from '@remix-run/react';
+import { Link } from '@remix-run/react';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-import { useFilterCourier } from '~/hooks/useFilterCourier';
+// import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
@@ -44,44 +45,32 @@ import { useState } from 'react';
 import ModalWhatsapp from './modalProps/modalWhatsapp';
 
 export default function UnpaidCard() {
-  const { filteredOrder, setSearchQuery } = UseSearchProductUnpaid();
-  const { getSelectedCourier, selectedCouriers, toggleCourier } =
-    useFilterCourier();
-
+  const {
+    getSelectedCourier,
+    filteredOrder,
+    setSearchQuery,
+    searchQuery,
+    selectedCouriers,
+    handleCourierCheckboxChange,
+  } = UseSearchProductUnpaid();
+  // const { getSelectedCourier, selectedCouriers, toggleCourier } =
+  //   useFilterCourier();
+  console.log(searchQuery);
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter();
   // const { getTemplateMessages } = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [, setSelectedCardId] = useState<string>('');
+  // const [, setSelectedCardId] = useState<string>('');
   const openModal = () => {
     setModalIsOpen(true);
   };
-
-  // const [datafilter, setDataFilter] = useState('');
-
-  // const orderFilter = queryString.parse(location.search).order;
-  // const courierArrayFilter = queryString.parse(location.search).courier;
-  // const sortFilter = queryString.parse(location.search).sort;
-  // useEffect(() => {
-  //   const handleDataaa = async () => { // Gunakan async/await untuk menangani permintaan Axios
-  //     try {
-  //       const response = await axios.get(`http://localhost:3000/order?order=${orderFilter}&courier=${courierArrayFilter}&sort=${sortFilter}`);
-  //       setDataFilter(response.data); // Set data yang diterima dari respons ke state
-  //       console.log('datassh', response.data); // Cetak data ke konsol setelah respons diterima
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //     }
-  //   };
-  //   handleDataaa()
-  // },[orderFilter, courierArrayFilter, sortFilter])
 
   const closeModal = () => {
     setModalIsOpen(false);
   };
   return (
     <>
-      {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
-
+      {/* start filter */}
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
@@ -107,7 +96,10 @@ export default function UnpaidCard() {
                 color: '#909090',
                 fontSize: '14px',
               }}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              // value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
             />
           </InputGroup>
 
@@ -120,7 +112,6 @@ export default function UnpaidCard() {
               width={'100%'}
               color={getSelectedCourier() > 0 ? 'black' : '#909090'}
               fontWeight={'normal'}
-              // me={2}
             >
               <Text fontSize="14px" textAlign="left">
                 {getSelectedCourier() > 0
@@ -136,68 +127,67 @@ export default function UnpaidCard() {
                 top={3}
               />
             </MenuButton>
-
             <MenuList>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier('GoSend')}
-                  isChecked={selectedCouriers.includes('GoSend')}
-                >
-                  GoSend
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('GrabExpress')}
-                  isChecked={selectedCouriers.includes('GrabExpress')}
-                >
-                  GrabExpress
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('AnterAja')}
-                  isChecked={selectedCouriers.includes('AnterAja')}
-                >
-                  AnterAja
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('JNE')}
-                  isChecked={selectedCouriers.includes('JNE')}
-                >
-                  JNE
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('J&T')}
-                  isChecked={selectedCouriers.includes('J&T')}
-                >
-                  J&T
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('Lion Parcel')}
-                  isChecked={selectedCouriers.includes('Lion Parcel')}
+                  onChange={() => handleCourierCheckboxChange('lion parcel')}
+                  checked={selectedCouriers.includes('lion parcel')}
                 >
                   Lion Parcel
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier('Ninja Xpress')}
-                  isChecked={selectedCouriers.includes('Ninja Xpress')}
+                  onChange={() => handleCourierCheckboxChange('grabexpress')}
+                  isChecked={selectedCouriers.includes('grabexpress')}
+                >
+                  GrabExpress
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('anteraja')}
+                  isChecked={selectedCouriers.includes('anteraja')}
+                >
+                  AnterAja
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('jne')}
+                  isChecked={selectedCouriers.includes('jne')}
+                >
+                  JNE
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('jnt')}
+                  isChecked={selectedCouriers.includes('jnt')}
+                >
+                  J&T
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('tiki')}
+                  isChecked={selectedCouriers.includes('tiki')}
+                >
+                  Tiki
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('ninjaexpress')}
+                  isChecked={selectedCouriers.includes('ninjaexpress')}
                 >
                   Ninja Xpress
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier('Pos Indonesia')}
-                  isChecked={selectedCouriers.includes('Pos Indonesia')}
+                  onChange={() => handleCourierCheckboxChange('pos indonesia')}
+                  isChecked={selectedCouriers.includes('pos indonesia')}
                 >
                   Pos Indonesia
                 </Checkbox>
@@ -210,7 +200,6 @@ export default function UnpaidCard() {
               w={'100%'}
               variant="outline"
               bgColor={'white'}
-              // me={2}
             >
               <Image
                 src={ChevronDownIcon}
@@ -314,8 +303,6 @@ export default function UnpaidCard() {
           </Menu>
         </Box>
       </Box>
-
-      {/* CARD START HERE */}
       {filteredOrder.length === 0 ? (
         <Box marginTop={'70px'}>
           <Center>
@@ -332,37 +319,40 @@ export default function UnpaidCard() {
         </Box>
       ) : (
         <Box>
-          {filteredOrder.map((item, index) => (
-            // eslint-disable-next-line react/jsx-key
-            <Card mb={5} boxShadow={'xs'}>
-              <Box key={index}>
-                <Box mt={5}>
+          {/* {filterOrdersByCourier(filteredOrders).map((data, index) => ( */}
+          {filteredOrder.map((data, index) => (
+            <Card mb={5} mt={5} boxShadow={'xs'} key={index}>
+              <Box>
+                <Box>
                   <Box>
-                    <Flex justifyContent={'space-between'} px={2}>
+                    <Flex justifyContent={'space-between'} px={3} py={2}>
                       <Button
                         bg={'#E8C600'}
                         color={'white'}
-                        textShadow={'1px 1px 1px gray'}
                         fontWeight={'bold'}
-                        colorScheme="red.500"
+                        colorScheme="#E8C600"
                         size={'sm'}
                         pointerEvents={'none'}
+                        height={'24px'}
                       >
-                        {item.status === 'UNPAID'
-                          ? 'Belom Dibayar'
-                          : 'Belum Dibayar'}
+                        {data.status === 'UNPAID' ? 'Belom Dibayar' : ''}
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
+
                       <Button
                         bg={'transparent'}
                         border={'1px solid #D5D5D5'}
                         borderRadius={'full'}
                         fontSize={'14px'}
+                        height={'32px'}
                         onClick={() => {
-                          setSelectedCardId(item.id);
                           openModal();
                         }}
+                        py={1}
+                        size={'sm'}
+                        px={3}
+                        fontWeight={'600'}
                       >
                         Hubungi Pembeli
                       </Button>
@@ -370,68 +360,80 @@ export default function UnpaidCard() {
                         isOpen={modalIsOpen}
                         onClose={closeModal}
                         selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
-                        itemName={item.receiverName}
-                        itemPhone={item.receiverPhone}
+                        itemName={data.receiverName}
+                        itemPhone={data.receiverPhone}
                       />
-                      {/*  */}
                     </Flex>
-                    <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
-                      {item.invoiceNumber}
+                    <Text
+                      mb={1}
+                      fontSize={'14px'}
+                      mt={-3}
+                      color={'#909090'}
+                      px={3}
+                    >
+                      INV/{data.invoiceNumber} kur {data.courier?.courierName}
                     </Text>
-                    <hr />
-                    <Flex justifyContent={'space-between'}>
-                      <Box display={'flex'} w={'80%'}>
-                        <Img
-                          w={'52px'}
-                          h={'52px'}
-                          display={'inline'}
-                          src={`${item.cart?.cartItems.map((item) =>
-                            item.product?.attachments.map((item) => item.url)
-                          )}`}
-                          mt={3}
-                        />
-                        <Text
-                          mt={4}
-                          id="fm500"
-                          fontSize={'16px'}
-                          textOverflow={'ellipsis'}
-                          overflow={'hidden'}
-                          whiteSpace={'nowrap'}
-                          fontWeight={'700'}
-                        >
-                          {item.cart?.cartItems.map(
-                            (item) => item.product?.name
-                          )}
-                          <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                            {item.cart?.cartItems.map((item) => item.qty)}{' '}
-                            Barang
+                    <Divider />
+
+                    <Link to={`detail/${data.id}`}>
+                      <Flex justifyContent={'space-between'} px={3}>
+                        <Box display={'flex'} gap={3} w={'80%'}>
+                          <Img
+                            w={'52px'}
+                            h={'52px'}
+                            display={'inline'}
+                            borderRadius={'md'}
+                            src={
+                              data.cart?.cartItems[0]?.product?.attachments[0]
+                                ?.url
+                            }
+                            mt={3}
+                          />
+                          <Text
+                            mt={4}
+                            id="fm500"
+                            fontSize={'16px'}
+                            textOverflow={'ellipsis'}
+                            overflow={'hidden'}
+                            whiteSpace={'nowrap'}
+                            fontWeight={'700'}
+                          >
+                            {data.cart?.cartItems.map(
+                              (item) => item.product?.name
+                            )}
+                            <Text
+                              color={'gray.400'}
+                              pb={3}
+                              fontWeight={'normal'}
+                            >
+                              {data.cart?.cartItems.map((item) => item.qty)}{' '}
+                              Barang
+                            </Text>
                           </Text>
-                        </Text>
-                      </Box>
-                      <Box mt={4} w={'15%'}>
-                        <Flex gap={1}>
-                          <Text color={'#909090'} fontSize={'14px'}>
-                            Total
+                        </Box>
+                        <Box mt={4} w={'18%'}>
+                          <Flex gap={1} fontWeight={'500'}>
+                            <Text color={'#909090'} fontSize={'14px'}>
+                              Total
+                            </Text>
+                            <Text color={'#909090'} fontSize={'14px'}>
+                              Belanja
+                            </Text>
+                          </Flex>
+                          <Text fontWeight={'bold'} fontSize={'14px'}>
+                            Rp {data.price.toLocaleString('id-ID')}
                           </Text>
-                          <Text color={'#909090'} fontSize={'14px'}>
-                            Belanja
-                          </Text>
-                        </Flex>
-                        <Text fontWeight={'bold'} fontSize={'14px'}>
-                          {/* {formatter.format(item.price)}
-                           */}
-                          Rp {item.price.toLocaleString('id-ID')}
-                        </Text>
-                      </Box>
-                    </Flex>
+                        </Box>
+                      </Flex>
+                    </Link>
                   </Box>
                 </Box>
               </Box>
             </Card>
           ))}
+          {/* ))} */}
         </Box>
       )}
-      {/* END CARD */}
     </>
   );
 }
