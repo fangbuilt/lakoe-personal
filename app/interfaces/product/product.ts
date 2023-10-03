@@ -6,7 +6,7 @@ export interface IProduct {
   storeId: string;
   categoryId: string;
   variants: IVariant[];
-  store: IStore;
+  // store: IStore;
   slug: string;
 }
 
