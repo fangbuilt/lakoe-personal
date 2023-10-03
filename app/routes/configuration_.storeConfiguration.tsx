@@ -62,7 +62,10 @@ import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
 import { getUserId } from '~/modules/auth/auth.service';
 import { db } from '~/libs/prisma/db.server';
-import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
+import {
+  createMessageSchema,
+  updateMessageSchema,
+} from '~/modules/configuration/configuration.schema';
 import { redirect } from '@remix-run/node';
 
 export async function loader({ request }: LoaderArgs) {
@@ -184,7 +187,9 @@ export async function action({ request }: ActionArgs) {
     const storeId = formData.get('storeId') as string;
     const content = formData.get('content') as string;
 
-    await createMessage(name, storeId, content);
+    const validatedData = createMessageSchema.parse({ name, storeId, content });
+
+    await createMessage(validatedData);
   } else if (action === 'delete') {
     const id = formData.get('id') as string;
     await deleteMessage(id);
