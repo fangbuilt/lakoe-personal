@@ -30,14 +30,21 @@ import { redirect } from '@remix-run/node';
 
 import { db } from '~/libs/prisma/db.server';
 import { authorize } from '~/middleware/authorization';
+import { getUserId } from '~/modules/auth/auth.service';
 
-export async function loader(
-  { request, context, params }: DataFunctionArgs,
-  id: string
-) {
+export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
 
-  return await getStoreData(id);
+  const userId = await getUserId(request);
+
+  const user = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  const store = await getStoreData(user?.storeId as string);
+  return { store, userId };
 }
 
 export async function action({ request }: ActionArgs) {
@@ -115,34 +122,34 @@ export default function Dashboard() {
     }).format(saldo);
   }
 
-  let totalWithdrawAmount = 0;
-  data.forEach((item) => {
-    if (item.bankAccounts && item.bankAccounts.length > 0) {
-      item.bankAccounts.forEach((account) => {
-        if (account.withdraws && account.withdraws.length > 0) {
-          account.withdraws.forEach((withdraw) => {
-            if (
-              withdraw.status !== 'SUCCESS' &&
-              withdraw.status !== 'DECLINED'
-            ) {
-              totalWithdrawAmount += parseFloat(withdraw.amount.toString());
-            } else if (withdraw.status === 'DECLINED') {
-              item.credit += parseFloat(withdraw.amount.toString());
-            }
-          });
-        }
-      });
-    }
-  });
+  // let totalWithdrawAmount = 0;
+  // data.forEach((item) => {
+  //   if (item.bankAccounts && item.bankAccounts.length > 0) {
+  //     item.bankAccounts.forEach((account) => {
+  //       if (account.withdraws && account.withdraws.length > 0) {
+  //         account.withdraws.forEach((withdraw) => {
+  //           if (
+  //             withdraw.status !== 'SUCCESS' &&
+  //             withdraw.status !== 'DECLINED'
+  //           ) {
+  //             totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+  //           } else if (withdraw.status === 'DECLINED') {
+  //             item.credit += parseFloat(withdraw.amount.toString());
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // });
 
-  let createdAtArray: string[] = [];
-  data.forEach((dataItem) => {
-    dataItem.bankAccounts.forEach((bankAccountItem) => {
-      bankAccountItem.withdraws.forEach((withdrawItem) => {
-        createdAtArray.push(withdrawItem.createdAt);
-      });
-    });
-  });
+  // let createdAtArray: string[] = [];
+  // data.forEach((dataItem) => {
+  //   dataItem.bankAccounts.forEach((bankAccountItem) => {
+  //     bankAccountItem.withdraws.forEach((withdrawItem) => {
+  //       createdAtArray.push(withdrawItem.createdAt);
+  //     });
+  //   });
+  // });
 
   return (
     <>
@@ -165,7 +172,7 @@ export default function Dashboard() {
             >
               <Text fontSize={'13px'}>Current Balance</Text>
 
-              {data.map((item) => (
+              {data.map((item: any) => (
                 <Text
                   fontSize={'20px'}
                   fontWeight={'bold'}
@@ -175,12 +182,12 @@ export default function Dashboard() {
                   {formatRupiah(item.credit)}
                 </Text>
               ))}
-              {data.map((item) => (
+              {data.map((item: any) => (
                 <DashboardPopup
                   key={item.id}
                   bankAccount={item.bankAccounts}
                   storeName={item.name}
-                  createdAt={createdAtArray}
+                  createdAt={item.createdAt}
                 />
               ))}
             </Box>
@@ -199,7 +206,7 @@ export default function Dashboard() {
               </Text>
               <Text fontSize={'13px'}>Penarikan sedang dalam proses</Text>
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#656565'}>
-                {formatRupiah(totalWithdrawAmount)}
+                {/* {formatRupiah(totalWithdrawAmount)} */}
               </Text>
             </Box>
             <Box

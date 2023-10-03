@@ -1,6 +1,6 @@
 // // routes/verify.tsx
 
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Input, Text } from '@chakra-ui/react';
 import type { ActionArgs, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, useLocation, useSearchParams } from '@remix-run/react';
@@ -8,7 +8,7 @@ import { db } from '~/libs/prisma/db.server';
 import { createUserSession } from '~/modules/auth/auth.service';
 
 function validateUrl(url: string) {
-  const urls = ['/', '/checkout', '/dashboard'];
+  const urls = ['/', '/checkout', '/dashboard', '/addStore'];
   if (urls.includes(url)) {
     return url;
   }
@@ -25,7 +25,7 @@ export async function action({ request }: ActionArgs) {
   const actionType = String(form.get('actionType'));
   const token = String(form.get('token'));
   const redirectTo = validateUrl(
-    (form.get('redirectTo') as string) || '/dashboard'
+    (form.get('redirectTo') as string) || '/addStore'
   );
 
   console.log(actionType);
@@ -47,23 +47,6 @@ export async function action({ request }: ActionArgs) {
       },
     });
 
-    const store = await db.store.create({
-      data: {
-        name: user.name,
-        description: 'this is your store description',
-        domain: `lakoe.store/${user.name}`,
-      },
-    });
-
-    await db.user.update({
-      where: {
-        id: verified?.userId,
-      },
-      data: {
-        storeId: store.id,
-      },
-    });
-
     return createUserSession(user.id, redirectTo);
   }
 }
@@ -74,9 +57,10 @@ export default function VerifyEmail() {
   const [SearchParams] = useSearchParams();
 
   const paramName = 'token';
+  const hasQueryParam = queryParams.has('token');
   const paramValue = queryParams.get(paramName) as string;
   console.log(paramValue);
-  return (
+  return hasQueryParam ? (
     <>
       <Form method="POST">
         <Input
@@ -88,6 +72,10 @@ export default function VerifyEmail() {
         <Input name="token" defaultValue={paramValue} hidden />
         <Button type="submit">Verify</Button>
       </Form>
+    </>
+  ) : (
+    <>
+      <Text>There is none here hooooooooooooooo</Text>
     </>
   );
 }

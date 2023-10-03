@@ -2,18 +2,18 @@ import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
 // Fetching data store, bankAccount, withdraw
-export async function getStoreData(id: string) {
+export async function getStoreData(storeId: string) {
   return json(
     await db.store.findMany({
       where: {
-        id: '4',
+        id: storeId,
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '4',
+                storeId: storeId,
               },
             },
           },
@@ -28,7 +28,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '4',
+        storeId: storeId,
       },
     })
   );
