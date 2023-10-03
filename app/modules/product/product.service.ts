@@ -27,15 +27,15 @@ export async function createProduct(data: any, storeId: any) {
             {
               url: data.url2,
             },
-            {
-              url: data.url3,
-            },
-            {
-              url: data.url4,
-            },
-            {
-              url: data.url5,
-            },
+            // {
+            //   url: data.url3,
+            // },
+            // {
+            //   url: data.url4,
+            // },
+            // {
+            //   url: data.url5
+            // }
           ],
         },
 
