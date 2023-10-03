@@ -17,6 +17,7 @@ import { ImplementGrid } from '~/layouts/Grid';
 import NavOrder from '~/layouts/NavOrder';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
+import moment from 'moment';
 
 export async function loader() {
   const apiKey = process.env.BITESHIP_API_KEY;
@@ -52,7 +53,7 @@ export async function action({ request }: ActionArgs) {
       try {
         const requestBody = await request.text();
         const payloads = JSON.parse(requestBody);
-
+        // console.log("payloads",payloads)
         const secretKey = process.env.MOOTA_SECRET as string;
 
         const amount = payloads[0].amount as number;
@@ -107,15 +108,18 @@ export async function fetchWebhookStatusWithRetry(
   retryInterval = baseRetryInterval
 ) {
   try {
-    const bank_id = 'EVPW8V2Vzrw';
-    const token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJucWllNHN3OGxsdyIsImp0aSI6IjkxZjc3ZDIxYmZmYTU2M2VmZmYxNWEzYTZhZDg4MTNiZTI4NjQ1ZTZlMjdiYzQzZTM4YjI4MDkyY2MyMGRhOTk3MzdjMTBlNTczYjc1MTM4IiwiaWF0IjoxNjk1ODA2ODgwLjMyNDAxNSwibmJmIjoxNjk1ODA2ODgwLjMyNDAxNywiZXhwIjoxNzI3NDI5MjgwLjMyMTMzMSwic3ViIjoiMzAyNTciLCJzY29wZXMiOlsiYXBpIl19.bGG_k1BqHqIg_-7w-QMXnGWF5IWNkAUm809nVvvjgkUosHv3_2I7xWK6fn_kD7ydel8QmE0hHCO23xwT3rO1lbYPmJcMI3Z69b_A2sH_hc_77fiqQhVBYW7Cfc0XhHltD8G_whW0I_ydEXfXQwfvMSKYVrQTtldPyvfORrndwWnKjXwceqzTomfyuhSNT6ilzG69iWM56-ueYCn8sbGwOcP79L6trKyyXhxjHtfQ-bqItCyVNaIg5fwanS6x7z83fh5z2C5y3WZjLiI3YqKN7bwK023gAWQWEuqwcEoFxrewCzt_jEkuAanpBAg0MvzRJtJMogo63SBxkFHADggdaOFlZRuN_GIzLdPMJ_GmoBSdxZlGAnErCIxTG9C9uYF2WCMU9QqMW-Ou1Thv9QenAPpdPyXC6Md0NkjtA-nKHW5fbfeyp6KJdYsMkETKUKIaGJ1Kk5ef9FBy2NiRgHgDdHu1gMJJJ_861tkcWmleBulAJaS9KOR7a3QHDlilMlL-jkPcix-qeQsR3kEMpSeuVhmRl-Z7NOABS-sy3VVJyuBDHXsoRq_4uxAXvzZn_rZICQPeHZMxjndItQ_enVZPw8_zanEexZWn8OHoi66LesMFokIgdufrm2teLfG7QkGTvjjGar-vzvcIWuiNuXGgb2TG1N2vT20eX_ZHmQWfZio';
+    const bank_id = process.env.ID_BANK as string;
+    const token = process.env.TOKEN_ACCOUNT_BANK as string;
 
-    // const url =`https://app.moota.co/api/v2/mutation?bank=${bankId}`;
-    const url = `https://app.moota.co/api/v2/mutation?bank=${bank_id}`;
+    const startDate = moment()
+      .subtract(1, 'days')
+      .format('YYYY-MM-DD') as string;
+    const endDate = moment().format('YYYY-MM-DD') as string;
+
+    const url = `https://app.moota.co/api/v2/mutation?bank=${bank_id}&start_date=${startDate}&end_date=${endDate}`;
 
     const headers = {
-      Location: '/api/v2/mutation{?bank}',
+      Location: '/api/v2/mutation{?bank}&{?start_date}&{?end_date}',
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
     };
@@ -126,16 +130,36 @@ export async function fetchWebhookStatusWithRetry(
     });
 
     if (response.ok) {
-      const data = await response.json();
+      const responseData = await response.json();
 
-      console.log('fetchWebhookStatusWithRetry', data);
-      // return data;
+      if (responseData.data && responseData.data.length > 0) {
+        // descending date
+        responseData.data.sort((a: any, b: any) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          return dateB - dateA;
+        });
+
+        const latestTransaction = responseData.data[0];
+
+        const latestAmount = latestTransaction.amount;
+        const latestDescription = latestTransaction.description;
+        const latestBalance = latestTransaction.balance;
+
+        console.log('Data Transaksi Terbaru:', latestTransaction);
+        console.log('Amount:', latestAmount);
+        console.log('Description:', latestDescription);
+        console.log('Balance:', latestBalance);
+      } else {
+        console.log('Tidak ada data transaksi yang ditemukan.');
+      }
+      return responseData;
     }
   } catch (error) {
     console.error('Kesalahan dalam permintaan API:', error);
 
     if (retryCount < maxRetryAttempts - 1) {
-      // Hitung ulang interval eksponensial
+      //  interval eksponensial
       retryInterval *= 2;
       retryInterval = Math.min(retryInterval, maxRetryInterval);
 
