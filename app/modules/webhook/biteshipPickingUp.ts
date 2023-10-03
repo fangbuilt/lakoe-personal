@@ -1,4 +1,4 @@
-import { db } from "~/libs/prisma/db.server";
+// import { db } from "~/libs/prisma/db.server";
 // import { pickingUp, updateInvoiceStatus } from "./hooks/usePickingUp";
 // import axios from "axios";
 // import { useLoaderData } from "@remix-run/react";

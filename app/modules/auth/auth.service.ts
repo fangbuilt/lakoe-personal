@@ -20,6 +20,7 @@ export async function register({
       password: hashedPassword,
       storeId,
       roleId,
+      isVerify: false,
     },
   });
 
@@ -46,7 +47,7 @@ export async function login({ email, password }: LoginForm) {
   return { id: user.id, name: user.name, email, roleId: user.roleId };
 }
 
-const sessionSecret = "process.env.SESSION_SECRET";
+const sessionSecret = 'process.env.SESSION_SECRET';
 if (!sessionSecret) {
   throw new Error('SESSION_SECRET must be set');
 }

@@ -1,8 +1,8 @@
-import { useLoaderData } from "@remix-run/react";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import type { IBiteshipTracking } from "~/interfaces/orderTracking";
-import type { loader } from "~/routes/order";
+import { useLoaderData } from '@remix-run/react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import type { IBiteshipTracking } from '~/interfaces/orderTracking';
+import type { loader } from '~/routes/order';
 
 export default function useOrderTracking(trackingId: string) {
   const data = useLoaderData<typeof loader>();

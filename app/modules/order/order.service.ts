@@ -1,4 +1,4 @@
-import { db } from "~/libs/prisma/db.server";
+import { db } from '~/libs/prisma/db.server';
 import type { z } from 'zod';
 import type { MootaOrderSchema } from './order.schema';
 
@@ -126,6 +126,11 @@ export async function getInvoiceById(id: any) {
       cart: {
         include: {
           user: true,
+          store: {
+            include: {
+              locations: true,
+            },
+          },
           cartItems: {
             include: {
               variantOption: {
@@ -156,7 +161,7 @@ export async function updateInvoiceStatus(data: any): Promise<any> {
     });
 
     if (!currentData) {
-      throw new Error("Invoice tidak ditemukan");
+      throw new Error('Invoice tidak ditemukan');
     }
 
     const newData = {
@@ -183,7 +188,7 @@ export async function getInvoiceByStatus() {
   try {
     const getorderdataforbiteship = await db.invoice.findMany({
       where: {
-        status: "NEW_ORDER",
+        status: 'NEW_ORDER',
       },
       include: {
         payment: true,
@@ -226,7 +231,7 @@ export async function getInvoiceProductData() {
   try {
     const dataproductNewOrder = await db.invoice.findMany({
       where: {
-        status: "NEW_ORDER",
+        status: 'NEW_ORDER',
       },
       include: {
         cart: {
@@ -287,7 +292,7 @@ export async function getProductByStoreId(id: any) {
 export async function getDataProductReadyToShip() {
   return await db.invoice.findMany({
     where: {
-      status: "READY_TO_SHIP",
+      status: 'READY_TO_SHIP',
     },
     include: {
       invoiceHistories: true,
@@ -352,6 +357,25 @@ export async function updateStatusInvoice(data: any) {
       invoiceHistories: {
         create: {
           status: 'READY_TO_SHIP',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+    },
+    where: {
+      id: id,
+    },
+  });
+}
+
+export async function updateStatusInvoice2(data: any) {
+  const { id } = data;
+  await db.invoice.update({
+    data: {
+      status: 'ORDER_CANCELLED',
+      invoiceHistories: {
+        create: {
+          status: 'ORDER_CANCELLED',
           createdAt: new Date(),
           updatedAt: new Date(),
         },

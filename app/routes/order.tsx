@@ -17,10 +17,11 @@ import { useLoaderData } from "@remix-run/react";
 import { ImplementGrid } from "~/layouts/Grid";
 import NavOrder from "~/layouts/NavOrder";
 
-import { db } from "~/libs/prisma/db.server";
-import CanceledService from "~/modules/order/orderCanceledService";
-import getDataInShipping from "~/modules/order/orderShippingService";
-import { getUserId } from "~/modules/auth/auth.service";
+import { db } from '~/libs/prisma/db.server';
+import CanceledService from '~/modules/order/orderCanceledService';
+import getDataInShipping from '~/modules/order/orderShippingService';
+import { getUserId } from '~/modules/auth/auth.service';
+import SuccesService from '~/modules/order/orderSuccessService';
 
 // export async function action({ request }: ActionArgs) {
 //   if (request.method.toLowerCase() === 'patch') {
@@ -66,11 +67,13 @@ export async function loader({ request }: LoaderArgs) {
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-  ]);
+  const [unpaidCardAll, unpaidCard, canceledService, successedService] =
+    await Promise.all([
+      getAllProductUnpid(),
+      getProductUnpid(),
+      CanceledService(),
+      SuccesService(),
+    ]);
   const dataInvoice = await getInvoiceByStatus();
 
   const role = await db.user.findFirst({
@@ -88,6 +91,7 @@ export async function loader({ request }: LoaderArgs) {
       unpaidCardAll,
       unpaidCard,
       canceledService,
+      successedService,
       dataInvoice,
       dataShipping: await getDataInShipping(),
       dataProductReadyToShip,
@@ -100,6 +104,41 @@ export async function loader({ request }: LoaderArgs) {
     return redirect("/logout");
   }
 }
+
+// export async function action({ request }: ActionArgs) {
+//   if (request.method.toLowerCase() === 'patch') {
+//     const formData = await request.formData();
+
+//     const id = formData.get('id') as string;
+//     const price = formData.get('price');
+//     const stock = formData.get('stock');
+
+//     await updateInvoiceStatus({ id, price, stock });
+//   }
+
+//   return redirect('/order');
+// }
+
+// export async function loader() {
+//   const apiKey = process.env.BITESHIP_API_KEY;
+//   const dataProductReadyToShip = await getDataProductReadyToShip();
+
+//   const [canceledService] = await Promise.all([
+//     CanceledService(),
+//     // ready(),
+//     //your order service here !
+//   ]);
+//   const dataInvoice = await getInvoiceByStatus();
+
+//   return json({
+//     canceledService,
+//     dataInvoice,
+//     dataShipping: await getDataInShipping(),
+//     dataProductReadyToShip,
+//     apiKey,
+//     // your return order service here !
+//   });
+// }
 
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get("x-forwarded-for") as string;

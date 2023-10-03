@@ -18,7 +18,7 @@ import {
   Textarea,
   useDisclosure,
 } from '@chakra-ui/react';
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Form } from '@remix-run/react';

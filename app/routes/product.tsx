@@ -41,7 +41,8 @@ export async function action({ request }: ActionArgs) {
     const formData = await request.formData();
     const id = formData.get('id') as string;
 
-    await deleteProduct(id);
+    const isDeleted = await deleteProduct(id);
+    console.log(isDeleted);
   }
 
   if (request.method.toLowerCase() === 'patch') {
@@ -52,10 +53,6 @@ export async function action({ request }: ActionArgs) {
     const stock = formData.get('stock');
     const isActive =
       (formData.get('isActive') as string) === 'true' ? false : true;
-
-    console.log('ini isactive', isActive);
-    console.log('ini stock', price);
-    console.log('ini stock', stock);
 
     if (price || stock) {
       const updatePriceStock = {

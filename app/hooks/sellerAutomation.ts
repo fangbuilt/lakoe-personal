@@ -1,24 +1,15 @@
 import MailerLite from '@mailerlite/mailerlite-nodejs';
-import type { IMailerLite } from '~/interfaces/mailerlite';
+import type { IDroppingOff } from '~/interfaces/mailerlite';
 import { db } from '~/libs/prisma/db.server';
 
 const mailerlite = new MailerLite({
   api_key: process.env.MAILERLITE_API_KEY as string,
 });
 
-export function pickingUp(
-  email: string,
-  name: string,
-  waybill: string,
-  invoiceNumber: string,
-  courierName: string,
-  productName: string,
-  quantity: number,
-  variants: string
-): void {
+export function SellerAutomation(email: string, name: string, price: number) {
   const emailAddress = `${email}`;
   const date = new Date().getTime();
-  const username = `${date}`;
+  const uniqueName = `${date}`;
 
   // Split the email address into username and domain
   const atIndex = emailAddress.indexOf('@');
@@ -26,25 +17,20 @@ export function pickingUp(
   const domainPart = emailAddress.slice(atIndex + 1);
 
   // Create a new email address with a value inserted between username and domain
-  const newEmailAddress = `${usernamePart}+${username}@${domainPart}`;
+  const newEmailAddress = `${usernamePart}+${uniqueName}@${domainPart}`;
 
   console.log(newEmailAddress); // Output: john.doe-johndoe-example.com
+  console.log('price::::', price);
 
-  const params: IMailerLite = {
+  const params: IDroppingOff = {
     email: `${newEmailAddress}`, // The receiver email's - We will get the email from table invoice userId relation to get the email
     fields: {
       // This is where you can make custom fields variable for email template display
       name: `${name}`,
-      waybill: `${waybill}`,
-      invoicenumber: `${invoiceNumber}`,
-      couriername: `${courierName}`,
-      productname: `${productName}`,
-      quantity: `${quantity}`,
-      variant: `${variants}`,
-
+      price: `${price}`,
       // address: `${address}`,
     },
-    groups: ['98353352732051296'], // This is where you need to categorize which group it should go for email automation trigger
+    groups: ['99715023976269699'], // This is where you need to categorize which group it should go for email automation trigger
     status: 'active', // possible statuses: active, unsubscribed, unconfirmed, bounced or junk.
   };
 
@@ -58,17 +44,32 @@ export function pickingUp(
     });
 }
 
-export async function updateInvoiceStatus(invoiceId: string) {
-  await db.invoice.update({
-    where: { id: invoiceId },
-    data: { status: 'IN_TRANSIT' },
-  });
+export async function UpdateInvoiceStatusInDelivered(dataInvoice: any) {
+  console.log('====================================');
+  console.log('dataInvoice:', dataInvoice);
+  console.log('====================================');
+  const creditStore = dataInvoice?.user?.store?.credit;
+  const priceCart = dataInvoice.price;
+  const newCredit = ((creditStore as number) + priceCart) as number;
 
-  // Create an invoice history with the status "READY_TO_SHIP"
-  await db.invoiceHistory.create({
+  console.log('creditStore ', creditStore);
+  console.log('priceCart ', priceCart);
+  console.log('new credit ', newCredit);
+
+  await db.store.update({
+    where: {
+      id: dataInvoice.user.storeId,
+    },
     data: {
-      status: 'READY_TO_SHIP',
-      invoice: { connect: { id: invoiceId } },
+      credit: newCredit,
     },
   });
+  const data = {
+    status: 'ORDER_COMPLETED',
+    invoiceId: dataInvoice.id,
+  };
+  await db.invoiceHistory.create({
+    data,
+  });
+  return null;
 }
