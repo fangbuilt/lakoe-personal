@@ -225,7 +225,7 @@ export default function Dashboard() {
               {data.map((item) => (
                 <DashboardPopup
                   key={item.id}
-                  dataBank={item.bankAccounts}
+                  bankAccount={item.bankAccounts}
                   storeName={item.name}
                   createdAt={createdAtArray}
                   creditSaldo={item.credit}

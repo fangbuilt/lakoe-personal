@@ -2,20 +2,20 @@ import { Flex } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
 import AdminSuccessRefund from '~/components/AdminSuccessRefund';
-import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
-import { getWithdrawalList } from '~/modules/dashboard/dashboard.service';
+import { ImplementGridAdminRefund } from '~/layouts/Grid';
+import { getRefundData } from '~/modules/dashboard/dashboard.service';
 
 export async function loader() {
-  return await getWithdrawalList();
+  return await getRefundData();
 }
 
 export default function DasboardAdminSuccessRefund() {
-  const dataWithdrawal = useLoaderData<typeof loader>();
+  const dataRefund = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdminWithdraw>
+    <ImplementGridAdminRefund>
       <Flex h={'100vh'} width={'100%'}>
-        <AdminSuccessRefund dataWithdrawal={dataWithdrawal} />
+        <AdminSuccessRefund dataRefund={dataRefund} />
       </Flex>
-    </ImplementGridAdminWithdraw>
+    </ImplementGridAdminRefund>
   );
 }

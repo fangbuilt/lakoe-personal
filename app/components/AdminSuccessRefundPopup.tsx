@@ -21,7 +21,7 @@ import { LuZoomIn } from 'react-icons/lu';
 import { AdminSuccessNotification } from '~/modules/DashboardMailerlite/mailerliteAdminSuccess';
 
 export default function AdminSuccessRefundPopup(props: any) {
-  const { dataWithdrawal } = props;
+  const { dataRefund } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -35,10 +35,10 @@ export default function AdminSuccessRefundPopup(props: any) {
   }
 
   const transferFee = 10000;
-  const tax = (parseInt(dataWithdrawal.amount) * 1) / 100;
-  const formattedAmount = formatRupiah(parseInt(dataWithdrawal.amount));
+  const tax = (parseInt(dataRefund.amount) * 1) / 100;
+  const formattedAmount = formatRupiah(parseInt(dataRefund.amount));
   const withdarwalTotal = formatRupiah(
-    parseInt(dataWithdrawal.amount) - transferFee - tax
+    parseInt(dataRefund.amount) - transferFee - tax
   );
 
   return (
@@ -78,26 +78,28 @@ export default function AdminSuccessRefundPopup(props: any) {
             >
               <Box>
                 <Text display={'flex'}>
-                  Nomor Penarikan:{' '}
-                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
+                  Nomor Penarikan: <Text fontWeight={700}>{dataRefund.id}</Text>
                 </Text>
                 <Text>
-                  {moment(
-                    dataWithdrawal.createdAt,
-                    'YYYY-MM-DD HH:mm:ss'
-                  ).format('LLLL')}
+                  {moment(dataRefund.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
+                    'LLLL'
+                  )}
                 </Text>
               </Box>
 
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {dataWithdrawal.bankAccount.accountName}
+                    {dataRefund.invoice.receiverName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
+                  <Text fontSize={'12px'}>
+                    {dataRefund.invoice.receiverEmail}
+                  </Text>
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
+                  <Text fontSize={'12px'}>
+                    {dataRefund.invoice.receiverPhone}
+                  </Text>
                 </Box>
               </Flex>
 
@@ -105,15 +107,15 @@ export default function AdminSuccessRefundPopup(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  <Text>:{dataWithdrawal.bankAccount.bank}</Text>
+                  <Text>: {dataRefund.invoice.payment.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
+                  <Text>: {dataRefund.invoice.payment.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
+                  <Text>: {dataRefund.invoice.receiverName}</Text>
                 </Flex>
               </Box>
 
@@ -185,9 +187,9 @@ export default function AdminSuccessRefundPopup(props: any) {
                   padding={0}
                   onClick={() => {
                     AdminSuccessNotification(
-                      dataWithdrawal.store?.name,
+                      dataRefund.store?.name,
                       formattedAmount,
-                      dataWithdrawal.bankAccount
+                      dataRefund.bankAccount
                     );
 
                     onClose();

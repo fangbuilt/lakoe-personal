@@ -1,18 +1,18 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
 
 import AdminApprovedRefund from '~/components/AdminApprovedRefund';
-import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
+import { ImplementGridAdminRefund } from '~/layouts/Grid';
 import {
   createDeclinedReason,
-  getWithdrawalList,
-  updateStatusWithdraw,
+  getRefundData,
+  updateStatusRefund,
 } from '~/modules/dashboard/dashboard.service';
 
 export async function loader() {
-  return await getWithdrawalList();
+  return await getRefundData();
 }
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
@@ -22,7 +22,7 @@ export async function action({ request }: ActionArgs) {
 
   if (actionType === 'update' && status) {
     try {
-      const updateStatus = await updateStatusWithdraw(
+      const updateStatus = await updateStatusRefund(
         id as string,
         status as string
       );
@@ -35,32 +35,40 @@ export async function action({ request }: ActionArgs) {
 
   const withdrawId = formData.get('withdrawId');
   const storeId = formData.get('storeId');
+  const bankAccountId = formData.get('bankAccountId');
   const reason = formData.get('reason');
 
-  if (actionType === 'create' && withdrawId && storeId && reason) {
+  if (
+    actionType === 'create' &&
+    withdrawId &&
+    storeId &&
+    bankAccountId &&
+    reason
+  ) {
     try {
       const createReasonResult = await createDeclinedReason(
         {
           reason: reason as string,
         },
         withdrawId as string,
-        storeId as string
+        storeId as string,
+        bankAccountId as string
       );
       console.log('This is the declined reason', createReasonResult);
     } catch (error) {
       console.error('Error creating declined reason:', error);
     }
   }
-  return null;
+  return redirect('/adminProcessingRefund');
 }
 
 export default function DasboardAdminApprovedRefund() {
-  const dataWithdrawal = useLoaderData<typeof loader>();
+  const dataRefund = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdminWithdraw>
+    <ImplementGridAdminRefund>
       <Flex h={'100vh'} width={'100%'}>
-        <AdminApprovedRefund dataWithdrawal={dataWithdrawal} />
+        <AdminApprovedRefund dataRefund={dataRefund} />
       </Flex>
-    </ImplementGridAdminWithdraw>
+    </ImplementGridAdminRefund>
   );
 }

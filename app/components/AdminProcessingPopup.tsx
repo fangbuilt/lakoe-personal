@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import moment from 'moment';
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react';
 import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';

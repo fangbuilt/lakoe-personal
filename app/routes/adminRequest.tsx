@@ -33,16 +33,24 @@ export async function action({ request }: ActionArgs) {
   }
   const withdrawId = formData.get('withdrawId');
   const storeId = formData.get('storeId');
+  const bankAccountId = formData.get('bankAccountId');
   const reason = formData.get('reason');
 
-  if (actionType === 'create' && withdrawId && storeId && reason) {
+  if (
+    actionType === 'create' &&
+    withdrawId &&
+    storeId &&
+    bankAccountId &&
+    reason
+  ) {
     try {
       const createReasonResult = await createDeclinedReason(
         {
           reason: reason as string,
         },
         withdrawId as string,
-        storeId as string
+        storeId as string,
+        bankAccountId as string
       );
       console.log('This is the declined reason', createReasonResult);
     } catch (error) {

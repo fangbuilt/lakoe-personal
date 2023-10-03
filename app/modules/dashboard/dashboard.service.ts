@@ -99,7 +99,7 @@ export async function getWithdrawalList() {
     include: {
       store: true,
       bankAccount: true,
-      attachmentAdmin: true,
+      attachmentWithdraw: true,
       adminDecline: true,
     },
   });
@@ -139,7 +139,7 @@ export async function createWithdraw(
     const amount = parseFloat(data.amount);
 
     const user = await db.user.findUnique({
-      where: { id: '4' },
+      where: { id: '1' },
     });
 
     if (!user) {
@@ -193,7 +193,8 @@ export async function deleteWithdraw(id: string) {
 export async function createDeclinedReason(
   data: any,
   withdrawId: string,
-  storeId: string
+  storeId: string,
+  bankAccountId: string
 ) {
   const createReason = await db.adminDecline.create({
     data: {
@@ -207,6 +208,11 @@ export async function createDeclinedReason(
           id: storeId,
         },
       },
+      bankAccount: {
+        connect: {
+          id: bankAccountId,
+        },
+      },
       reason: data.reason,
     },
   });
@@ -215,12 +221,12 @@ export async function createDeclinedReason(
   return createReason;
 }
 
-export async function createAttachmentAdmin(
+export async function createAttachmentWithdraw(
   attachmentUrl: string,
   withdrawId: string
 ) {
   try {
-    const createAttachment = await db.attachmentAdmin.create({
+    const createAttachment = await db.attachmentWithdraw.create({
       data: {
         withdraw: {
           connect: {
@@ -247,8 +253,72 @@ export async function getReasonDeclined() {
     include: {
       store: true,
       withdraw: true,
+      bankAccount: true,
     },
   });
 
   return reasonDeclinedList;
+}
+
+//REFUND
+export async function getRefundData() {
+  const refundData = await db.refund.findMany({
+    include: {
+      invoice: {
+        include: {
+          payment: true,
+        },
+      },
+    },
+  });
+
+  return refundData;
+}
+
+export async function updateStatusRefund(
+  id: string,
+  statusUpdated: string,
+  dateUpdated?: string
+) {
+  try {
+    const updatedStatus = await db.refund.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: statusUpdated,
+        updatedAt: dateUpdated,
+      },
+    });
+    return updatedStatus;
+  } catch (error) {
+    console.error('Error updating status:', error);
+    throw error;
+  }
+}
+
+//CreateAttachmentRefund
+export async function createAttachmentRefund(
+  attachmentUrl: string,
+  refundId: string
+) {
+  try {
+    const createAttachment = await db.attachmentRefund.create({
+      data: {
+        refund: {
+          connect: {
+            id: refundId,
+          },
+        },
+        attachment: attachmentUrl,
+      },
+    });
+
+    console.log('Attachment creation success:', createAttachment);
+
+    return createAttachment;
+  } catch (error) {
+    console.error('Error creating attachment:', error);
+    throw error;
+  }
 }

@@ -21,23 +21,22 @@ import {
 import { Link } from '@remix-run/react';
 import moment from 'moment';
 import React, { useState } from 'react';
-import AdminRequestPopup from './AdminRequestPopup';
-import AdminSuccessPopup from './AdminSuccessPopup';
-import AdminProcessingPopup from './AdminProcessingPopup';
-import AdminApprovedPopup from './AdminApprovedPopup';
-import { AiFillCloseCircle } from 'react-icons/ai';
+import AdminRequestRefundPopup from './AdminRequestRefundPopup';
+import AdminApprovedRefundPopup from './AdminApprovedRefundPopup';
+import AdminProcessingRefundPopup from './AdminProcessingRefundPopup';
+import AdminSuccessRefundPopup from './AdminSuccessRefundPopup';
 
-export default function AdminRequest({ dataWithdrawal }: any) {
-  const filteredDataRequest = dataWithdrawal.filter(
+export default function AdminRequest({ dataRefund }: any) {
+  const filteredDataRequest = dataRefund.filter(
     (item: any) => item.status === 'REQUEST'
   );
-  const filteredDataApproved = dataWithdrawal.filter(
+  const filteredDataApproved = dataRefund.filter(
     (item: any) => item.status === 'APPROVED'
   );
-  const filteredDataProcessing = dataWithdrawal.filter(
+  const filteredDataProcessing = dataRefund.filter(
     (item: any) => item.status === 'PROCESSING'
   );
-  const filteredDataSuccess = dataWithdrawal.filter(
+  const filteredDataSuccess = dataRefund.filter(
     (item: any) => item.status === 'SUCCESS'
   );
 
@@ -48,7 +47,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
     }).format(amount);
   }
 
-  const withdrawalCountAll = dataWithdrawal.length;
+  const withdrawalCountAll = dataRefund.length;
   const withdrawalCountByRequest = filteredDataRequest.length;
   const withdrawalCountByApproved = filteredDataApproved.length;
   const withdrawalCountByProcessing = filteredDataProcessing.length;
@@ -269,16 +268,16 @@ export default function AdminRequest({ dataWithdrawal }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    ID Withdraw
+                    ID Refund
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Store
+                    Penerima
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Jumlah Penarikan
+                    Amount
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -289,14 +288,14 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {dataWithdrawal.map((item: any) => (
+                {dataRefund.map((item: any) => (
                   <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      123ASD
+                      {item.id}
                     </Td>
 
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
+                      {item.invoice.receiverName}
                     </Td>
 
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
@@ -311,8 +310,8 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       <Text>
                         {item.status === 'REQUEST' && (
                           <Text
-                            bg={'Yellow'}
-                            color={'black'}
+                            bg={'Red'}
+                            color={'white'}
                             borderRadius={'15px'}
                             px={'5px'}
                             fontSize={'10px'}
@@ -360,19 +359,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                             SUCCESS
                           </Text>
                         )}
-
-                        {item.status === 'DECLINED' && (
-                          <Text
-                            bg={'RED'}
-                            color={'white'}
-                            borderRadius={'15px'}
-                            px={'5px'}
-                            fontSize={'10px'}
-                            textAlign={'center'}
-                          >
-                            DECLINED
-                          </Text>
-                        )}
                       </Text>
                     </Td>
 
@@ -386,7 +372,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           px={'5px'}
                           fontSize={'10px'}
                         >
-                          <AdminRequestPopup dataWithdrawal={item} />
+                          <AdminRequestRefundPopup dataRefund={item} />
                         </Text>
                       )}
                       {item.status === 'APPROVED' && (
@@ -398,7 +384,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           px={'5px'}
                           fontSize={'10px'}
                         >
-                          <AdminApprovedPopup dataWithdrawal={item} />
+                          <AdminApprovedRefundPopup dataRefund={item} />
                         </Text>
                       )}
                       {item.status === 'PROCESSING' && (
@@ -410,7 +396,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           px={'5px'}
                           fontSize={'10px'}
                         >
-                          <AdminProcessingPopup withdrawalData={item} />
+                          <AdminProcessingRefundPopup dataRefund={item} />
                         </Text>
                       )}
                       {item.status === 'SUCCESS' && (
@@ -422,20 +408,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                           px={'5px'}
                           fontSize={'10px'}
                         >
-                          <AdminSuccessPopup dataWithdrawal={item} />
-                        </Text>
-                      )}
-                      {item.status === 'DECLINED' && (
-                        <Text
-                          color={'red'}
-                          textAlign={'center'}
-                          borderRadius={'15px'}
-                          cursor={'pointer'}
-                          px={'5px'}
-                          fontSize={'20px'}
-                          ml={5}
-                        >
-                          <AiFillCloseCircle />
+                          <AdminSuccessRefundPopup dataRefund={item} />
                         </Text>
                       )}
                     </Td>

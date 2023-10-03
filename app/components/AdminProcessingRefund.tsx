@@ -23,17 +23,17 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import AdminProcessingRefundPopup from './AdminProcessingRefundPopup';
 
-export default function AdminProcessingRefund({ dataWithdrawal }: any) {
-  const filteredDataRequest = dataWithdrawal.filter(
+export default function AdminProcessingRefund({ dataRefund }: any) {
+  const filteredDataRequest = dataRefund.filter(
     (item: any) => item.status === 'REQUEST'
   );
-  const filteredDataApproved = dataWithdrawal.filter(
+  const filteredDataApproved = dataRefund.filter(
     (item: any) => item.status === 'APPROVED'
   );
-  const filteredDataProcessing = dataWithdrawal.filter(
+  const filteredDataProcessing = dataRefund.filter(
     (item: any) => item.status === 'PROCESSING'
   );
-  const filteredDataSuccess = dataWithdrawal.filter(
+  const filteredDataSuccess = dataRefund.filter(
     (item: any) => item.status === 'SUCCESS'
   );
 
@@ -44,7 +44,7 @@ export default function AdminProcessingRefund({ dataWithdrawal }: any) {
     }).format(amount);
   }
 
-  const withdrawalCountAll = dataWithdrawal.length;
+  const withdrawalCountAll = dataRefund.length;
   const withdrawalCountByRequest = filteredDataRequest.length;
   const withdrawalCountByApproved = filteredDataApproved.length;
   const withdrawalCountByProcessing = filteredDataProcessing.length;
@@ -267,16 +267,16 @@ export default function AdminProcessingRefund({ dataWithdrawal }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nomor Penarikan
+                    ID Refund
+                  </Th>
+                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                    Penerima
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Store
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Jumlah Penarikan
+                    Amount
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -292,13 +292,15 @@ export default function AdminProcessingRefund({ dataWithdrawal }: any) {
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
                     </Td>
+
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.invoice.receiverName}
+                    </Td>
+
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
-                    </Td>
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {formatRupiah(item.amount)}
@@ -329,7 +331,7 @@ export default function AdminProcessingRefund({ dataWithdrawal }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminProcessingRefundPopup withdrawalData={item} />
+                        <AdminProcessingRefundPopup dataRefund={item} />
                       </Text>
                     </Td>
                   </Tr>
