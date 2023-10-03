@@ -57,6 +57,24 @@ export default function UnpaidCard() {
     setModalIsOpen(true);
   };
 
+  // const [datafilter, setDataFilter] = useState('');
+
+  // const orderFilter = queryString.parse(location.search).order;
+  // const courierArrayFilter = queryString.parse(location.search).courier;
+  // const sortFilter = queryString.parse(location.search).sort;
+  // useEffect(() => {
+  //   const handleDataaa = async () => { // Gunakan async/await untuk menangani permintaan Axios
+  //     try {
+  //       const response = await axios.get(`http://localhost:3000/order?order=${orderFilter}&courier=${courierArrayFilter}&sort=${sortFilter}`);
+  //       setDataFilter(response.data); // Set data yang diterima dari respons ke state
+  //       console.log('datassh', response.data); // Cetak data ke konsol setelah respons diterima
+  //     } catch (error) {
+  //       console.error('Error:', error);
+  //     }
+  //   };
+  //   handleDataaa()
+  // },[orderFilter, courierArrayFilter, sortFilter])
+
   const closeModal = () => {
     setModalIsOpen(false);
   };
