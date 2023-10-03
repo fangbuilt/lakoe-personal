@@ -1,50 +1,63 @@
 import crypto from 'crypto';
 
-import { json, redirect, type ActionArgs } from '@remix-run/node';
+import { json, redirect, type ActionArgs, LoaderArgs } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
-  getProductUnpid,
   updateInvoiceStatus,
   CanceledService,
   whatsappTemplateDb,
+  SuccessService,
+  getProductUnpid,
 } from '~/modules/order/order.service';
 
 import { Flex} from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
+import { useActionData, useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import {NavOrder} from '~/layouts/NavOrder';
-
 import { db } from '~/libs/prisma/db.server';
 import getDataInShipping from '~/modules/order/orderShippingService';
 
-export async function loader() {
-  const apiKey = process.env.BITESHIP_API_KEY;
-  const dataProductReadyToShip = await getDataProductReadyToShip();
-  //jangan sampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService,whatsappDb] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-    whatsappTemplateDb(),
-  ]);
-  const dataInvoice = await getInvoiceByStatus();
-  return json({
-    unpaidCardAll,
-    unpaidCard,
-    canceledService,
-    dataInvoice,
-    dataShipping: await getDataInShipping(),
-    dataProductReadyToShip,
-    apiKey,
-    whatsappDb,
-  });
-}
 
-export async function action({ request }: ActionArgs) {
+export const loader = async ({ request }: LoaderArgs) => {
+  const apiKey = process.env.BITESHIP_API_KEY;
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get("search") || "";
+
+  console.log("searchTerm:", searchTerm);
+
+  try {
+    const [unpaidCardAll, unpaidCard, canceledService, whatsappDb, succesService] = await Promise.all([
+      getAllProductUnpid(),
+      getProductUnpid(searchTerm),
+      CanceledService(),
+      whatsappTemplateDb(),
+      SuccessService("newest"),
+      SuccessService("oldest"),
+    ]);
+
+    const dataInvoice = await getInvoiceByStatus();
+
+    return json({
+      unpaidCardAll,
+      unpaidCard,
+      canceledService,
+      dataInvoice,
+      dataShipping: await getDataInShipping(),
+      dataProductReadyToShip: await getDataProductReadyToShip(),
+      apiKey,
+      whatsappDb,
+      succesService,
+    });
+  } catch (error) {
+    console.error("error:", error);
+    return json({ status: "error", message: "Terjadi kesalahan dalam memuat data" }, 500);
+  }
+};
+export async function action({ request }: ActionArgs,) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
 
   const formData = await request.formData();
@@ -132,6 +145,7 @@ function verifySignature(secretKey: string, data: string, signature: string) {
 
 export default function Order() {
   const data = useLoaderData<typeof loader>();
+  const dataFilter = useActionData<typeof action>()
 
   return (
     <ImplementGrid>

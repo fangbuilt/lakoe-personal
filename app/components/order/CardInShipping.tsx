@@ -1,10 +1,9 @@
 import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import type { ITracking } from '~/interfaces/order/orderTracking';
 import type { loader } from '~/routes/order';
-import ModalInShipping from './ModalInShipping';
+import ModalInShipping from '../ModalInShipping';
 
 export default function CardInShipping(props: { dataTracking: ITracking }) {
   const data = useLoaderData<typeof loader>();

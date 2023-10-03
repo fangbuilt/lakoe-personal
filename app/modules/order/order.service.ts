@@ -3,8 +3,9 @@ import type { MootaOrderSchema } from './order.schema';
 import { db } from '~/libs/prisma/db.server';
 import { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
+import { ActionArgs } from '@remix-run/node';
 
-export async function getProductUnpid() {
+export async function getProductUnpid(getSearchTerm: string) {
   const payments = await db.invoice.findMany({
     where: {
       status: 'UNPAID',
@@ -12,6 +13,7 @@ export async function getProductUnpid() {
     include: {
       user: true,
       payment: true,
+      courier:true,
       cart: {
         include: {
           store: {
@@ -22,6 +24,12 @@ export async function getProductUnpid() {
           cartItems: {
             include: {
               product: {
+                where: {
+                  name: {
+                    contains: getSearchTerm,
+                    // mode: "insensitive",
+                  },
+                },
                 include: {
                   attachments: true,
                   store: true,
@@ -370,6 +378,9 @@ export async function CanceledService() {
       status: "ORDER_CANCELLED",
 
     },
+    orderBy:{
+      createdAt:"asc" // for newest product
+    },
     include: {
       courier: true,
       user: true,
@@ -391,9 +402,56 @@ export async function CanceledService() {
     },
   });
 }
+export async function SuccessService(sortBy: "oldest" | "newest") {
+  let orderByOption: any = {};
+
+  if (sortBy === "oldest") {
+    orderByOption.createdAt = "asc";
+  } else if (sortBy === "newest") {
+    orderByOption.createdAt = "desc";
+  }
+
+  return await db.invoice.findMany({
+    where: {
+      status: "ORDER_COMPLETED",
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    orderBy: orderByOption, // Apply the sorting based on your choice
+  });
+}
+
 export async function whatsappTemplateDb(){
 
   return await db.messageTemplate.findMany({
 
   })
 }
+
+//
+// export async function action({request}:ActionArgs) {
+//   const formData = request.formData()
+
+//   const filteredData = (await formData).get("");
+//   return filteredData
+// }
+
+
+//
