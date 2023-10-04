@@ -191,8 +191,9 @@ export function Informations({ dataStore }: any) {
       </Text>
       <Form method="post" encType="multipart/form-data">
         <Input hidden name="action" value="updateInformation" />
-        <Input type="text" name="storeId" value={dataStore.id} />
+        <Input hidden type="text" name="storeId" value={dataStore.id} />
         <FormControl>
+          gi
           <Grid
             h="150px"
             templateRows="repeat(2, 1fr)"
