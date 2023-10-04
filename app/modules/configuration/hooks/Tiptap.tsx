@@ -52,11 +52,11 @@ const Tiptap = (props: { content: string; setContent: any }) => {
             editor
               .chain()
               .focus()
-              .insertContent('[<strong>Nama Customer</strong>]')
+              .insertContent('[<strong>Nama Pembeli</strong>]')
               .run()
           }
         >
-          Nama Customer
+          Nama Pembeli
         </Button>
         <Button
           fontWeight={'normal'}

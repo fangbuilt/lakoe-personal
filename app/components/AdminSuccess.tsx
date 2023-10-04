@@ -83,6 +83,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
         p="6"
         rounded="md"
         bg="white"
+        overflow={'auto'}
       >
         <Box>
           <Tabs defaultIndex={4}>
@@ -105,7 +106,7 @@ export default function AdminSuccess({ dataWithdrawal }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdmin'}>
+                      <Link to={'/dashboardAdminWithdraw'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
