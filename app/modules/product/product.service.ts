@@ -27,15 +27,15 @@ export async function createProduct(data: any, storeId: any) {
             {
               url: data.url2,
             },
-            {
-              url: data.url3,
-            },
-            {
-              url: data.url4,
-            },
-            {
-              url: data.url5,
-            },
+            // {
+            //   url: data.url3,
+            // },
+            // {
+            //   url: data.url4,
+            // },
+            // {
+            //   url: data.url5
+            // }
           ],
         },
 
@@ -92,7 +92,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
-      store: true,
+      // store: true,
       attachments: true,
       variants: {
         include: {

@@ -21,7 +21,6 @@ import { db } from '~/libs/prisma/db.server';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
 import { getUserId } from '~/modules/auth/auth.service';
-import SuccesService from '~/modules/order/orderSuccessService';
 
 // export async function action({ request }: ActionArgs) {
 //   if (request.method.toLowerCase() === 'patch') {
@@ -67,13 +66,11 @@ export async function loader({ request }: LoaderArgs) {
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService, successedService] =
-    await Promise.all([
-      getAllProductUnpid(),
-      getProductUnpid(),
-      CanceledService(),
-      SuccesService(),
-    ]);
+  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
+    getAllProductUnpid(),
+    getProductUnpid(),
+    CanceledService(),
+  ]);
   const dataInvoice = await getInvoiceByStatus();
 
   const role = await db.user.findFirst({
@@ -91,7 +88,6 @@ export async function loader({ request }: LoaderArgs) {
       unpaidCardAll,
       unpaidCard,
       canceledService,
-      successedService,
       dataInvoice,
       dataShipping: await getDataInShipping(),
       dataProductReadyToShip,
@@ -105,41 +101,6 @@ export async function loader({ request }: LoaderArgs) {
   }
 }
 
-// export async function action({ request }: ActionArgs) {
-//   if (request.method.toLowerCase() === 'patch') {
-//     const formData = await request.formData();
-
-//     const id = formData.get('id') as string;
-//     const price = formData.get('price');
-//     const stock = formData.get('stock');
-
-//     await updateInvoiceStatus({ id, price, stock });
-//   }
-
-//   return redirect('/order');
-// }
-
-// export async function loader() {
-//   const apiKey = process.env.BITESHIP_API_KEY;
-//   const dataProductReadyToShip = await getDataProductReadyToShip();
-
-//   const [canceledService] = await Promise.all([
-//     CanceledService(),
-//     // ready(),
-//     //your order service here !
-//   ]);
-//   const dataInvoice = await getInvoiceByStatus();
-
-//   return json({
-//     canceledService,
-//     dataInvoice,
-//     dataShipping: await getDataInShipping(),
-//     dataProductReadyToShip,
-//     apiKey,
-//     // your return order service here !
-//   });
-// }
-
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get("x-forwarded-for") as string;
 
@@ -148,54 +109,10 @@ export async function action({ request }: ActionArgs) {
   const status = formData.get("status") as string;
   const actionType = formData.get("actionType") as string;
 
-  // console.log('yg kamu cari', id, actionType, status);
+  console.log('yg kamu cari', id, actionType, status);
 
-  const invoiceId = String(formData.get("invoiceId"));
-  const userId = "2";
-  const now = new Date();
-
-  // Calculate the timestamp 30 minutes in the future
-  const nextAccessTime = new Date(now.getTime() + 10000);
-
-  if (actionType === "createTrackingLimit") {
-    const data = {
-      userId,
-      invoiceId,
-      nextAccessTime,
-    };
-
-    // await db.biteshipTrackingLimit.deleteMany({
-    //   where: {
-    //     invoiceId: invoiceId,
-    //   },
-    // });
-
-    const isAvailable = await db.biteshipTrackingLimit.findFirst({
-      where: {
-        invoiceId: invoiceId,
-      },
-    });
-
-    if (isAvailable) {
-      await db.biteshipTrackingLimit.update({
-        where: {
-          id: isAvailable.id,
-        },
-        data: {
-          nextAccessTime: nextAccessTime,
-        },
-      });
-    } else {
-      await db.biteshipTrackingLimit.create({ data });
-    }
-
-    // await db.biteshipTrackingLimit.create({data})
-
-    return json({ message: "data added." });
-  }
-
-  if (actionType === "updateInvoiceAndHistoryStatusReadyToShip") {
-    // console.log('masuk sini');
+  if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
+    console.log('masuk sini');
 
     await db.invoiceHistory.create({
       data: {
@@ -214,7 +131,7 @@ export async function action({ request }: ActionArgs) {
     });
 
     // alert
-    // console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
+    console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
   }
 }
 

@@ -76,7 +76,7 @@ export default function TransferPayment() {
       </Heading>
 
       <Container
-        width={'500px'}
+        width={'80%'}
         bg={'whiteAlpha.50'}
         p={10}
         mt={'3%'}

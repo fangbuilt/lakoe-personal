@@ -16,7 +16,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form, Link } from '@remix-run/react';
+import { Form } from '@remix-run/react';
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Copy from '~/assets/icon-pack/copy.svg';
 import Edit from '~/assets/icon-pack/edit.svg';
@@ -62,22 +62,21 @@ export default function ProductModal(props: IProduct) {
         >
           Ubah Stok
         </Button>
-        <Link
-          target="_blank"
+        {/* <Link
           to={`/${props.store.name.replace(/ /g, '-').toLowerCase()}/${
             props.slug
           }`}
+        > */}
+        <Button
+          borderRadius={'50px'}
+          size="sm"
+          variant="outline"
+          fontSize={'14px'}
         >
-          <Button
-            borderRadius={'50px'}
-            size="sm"
-            variant="outline"
-            fontSize={'14px'}
-          >
-            <Image src={Link2} />
-            Lihat Halaman
-          </Button>
-        </Link>
+          <Image src={Link2} />
+          Lihat Halaman
+        </Button>
+        {/* </Link> */}
         <Menu>
           <MenuButton
             as={Button}

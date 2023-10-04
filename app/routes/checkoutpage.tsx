@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import { Link, useLoaderData } from '@remix-run/react';
-import { db } from '~/libs/prisma/db.server';
+import { db } from '../libs/prisma/db.server';
+import React from 'react';
 
 export async function loader() {
   return await db.product.findMany({
@@ -60,15 +61,13 @@ export default function CheckoutPage() {
               >
                 <Stack align={'start'} spacing={2}>
                   <Image
+                    height={'180px'}
+                    objectFit={'cover'}
                     borderRadius={'10px'}
                     src={i.attachments[0].url}
                     alt="none"
                   />
-                  <Link
-                    to={`/${i.store?.name.replace(/ /g, '-').toLowerCase()}/${
-                      i.slug
-                    }`}
-                  >
+                  <Link to={`/checkout/${i.store?.name}/${i.slug}`}>
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
                       <Text>
