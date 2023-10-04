@@ -10,6 +10,7 @@ import StatusOrderDetail from '~/modules/order/components/statusOrderDetail';
 import {
   getInvoiceById,
   updateStatusInvoice,
+  updateStatusInvoice2,
 } from '~/modules/order/order.service';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
@@ -35,6 +36,20 @@ export async function action({ request }: ActionArgs) {
     };
 
     await updateStatusInvoice(validateDataUpdate);
+    return redirect('/order/detail/' + id);
+  }
+
+  if (request.method.toLowerCase() === 'post') {
+    const formData = await request.formData();
+    const status = formData.get('status') as string;
+    const id = formData.get('id') as string;
+
+    const validateDataUpdate = {
+      id,
+      status,
+    };
+
+    await updateStatusInvoice2(validateDataUpdate);
     return redirect('/order/detail/' + id);
   }
 }

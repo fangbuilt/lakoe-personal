@@ -3,10 +3,10 @@ export interface Product {
   url: string;
   category: string;
   description: string;
-  image: MediaSource | Blob | string;
+  attachments: MediaSource[] | Blob[] | string[];
   variant?: string;
   price: number;
-  min_order: number;
+  minimumOrder: number;
   stock: number;
   sku?: string;
   weight: number;

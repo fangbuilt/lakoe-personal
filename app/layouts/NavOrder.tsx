@@ -9,7 +9,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import type { loader } from '~/routes/order';
 import CardCanceled from '../components/CardCanceled';
@@ -235,9 +235,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel>
-                    <CardInShipping />
-                  </TabPanel>
+                  <TabPanel></TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>

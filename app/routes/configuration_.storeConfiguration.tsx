@@ -11,10 +11,7 @@ import {
 } from '@chakra-ui/react';
 import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
 import Locations from '~/modules/configuration/components/location/Locations';
 import { Informations } from '~/modules/configuration/components/informations/information';
 import createLocation, {
@@ -34,9 +31,16 @@ import {
   DeleteButton,
   UpdateButton,
 } from '~/modules/configuration/components/CrudModal';
-import Scroll from '~/modules/configuration/components/Scroll';
+
+import { useLoaderData } from '@remix-run/react';
+import { db } from '~/libs/prisma/db.server';
 import { authorize } from '~/middleware/authorization';
-import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
+import { getUserId } from '~/modules/auth/auth.service';
+import Scroll from '~/modules/configuration/components/Scroll';
+import {
+  createMessageSchema,
+  updateMessageSchema,
+} from '~/modules/configuration/configuration.schema';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
@@ -168,7 +172,9 @@ export async function action({ request }: ActionArgs) {
     const storeId = formData.get('storeId') as string;
     const content = formData.get('content') as string;
 
-    await createMessage(name, storeId, content);
+    const validatedData = createMessageSchema.parse({ name, storeId, content });
+
+    await createMessage(validatedData);
   } else if (action === 'delete') {
     const id = formData.get('id') as string;
     await deleteMessage(id);
