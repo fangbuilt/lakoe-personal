@@ -10,71 +10,64 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
-import Locations from '~/modules/configuration/components/location/Locations';
 import { Informations } from '~/modules/configuration/components/informations/information';
+import Locations from '~/modules/configuration/components/location/Locations';
 import createLocation, {
-  getAllDataLocation,
-  createStoreInformation,
-  updateStoreInformation,
-  getMessages,
-  updateMessage,
-  deleteMessage,
   createMessage,
-  getStoreId,
+  createStoreInformation,
   deleteLocation,
+  deleteMessage,
+  getAllDataLocation,
+  getMessages,
+  getStoreid,
+  updateMessage,
+  updateStoreInformation,
 } from '~/modules/configuration/configuration.service';
 
 import {
+  CreateButton,
   DeleteButton,
   UpdateButton,
-  CreateButton,
 } from '~/modules/configuration/components/CrudModal';
 
 import { useLoaderData } from '@remix-run/react';
-import Scroll from '~/modules/configuration/components/Scroll';
-import { getUserId } from '~/modules/auth/auth.service';
 import { db } from '~/libs/prisma/db.server';
+import { authorize } from '~/middleware/authorization';
+import { getUserId } from '~/modules/auth/auth.service';
+import Scroll from '~/modules/configuration/components/Scroll';
 import {
   createMessageSchema,
   updateMessageSchema,
 } from '~/modules/configuration/configuration.schema';
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
 
-  const auth = await db.user.findUnique({
+  const userId = getUserId(request);
+
+  const user = await db.user.findFirst({
     where: {
-      id: userId,
+      id: String(userId),
+    },
+    include: {
+      store: true,
     },
   });
 
-  const getLocationData = await getAllDataLocation();
+  const getLocationDataPromise = getAllDataLocation();
+  const messagesPromise = getMessages(user?.storeId);
+  const storeIdPromise = getStoreid(user?.storeId);
 
-  const store = auth?.storeId;
-  const store_id = await getStoreId(store);
-  const messages = await getMessages(store);
+  const [getLocationData, messages, store_id] = await Promise.all([
+    getLocationDataPromise,
+    messagesPromise,
+    storeIdPromise,
+  ]);
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return { messages, store_id, getLocationData };
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  return { messages, store_id, getLocationData };
 }
 
 export async function action({ request }: ActionArgs) {
@@ -180,6 +173,7 @@ export async function action({ request }: ActionArgs) {
 
   return null;
 }
+
 export default function StoreConfiguration() {
   const data = useLoaderData<typeof loader>();
   return (

@@ -66,12 +66,13 @@ export default function AdminDeclined({ dataDeclined }: any) {
     <>
       <Box
         width={'100%'}
-        padding={'20px'}
+        padding={'10px'}
         borderRadius={'15px'}
         boxShadow="base"
         p="6"
         rounded="md"
         bg="white"
+        overflow={'auto'}
       >
         <Box>
           <Tabs defaultIndex={5}>
@@ -94,7 +95,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdmin'}>
+                      <Link to={'/dashboardAdminWithdraw'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text

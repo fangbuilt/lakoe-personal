@@ -10,6 +10,7 @@ export async function register({
   password,
   storeId,
   roleId,
+  isVerify,
 }: RegistrationForm) {
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await db.user.create({
@@ -20,7 +21,7 @@ export async function register({
       password: hashedPassword,
       storeId,
       roleId,
-      isVerify: false,
+      isVerify,
     },
   });
 
@@ -82,7 +83,7 @@ export async function getUserId(request: Request) {
 
 export async function logout(request: Request) {
   const session = await getUserSession(request);
-  return redirect('/login', {
+  return redirect('/auth/login', {
     headers: {
       'Set-Cookie': await storage.destroySession(session),
     },
