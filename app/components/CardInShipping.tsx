@@ -75,7 +75,7 @@ export default function CardInShipping(props: {
                           w={'52px'}
                           h={'52px'}
                           display={'inline'}
-                          src={item.product?.attachments[0].url}
+                          src={item.product?.attachments[0]?.url}
                           mt={3}
                         />
                       ))}

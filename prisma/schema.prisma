@@ -11,8 +11,6 @@ datasource db {
   url          = env("DATABASE_URL")
 }
 
-
-
 // your beautiful schema goes below :
 model User {
   id                     String                  @id @unique @default(uuid())
@@ -335,9 +333,9 @@ model Invoice {
   confirmationPayment    ConfirmationPayment?
   cart                   Cart?                  @relation(fields: [cartId], references: [id])
   cartId                 String
-  courier                Courier?                @relation(fields: [courierId], references: [id])
-  courierId              String                  @unique
-  user                   User?                   @relation(fields: [userId], references: [id])
+  courier                Courier?               @relation(fields: [courierId], references: [id])
+  courierId              String
+  user                   User?                  @relation(fields: [userId], references: [id])
   userId                 String?
   payment                Payment?               @relation(fields: [paymentId], references: [id])
   paymentId              String
@@ -370,7 +368,7 @@ model Payment {
 }
 
 model Courier {
-  id                           String   @id @unique @default(uuid())
+  id                           String    @id @unique @default(uuid())
   availableForCashOnDelivery   Boolean?
   availableForProofOfDelivery  Boolean?
   availableForInstantWaybillId Boolean?
@@ -391,9 +389,9 @@ model Courier {
   trackingId                   String
   deliveryDate                 String
   deliveryTime                 String
-  invoice                      Invoice?
-  createdAt                    DateTime @default(now())
-  updatedAt                    DateTime @default(now())
+  invoices                     Invoice[]
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @default(now())
 
   @@map("couriers")
 }

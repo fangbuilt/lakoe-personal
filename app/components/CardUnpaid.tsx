@@ -32,15 +32,12 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-// import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 
-// import {  useLoaderData } from '@remix-run/react';
 import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
-// import type { loader } from '~/routes/order';
 import { useState } from 'react';
 import ModalWhatsapp from './modalProps/modalWhatsapp';
 
@@ -53,14 +50,16 @@ export default function UnpaidCard() {
     selectedCouriers,
     handleCourierCheckboxChange,
   } = UseSearchProductUnpaid();
-  // const { getSelectedCourier, selectedCouriers, toggleCourier } =
-  //   useFilterCourier();
+
   console.log(searchQuery);
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter();
-  // const { getTemplateMessages } = useLoaderData<typeof loader>();
+  const {
+    selectedSortOption,
+    setSortOption,
+    getSelectedSortOption,
+    sortOrders,
+  } = useSortFilter(); // sort selcted
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  // const [, setSelectedCardId] = useState<string>('');
+  const sortedOrders = sortOrders(filteredOrder);
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -68,6 +67,19 @@ export default function UnpaidCard() {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+  if (selectedSortOption === 'Paling Baru') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
+    });
+  } else if (selectedSortOption === 'Paling Lama') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
   return (
     <>
       {/* start filter */}
@@ -319,8 +331,7 @@ export default function UnpaidCard() {
         </Box>
       ) : (
         <Box>
-          {/* {filterOrdersByCourier(filteredOrders).map((data, index) => ( */}
-          {filteredOrder.map((data, index) => (
+          {sortedOrders.map((data, index) => (
             <Card mb={5} mt={5} boxShadow={'xs'} key={index}>
               <Box>
                 <Box>
@@ -328,9 +339,9 @@ export default function UnpaidCard() {
                     <Flex justifyContent={'space-between'} px={3} py={2}>
                       <Button
                         bg={'#E8C600'}
+                        colorScheme="#E8C600"
                         color={'white'}
                         fontWeight={'bold'}
-                        colorScheme="#E8C600"
                         size={'sm'}
                         pointerEvents={'none'}
                         height={'24px'}
@@ -346,13 +357,13 @@ export default function UnpaidCard() {
                         borderRadius={'full'}
                         fontSize={'14px'}
                         height={'32px'}
-                        onClick={() => {
-                          openModal();
-                        }}
                         py={1}
                         size={'sm'}
                         px={3}
                         fontWeight={'600'}
+                        onClick={() => {
+                          openModal();
+                        }}
                       >
                         Hubungi Pembeli
                       </Button>
@@ -371,7 +382,7 @@ export default function UnpaidCard() {
                       color={'#909090'}
                       px={3}
                     >
-                      INV/{data.invoiceNumber} kur {data.courier?.courierName}
+                      INV/{data.invoiceNumber}
                     </Text>
                     <Divider />
 
@@ -383,10 +394,9 @@ export default function UnpaidCard() {
                             h={'52px'}
                             display={'inline'}
                             borderRadius={'md'}
-                            src={
-                              data.cart?.cartItems[0]?.product?.attachments[0]
-                                ?.url
-                            }
+                            src={`${data.cart?.cartItems[0]?.product?.attachments.map(
+                              (item: any) => item.url
+                            )}`}
                             mt={3}
                           />
                           <Text
@@ -399,14 +409,16 @@ export default function UnpaidCard() {
                             fontWeight={'700'}
                           >
                             {data.cart?.cartItems.map(
-                              (item) => item.product?.name
+                              (item: any) => item.product?.name
                             )}
                             <Text
                               color={'gray.400'}
                               pb={3}
                               fontWeight={'normal'}
                             >
-                              {data.cart?.cartItems.map((item) => item.qty)}{' '}
+                              {data.cart?.cartItems.map(
+                                (item: any) => item.qty
+                              )}{' '}
                               Barang
                             </Text>
                           </Text>
