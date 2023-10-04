@@ -185,7 +185,7 @@ export default function Checkout() {
   return (
     <>
       <CheckoutDescription
-        image={item?.attachments[0].url}
+        image={item?.attachments ? item?.attachments[0]?.url : ''}
         name={item?.name}
         description={item?.description}
       />
@@ -225,22 +225,26 @@ export default function Checkout() {
                           objectFit={'cover'}
                           boxSize={'10'}
                           borderRadius={'10%'}
-                          src={item?.attachments[0].url}
+                          src={
+                            item?.attachments ? item?.attachments[0]?.url : ''
+                          }
                           alt=""
                         />
                         <Box>
                           <Text>{item?.name}</Text>
                           <Text color={'gray.600'}>
-                            {(item?.variants[selectedOption].variantOptions[0]
-                              .variantOptionValues[0].stock as number) - count}
+                            {(item?.variants[selectedOption]?.variantOptions[0]
+                              ?.variantOptionValues[0]?.stock as number) -
+                              count}
                             pcs
                           </Text>
                           <Input
                             type="hidden"
                             name="stock"
                             value={
-                              (item?.variants[selectedOption].variantOptions[0]
-                                .variantOptionValues[0].stock as number) - count
+                              (item?.variants[selectedOption]?.variantOptions[0]
+                                ?.variantOptionValues[0]?.stock as number) -
+                              count
                             }
                           />
                         </Box>
@@ -291,14 +295,14 @@ export default function Checkout() {
                       <Td>
                         {item?.variants[
                           selectedOption
-                        ].variantOptions[0].variantOptionValues[0].price.toLocaleString(
+                        ]?.variantOptions[0]?.variantOptionValues[0]?.price.toLocaleString(
                           'id-ID'
                         )}
                       </Td>
                       <Td>
                         {(
-                          (item?.variants[selectedOption].variantOptions[0]
-                            .variantOptionValues[0].price as number) * count
+                          (item?.variants[selectedOption]?.variantOptions[0]
+                            ?.variantOptionValues[0]?.price as number) * count
                         ).toLocaleString('id-ID')}
                       </Td>
                     </Tr>
@@ -317,8 +321,8 @@ export default function Checkout() {
                 type="hidden"
                 name="price"
                 value={
-                  item?.variants[selectedOption].variantOptions[0]
-                    .variantOptionValues[0].price
+                  item?.variants[selectedOption]?.variantOptions[0]
+                    ?.variantOptionValues[0]?.price
                 }
               />
               <Input type="hidden" name="storeId" value={item?.storeId} />
@@ -327,19 +331,19 @@ export default function Checkout() {
                 type="hidden"
                 name="valueId"
                 value={
-                  item?.variants[selectedOption].variantOptions[0]
-                    .variantOptionValues[0].id
+                  item?.variants[selectedOption]?.variantOptions[0]
+                    ?.variantOptionValues[0]?.id
                 }
               />
               <Input
                 type="hidden"
                 name="variantOptionId"
-                value={item?.variants[selectedOption].variantOptions[0].id}
+                value={item?.variants[selectedOption]?.variantOptions[0]?.id}
               />
               <Input
                 type="hidden"
                 name="userId"
-                value={item?.store?.users[selectedOption].id}
+                value={item?.store?.users[selectedOption]?.id}
               />
             </Box>
             <Box display={'flex'} flexDir={'column'} gap={3}>
@@ -365,18 +369,18 @@ export default function Checkout() {
                     description={item?.description}
                     unique={unique}
                     total={
-                      (item?.variants[selectedOption].variantOptions[0]
-                        .variantOptionValues[0].price as number) *
+                      (item?.variants[selectedOption]?.variantOptions[0]
+                        ?.variantOptionValues[0]?.price as number) *
                         count +
                       unique
                     }
                     totalPrice={
-                      (item?.variants[selectedOption].variantOptions[0]
-                        .variantOptionValues[0].price as number) * count
+                      (item?.variants[selectedOption]?.variantOptions[0]
+                        ?.variantOptionValues[0]?.price as number) * count
                     }
                     totalPriceUnique={
-                      (item?.variants[selectedOption].variantOptions[0]
-                        .variantOptionValues[0].price as number) *
+                      (item?.variants[selectedOption]?.variantOptions[0]
+                        ?.variantOptionValues[0]?.price as number) *
                         count +
                       unique
                     }
