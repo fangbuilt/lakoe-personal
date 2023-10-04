@@ -21,6 +21,7 @@ export async function register({
       password: hashedPassword,
       storeId,
       roleId,
+      isVerify: false,
     },
   });
 
