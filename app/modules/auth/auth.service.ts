@@ -21,11 +21,10 @@ export async function register({
       password: hashedPassword,
       storeId,
       roleId,
-      isVerify: false,
     },
   });
 
-  return { id: user.id, name, email, roleId, isVerify };
+  return { id: user.id, name, email, roleId, };
 }
 
 export async function login({ email, password }: LoginForm) {
