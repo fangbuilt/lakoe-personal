@@ -47,7 +47,7 @@ export default function NavOrderBa(props: IOrderDetailInvoiceProps) {
     if (selectedCouriers.length === 0) {
       return true;
     }
-    return selectedCouriers.includes(order.courier);
+    // return selectedCouriers.includes(order.courier);
   });
 
   return (
