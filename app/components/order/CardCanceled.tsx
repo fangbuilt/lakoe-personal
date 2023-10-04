@@ -27,15 +27,20 @@ import { useState } from "react";
 import ModalWhatsapp from "../modalProps/modalWhatsapp";
 import { Link } from "@remix-run/react";
 import { formatCurrency } from "~/modules/order/hooks/useOrderDetail";
-import searchFilterCanceled from "~/hooks/useSearchOrder";
-import { useFilterCourier } from "~/hooks/useFilterCourier";
+import UseFilterCanceled from "~/modules/order/hooks/useFIlterCanceled";
 export default function CardCenceled(props: any) {
-  const { setSearchQuery, filteredOrders } = searchFilterCanceled(); // search filter
-  const { selectedCouriers, toggleCourier, getSelectedCourier } =
-    useFilterCourier(); // courier selected
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter(); // sort selcted
 
+  const {
+    getSelectedCourier,
+    filteredOrder,
+    setSearchQuery,
+    selectedCouriers,
+    handleCourierCheckboxChange,
+  } = UseFilterCanceled();
+
+  const { selectedSortOption, setSortOption, getSelectedSortOption,sortOrders } =
+    useSortFilter(); // sort selcted
+    const sortedOrders = sortOrders(filteredOrder);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => {
     setModalIsOpen(true);
@@ -44,23 +49,38 @@ export default function CardCenceled(props: any) {
     setModalIsOpen(false);
   };
 
+  if (selectedSortOption === 'Paling Baru') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
+    });
+  } else if (selectedSortOption === 'Paling Lama') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
+
+
   return (
     <>
       {/* start filter */}
-      <Box width={"100%"} display={"flex"} justifyContent={"center"}>
+      <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
-          display={"flex"}
-          w={"47%"}
-          bg={"white"}
-          px={"3"}
+          display={'flex'}
+          w={'47%'}
+          bg={'white'}
+          px={'3'}
           gap={2}
-          justifyContent={"space-between"}
+          justifyContent={'space-between'}
           zIndex={10}
-          position={"fixed"}
-          top={"52"}
+          position={'fixed'}
+          top={'52'}
           mt={2}
         >
-          <InputGroup bg={"white"}>
+          <InputGroup bg={'white'}>
             <InputLeftElement pointerEvents="none">
               <Image src={SearchProduct} />
             </InputLeftElement>
@@ -69,10 +89,10 @@ export default function CardCenceled(props: any) {
               placeholder="Cari Pesanan"
               _placeholder={{
                 opacity: 1,
-                color: "#909090",
-                fontSize: "14px",
+                color: '#909090',
+                fontSize: '14px',
               }}
-
+              // value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
               }}
@@ -83,22 +103,22 @@ export default function CardCenceled(props: any) {
             <MenuButton
               as={Button}
               variant="outline"
-              bgColor={"white"}
-              fontSize={"14px"}
-              width={"100%"}
-              color={getSelectedCourier() > 0 ? "black" : "#909090"}
-              fontWeight={"normal"}
+              bgColor={'white'}
+              fontSize={'14px'}
+              width={'100%'}
+              color={getSelectedCourier() > 0 ? 'black' : '#909090'}
+              fontWeight={'normal'}
             >
               <Text fontSize="14px" textAlign="left">
                 {getSelectedCourier() > 0
                   ? `${getSelectedCourier()} Kurir terpilih`
-                  : "Semua Kurir"}
+                  : 'Semua Kurir'}
               </Text>
 
               <Image
                 src={ChevronDownIcon}
-                position={"absolute"}
-                fontSize={"2px"}
+                position={'absolute'}
+                fontSize={'2px'}
                 right={2}
                 top={3}
               />
@@ -106,197 +126,172 @@ export default function CardCenceled(props: any) {
             <MenuList>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("GoSend")}
-                  isChecked={selectedCouriers.includes("GoSend")}
+                  onChange={() => handleCourierCheckboxChange('lion parcel')}
+                  checked={selectedCouriers.includes('lion parcel')}
                 >
-                  GoSend
+                  Lion Parcel
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers} onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }} ></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("GrabExpress")}
-                  isChecked={selectedCouriers.includes("GrabExpress")}
+                  onChange={() => handleCourierCheckboxChange('grabexpress')}
+                  isChecked={selectedCouriers.includes('grabexpress')}
                 >
                   GrabExpress
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers} onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }} ></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("AnterAja")}
-                  isChecked={selectedCouriers.includes("AnterAja")}
+                  onChange={() => handleCourierCheckboxChange('anteraja')}
+                  isChecked={selectedCouriers.includes('anteraja')}
                 >
                   AnterAja
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers} onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }} ></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("JNE")}
-                  isChecked={selectedCouriers.includes("JNE")}
+                  onChange={() => handleCourierCheckboxChange('jne')}
+                  isChecked={selectedCouriers.includes('jne')}
                 >
                   JNE
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers} onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }} ></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("jnt")}
-                  isChecked={selectedCouriers.includes("jnt")}
+                  onChange={() => handleCourierCheckboxChange('jnt')}
+                  isChecked={selectedCouriers.includes('jnt')}
                 >
                   J&T
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers}
-                onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }} ></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("tiki")}
-                  isChecked={selectedCouriers.includes("tiki")}
+                  onChange={() => handleCourierCheckboxChange('tiki')}
+                  isChecked={selectedCouriers.includes('tiki')}
                 >
                   Tiki
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers} onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }} ></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("Ninja Xpress")}
-                  isChecked={selectedCouriers.includes("Ninja Xpress")}
+                  onChange={() => handleCourierCheckboxChange('ShopeeExpress')}
+                  isChecked={selectedCouriers.includes('ShopeeExpress')}
                 >
-                  Ninja Xpress
+                  Shopee Express
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers} onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }}></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("Pos Indonesia")}
-                  isChecked={selectedCouriers.includes("Pos Indonesia")}
+                  onChange={() => handleCourierCheckboxChange('tokopediaExpress')}
+                  isChecked={selectedCouriers.includes('tokopediaExpress')}
                 >
-                  Pos Indonesia
+                  Tokopedia Express
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers} onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }}></Input>
               </MenuItem>
             </MenuList>
           </Menu>
           <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
-              w={"100%"}
+              w={'100%'}
               variant="outline"
-              bgColor={"white"}
+              bgColor={'white'}
             >
               <Image
                 src={ChevronDownIcon}
-                position={"absolute"}
-                fontSize={"2px"}
+                position={'absolute'}
+                fontSize={'2px'}
                 right={2}
                 top={3}
               />
               <Text
-                fontSize={"14px"}
-                textAlign={"left"}
-                fontWeight={"normal"}
-                color={"black"}
+                fontSize={'14px'}
+                textAlign={'left'}
+                fontWeight={'normal'}
+                color={'black'}
               >
                 {getSelectedSortOption() ? (
                   getSelectedSortOption()
                 ) : (
-                  <Text color={"#909090"}>Urutkan</Text>
+                  <Text color={'#909090'}>Urutkan</Text>
                 )}
               </Text>
             </MenuButton>
             <MenuList>
               <MenuItem
-                onClick={() => setSortOption("Semua")}
-                className={selectedSortOption === "Semua" ? "active" : ""}
+                onClick={() => setSortOption('Semua')}
+                className={selectedSortOption === 'Semua' ? 'active' : ''}
               >
                 Semua
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Semua" ? "inline-block" : "none"
+                    selectedSortOption === 'Semua' ? 'inline-block' : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Paling Baru")}
-                className={selectedSortOption === "Paling Baru" ? "active" : ""}
+                onClick={() => setSortOption('Paling Baru')}
+                className={selectedSortOption === 'Paling Baru' ? 'active' : ''}
               >
                 Paling Baru
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Paling Baru"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Paling Baru'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Paling Lama")}
-                className={selectedSortOption === "Paling Lama" ? "active" : ""}
+                onClick={() => setSortOption('Paling Lama')}
+                className={selectedSortOption === 'Paling Lama' ? 'active' : ''}
               >
                 Paling Lama
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Paling Lama"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Paling Lama'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Respon Tercepat")}
+                onClick={() => setSortOption('Respon Tercepat')}
                 className={
-                  selectedSortOption === "Respon Tercepat" ? "active" : ""
+                  selectedSortOption === 'Respon Tercepat' ? 'active' : ''
                 }
               >
                 Respon Tercepat
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Respon Tercepat"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Respon Tercepat'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
               <MenuItem
-                onClick={() => setSortOption("Respon Terlama")}
+                onClick={() => setSortOption('Respon Terlama')}
                 className={
-                  selectedSortOption === "Respon Terlama" ? "active" : ""
+                  selectedSortOption === 'Respon Terlama' ? 'active' : ''
                 }
               >
                 Respon Terlama
                 <Image
                   src={Empty}
-                  ml={"auto"}
+                  ml={'auto'}
                   display={
-                    selectedSortOption === "Respon Terlama"
-                      ? "inline-block"
-                      : "none"
+                    selectedSortOption === 'Respon Terlama'
+                      ? 'inline-block'
+                      : 'none'
                   }
                 />
               </MenuItem>
@@ -304,7 +299,7 @@ export default function CardCenceled(props: any) {
           </Menu>
         </Box>
       </Box>
-      {filteredOrders.length === 0 ? (
+      {filteredOrder.length === 0 ? (
         <Box marginTop={"70px"}>
           <Center>
             <Box textAlign="center" mt={5} display={"flex"}>
@@ -320,7 +315,7 @@ export default function CardCenceled(props: any) {
         </Box>
       ) : (
         <Box>
-          {filteredOrders.map((data:any, index:any) => (
+          {sortedOrders.map((data:any, index:any) => (
             <Card mb={5} mt={5} boxShadow={"xs"} key={index}>
               <Box>
                 <Box >

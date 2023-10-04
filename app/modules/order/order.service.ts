@@ -376,10 +376,6 @@ export async function CanceledService() {
   return await db.invoice.findMany({
     where: {
       status: "ORDER_CANCELLED",
-
-    },
-    orderBy:{
-      createdAt:"asc" // for newest product
     },
     include: {
       courier: true,
@@ -402,15 +398,7 @@ export async function CanceledService() {
     },
   });
 }
-export async function SuccessService(sortBy: "oldest" | "newest") {
-  let orderByOption: any = {};
-
-  if (sortBy === "oldest") {
-    orderByOption.createdAt = "asc";
-  } else if (sortBy === "newest") {
-    orderByOption.createdAt = "desc";
-  }
-
+export async function SuccessService() {
   return await db.invoice.findMany({
     where: {
       status: "ORDER_COMPLETED",
@@ -434,7 +422,7 @@ export async function SuccessService(sortBy: "oldest" | "newest") {
         },
       },
     },
-    orderBy: orderByOption, // Apply the sorting based on your choice
+
   });
 }
 
@@ -442,26 +430,5 @@ export async function whatsappTemplateDb(){
 
   return await db.messageTemplate.findMany({
 
-  })
-}
-
-//
-// export async function action({request}:ActionArgs) {
-//   const formData = request.formData()
-
-//   const filteredData = (await formData).get("");
-//   return filteredData
-// }
-
-
-//
-
-export async function filterCourier(selectedCouriers: Array<string>){
-  return db.courier.findMany({
-    where: {
-      courierName: {
-        in: selectedCouriers
-      }
-    }
   })
 }

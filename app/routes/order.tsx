@@ -12,25 +12,20 @@ import {
   whatsappTemplateDb,
   SuccessService,
   getProductUnpid,
-  filterCourier,
 
 } from '~/modules/order/order.service';
 
 import { Flex} from '@chakra-ui/react';
-import { useActionData, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import {NavOrder} from '~/layouts/NavOrder';
 import { db } from '~/libs/prisma/db.server';
 import getDataInShipping from '~/modules/order/orderShippingService';
-import { useFilterCourier } from '~/hooks/useFilterCourier';
-
 
 export const loader = async ({ request }: LoaderArgs) => {
   const apiKey = process.env.BITESHIP_API_KEY;
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get("search") || "";
-  // const {selectedCouriers} = useFilterCourier()
-  console.log("searchTerm:", searchTerm);
 
   try {
     const [unpaidCardAll, unpaidCard, canceledService, whatsappDb, succesService] = await Promise.all([
@@ -38,9 +33,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       getProductUnpid(searchTerm),
       CanceledService(),
       whatsappTemplateDb(),
-      SuccessService("newest"),
-      SuccessService("oldest"),
-      // filterCourier()
+      SuccessService()
     ]);
 
     const dataInvoice = await getInvoiceByStatus();
@@ -149,7 +142,6 @@ function verifySignature(secretKey: string, data: string, signature: string) {
 
 export default function Order() {
   const data = useLoaderData<typeof loader>();
-  const dataFilter = useActionData<typeof action>()
 
   return (
     <ImplementGrid>
