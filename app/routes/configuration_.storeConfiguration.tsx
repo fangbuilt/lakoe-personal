@@ -23,8 +23,8 @@ import createLocation, {
   updateMessage,
   deleteMessage,
   createMessage,
-  getStoreid,
   deleteLocation,
+  getStoreid,
 } from '~/modules/configuration/configuration.service';
 
 import {
@@ -38,6 +38,7 @@ import Scroll from '~/modules/configuration/components/Scroll';
 import { getUserId } from '~/modules/auth/auth.service';
 import { db } from '~/libs/prisma/db.server';
 import { authorize } from '~/middleware/authorization';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
@@ -54,7 +55,7 @@ export async function loader({ request, context, params }: DataFunctionArgs) {
   });
 
   const getLocationDataPromise = getAllDataLocation();
-  const messagesPromise = getMessages();
+  const messagesPromise = getMessages(user?.storeId);
   const storeIdPromise = getStoreid(user?.storeId);
 
   const [getLocationData, messages, store_id] = await Promise.all([
@@ -142,7 +143,7 @@ export async function action({ request }: ActionArgs) {
     return redirect(redirectURL);
   }
 
-  //==================================================================
+  //ini action template message ==================================================================
 
   const action = formData.get('action');
 
@@ -157,10 +158,12 @@ export async function action({ request }: ActionArgs) {
     await deleteMessage(id);
   } else if (action === 'update') {
     const id = formData.get('id') as string;
-    const updatedName = formData.get('updatedName') as string;
-    const updatedContent = formData.get('updatedContent') as string;
+    const name = formData.get('updatedName') as string;
+    const content = formData.get('updatedContent') as string;
 
-    await updateMessage(id, updatedName, updatedContent);
+    const validatedData = updateMessageSchema.parse({ id, name, content });
+
+    await updateMessage(validatedData);
   }
 
   return null;

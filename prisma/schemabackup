@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  relationMode = "prisma"
-  url          = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // your beautiful schema goes below :
@@ -18,9 +17,9 @@ model User {
   email                  String                  @unique
   phone                  String                  @unique
   password               String
-  store                  Store?                  @relation(fields: [storeId], references: [id])
+  store                  Store?                  @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId                String?
-  role                   Role?                   @relation(fields: [roleId], references: [id])
+  role                   Role?                   @relation(fields: [roleId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   roleId                 String
   profile                Profile?
   biteshipTrackingLimits BiteshipTrackingLimit[]
@@ -29,13 +28,9 @@ model User {
   invoices               Invoice[]
   payments               Payment[]
   withdraws              Withdraw[]
-  verify                 Verify[]
-  isVerify               Boolean
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
-  @@index([storeId])
-  @@index([roleId])
   @@map("users")
 }
 
@@ -44,10 +39,9 @@ model AttachmentAdmin {
   attachment String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
-  withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
+  withdraw   Withdraw? @relation(fields: [withdrawId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   withdrawId String
 
-  @@index([withdrawId])
   @@map("attachments_admin")
 }
 
@@ -55,20 +49,17 @@ model Withdraw {
   id              String            @id @unique @default(uuid())
   amount          Float
   status          String
-  store           Store?            @relation(fields: [storeId], references: [id])
+  store           Store?            @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId         String
-  bankAccount     BankAccount?      @relation(fields: [bankId], references: [id])
+  bankAccount     BankAccount?      @relation(fields: [bankId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   bankId          String
-  approvedBy      User?             @relation(fields: [approvedById], references: [id])
+  approvedBy      User?             @relation(fields: [approvedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   approvedById    String
   attachmentAdmin AttachmentAdmin[]
   adminDecline    AdminDecline[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
 
-  @@index([storeId])
-  @@index([bankId])
-  @@index([approvedById])
   @@map("withdraws")
 }
 
@@ -84,13 +75,12 @@ model Role {
 
 model Profile {
   id        String     @id @unique @default(uuid())
-  user      User?      @relation(fields: [userId], references: [id])
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId    String     @unique
   locations Location[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
-  @@index([userId])
   @@map("profiles")
 }
 
@@ -131,15 +121,13 @@ model Decoration {
 
 model StoreDecoration {
   id           String      @id @unique @default(uuid())
-  store        Store?      @relation(fields: [storeId], references: [id])
+  store        Store?      @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId      String
-  decoration   Decoration? @relation(fields: [decorationId], references: [id])
+  decoration   Decoration? @relation(fields: [decorationId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   decorationId String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @default(now())
 
-  @@index([storeId])
-  @@index([decorationId])
   @@map("stores_decorations")
 }
 
@@ -149,12 +137,11 @@ model OperationHour {
   openAt    DateTime
   closeAt   DateTime
   isOff     Boolean
-  store     Store?   @relation(fields: [storeId], references: [id])
+  store     Store?   @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  @@index([storeId])
   @@map("operation_hours")
 }
 
@@ -162,12 +149,11 @@ model MessageTemplate {
   id        String   @id @unique @default(uuid())
   name      String
   content   String
-  store     Store?   @relation(fields: [storeId], references: [id])
+  store     Store?   @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  @@index([storeId])
   @@map("message_templates")
 }
 
@@ -178,18 +164,16 @@ model Location {
   addressNote    String?
   latitude       String
   longtitude     String
-  postalCode     String?
+  postalCode     String
   cityDistrict   String
-  isMainLocation Boolean?
-  store          Store?   @relation(fields: [storeId], references: [id])
+  isMainLocation Boolean
+  store          Store?   @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId        String
-  profile        Profile? @relation(fields: [profileId], references: [id])
+  profile        Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   profileId      String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 
-  @@index([storeId])
-  @@index([profileId])
   @@map("locations")
 }
 
@@ -203,9 +187,9 @@ model Product {
   height       Float
   slug         String              @unique
   isActive     Boolean             @default(true)
-  store        Store?              @relation(fields: [storeId], references: [id])
+  store        Store?              @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId      String
-  category     Category?           @relation(fields: [categoryId], references: [id])
+  category     Category?           @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   categoryId   String
   attachments  ProductAttachment[]
   variants     Variant[]
@@ -213,8 +197,6 @@ model Product {
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @default(now())
 
-  @@index([storeId])
-  @@index([categoryId])
   @@map("products")
 }
 
@@ -222,27 +204,25 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product        Product         @relation(fields: [productId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @default(now())
 
-  @@index([productId])
   @@map("variants")
 }
 
 model VariantOption {
   id                  String               @id @unique @default(uuid())
   name                String
-  variant             Variant?             @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variant             Variant?             @relation(fields: [variantId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   variantId           String
   cartItems           CartItem[]
   variantOptionValues VariantOptionValue[]
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @default(now())
 
-  @@index([variantId])
   @@map("variant_options")
 }
 
@@ -252,13 +232,12 @@ model VariantOptionValue {
   weight          Float
   stock           Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   variantOptionId String
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @default(now())
 
-  @@index([variantOptionId])
   @@map("variant_option_values")
 }
 
@@ -277,17 +256,15 @@ model Cart {
   id        String     @id @unique @default(uuid())
   price     Float
   discount  Float
-  user      User?      @relation(fields: [userId], references: [id])
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId    String?
-  store     Store?     @relation(fields: [storeId], references: [id])
+  store     Store?     @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId   String
   cartItems CartItem[]
   invoices  Invoice[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 
-  @@index([userId])
-  @@index([storeId])
   @@map("carts")
 }
 
@@ -295,26 +272,22 @@ model CartItem {
   id              String         @id @unique @default(uuid())
   qty             Int
   price           Float
-  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantOption   VariantOption? @relation(fields: [variantOptionId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   variantOptionId String
-  cart            Cart?          @relation(fields: [cartId], references: [id])
+  cart            Cart?          @relation(fields: [cartId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   cartId          String
-  user            User?          @relation(fields: [userId], references: [id])
+  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId          String?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @default(now())
-  product         Product?       @relation(fields: [productId], references: [id])
+  product         Product?       @relation(fields: [productId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   productId       String?
 
-  @@index([variantOptionId])
-  @@index([cartId])
-  @@index([userId])
-  @@index([productId])
   @@map("cart_items")
 }
 
 model Invoice {
-  id                     String                 @id @unique @default(uuid())
+  id                     String                  @id @unique @default(uuid())
   price                  Float
   discount               Float
   status                 String
@@ -331,24 +304,19 @@ model Invoice {
   waybill                String
   mootaTransactionId     String
   confirmationPayment    ConfirmationPayment?
-  cart                   Cart?                  @relation(fields: [cartId], references: [id])
+  cart                   Cart?                   @relation(fields: [cartId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   cartId                 String
-  courier                Courier?               @relation(fields: [courierId], references: [id])
+  courier                Courier?                @relation(fields: [courierId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   courierId              String
-  user                   User?                  @relation(fields: [userId], references: [id])
+  user                   User?                   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId                 String?
-  payment                Payment?               @relation(fields: [paymentId], references: [id])
+  payment                Payment?                @relation(fields: [paymentId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   paymentId              String
-  biteshipTrackinglimits BiteshipTrackingLimit?
+  biteshipTrackinglimits BiteshipTrackingLimit[]
   invoiceHistories       InvoiceHistory[]
-  refund                 Refund[]
-  createdAt              DateTime               @default(now())
-  updatedAt              DateTime               @default(now())
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @default(now())
 
-  @@index([cartId])
-  @@index([courierId])
-  @@index([userId])
-  @@index([paymentId])
   @@map("invoices")
 }
 
@@ -357,13 +325,12 @@ model Payment {
   bank      String
   amount    Float
   status    String
-  user      User?     @relation(fields: [userId], references: [id])
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId    String?
   invoices  Invoice[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
 
-  @@index([userId])
   @@map("payments")
 }
 
@@ -399,41 +366,36 @@ model Courier {
 model InvoiceHistory {
   id        String   @id @unique @default(uuid())
   status    String
-  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoice   Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   invoiceId String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  @@index([invoiceId])
   @@map("invoice_histories")
 }
 
 model BankAccount {
-  id            String         @id @unique @default(uuid())
+  id            String     @id @unique @default(uuid())
   bank          String
   accountName   String
   accountNumber String
-  store         Store?         @relation(fields: [storeId], references: [id])
+  store         Store?     @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   storeId       String
   withdraws     Withdraw[]
-  adminDecline  AdminDecline[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now())
 
-  @@index([storeId])
   @@map("bank_accounts")
 }
 
 model ProductAttachment {
   id        String   @id @unique @default(uuid())
   url       String
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   productId String
-  isMain    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  @@index([productId])
   @@map("product_attachments")
 }
 
@@ -441,71 +403,37 @@ model ConfirmationPayment {
   id         String   @id @unique @default(uuid())
   amount     Float
   attachment String
-  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
+  invoice    Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   invoiceId  String   @unique
   bank       String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
 
-  @@index([invoiceId])
   @@map("confirmation_payments")
 }
 
 model BiteshipTrackingLimit {
   id             String   @id @unique @default(uuid())
-  user           User?    @relation(fields: [userId], references: [id])
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId         String
-  invoice        Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId      String   @unique
+  invoice        Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  invoiceId      String
   nextAccessTime DateTime
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 
-  @@index([userId])
-  @@index([invoiceId])
   @@map("biteship_tracking_limits")
 }
 
 model AdminDecline {
-  id            String       @id @unique @default(uuid())
-  reason        String
-  store         Store?       @relation(fields: [storeId], references: [id])
-  storeId       String
-  withdraw      Withdraw?    @relation(fields: [withdrawId], references: [id])
-  withdrawId    String
-  bankAccount   BankAccount? @relation(fields: [bankAccountId], references: [id])
-  bankAccountId String       @unique
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now())
+  id         String    @id @unique @default(uuid())
+  reason     String
+  store      Store?    @relation(fields: [storeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  storeId    String
+  withdraw   Withdraw? @relation(fields: [withdrawId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  withdrawId String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
 
-  @@index([storeId])
-  @@index([bankAccountId])
-  @@index([withdrawId])
   @@map("admin_decline")
-}
-
-model Refund {
-  id         String   @id @unique @default(uuid())
-  amount     Float
-  status     String
-  attachment String
-  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId  String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-
-  @@index([invoiceId])
-  @@map("refund")
-}
-
-model Verify {
-  id        String   @id @unique @default(uuid())
-  token     String
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  @@index([userId])
-  @@map("verify")
 }

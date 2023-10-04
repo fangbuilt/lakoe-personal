@@ -92,6 +92,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
+      // store: true,
       attachments: true,
       variants: {
         include: {
@@ -104,7 +105,6 @@ export async function getProduct() {
       },
     },
   });
-  // console.log("ini", data);
   return data;
 }
 
@@ -135,6 +135,7 @@ export async function getProductByCategoryId(id: any) {
       categoryId: id,
     },
     include: {
+      store: true,
       attachments: true,
       variants: {
         include: {
@@ -148,15 +149,6 @@ export async function getProductByCategoryId(id: any) {
     },
   });
   return data;
-}
-
-export async function deleteProduct(id: string) {
-  const deleteProduct = await db.product.delete({
-    where: {
-      id,
-    },
-  });
-  return deleteProduct;
 }
 
 export async function update(data: any): Promise<any> {
@@ -186,7 +178,6 @@ export async function update(data: any): Promise<any> {
       },
     },
   });
-  // console.log("ini update", update);
   return update;
 }
 
@@ -199,6 +190,41 @@ export async function updateIsActive(data: any) {
       id: data.id,
     },
   });
-  // console.log("ini status", status);
   return status;
+}
+
+export async function getProductTest() {
+  const data = await db.product.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return data;
+}
+
+export async function deleteProduct(id: any) {
+  const getProductInvoice = await db.invoice.findFirst({
+    where: {
+      cart: {
+        cartItems: {
+          some: {
+            productId: id,
+          },
+        },
+      },
+    },
+  });
+  console.log('ini id product', getProductInvoice);
+  if (!getProductInvoice) {
+    await db.product.delete({
+      where: {
+        id: id,
+      },
+    });
+    const isSuccess = true;
+    return isSuccess;
+  } else {
+    const isSuccess = false;
+    return isSuccess;
+  }
 }
