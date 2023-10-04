@@ -83,7 +83,7 @@ export async function loader({ request }: LoaderArgs) {
   } else if (role?.roleId === '3') {
     return redirect('/checkout');
   } else {
-    return redirect('/logout');
+    return json({});
   }
 }
 
@@ -159,7 +159,7 @@ export async function action({ request }: ActionArgs) {
   });
 
   verifyEmail(email, name, token);
-  return redirect('/verify');
+  return redirect('/verifyAccount');
 }
 
 export default function Register() {

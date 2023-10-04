@@ -1,11 +1,13 @@
 import { Button, FormLabel, Input } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs} from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import { db } from '~/libs/prisma/db.server';
+import { authorize } from '~/middleware/authorization';
 import { getUserId } from '~/modules/auth/auth.service';
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
   const userId = await getUserId(request);
 
   return { userId };
@@ -46,8 +48,13 @@ export default function useAddStore() {
   return (
     <>
       <Form method="POST">
-        <Input name="actiontype" defaultValue={'addStore'} hidden />
-        <Input name="userId" defaultValue={data.userId as string} hidden />
+        <Input name="actiontype" defaultValue={'addStore'} hidden readOnly />
+        <Input
+          name="userId"
+          defaultValue={data.userId as string}
+          hidden
+          readOnly
+        />
         <FormLabel>Store Name</FormLabel>
         <Input name="name" />
         <FormLabel>Store Description</FormLabel>
