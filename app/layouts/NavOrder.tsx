@@ -15,6 +15,7 @@ import ScrollBox from '~/components/ScrollBox';
 import { loader } from '~/routes/order';
 import CardCenceled from '~/components/order/CardCanceled';
 import CardSucces from '~/components/order/CardSuccesOrder';
+import CardReadyToShip from '~/components/order/CardReadyToShip';
 // import CardSucces from '~/components/order/CardSuccesOrder';
 // import UnpaidCard from '~/components/order/CardUnpaid';
 // import UnpaidCard from '~/components/order/CardUnpaid';
@@ -225,7 +226,7 @@ export function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <p>siap dikirim</p>
+                  <CardReadyToShip/>
                   </TabPanel>
                 </ScrollBox>
 

@@ -310,6 +310,7 @@ export async function getDataProductReadyToShip() {
     include: {
       invoiceHistories: true,
       courier: true,
+      biteshipTrackinglimits: true,
       cart: {
         include: {
           user: true,

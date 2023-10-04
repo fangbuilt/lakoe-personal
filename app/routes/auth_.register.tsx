@@ -146,7 +146,7 @@ export async function action({ request }: ActionArgs) {
     password,
     storeId,
     roleId,
-    isVerify,
+    isVerify: false
   });
 
   const token = generateRandomString(15);
