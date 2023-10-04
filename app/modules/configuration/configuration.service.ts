@@ -96,7 +96,7 @@ export async function getAllDataLocation() {
   });
 }
 
-//====================================================
+//================================================
 
 export async function getStoreData(id: string) {
   const dataStore = await db.store.findMany({
