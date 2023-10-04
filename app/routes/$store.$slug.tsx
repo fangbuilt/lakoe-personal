@@ -274,10 +274,10 @@ export default function Checkout() {
     comment = coment;
   } else if (rates === '') {
     comment = 'Harap pilih kurir';
-  } else if (bankMetode === '') {
-    comment = 'Harap pilih metode pembayaran';
   } else if (bankFor !== '') {
     comment = bankFor;
+  } else if (bankMetode === '') {
+    comment = 'Harap pilih metode pembayaran';
   } else {
     spinner = 'block';
     close = 'none';
