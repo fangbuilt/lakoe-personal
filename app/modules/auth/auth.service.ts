@@ -10,6 +10,7 @@ export async function register({
   password,
   storeId,
   roleId,
+  isVerify,
 }: RegistrationForm) {
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await db.user.create({
@@ -23,7 +24,7 @@ export async function register({
     },
   });
 
-  return { id: user.id, name, email, roleId };
+  return { id: user.id, name, email, roleId, isVerify };
 }
 
 export async function login({ email, password }: LoginForm) {
