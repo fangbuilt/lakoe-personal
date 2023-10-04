@@ -46,6 +46,7 @@ model AttachmentAdmin {
   withdrawId String
 
   @@map("attachments_admin")
+  @@index([withdrawId])
 }
 
 
@@ -473,4 +474,6 @@ model AdminDecline {
   updatedAt  DateTime  @default(now())
 
   @@map("admin_decline")
+  @@index([storeId])
+  @@index([withdrawId])
 }

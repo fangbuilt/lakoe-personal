@@ -20,6 +20,9 @@ import { Form, useLoaderData, useParams } from '@remix-run/react';
 import React, { useState } from 'react';
 import { PiShoppingCartThin } from 'react-icons/pi';
 import { db } from '../libs/prisma/db.server';
+import moment from 'moment';
+import { MootaOrderStatusUpdate } from '~/modules/order/order.service';
+import { MootaOrderSchema } from '~/modules/order/order.schema';
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
@@ -29,9 +32,26 @@ export const action = async ({ request }: ActionArgs) => {
     // const invoice = formData.get("invoice");
     const bank = formData.get('bank');
     const createdAt = formData.get('createdAt');
-    const amount = formData.get('amount');
+    const amount = formData.get('amount') as string;
     const attachment = formData.get('attachment');
 
+    const amountNumber = amount ? parseFloat(amount) : null;
+
+    const apiData: number | any = await fetchWebhookStatusWithRetry();
+
+    const apiDataString = apiData.toString();
+
+    const latestAmount = apiData ? parseFloat(apiDataString) : null;
+
+    if (amountNumber === latestAmount) {
+      console.log('data amount berhasil !');
+      const MootaOrder = MootaOrderSchema.parse({
+        amount: latestAmount,
+      });
+      await MootaOrderStatusUpdate(MootaOrder);
+    } else {
+      console.log('AMOUNT NOT FOUND !');
+    }
     const data = {
       invoiceId,
       bank,
@@ -57,6 +77,80 @@ export async function loader({ params }: ActionArgs) {
       user: true,
     },
   });
+}
+
+const maxRetryAttempts = 5;
+const baseRetryInterval = 5 * 60 * 1000;
+const maxRetryInterval = 24 * 60 * 60 * 1000;
+
+export async function fetchWebhookStatusWithRetry(
+  retryCount = 0,
+  retryInterval = baseRetryInterval
+) {
+  let confirmationPay = null;
+  try {
+    const bank_id = process.env.ID_BANK as string;
+    const token = process.env.TOKEN_ACCOUNT_BANK as string;
+
+    const startDate = moment()
+      .subtract(2, 'days')
+      .format('YYYY-MM-DD') as string;
+    const endDate = moment().format('YYYY-MM-DD') as string;
+
+    const url = `https://app.moota.co/api/v2/mutation?bank=${bank_id}&start_date=${startDate}&end_date=${endDate}`;
+
+    const headers = {
+      Location: '/api/v2/mutation{?bank}&{?start_date}&{?end_date}',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+    });
+
+    if (response.ok) {
+      let responseData = await response.json();
+
+      if (responseData.data && responseData.data.length > 0) {
+        // descending date
+        responseData.data.sort((a: any, b: any) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          return dateB - dateA;
+        });
+
+        const latestTransaction = responseData.data[0];
+
+        const amount = latestTransaction.amount as number;
+
+        confirmationPay = amount;
+      }
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam permintaan API:', error);
+
+    if (retryCount < maxRetryAttempts - 1) {
+      //  interval eksponensial
+      retryInterval *= 2;
+      retryInterval = Math.min(retryInterval, maxRetryInterval);
+
+      console.log(
+        `Percobaan ke-${retryCount + 1} akan dilakukan dalam ${
+          retryInterval / 1000
+        } detik.`
+      );
+      await new Promise((resolve) => setTimeout(resolve, retryInterval));
+      return fetchWebhookStatusWithRetry(retryCount + 1, retryInterval);
+    } else {
+      console.error(
+        'Percobaan retry telah mencapai batas. Tidak dapat mengambil status webhook.'
+      );
+      throw new Error('Percobaan retry telah mencapai batas.');
+    }
+  }
+  return confirmationPay;
 }
 
 export default function TransferPayment() {
