@@ -15,16 +15,20 @@ import {
   Text,
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
-import { Form, useLoaderData, useParams } from '@remix-run/react';
-import { useState } from 'react';
-import { PiShoppingCartThin } from 'react-icons/pi';
-import { db } from '../libs/prisma/db.server';
 import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
-  redirect,
 } from '@remix-run/node';
+import {
+  Form,
+  useLoaderData,
+  useNavigation,
+  useParams,
+} from '@remix-run/react';
+import { useEffect, useRef, useState } from 'react';
+import { PiShoppingCartThin } from 'react-icons/pi';
+import { db } from '../libs/prisma/db.server';
 import { uploadImage } from '~/utils/uploadFile/uploads';
 import moment from 'moment';
 import { MootaOrderStatusUpdate } from '~/modules/order/order.service';
@@ -44,61 +48,70 @@ export async function loader({ params }: ActionArgs) {
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
-    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
-      if (name !== 'attachment') {
-        return undefined;
+    try {
+      const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
+        if (name !== 'attachment') {
+          return undefined;
+        }
+
+        const uploadedImage = await uploadImage(data);
+        console.log('dataimage', uploadedImage);
+
+        return uploadedImage.secure_url;
+      }, createMemoryUploadHandler());
+
+      const formData = await parseMultipartFormData(request, uploadHandler);
+
+      const invoiceId = formData.get('invoiceId') as string;
+      const bank = formData.get('bank') as string;
+      const createdAt = new Date().toISOString();
+      const amount = parseFloat(formData.get('amount') as string);
+      const attachment = formData.get('attachment') as string;
+      console.log('invoiceId', invoiceId);
+      console.log('bank', bank);
+      console.log('createdAt', createdAt);
+      console.log('invoiceId', invoiceId);
+      console.log('amount', amount);
+      console.log('attachment', attachment);
+      const apiData: number | any = await fetchWebhookStatusWithRetry();
+
+      const apiDataString = apiData.toString();
+
+      const latestAmount = apiData ? parseFloat(apiDataString) : null;
+
+      if (amount === latestAmount) {
+        console.log('data amount berhasil !');
+        const MootaOrder = MootaOrderSchema.parse({
+          amount: latestAmount,
+        });
+        await MootaOrderStatusUpdate(MootaOrder);
+      } else {
+        console.log('AMOUNT NOT FOUND !');
       }
-
-      const uploadedImage = await uploadImage(data);
-
-      return uploadedImage.secure_url;
-    }, createMemoryUploadHandler());
-
-    const formData = await parseMultipartFormData(request, uploadHandler);
-
-    const invoiceId = formData.get('invoiceId') as string;
-    const bank = formData.get('bank') as string;
-    const createdAt = new Date().toISOString();
-    const amount = parseFloat(formData.get('amount') as string);
-    const attachment = formData.get('attachment') as string;
-    console.log(attachment);
-
-    const apiData: number | any = await fetchWebhookStatusWithRetry();
-
-    const apiDataString = apiData.toString();
-
-    const latestAmount = apiData ? parseFloat(apiDataString) : null;
-
-    if (amount === latestAmount) {
-      console.log('data amount berhasil !');
-      const MootaOrder = MootaOrderSchema.parse({
-        amount: latestAmount,
+      const data = {
+        invoiceId,
+        bank,
+        createdAt,
+        amount,
+        attachment,
+      };
+      console.log('data', data);
+      return await db.confirmationPayment.create({
+        data: {
+          invoiceId: data.invoiceId,
+          bank: data.bank,
+          createdAt: data.createdAt,
+          amount: isNaN(data.amount) ? 0 : data.amount,
+          attachment: data.attachment,
+        },
       });
-      await MootaOrderStatusUpdate(MootaOrder);
-    } else {
-      console.log('AMOUNT NOT FOUND !');
+    } catch (error) {
+      console.error('gagal post bro:', error);
     }
-    const data = {
-      invoiceId,
-      bank,
-      createdAt,
-      amount,
-      attachment,
-    };
-    return await db.confirmationPayment.create({
-      data: {
-        invoiceId: data.invoiceId,
-        bank: data.bank,
-        createdAt: data.createdAt,
-        amount: isNaN(data.amount) ? 0 : data.amount,
-        attachment: data.attachment,
-      },
-    });
   }
 
-  return redirect(`/checkout/transfer/confirm`);
+  return null;
 };
-
 const maxRetryAttempts = 5;
 const baseRetryInterval = 5 * 60 * 1000;
 const maxRetryInterval = 24 * 60 * 60 * 1000;
@@ -178,6 +191,16 @@ export default function TransferPayment() {
   const [file] = useState<File | null>(null);
   const item = useLoaderData<typeof loader>();
 
+  const { state } = useNavigation();
+
+  const formRef = useRef<HTMLFormElement>(null);
+  let isAdding = state === 'submitting';
+  useEffect(() => {
+    if (isAdding) {
+      formRef.current?.reset();
+    }
+  }, [isAdding]);
+
   return (
     <Flex direction="column" align="center">
       <Box fontSize={'100px'} mt={'10px'}>
@@ -197,16 +220,11 @@ export default function TransferPayment() {
         boxShadow="0px 0px 3px 1px rgba(3, 3, 3, 0.3)"
         borderRadius={'3px'}
       >
-        <Form method="post" encType="multipart/form-data">
+        <Form method="post" encType="multipart/form-data" ref={formRef}>
           <Stack spacing={4}>
             <FormControl id="invoiceId" isRequired>
               <FormLabel>Order ID</FormLabel>
-              <Input
-                name="invoiceId"
-                value={item?.id}
-                type="readOnly"
-                // placeholder={item?.id}
-              />
+              <Input name="invoiceId" value={item?.id} type="readOnly" />
             </FormControl>
             <FormControl id="invoice" isRequired>
               <FormLabel>Atas Nama Rekening</FormLabel>

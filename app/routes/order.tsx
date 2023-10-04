@@ -1,10 +1,10 @@
-import crypto from 'crypto';
+// import crypto from 'crypto';
 
 import { json, redirect } from '@remix-run/node';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
-import { MootaOrderSchema } from '~/modules/order/order.schema';
+// import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
-  MootaOrderStatusUpdate,
+  // MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
@@ -66,18 +66,14 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
-  const requestIP = request.headers.get('x-forwarded-for') as string;
+  // const requestIP = request.headers.get('x-forwarded-for') as string;
 
   const formData = await request.formData();
   const id = formData.get('id') as string;
   const status = formData.get('status') as string;
   const actionType = formData.get('actionType') as string;
 
-  console.log('yg kamu cari', id, actionType, status);
-
   if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
-    console.log('masuk sini');
-
     await db.invoiceHistory.create({
       data: {
         status: status,
@@ -98,34 +94,34 @@ export async function action({ request }: ActionArgs) {
     console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
   }
 
-  if (isMootaIP(requestIP)) {
-    if (request.method === 'POST') {
-      try {
-        const requestBody = await request.text();
-        const payloads = JSON.parse(requestBody);
-        console.log('payloads', payloads);
-        const secretKey = process.env.MOOTA_SECRET as string;
+  // if (isMootaIP(requestIP)) {
+  //   if (request.method === 'POST') {
+  //     try {
+  //       const requestBody = await request.text();
+  //       const payloads = JSON.parse(requestBody);
+  //       console.log('payloads', payloads);
+  //       const secretKey = process.env.MOOTA_SECRET as string;
 
-        const amount = payloads[0].amount as number;
+  //       const amount = payloads[0].amount as number;
 
-        const signature = request.headers.get('Signature') as string;
+  //       const signature = request.headers.get('Signature') as string;
 
-        if (verifySignature(secretKey, requestBody, signature)) {
-          const MootaOrder = MootaOrderSchema.parse({
-            amount,
-          });
-          await MootaOrderStatusUpdate(MootaOrder);
-        } else {
-          console.log('error verify Signature!');
-        }
-        return json({ data: requestBody }, 200);
-      } catch (error) {
-        return new Response('Error in The Use webhook', {
-          status: 500,
-        });
-      }
-    }
-  }
+  //       if (verifySignature(secretKey, requestBody, signature)) {
+  //         const MootaOrder = MootaOrderSchema.parse({
+  //           amount,
+  //         });
+  //         await MootaOrderStatusUpdate(MootaOrder);
+  //       } else {
+  //         console.log('error verify Signature!');
+  //       }
+  //       return json({ data: requestBody }, 200);
+  //     } catch (error) {
+  //       return new Response('Error in The Use webhook', {
+  //         status: 500,
+  //       });
+  //     }
+  //   }
+  // }
 
   if (request.method.toLowerCase() === 'patch') {
     const formData = await request.formData();
@@ -139,15 +135,15 @@ export async function action({ request }: ActionArgs) {
   return redirect('/order');
 }
 
-function isMootaIP(requestIP: string) {
-  const allowedIPs = process.env.ALLOWED_IPS?.split(',') ?? [];
-  return allowedIPs.includes(requestIP);
-}
-function verifySignature(secretKey: string, data: string, signature: string) {
-  const hmac = crypto.createHmac('sha256', secretKey);
-  const computedSignature = hmac.update(data).digest('hex');
-  return computedSignature === signature;
-}
+// function isMootaIP(requestIP: string) {
+//   const allowedIPs = process.env.ALLOWED_IPS?.split(',') ?? [];
+//   return allowedIPs.includes(requestIP);
+// }
+// function verifySignature(secretKey: string, data: string, signature: string) {
+//   const hmac = crypto.createHmac('sha256', secretKey);
+//   const computedSignature = hmac.update(data).digest('hex');
+//   return computedSignature === signature;
+// }
 
 export default function Order() {
   const data = useLoaderData<typeof loader>();

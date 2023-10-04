@@ -1,11 +1,10 @@
 import type { UploadApiResponse } from 'cloudinary';
 import cloudinary from 'cloudinary';
 import { writeAsyncIterableToWritable } from '@remix-run/node';
-import { cloudinaryConfig } from '~/modules/order/order.cloudinary';
-
-cloudinaryConfig();
+import { cloudinaryConfig } from '../../modules/order/order.cloudinary';
 
 async function uploadImage(data: AsyncIterable<Uint8Array>) {
+  cloudinaryConfig();
   const uploadPromise = new Promise<UploadApiResponse>(
     async (resolve, reject) => {
       try {
@@ -20,10 +19,10 @@ async function uploadImage(data: AsyncIterable<Uint8Array>) {
             resolve(result as UploadApiResponse);
           }
         );
-
+        console.log('uploadStream', uploadStream);
         await writeAsyncIterableToWritable(data, uploadStream);
       } catch (error) {
-        reject('error' + error);
+        console.log('error data uploads', error);
       }
     }
   );
