@@ -9,10 +9,7 @@ datasource db {
   provider     = "mysql"
   relationMode = "prisma"
   url          = env("DATABASE_URL")
-
 }
-
-
 
 // your beautiful schema goes below :
 model User {
@@ -32,6 +29,8 @@ model User {
   invoices               Invoice[]
   payments               Payment[]
   withdraws              Withdraw[]
+  verify                 Verify[]
+  isVerify               Boolean
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
@@ -315,7 +314,7 @@ model CartItem {
 }
 
 model Invoice {
-  id                     String                  @id @unique @default(uuid())
+  id                     String                 @id @unique @default(uuid())
   price                  Float
   discount               Float
   status                 String
@@ -332,18 +331,19 @@ model Invoice {
   waybill                String
   mootaTransactionId     String
   confirmationPayment    ConfirmationPayment?
-  cart                   Cart?                   @relation(fields: [cartId], references: [id])
+  cart                   Cart?                  @relation(fields: [cartId], references: [id])
   cartId                 String
-  courier                Courier?                @relation(fields: [courierId], references: [id])
+  courier                Courier?               @relation(fields: [courierId], references: [id])
   courierId              String
-  user                   User?                   @relation(fields: [userId], references: [id])
+  user                   User?                  @relation(fields: [userId], references: [id])
   userId                 String?
-  payment                Payment?                @relation(fields: [paymentId], references: [id])
+  payment                Payment?               @relation(fields: [paymentId], references: [id])
   paymentId              String
-  biteshipTrackinglimits BiteshipTrackingLimit[]
+  biteshipTrackinglimits BiteshipTrackingLimit?
   invoiceHistories       InvoiceHistory[]
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @default(now())
+  refund                 Refund[]
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @default(now())
 
   @@index([cartId])
   @@index([courierId])
@@ -409,15 +409,16 @@ model InvoiceHistory {
 }
 
 model BankAccount {
-  id            String     @id @unique @default(uuid())
+  id            String         @id @unique @default(uuid())
   bank          String
   accountName   String
   accountNumber String
-  store         Store?     @relation(fields: [storeId], references: [id])
+  store         Store?         @relation(fields: [storeId], references: [id])
   storeId       String
   withdraws     Withdraw[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now())
+  adminDecline  AdminDecline[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
 
   @@index([storeId])
   @@map("bank_accounts")
@@ -455,7 +456,7 @@ model BiteshipTrackingLimit {
   user           User?    @relation(fields: [userId], references: [id])
   userId         String
   invoice        Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId      String
+  invoiceId      String   @unique
   nextAccessTime DateTime
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
@@ -466,16 +467,45 @@ model BiteshipTrackingLimit {
 }
 
 model AdminDecline {
-  id         String    @id @unique @default(uuid())
-  reason     String
-  store      Store?    @relation(fields: [storeId], references: [id])
-  storeId    String
-  withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
-  withdrawId String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
+  id            String       @id @unique @default(uuid())
+  reason        String
+  store         Store?       @relation(fields: [storeId], references: [id])
+  storeId       String
+  withdraw      Withdraw?    @relation(fields: [withdrawId], references: [id])
+  withdrawId    String
+  bankAccount   BankAccount? @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String       @unique
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now())
 
   @@index([storeId])
+  @@index([bankAccountId])
   @@index([withdrawId])
   @@map("admin_decline")
+}
+
+model Refund {
+  id         String   @id @unique @default(uuid())
+  amount     Float
+  status     String
+  attachment String
+  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId  String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+
+  @@index([invoiceId])
+  @@map("refund")
+}
+
+model Verify {
+  id        String   @id @unique @default(uuid())
+  token     String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("verify")
 }
