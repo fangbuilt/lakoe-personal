@@ -25,14 +25,33 @@ import {
 } from '~/modules/dashboard/dashboard.service';
 import { useLoaderData } from '@remix-run/react';
 import NavbarDashboard from '../modules/dashboard/components/navbarDashboard';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
 import { db } from '~/libs/prisma/db.server';
-// import { PrismaClient } from "@prisma/client";
+import { getUserId } from '~/modules/auth/auth.service';
 
-export async function loader(id: string) {
-  return await getStoreData(id);
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    throw redirect('/auth/login');
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    throw redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return await getStoreData(userId);
+  } else if (role?.roleId === '3') {
+    throw redirect('/checkout');
+  } else {
+    throw redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -139,10 +158,10 @@ export async function action({ request }: ActionArgs) {
       } else {
         console.error('User not found');
       }
-      return redirect('/dashboard');
+      throw redirect('/dashboard');
     } catch (error) {
       console.error('Error creating withdrawal:', error);
-      return redirect('/dashboard');
+      throw redirect('/dashboard');
     }
   }
 
@@ -165,29 +184,22 @@ export default function Dashboard() {
   }
 
   let totalWithdrawAmount = 0;
-  data.forEach((item) => {
-    if (item.bankAccounts && item.bankAccounts.length > 0) {
-      item.bankAccounts.forEach((account) => {
-        if (account.withdraws && account.withdraws.length > 0) {
-          account.withdraws.forEach((withdraw) => {
-            if (
-              withdraw.status !== 'SUCCESS' &&
-              withdraw.status !== 'DECLINED'
-            ) {
-              totalWithdrawAmount += parseFloat(withdraw.amount.toString());
-            }
-          });
-        }
-      });
-    }
-  });
+  if (data?.bankAccounts && data?.bankAccounts.length > 0) {
+    data?.bankAccounts.forEach((account) => {
+      if (account.withdraws && account.withdraws.length > 0) {
+        account.withdraws.forEach((withdraw) => {
+          if (withdraw.status !== 'SUCCESS' && withdraw.status !== 'DECLINED') {
+            totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+          }
+        });
+      }
+    });
+  }
 
   let createdAtArray: string[] = [];
-  data.forEach((dataItem) => {
-    dataItem.bankAccounts.forEach((bankAccountItem) => {
-      bankAccountItem.withdraws.forEach((withdrawItem) => {
-        createdAtArray.push(withdrawItem.createdAt);
-      });
+  data?.bankAccounts.forEach((bankAccountItem) => {
+    bankAccountItem.withdraws.forEach((withdrawItem) => {
+      createdAtArray.push(withdrawItem.createdAt);
     });
   });
 
@@ -212,25 +224,21 @@ export default function Dashboard() {
             >
               <Text fontSize={'13px'}>Current Balance</Text>
 
-              {data.map((item) => (
-                <Text
-                  fontSize={'20px'}
-                  fontWeight={'bold'}
-                  color={'#28a745'}
-                  key={item.id}
-                >
-                  {formatRupiah(item.credit)}
-                </Text>
-              ))}
-              {data.map((item) => (
-                <DashboardPopup
-                  key={item.id}
-                  bankAccount={item.bankAccounts}
-                  storeName={item.name}
-                  createdAt={createdAtArray}
-                  creditSaldo={item.credit}
-                />
-              ))}
+              <Text
+                fontSize={'20px'}
+                fontWeight={'bold'}
+                color={'#28a745'}
+                key={data?.id}
+              >
+                {formatRupiah(data?.credit as number)}
+              </Text>
+              <DashboardPopup
+                key={data?.id}
+                bankAccount={data?.bankAccounts}
+                storeName={data?.name}
+                createdAt={createdAtArray}
+                creditSaldo={data?.credit}
+              />
             </Box>
             <Box
               display={'flex'}

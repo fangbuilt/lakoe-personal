@@ -2,25 +2,46 @@ import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
 // Fetching data store, bankAccount, withdraw
-export async function getStoreData(id: string) {
-  return json(
-    await db.store.findMany({
-      where: {
-        id: '1',
-      },
-      include: {
-        bankAccounts: {
-          include: {
-            withdraws: {
-              where: {
-                storeId: '1',
-              },
+// export async function getStoreData(id: string) {
+//   await db.store.findMany({
+//     where: {
+//       id: "1",
+//     },
+//     include: {
+//       bankAccounts: {
+//         include: {
+//           withdraws: {
+//             where: {
+//               storeId: "1",
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
+// }
+export async function getStoreData(userId: string) {
+  const user = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+  return await db.store.findFirst({
+    where: {
+      id: user?.id,
+    },
+    include: {
+      bankAccounts: {
+        include: {
+          withdraws: {
+            where: {
+              storeId: '1',
             },
           },
         },
       },
-    })
-  );
+    },
+  });
 }
 
 //BankAccount CRUD
