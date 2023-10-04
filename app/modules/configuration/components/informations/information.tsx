@@ -15,11 +15,13 @@ import {
   Alert,
   AlertTitle,
   Center,
+  Card,
 } from '@chakra-ui/react';
 import GalleryAdd from '~/assets/icon-pack/gallery-add.svg';
 import GalleryEdit from '~/assets/icon-pack/gallery-edit.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
-import React, { useState } from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from '@remix-run/react';
 import type { FileWithPath } from 'react-dropzone';
 import Dropzone from 'react-dropzone';
@@ -31,7 +33,7 @@ import Loading from '../loading';
 const CLOUDINARY_UPLOAD_PRESET = 'eenwxkso';
 const CLOUDINARY_CLOUD_NAME = 'djpxhz3vu';
 
-export function Informations() {
+export function Informations({ dataStore }: any) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -44,6 +46,29 @@ export function Informations() {
   const characterLimitSlogan = 48;
   const characterLimitNamaToko = 48;
   const characterLimitDescription = 200;
+
+  const [formData, setFormData] = useState({
+    storeId: '',
+    slogan: '',
+    name: '',
+    description: '',
+  });
+
+  useEffect(() => {
+    const uploadedImageFromLocalStorage = localStorage.getItem('uploadedImage');
+    if (uploadedImageFromLocalStorage) {
+      setSelectedImage(uploadedImageFromLocalStorage);
+      setUploadedImage(uploadedImageFromLocalStorage);
+    }
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleSaveButtonClick = () => {
     console.log('URL gambar:', selectedImage);
@@ -94,6 +119,7 @@ export function Informations() {
 
       console.log('Image uploaded:', response.data.secure_url);
       setUploadedImage(response.data.secure_url);
+      localStorage.setItem('uploadedImage', response.data.secure_url);
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
@@ -164,7 +190,8 @@ export function Informations() {
         Informasi Toko
       </Text>
       <Form method="post" encType="multipart/form-data">
-        <Input hidden name="action" value="createInformation" />
+        <Input hidden name="action" value="updateInformation" />
+        <Input hidden type="text" name="storeId" value={dataStore.id} />
         <FormControl>
           <Grid
             h="150px"
@@ -177,11 +204,15 @@ export function Informations() {
                 Slogan
               </FormLabel>
               <Input
+                defaultValue={dataStore.slogan}
                 fontSize={'13px'}
                 placeholder="Buat slogan untuk toko"
                 py={-5}
                 name="slogan"
-                onChange={handleSloganChange}
+                onChange={(event) => {
+                  handleChange(event);
+                  handleSloganChange(event);
+                }}
                 maxLength={characterLimitSlogan}
               />
 
@@ -201,12 +232,15 @@ export function Informations() {
               </FormLabel>
 
               <Textarea
+                defaultValue={dataStore.description}
                 fontSize={'13px'}
                 h={'145px'}
                 resize={'none'}
                 placeholder="Tuliskan deskripsi toko disini"
                 name="description"
-                onChange={handleDescriptionFilled}
+                onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                  handleDescriptionFilled(event);
+                }}
                 maxLength={characterLimitDescription}
               />
 
@@ -225,10 +259,14 @@ export function Informations() {
                 Nama Toko
               </FormLabel>
               <Input
+                defaultValue={dataStore.name}
                 fontSize={'13px'}
                 placeholder="Buat Nama Toko"
                 name="name"
-                onChange={handleTokoFilled}
+                onChange={(event) => {
+                  handleChange(event);
+                  handleTokoFilled(event);
+                }}
                 maxLength={characterLimitNamaToko}
               />
 
@@ -242,12 +280,15 @@ export function Informations() {
                 {namaToko.length}/{characterLimitNamaToko}
               </Text>
             </GridItem>
-            <Grid bg={'pink'}>
+            <Grid>
               <Input
-                hidden
+                value={uploadedImage || dataStore.logoAttachment || ''}
                 name="logoAttachment"
                 fontSize={'13px'}
-                value={uploadedImage || ''}
+                onChange={(event) => {
+                  handleChange(event);
+                }}
+                hidden
               />
             </Grid>
           </Grid>
@@ -308,24 +349,17 @@ export function Informations() {
             {({ getRootProps, getInputProps }) => (
               <Box
                 {...getRootProps()}
-                border="0.3px solid "
-                borderColor={'blackAlpha.400'}
-                borderWidth="2px"
                 display="flex"
-                justifyContent="center"
                 flexDirection="column"
-                alignItems="center"
-                borderRadius="10px"
-                p={1}
+                position={'relative'}
                 w="130px"
                 h="130px"
-                position={'relative'}
               >
                 <input {...getInputProps()} />
                 {selectedImage ? (
                   <Box>
                     {uploadedImage ? (
-                      <Box
+                      <Card
                         border="0.5px solid "
                         borderColor={'blackAlpha.400'}
                         borderWidth="2px"
@@ -343,6 +377,8 @@ export function Informations() {
                           src={uploadedImage}
                           alt="Uploaded Photo"
                           objectFit={'cover'}
+                          w={'100%'}
+                          h={'100%'}
                         />
                         <Button
                           position={'absolute'}
@@ -371,30 +407,54 @@ export function Informations() {
                         >
                           <Image m={0} boxSize={'15px'} src={Trash} />
                         </Button>
-                      </Box>
+                      </Card>
                     ) : (
                       isUploading && (
-                        <Box>
-                          <Loading />
+                        <Box
+                          border="dashed"
+                          borderWidth="2px"
+                          display="flex"
+                          justifyContent="center"
+                          flexDirection="column"
+                          alignItems="center"
+                          borderRadius="10px"
+                          borderColor="blackAlpha.300"
+                          w="130px"
+                          h="130px"
+                        >
+                          <Loading justifyContent="center" />
                         </Box>
                       )
                     )}
                   </Box>
                 ) : (
                   <>
-                    <Image
+                    <Box
+                      border="dashed"
+                      borderWidth="2px"
+                      display="flex"
                       justifyContent="center"
-                      w="30px"
-                      h="30px"
-                      src={GalleryAdd}
-                    />
-                    <Text
-                      placeholder="pointer"
-                      fontSize={'13px'}
-                      color={'blackAlpha.700'}
+                      flexDirection="column"
+                      alignItems="center"
+                      borderRadius="10px"
+                      borderColor="blackAlpha.300"
+                      w="130px"
+                      h="130px"
                     >
-                      Unggah Photo
-                    </Text>
+                      <Image
+                        justifyContent="center"
+                        w="30px"
+                        h="30px"
+                        src={GalleryAdd}
+                      />
+                      <Text
+                        placeholder="pointer"
+                        fontSize={'13px'}
+                        color={'blackAlpha.700'}
+                      >
+                        Unggah Photo
+                      </Text>
+                    </Box>
                   </>
                 )}
               </Box>
@@ -409,5 +469,3 @@ export function Informations() {
     </TabPanel>
   );
 }
-
-//jumat 29 2023

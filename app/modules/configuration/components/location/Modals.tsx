@@ -16,9 +16,9 @@ import {
   Textarea,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
 import type { ChangeEvent } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { Form } from '@remix-run/react';
 import ReactLoading from 'react-loading';
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Edit from '~/assets/icon-pack/edit.svg';
@@ -928,16 +928,16 @@ export function UpdateButtonLocation(props: ILocation) {
   );
 }
 
-export function UpdateButtonMain(props: ILocation) {
-  return (
-    <Box>
-      <Form method="patch">
-        <Input hidden name="id" value={props.id} />
-        <Input hidden name="action" value="editmainlocation" />
-        <Button type="submit" borderRadius={'full'} size={'xs'}>
-          Buat jadi alamat utama
-        </Button>
-      </Form>
-    </Box>
-  );
-}
+// export function UpdateButtonMain(props: ILocation) {
+//   return (
+//     <Box>
+//       <Form method="patch">
+//         <Input hidden name="id" value={props.id} />
+//         <Input hidden name="action" value="editmainlocation" />
+//         <Button type="submit" borderRadius={"full"} size={"xs"}>
+//           Buat jadi alamat utama
+//         </Button>
+//       </Form>
+//     </Box>
+//   );
+// }

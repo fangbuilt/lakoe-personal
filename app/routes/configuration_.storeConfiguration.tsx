@@ -33,6 +33,7 @@ import createLocation, {
   getStoreId,
   updateLocation,
   updateMessage,
+  updateStoreInformation,
 } from '~/modules/configuration/configuration.service';
 
 export async function loader({ request }: LoaderArgs) {
@@ -83,17 +84,18 @@ export async function action({ request }: ActionArgs) {
   const longtitude = formData.get('longtitude');
   const cityDistrict = formData.get('cityDistrict');
   const postalCode = formData.get('postalCode') as string;
-  const isMainLocation = false;
+
   console.log('ini isi dari name :', name);
   console.log('ini isi dari adres :', address);
   console.log('ini isi dari lat :', latitude);
   console.log('ini isi dari long :', longtitude);
   console.log('ini isi dari city :', cityDistrict);
   console.log('ini isi dari poscode :', postalCode);
-  console.log('ini isi dari isman :', isMainLocation);
 
   if (action === 'createlocation') {
-    console.log('data berhasil masuk!');
+    const isMainLocation = false;
+    console.log('ini isi dari isman :', isMainLocation);
+    console.log('data berhasil di simpan!');
 
     await createLocation({
       name,
@@ -114,7 +116,10 @@ export async function action({ request }: ActionArgs) {
 
     return redirect(redirectURL);
   } else if (action === 'editlocation') {
-    console.log('masuk ok!');
+    const isMainLocation = false;
+    console.log('ini isi dari isman :', isMainLocation);
+
+    console.log('update ok!');
     const id = formData.get('id') as string;
 
     await updateLocation(id, {
@@ -126,35 +131,36 @@ export async function action({ request }: ActionArgs) {
       postalCode,
       isMainLocation,
     });
+    // } else if (action === "editmainlocation") {
+    //   const isMainLocation = true;
+    //   console.log("main ok!");
+    //   const id = formData.get("id") as string;
+
+    //   await updateMain(id, {
+    //     isMainLocation,
+    //   });
   }
   //======================================================
-  if (action === 'createInformation') {
+  if (action === 'updateInformation') {
     const slogan = formData.get('slogan') as string;
     const description = formData.get('description') as string;
     const name = formData.get('name') as string;
     const domain = `lakoe.store/${name}`;
     const logoAttachment = formData.get('logoAttachment') as string;
+
     console.log('ini logoAttachment', logoAttachment);
 
-    const data = {
-      slogan,
-      description,
-      name,
-      domain,
-      logoAttachment,
-    };
+    const id = formData.get('id') as string;
 
-    await db.store.create({
-      data: {
-        slogan: data.slogan,
-        domain: data.domain,
-        name: data.name,
-        logoAttachment: data.logoAttachment,
-        description: data.description,
-      },
+    await updateStoreInformation(id, {
+      slogan,
+      domain,
+      name,
+      logoAttachment,
+      description,
     });
 
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration `;
 
     return redirect(redirectURL);
   }
@@ -218,7 +224,7 @@ export default function StoreConfiguration() {
           </TabList>
 
           <TabPanels>
-            <Informations />
+            <Informations dataStore={data.store_id} />
 
             <Locations />
 

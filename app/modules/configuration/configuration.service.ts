@@ -61,12 +61,12 @@ export async function updateLocation(id: any, data: any) {
   }
 }
 
-// export async function updateMain(id: any, data: any) {
+// export async function updateMain(id: any) {
 //   try {
 //     const updateMain = await db.location.update({
 //       where: { id: id },
 //       data: {
-//         isMainLocation: data.isMainLocation,
+//         isMainLocation: true,
 //       },
 //     });
 //     const getMain = await db.location.findMany({
@@ -75,7 +75,7 @@ export async function updateLocation(id: any, data: any) {
 //     const updateNotMain = await db.location.updateMany({
 //       where: { NOT: { id: id } },
 //       data: {
-//         isMainLocation: data.isMainLocation,
+//         isMainLocation: false,
 //       },
 //     });
 
@@ -90,21 +90,21 @@ export async function getAllDataLocation() {
     orderBy: {
       createdAt: 'asc',
     },
+    include: {
+      store: true,
+    },
   });
 }
 
 //====================================================
-export async function createStoreInformation(data: any) {
-  const dataPost = await db.store.create({
-    data: {
-      name: data.name,
-      slogan: data.slogan,
-      description: data.description,
-      domain: data.domain,
-      logoAttachment: data.logoAttachment,
+
+export async function getStoreData(id: string) {
+  const dataStore = await db.store.findMany({
+    where: {
+      id: id,
     },
   });
-  return dataPost;
+  return dataStore;
 }
 
 export async function updateStoreInformation(storeId: string, data: any) {

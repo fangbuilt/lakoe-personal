@@ -16,7 +16,6 @@ import {
   CreateButtonLocation,
   DeleteButtonLocation,
   UpdateButtonLocation,
-  UpdateButtonMain,
 } from './Modals';
 
 export default function Locations() {
@@ -54,6 +53,7 @@ export default function Locations() {
             >
               <Flex gap={5} justifyContent={'space-between'}>
                 <Box>
+                  {data.isMainLocation}
                   <Table variant="none" fontSize={'12px'}>
                     <Tr>
                       <Td p={'0px'}>Nama Lokasi</Td>
@@ -123,7 +123,7 @@ export default function Locations() {
                             longtitude={''}
                             postalCode={''}
                             cityDistrict={''}
-                            isMainLocation={false}
+                            isMainLocation={data.isMainLocation}
                           />
                           <UpdateButtonLocation
                             id={data.id}
@@ -134,7 +134,7 @@ export default function Locations() {
                             longtitude={data.longtitude}
                             postalCode={''}
                             cityDistrict={data.cityDistrict}
-                            isMainLocation={false}
+                            isMainLocation={data.isMainLocation}
                           />
                         </Flex>
                       </Td>
@@ -150,17 +150,17 @@ export default function Locations() {
                     </Tr>
                     <Tr pt={'40px'}>
                       <Td p={'0px'}>
-                        <UpdateButtonMain
+                        {/* <UpdateButtonMain
                           id={data.id}
                           name={data.name}
                           address={data.address}
-                          addressNote={''}
+                          addressNote={""}
                           latitude={data.latitude}
                           longtitude={data.longtitude}
-                          postalCode={''}
+                          postalCode={""}
                           cityDistrict={data.cityDistrict}
-                          isMainLocation={false}
-                        />
+                          isMainLocation={data.isMainLocation}
+                        /> */}
                       </Td>
                     </Tr>
                   </Table>
