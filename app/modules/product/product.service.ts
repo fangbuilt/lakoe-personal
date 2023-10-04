@@ -51,10 +51,10 @@ export async function createProduct(data: any, storeId: any) {
                     variantOptionValues: {
                       create: [
                         {
-                          price: data.price,
-                          sku: data.sku,
-                          stock: data.stock,
-                          weight: data.weight,
+                          price: data.variants[0].price,
+                          sku: data.variants[0].sku,
+                          stock: data.variants[0].stock,
+                          weight: data.variants[0].weight,
                           isActive: true,
                         },
                       ],

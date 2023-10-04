@@ -25,8 +25,6 @@ import type { loader } from '~/routes/product_.add';
 import { useLoaderData } from '@remix-run/react';
 import useAddProduct from '../hooks/useAddProduct';
 
-// import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '~/constants/cloudinary';
-
 export function ProductDetail() {
   const [, setSelectedImage] = useState<string | null>(null);
 

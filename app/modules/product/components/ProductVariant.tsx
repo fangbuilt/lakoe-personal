@@ -166,7 +166,7 @@ export function LazyProductVariant() {
               </HStack>
 
               {isColorActive && (
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Warna</FormLabel>
                   <Box
                     border={'1px'}
@@ -203,7 +203,7 @@ export function LazyProductVariant() {
               )}
 
               {isSizeActive && (
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Ukuran</FormLabel>
                   <Box
                     border={'1px'}
@@ -260,8 +260,8 @@ export function LazyProductVariant() {
                 </Flex>
               )}
 
-              {colorVariants.map((colorVariant) => (
-                sizeVariants.map((sizeVariant) => (
+              {colorVariants.map((colorVariant, colorIndex) => (
+                sizeVariants.map((sizeVariant, sizeIndex) => (
                   <Stack spacing={4} key={`${colorVariant.name}-${sizeVariant.name}`}>
                     <FormControl display="flex" alignItems="center">
                       <FormLabel fontWeight={'bold'} key=
@@ -275,13 +275,13 @@ export function LazyProductVariant() {
                     <Stack spacing={10}>
                       <Flex gap={4}>
                         <FormControl isRequired>
-                          <FormLabel>Harga</FormLabel>
+                          <FormLabel>Harga{colorIndex}&{sizeIndex}</FormLabel>
                           <InputGroup>
                             <InputLeftAddon children="Rp" />
                             <Input
                               type="text"
                               placeholder="Masukan harga satuan barang"
-                              name="price"
+                              name={`variants[${colorIndex}][${sizeIndex}][price]`}
                             />
                           </InputGroup>
                         </FormControl>
@@ -290,14 +290,14 @@ export function LazyProductVariant() {
                           <Input
                             type="number"
                             placeholder="Masukan jumlah stok"
-                            name="stock"
+                            name={`variants[${colorIndex}][${sizeIndex}][stock]`}
                           />
                         </FormControl>
                       </Flex>
                       <Flex gap={4}>
                         <FormControl>
                           <FormLabel>SKU (Stock Keeping Unit)</FormLabel>
-                          <Input type="text" placeholder="Masukan SKU" name="sku" />
+                          <Input type="text" placeholder="Masukan SKU" name={`variants[${colorIndex}][${sizeIndex}][sku]`} />
                         </FormControl>
                         <FormControl isRequired>
                           <FormLabel>Berat Produk</FormLabel>
@@ -305,7 +305,7 @@ export function LazyProductVariant() {
                             <Input
                               type="number"
                               placeholder="Masukan berat produk"
-                              name="weight"
+                              name={`variants[${colorIndex}][${sizeIndex}][weight]`}
                             />
                             <InputRightAddon children="Gram" />
                           </InputGroup>

@@ -47,38 +47,65 @@ export async function action({ request }: ActionArgs) {
 
     const formData = await request.formData();
 
-    const imageUrl = formData.get('mainPhoto') as string;
-    const imageUrl2 = formData.get('photo2') as string;
-    const imageUrl3 = formData.get('photo3') as string;
-    const imageUrl4 = formData.get('photo4') as string;
-    const imageUrl5 = formData.get('photo5') as string;
+    // const imageUrl = formData.get('mainPhoto') as string;
+    // const imageUrl2 = formData.get('photo2') as string;
+    // const imageUrl3 = formData.get('photo3') as string;
+    // const imageUrl4 = formData.get('photo4') as string;
+    // const imageUrl5 = formData.get('photo5') as string;
 
     const storeId = formData.get('storeId') as string;
 
+    const getValue = (fieldName: string): string => {
+      const value = formData.get(fieldName);
+      return typeof value === 'string' ? value : '';
+    };
+
+    const variants = [];
+    for (let c = 0; c < 2; c++) {
+      for (let i = 0; i < 2; i++) {
+
+        const variantPrice = parseFloat(getValue(`variants[${c}][${i}][price]`));
+        const variantStock = parseInt(getValue(`variants[${c}][${i}][stock]`));
+        const variantSku = formData.get(`variants[${c}][${i}][sku]`);
+        const variantWeight = parseInt(getValue(`variants[${c}][${i}][weight]`));
+
+        variants.push({
+          price: variantPrice,
+          stock: variantStock,
+          sku: variantSku,
+          weight: variantWeight,
+        });
+      }
+    }
+
+    console.log("jjhjh", variants);
+
+
+
+
     const data = {
-      url1: imageUrl,
-      url2: imageUrl2,
-      url3: imageUrl3,
-      url4: imageUrl4,
-      url5: imageUrl5,
-      name: formData.get('name'),
-      description: formData.get("description") as string,
-      minimumOrder: Number(formData.get('min_order')),
-      price: parseFloat(formData.get('price') as string),
-      stock: parseInt(formData.get('stock') as string),
-      sku: formData.get('sku'),
-      price2: parseFloat(formData.get('price-variant') as string),
-      stock2: parseInt(formData.get('stock-variant') as string),
-      weight2: parseInt(formData.get('weight-variant') as string),
-      sku2: formData.get('sku-variant'),
+      url1: getValue('mainPhoto'),
+      url2: getValue('photo2'),
+      url3: getValue('photo3'),
+      url4: getValue('photo4'),
+      url5: getValue('photo5'),
+      name: getValue('name'),
+      description: getValue('description'),
+      minimumOrder: Number(getValue('min_order')),
+      variants: variants,
+      // price2: parseFloat(formData.get('price-variant') as string),
+      // stock2: parseInt(formData.get('stock-variant') as string),
+      // weight2: parseInt(formData.get('weight-variant') as string),
+      // sku2: formData.get('sku-variant'),
+
       slug: formData.get('url'),
       category: formData.get('category') as string,
-      weight: parseInt(formData.get('weight') as string),
       length: parseFloat(formData.get('length') as string),
       width: parseFloat(formData.get('width') as string),
       height: parseFloat(formData.get('height') as string),
     };
 
+    console.log("ini datanya", data.variants);
 
     await createProduct(data, storeId);
     return redirect('/product');
