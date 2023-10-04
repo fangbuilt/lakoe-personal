@@ -1,5 +1,5 @@
 import {
-  Box,
+  // Box,
   Button,
   Card,
   CardBody,
@@ -20,8 +20,8 @@ import {
 import { useState } from 'react';
 import AddIcon from '~/assets/icon-pack/button-icons/add-circle.svg';
 import TrashIcon from '~/assets/icon-pack/button-icons/trash.svg';
-import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
-import Dropzone from 'react-dropzone';
+// import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
+// import Dropzone from 'react-dropzone';
 
 export function LazyProductVariant() {
   return (
@@ -55,7 +55,7 @@ export function ProductVariant() {
   };
   const labels = [{ label: 'Warna' }, { label: 'Ukuran' }];
 
-  const variants = [{ name: 'Sage' }, { name: 'Hitam' }];
+  const variants = [{ name: 'Hitam' }, { name: 'Merah' }];
 
   return (
     <Card pb={3}>
@@ -115,44 +115,6 @@ export function ProductVariant() {
 
           <FormControl isRequired>
             <FormLabel>Foto Produk</FormLabel>
-            <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
-              {({ getRootProps, getInputProps }) => (
-                <HStack>
-                  {variants.map((variant, index) => (
-                    <Box {...getRootProps()} key={index}>
-                      <input
-                        {...getInputProps()}
-                        name="image"
-                        type="file"
-                        accept="image/jpeg, image/png, image/gif"
-                      />
-                      <Flex
-                        direction={'column'}
-                        justify={'center'}
-                        align={'center'}
-                        gap={2}
-                        border={'1px'}
-                        p={10}
-                        borderRadius={'md'}
-                        borderColor={'gray.400'}
-                        borderStyle={'dashed'}
-                        w={'7.5em'}
-                        h={'7.5em'}
-                      >
-                        <Image src={GalleryAdd} />
-                        <Text
-                          textAlign={'center'}
-                          textColor={'gray.400'}
-                          fontSize={'sm'}
-                        >
-                          Foto {variant.name}
-                        </Text>
-                      </Flex>
-                    </Box>
-                  ))}
-                </HStack>
-              )}
-            </Dropzone>
           </FormControl>
 
           <Flex justify={'space-between'} align={'center'}>
@@ -191,7 +153,7 @@ export function ProductVariant() {
                       <Input
                         type="text"
                         placeholder="Masukan harga satuan barang"
-                        name="price"
+                        name="price-variant"
                       />
                     </InputGroup>
                   </FormControl>
@@ -201,7 +163,7 @@ export function ProductVariant() {
                     <Input
                       type="number"
                       placeholder="Masukan jumlah stok"
-                      name="stock"
+                      name="stock-variant"
                     />
                   </FormControl>
                 </Flex>
@@ -209,7 +171,7 @@ export function ProductVariant() {
                 <Flex gap={4}>
                   <FormControl>
                     <FormLabel>SKU (Stock Keeping Unit)</FormLabel>
-                    <Input type="text" placeholder="Masukan SKU" name="sku" />
+                    <Input type="text" placeholder="Masukan SKU" name="sku-variant" />
                   </FormControl>
 
                   <FormControl isRequired>
@@ -218,7 +180,7 @@ export function ProductVariant() {
                       <Input
                         type="number"
                         placeholder="Masukan berat produk"
-                        name="weight"
+                        name="weight-variant"
                       />
                       <InputRightAddon children="Gram" />
                     </InputGroup>

@@ -22,7 +22,8 @@ export async function createProduct(data: any, storeId: any) {
         attachments: {
           create: [
             {
-              url: data.url,
+              url: data.url1,
+              isMain: true
             },
             {
               url: data.url2,
@@ -63,6 +64,28 @@ export async function createProduct(data: any, storeId: any) {
                 ],
               },
             },
+            {
+              name: data.name + " hitam aja",
+              isActive: true,
+              variantOptions: {
+                create: [
+                  {
+                    name: data.name + " hitam aja",
+                    variantOptionValues: {
+                      create: [
+                        {
+                          price: data.price2,
+                          sku: data.sku2,
+                          stock: data.stock2,
+                          weight: data.weight2,
+                          isActive: true,
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
           ],
         },
       },
@@ -85,6 +108,121 @@ export async function createProduct(data: any, storeId: any) {
     throw new Error(error);
   }
 }
+
+// export async function createProduct(data: any, storeId: any) {
+
+//   try {
+//     const productData = {
+//       name: data.name,
+//       slug: data.slug,
+//       description: data.description,
+//       minimumOrder: data.minimumOrder,
+//       length: data.length,
+//       width: data.width,
+//       height: data.height,
+//       store: {
+//         connect: { id: storeId },
+//       },
+//       category: {
+//         create: {
+//           name: data.category,
+//         },
+//       },
+//       attachments: {
+//         create: [] as { url: string; isMain: boolean }[],
+//       },
+//       variants: {
+//         create: [] as {
+//           name: string;
+//           isActive: boolean;
+//           variantOptions: {
+//             create: {
+//               name: string;
+//               variantOptionValues: {
+//                 create: {
+//                   price: number;
+//                   sku: string;
+//                   stock: number;
+//                   weight: number;
+//                   isActive: boolean;
+//                 }[];
+//               };
+//             }[];
+//           };
+//         }[],
+//       },
+//     };
+
+//     for (let i = 1; i <= 5; i++) {
+//       const urlKey = `url${i}`;
+//       const isMain = i === 1;
+
+//       productData.attachments.create.push({
+//         url: data[urlKey],
+//         isMain: isMain,
+//       });
+//     }
+
+//     const numberOfVariants = 7;
+
+//     for (let i = 0; i < numberOfVariants; i++) {
+//       const variantName = i === 0 ? data.name : data.name + ` variant ${i}`;
+//       const variantPriceKey = i === 0 ? "price" : `price-variant-${i}`;
+//       const variantSkuKey = i === 0 ? "sku" : `sku-variant-${i}`;
+//       const variantStockKey = i === 0 ? "stock" : `stock-variant-${i}`;
+//       const variantWeightKey = i === 0 ? "weight" : `weight-variant-${i}`;
+
+//       const variant = {
+//         name: variantName,
+//         isActive: true,
+//         variantOptions: {
+//           create: [
+//             {
+//               name: variantName,
+//               variantOptionValues: {
+//                 create: [
+//                   {
+//                     price: data[variantPriceKey],
+//                     sku: data[variantSkuKey],
+//                     stock: data[variantStockKey],
+//                     weight: data[variantWeightKey],
+//                     isActive: true,
+//                   },
+//                 ],
+//               },
+//             },
+//           ],
+//         },
+//       };
+
+//       productData.variants.create.push(variant);
+//     }
+
+
+
+
+//     const newProduct = await db.product.create({
+//       data: productData,
+//       include: {
+//         category: true,
+//         variants: {
+//           include: {
+//             variantOptions: {
+//               include: {
+//                 variantOptionValues: true,
+//               },
+//             },
+//           },
+//         },
+//       },
+//     });
+
+//     return newProduct;
+//   } catch (error: any) {
+//     throw new Error(error);
+//   }
+// }
+
 
 export async function getProduct() {
   const data = await db.product.findMany({
