@@ -1,72 +1,64 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
-  Text,
-  Input,
-  InputGroup,
-  InputLeftElement,
+  Card,
+  Center,
+  Checkbox,
+  Flex,
+  Img,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useDisclosure,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Image,
-  Checkbox,
 } from '@chakra-ui/react';
-
+import { Link } from '@remix-run/react';
+import Empty from '../assets/icon-pack/empty-dot.svg';
+import { whatsappConfiguration } from '../utils/TemplateMessage';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-import Empty from '../assets/icon-pack/empty-dot.svg';
-
-import UnpaidCard from './CardUnpaid';
-import CardReadyToShip from './CardReadyToShip';
-import CardCanceled from './CardCanceled';
-import { useLoaderData } from '@remix-run/react';
-import type { loader } from '~/routes/order';
-import React, { useState, useEffect } from 'react';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
-// import searchFilter from '~/hooks/useSearchOrder';
-const CardUnpaidCollection = () => {
-  // Menggunakan destructuring untuk mendapatkan data yang diperlukan
-  const { unpaidCard, canceledService, getTemplateMessages } =
-    useLoaderData<typeof loader>();
+import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+import searchFilter from '~/hooks/useSearchOrder';
 
-  // Menggabungkan data dari variabel ke dalam objek
-  const object2 = { data: unpaidCard };
-  const object3 = { data: canceledService };
-  const object4 = { data: getTemplateMessages };
-
-  // Membuat array yang berisi objek-objek tersebut
-  const arrayOfObjects: Array<{ data: any }> = [object2, object3, object4];
-
-  // Mengambil data dari array objek
-  const dataCollection = arrayOfObjects.map((item) => item.data);
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredOrders, setFilteredOrders] = useState(dataCollection);
-
-  // Destructuring hook yang diperlukan
-  const { selectedCouriers, toggleCourier, getSelectedCourier } =
-    useFilterCourier();
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter();
-  console.log('dataCollection', dataCollection);
-
-  useEffect(() => {
-    const lowerQuery = searchQuery.toLowerCase();
-    const filtered = dataCollection.filter((items) => {
-      const productName =
-        items.cart?.cartItems
-          .map((item: any) => item.product?.name?.toLowerCase())
-          .flat() || [];
-
-      // Logika untuk filter berdasarkan searchQuery
-      return productName.some((name: any) => name && name.includes(lowerQuery));
+export default function CardSuccessed() {
+  function formatCurrency(price: number): string {
+    return price.toLocaleString('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     });
-    setFilteredOrders(filtered);
-  }, [searchQuery]);
+  }
+
+  const { isOpen, onOpen, onClose } = useDisclosure(); // modal
+  const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
+  const { selectedCouriers, toggleCourier, getSelectedCourier } =
+    useFilterCourier(); // courier selected
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortFilter(); // sort selcted
+
   return (
     <>
+      {/* start filter */}
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
@@ -105,7 +97,6 @@ const CardUnpaidCollection = () => {
               width={'100%'}
               color={getSelectedCourier() > 0 ? 'black' : '#909090'}
               fontWeight={'normal'}
-              // me={2}
             >
               <Text fontSize="14px" textAlign="left">
                 {getSelectedCourier() > 0
@@ -189,6 +180,7 @@ const CardUnpaidCollection = () => {
               </MenuItem>
             </MenuList>
           </Menu>
+
           <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
@@ -299,18 +291,162 @@ const CardUnpaidCollection = () => {
           </Menu>
         </Box>
       </Box>
-      {filteredOrders.map((item) => (
-        <div key={item.id}>
-          <UnpaidCard filteredOrders={item} />
-          <CardReadyToShip filteredOrders={item} />
-          <CardCanceled filteredOrders={item} />
-        </div>
-      ))}
-      {/* <UnpaidCard filteredOrders={filteredOrders} />
-      <CardReadyToShip filteredOrders={filteredOrders} />
-      <CardCanceled filteredOrders={filteredOrders} /> */}
+      {filteredOrders.length === 0 ? (
+        <Box marginTop={'70px'}>
+          <Center>
+            <Box textAlign="center" mt={5} display={'flex'}>
+              <Image src={ReceiptSearch} />
+              <Text fontSize="16px" mt={1}>
+                Oops, pesanan yang kamu cari tidak ditemukan.
+                <Text fontSize={'12px'} color={'#909090'} textAlign={'left'}>
+                  Coba bisa cari dengan kata kunci lain
+                </Text>
+              </Text>
+            </Box>
+          </Center>
+        </Box>
+      ) : (
+        <Box>
+          {filteredOrders.map((data, index) => (
+            <Card mb={5} mt={5} boxShadow={'xs'} key={data.id}>
+              <Box>
+                <Box mt={5}>
+                  <Box>
+                    <Flex justifyContent={'space-between'} px={2}>
+                      <Button
+                        bg={'#EA3829'}
+                        color={'white'}
+                        fontWeight={'bold'}
+                        colorScheme="red.500"
+                        size={'sm'}
+                        pointerEvents={'none'}
+                      >
+                        {data.status === 'ORDER_COMPLETED'
+                          ? 'Pesanan Selesai'
+                          : ''}
+                      </Button>
+
+                      {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
+
+                      <Button
+                        bg={'transparent'}
+                        border={'1px solid #D5D5D5'}
+                        borderRadius={'full'}
+                        fontSize={'14px'}
+                        height={'32px'}
+                        onClick={onOpen}
+                        py={4}
+                      >
+                        Hubungi Pembeli
+                      </Button>
+
+                      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+                        <ModalOverlay bg={'whiteAlpha.50'} />
+                        <ModalContent>
+                          <ModalHeader>
+                            Send Message To {data.receiverName}{' '}
+                          </ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody>
+                            <Accordion allowToggle>
+                              {data.cart?.store?.messageTemplates.map(
+                                (item) => (
+                                  <AccordionItem key={item.id}>
+                                    <Text>
+                                      <AccordionButton>
+                                        <Box
+                                          as="span"
+                                          flex="1"
+                                          textAlign="left"
+                                        >
+                                          Template Message {item.id}
+                                        </Box>
+                                        <AccordionIcon />
+                                      </AccordionButton>
+                                    </Text>
+                                    <AccordionPanel pb={4}>
+                                      {item.content} hehe
+                                      <Button
+                                        colorScheme={'whatsapp'}
+                                        float={'right'}
+                                      >
+                                        <Link
+                                          to={whatsappConfiguration(
+                                            data.receiverPhone,
+                                            item.content
+                                          )}
+                                        >
+                                          Kirim
+                                        </Link>
+                                      </Button>
+                                    </AccordionPanel>
+                                  </AccordionItem>
+                                )
+                              )}
+                            </Accordion>
+                          </ModalBody>
+                          <ModalFooter></ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                    </Flex>
+                    <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
+                      INV/{data.invoiceNumber}
+                    </Text>
+                    <hr />
+
+                    <Flex justifyContent={'space-between'}>
+                      <Box display={'flex'} gap={3} w={'80%'}>
+                        <Img
+                          w={'52px'}
+                          h={'52px'}
+                          display={'inline'}
+                          borderRadius={'md'}
+                          src={
+                            data.cart?.cartItems[0]?.product?.attachments[0]
+                              ?.url
+                          }
+                          mt={3}
+                          ms={2}
+                        />
+                        <Text
+                          mt={4}
+                          id="fm500"
+                          fontSize={'16px'}
+                          textOverflow={'ellipsis'}
+                          overflow={'hidden'}
+                          whiteSpace={'nowrap'}
+                          fontWeight={'700'}
+                        >
+                          {data.cart?.cartItems.map(
+                            (item) => item.product?.name
+                          )}
+                          <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
+                            {data.cart?.cartItems.map((item) => item.qty)}{' '}
+                            Barang
+                          </Text>
+                        </Text>
+                      </Box>
+                      <Box mt={4} w={'18%'}>
+                        <Flex gap={1}>
+                          <Text color={'#909090'} fontSize={'14px'}>
+                            Total
+                          </Text>
+                          <Text color={'#909090'} fontSize={'14px'}>
+                            Belanja
+                          </Text>
+                        </Flex>
+                        <Text fontWeight={'bold'} fontSize={'14px'}>
+                          {formatCurrency(data.price)}
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </Box>
+                </Box>
+              </Box>
+            </Card>
+          ))}
+        </Box>
+      )}
     </>
   );
-};
-
-export default CardUnpaidCollection;
+}

@@ -12,17 +12,25 @@ import {
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import type { loader } from '~/routes/order';
-import CardCanceled from '../components/CardCanceled';
 import ScrollBox from '../components/ScrollBox';
 import CardReadyToShip from '~/components/CardReadyToShip';
-import UnpaidAllCard from '~/components/CardUnpaidAll';
-import UnpaidCard from '~/components/CardUnpaid';
-
-import CardUnpaidCollection from '~/components/CardUnpaidCollection';
-
+// import CardCanceled from '../components/CardCanceled';
+// import UnpaidAllCard from '~/components/CardUnpaidAll';
+// import UnpaidCard from '~/components/CardUnpaid';
+// import CardUnpaidCollection from '~/components/CardUnpaidCollection';
+// import CardUnpaidCollection2 from '~/components/CardUnpaidCollection2';
+// import UnpaidAllCardCopy from '~/components/CardUnpaidAll';
+// import UnpaidCardCopy from '~/components/CardUnpaid';
+// import CardCenceledCopy from '~/components/CardCanceled';
 import CardInShipping from '~/components/CardInShipping';
+import CardSuccesOrder from '~/components/CardSuccesOrder';
 import CardNewOrderBa from '~/components/CardNewOrderBa';
-
+import CardAllOrder from '~/components/CardAllOerder';
+import UnpaidCard from '~/components/CardUnpaid';
+import CardCenceled from '../components/CardCanceled';
+// import UnpaidAllCard from '~/components/CardAllOerder';
+// import CardAllOrder from '~/components/CardAllOerder';
+import CardSuccessed from '~/components/CardSuccessed';
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
   const { unpaidCard } = useLoaderData<typeof loader>();
@@ -216,7 +224,9 @@ export default function NavOrder({ allOrderSevice }: any) {
                 <ScrollBox>
                   <TabPanel>
                     {/* <UnpaidAllCard /> */}
-                    <CardUnpaidCollection />
+                    <CardAllOrder />
+                    {/* <CardUnpaidCollection /> */}
+                    {/* <CardUnpaidCollection2 /> */}
                   </TabPanel>
                 </ScrollBox>
 
@@ -246,13 +256,13 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>pesanan selesai</h1>
+                    <CardSuccessed />
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardCanceled />
+                    <CardCenceled />
                   </TabPanel>
                 </ScrollBox>
 

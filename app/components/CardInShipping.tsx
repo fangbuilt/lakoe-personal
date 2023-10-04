@@ -2,11 +2,13 @@ import { Box, Button, Card, Flex, Img, Text } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { ITracking } from '~/interfaces/order/orderTracking';
 import type { loader } from '~/routes/order';
 import ModalInShipping from './ModalInShipping';
+import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 
-export default function CardInShipping(props: { dataTracking: ITracking }) {
+export default function CardInShipping(props: {
+  dataTracking: IBiteshipTracking;
+}) {
   const data = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
@@ -73,7 +75,7 @@ export default function CardInShipping(props: { dataTracking: ITracking }) {
                           w={'52px'}
                           h={'52px'}
                           display={'inline'}
-                          src={item.product?.attachments[0].url}
+                          src={item.product?.attachments[0]?.url}
                           mt={3}
                         />
                       ))}

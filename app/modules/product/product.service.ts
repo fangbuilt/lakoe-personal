@@ -27,15 +27,15 @@ export async function createProduct(data: any, storeId: any) {
             {
               url: data.url2,
             },
-            // {
-            //   url: data.url3,
-            // },
-            // {
-            //   url: data.url4,
-            // },
-            // {
-            //   url: data.url5
-            // }
+            {
+              url: data.url3,
+            },
+            {
+              url: data.url4,
+            },
+            {
+              url: data.url5,
+            },
           ],
         },
 
@@ -227,4 +227,23 @@ export async function deleteProduct(id: any) {
     const isSuccess = false;
     return isSuccess;
   }
+}
+
+export async function productCategory(id: any) {
+  const data = await db.category.findMany({
+    where: {
+      parentId: id,
+    },
+    select: { id: true },
+  });
+
+  const newData = await db.category.findMany({
+    where: {
+      parentId: {
+        in: data.map((value) => value.id),
+      },
+    },
+  });
+
+  return newData;
 }

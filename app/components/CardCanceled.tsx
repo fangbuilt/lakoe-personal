@@ -1,9 +1,9 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
+  // Accordion,
+  // AccordionButton,
+  // AccordionIcon,
+  // AccordionItem,
+  // AccordionPanel,
   Box,
   Button,
   Card,
@@ -15,31 +15,33 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+  // Modal,
+  // ModalBody,
+  // ModalCloseButton,
+  // ModalContent,
+  // ModalFooter,
+  // ModalHeader,
+  // ModalOverlay,
   Text,
-  useDisclosure,
+  // useDisclosure,
   Input,
   InputGroup,
   InputLeftElement,
   Image,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
+// import { Link } from '@remix-run/react';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import { whatsappConfiguration } from '../utils/TemplateMessage';
+// import { whatsappConfiguration } from '../utils/TemplateMessage';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import searchFilter from '~/hooks/useSearchOrder';
+import OrderUnpaidModal from './modalProps/modalWhatsapp';
+import { useState } from 'react';
 
-export default function CardCenceled(props: any) {
+export default function CardCenceled() {
   function formatCurrency(price: number): string {
     return price.toLocaleString('id-ID', {
       style: 'currency',
@@ -49,13 +51,22 @@ export default function CardCenceled(props: any) {
     });
   }
 
-  const { isOpen, onOpen, onClose } = useDisclosure(); // modal
+  // const { isOpen, onOpen, onClose } = useDisclosure(); // modal
   const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier(); // courier selected
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter(); // sort selcted
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [, setSelectedCardId] = useState<string>('');
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
   return (
     <>
       {/* start filter */}
@@ -307,7 +318,7 @@ export default function CardCenceled(props: any) {
         </Box>
       ) : (
         <Box>
-          {filteredOrders.map((data, index) => (
+          {filteredOrders.map((data) => (
             <Card mb={5} mt={5} boxShadow={'xs'} key={data.id}>
               <Box>
                 <Box mt={5}>
@@ -332,13 +343,22 @@ export default function CardCenceled(props: any) {
                         borderRadius={'full'}
                         fontSize={'14px'}
                         height={'32px'}
-                        onClick={onOpen}
+                        onClick={() => {
+                          setSelectedCardId(data.id);
+                          openModal();
+                        }}
                         py={4}
                       >
                         Hubungi Pembeli
                       </Button>
-
-                      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+                      <OrderUnpaidModal
+                        isOpen={modalIsOpen}
+                        onClose={closeModal}
+                        selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
+                        itemName={data.receiverName}
+                        itemPhone={data.receiverPhone}
+                      />
+                      {/* <Modal onClose={onClose} isOpen={isOpen} isCentered>
                         <ModalOverlay bg={'whiteAlpha.50'} />
                         <ModalContent>
                           <ModalHeader>
@@ -385,7 +405,7 @@ export default function CardCenceled(props: any) {
                           </ModalBody>
                           <ModalFooter></ModalFooter>
                         </ModalContent>
-                      </Modal>
+                      </Modal> */}
                     </Flex>
                     <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
                       INV/{data.invoiceNumber}

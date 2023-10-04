@@ -1,15 +1,21 @@
+import { db } from '~/libs/prisma/db.server';
 import type { z } from 'zod';
 import type { MootaOrderSchema } from './order.schema';
-import { db } from '~/libs/prisma/db.server';
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
     where: {
       status: 'UNPAID',
+      courier: {
+        courierName: {
+          in: ['jne', 'poa', 'tiki'],
+        },
+      },
     },
     include: {
       user: true,
       payment: true,
+      courier: true,
       cart: {
         include: {
           store: {
@@ -143,6 +149,11 @@ export async function getInvoiceById(id: any) {
       cart: {
         include: {
           user: true,
+          store: {
+            include: {
+              locations: true,
+            },
+          },
           cartItems: {
             include: {
               variantOption: {
@@ -381,4 +392,49 @@ export async function updateStatusInvoice(data: any) {
 
 export async function getTemplateMessage() {
   return await db.messageTemplate.findMany();
+}
+
+export async function SuccesService() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'ORDER_COMPLETED',
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+export async function updateStatusInvoice2(data: any) {
+  const { id } = data;
+  await db.invoice.update({
+    data: {
+      status: 'ORDER_CANCELLED',
+      invoiceHistories: {
+        create: {
+          status: 'ORDER_CANCELLED',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+    },
+    where: {
+      id: id,
+    },
+  });
 }

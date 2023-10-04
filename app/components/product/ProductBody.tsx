@@ -41,6 +41,7 @@ export default function ProductBody(props: IProductBodyProps) {
     useFilterProducts();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortProducts();
+
   useEffect(() => {
     setSearchQuery(debouncedSearchTerm);
   }, [debouncedSearchTerm, setSearchQuery]);

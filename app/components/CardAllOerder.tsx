@@ -1,23 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
   Card,
   Flex,
   Img,
-  // Accordion,
-  // AccordionButton,
-  // AccordionIcon,
-  // AccordionItem,
-  // AccordionPanel,
-  // Modal,
-  // ModalBody,
-  // ModalCloseButton,
-  // ModalContent,
-  // ModalFooter,
-  // ModalHeader,
-  // ModalOverlay,
-  // useDisclosure,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
+  useDisclosure,
   Input,
   InputGroup,
   InputLeftElement,
@@ -30,18 +31,82 @@ import {
   Center,
   Divider,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
-import SearchProduct from '../assets/icon-pack/search-product.svg';
-import { useSortFilter } from '~/hooks/useSortFilter';
+
+import { Form, Link, useLoaderData } from '@remix-run/react';
+import type { loader } from '~/routes/order';
+import React, { useState } from 'react';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
+import SearchProduct from '../assets/icon-pack/search-product.svg';
+// import { useFilterCourier } from '~/hooks/useFilterCourier';
+import { useSortFilter } from '~/hooks/useSortFilter';
 import Empty from '../assets/icon-pack/empty-dot.svg';
+import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
+import type {
+  Item,
+  ItemName,
+  ItemSend,
+  ItemTemplate,
+} from '~/type/StatusColorMap';
+import {
+  statusToColor,
+  statusToSendBuyer,
+  statusNameButton,
+  statusToTemplate,
+} from '~/type/StatusColorMap';
+import ModalTracking from './orderTrackingModal';
+import UnpaidCard from './CardUnpaid';
+import CardReadyToShip from './CardReadyToShip';
+import CardCenceled from './CardCanceled';
+import ModalWhatsapp from './modalProps/modalWhatsapp';
+import CardInShipping from './CardInShipping';
+import ModalInShipping from './ModalInShipping';
+import type { IBiteshipTracking } from '~/interfaces/orderTracking';
+import { ModalComponent } from './CardNewOrderBa';
+import HooksMasRino from './HooksMasRino';
+import UseSearchProductAll from '~/hooks/useSearchOrderAll';
+// import UseSearchProductAll from '~/hooks/useSearchOrderAll';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 
-import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
-import { useState } from 'react';
-import ModalWhatsapp from './modalProps/modalWhatsapp';
+export default function CardAllOrder(props: {
+  dataTracking: IBiteshipTracking;
+}) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { filteredOrder, setSearchQuery, searchQuery } = UseSearchAll();
+  const { getTemplateMessages } = useLoaderData<typeof loader>();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState<string>('');
+  const [isUnpaidModalOpen, setIsUnpaidModalOpen] = useState(false);
+  const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
+  const [isOrderNewOrderModalOpen, setIsOrderNewOrderModalOpen] =
+    useState(false);
+  const [isOrderCancelledModalOpen, setIsOrderCancelledModalOpen] =
+    useState(false);
+  const [isOrderInTransitModalOpen, setIsOrderInTransitModalOpen] =
+    useState(false);
+  const [isOrderCompletedModalOpen, setIsOrderCompletedModalOpen] =
+    useState(false);
+  const [modalText, setModalText] = useState('');
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setIsUnpaidModalOpen(false);
+    setIsNewOrderModalOpen(false);
+    setIsOrderNewOrderModalOpen(false);
+    setIsOrderCancelledModalOpen(false);
+    setIsOrderInTransitModalOpen(false);
+    setIsOrderCompletedModalOpen(false);
+  };
 
-export default function UnpaidCard() {
+  // const {
+  //   filteredOrderList,
+  //   getSelectedCourier,
+  //   selectedCouriers,
+  //   toggleCourier,
+  //   setSelectedCouriers,
+  // } = useFilterCourier();
+
+  const { selectedSortOption, setSortOption, getSelectedSortOption } =
+    useSortFilter();
+
   const {
     getSelectedCourier,
     filteredOrder,
@@ -49,40 +114,33 @@ export default function UnpaidCard() {
     searchQuery,
     selectedCouriers,
     handleCourierCheckboxChange,
-  } = UseSearchProductUnpaid();
-
-  console.log(searchQuery);
-  const {
-    selectedSortOption,
-    setSortOption,
-    getSelectedSortOption,
-    sortOrders,
-  } = useSortFilter(); // sort selcted
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const sortedOrders = sortOrders(filteredOrder);
-  const openModal = () => {
-    setModalIsOpen(true);
+  } = UseSearchProductAll();
+  //Button color
+  const defaultItem: Item = {
+    status: 'UNPAID',
   };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
+  const item: Item = defaultItem;
+  //button send Template
+  const defaultItemSend: ItemSend = {
+    status: 'UNPAID',
   };
-  if (selectedSortOption === 'Paling Baru') {
-    sortedOrders.sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return dateB.getTime() - dateA.getTime();
-    });
-  } else if (selectedSortOption === 'Paling Lama') {
-    sortedOrders.sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return dateA.getTime() - dateB.getTime();
-    });
-  }
+  const itemSend: ItemSend = defaultItemSend;
+  //button status
+  const defaultItemName: ItemName = {
+    status: 'UNPAID',
+  };
+  const itemName: ItemName = defaultItemName;
+
+  const defaultITemplates: ItemTemplate = {
+    status: 'UNPAID',
+  };
+  const itemTemplate: ItemTemplate = defaultITemplates;
+  const { setSelectedProps, afterpacking } = HooksMasRino();
+
   return (
     <>
-      {/* start filter */}
+      {/* YOUR CARD IN HERE, COPY AND PASTE TO NAVORDER IN TABPANEL AND MAP YOUR DATA */}
+
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
@@ -315,6 +373,8 @@ export default function UnpaidCard() {
           </Menu>
         </Box>
       </Box>
+
+      {/* CARD START HERE */}
       {filteredOrder.length === 0 ? (
         <Box marginTop={'70px'}>
           <Center>
@@ -330,27 +390,28 @@ export default function UnpaidCard() {
           </Center>
         </Box>
       ) : (
-        <Box>
-          {sortedOrders.map((data, index) => (
+        <Box marginTop={'10px'}>
+          {filteredOrder.map((item, index) => (
+            // eslint-disable-next-line react/jsx-key
             <Card mb={5} mt={5} boxShadow={'xs'} key={index}>
               <Box>
                 <Box>
                   <Box>
                     <Flex justifyContent={'space-between'} px={3} py={2}>
                       <Button
-                        bg={'#E8C600'}
-                        colorScheme="#E8C600"
+                        bg={statusToColor[item.status] || ''}
+                        colorScheme={statusToColor[item.status] || ''}
                         color={'white'}
                         fontWeight={'bold'}
                         size={'sm'}
                         pointerEvents={'none'}
                         height={'24px'}
                       >
-                        {data.status === 'UNPAID' ? 'Belom Dibayar' : ''}
+                        {/* {item.status} */}
+                        {statusNameButton[item.status] || ''}
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
-
                       <Button
                         bg={'transparent'}
                         border={'1px solid #D5D5D5'}
@@ -362,18 +423,90 @@ export default function UnpaidCard() {
                         px={3}
                         fontWeight={'600'}
                         onClick={() => {
-                          openModal();
+                          setSelectedCardId(item.id);
+                          if (item.status === 'UNPAID') {
+                            setIsUnpaidModalOpen(true);
+                          }
+                          if (item.status === 'NEW_ORDER') {
+                            setModalText(
+                              'Apakah sudah di pack dan siap dikirim?'
+                            );
+                            setIsOrderNewOrderModalOpen(true);
+                          }
+                          if (item.status === 'READY_TO_SHIP') {
+                            setIsNewOrderModalOpen(true);
+                          }
+                          if (item.status === 'ORDER_CANCELLED') {
+                            setIsOrderCancelledModalOpen(true);
+                          }
+                          if (item.status === 'IN_TRANSIT') {
+                            setIsOrderInTransitModalOpen(true);
+                          }
+                          if (item.status === 'ORDER_COMPLETED') {
+                            setIsOrderCompletedModalOpen(true);
+                          }
                         }}
+                        value={statusToSendBuyer[item.status] || ''}
                       >
-                        Hubungi Pembeli
+                        {statusToSendBuyer[item.status] || ''}
                       </Button>
-                      <ModalWhatsapp
-                        isOpen={modalIsOpen}
-                        onClose={closeModal}
-                        selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
-                        itemName={data.receiverName}
-                        itemPhone={data.receiverPhone}
-                      />
+
+                      {/* Tampilkan modal berdasarkan status */}
+                      {isUnpaidModalOpen && item.status === 'UNPAID' && (
+                        <ModalWhatsapp
+                          isOpen={isUnpaidModalOpen}
+                          onClose={closeModal}
+                          selectedCardId={item.id}
+                          itemName={item.receiverName}
+                          itemPhone={item.receiverPhone}
+                        />
+                      )}
+                      {isOrderNewOrderModalOpen &&
+                        item.status === 'NEW_ORDER' && (
+                          <ModalComponent
+                            isOpen={isOrderNewOrderModalOpen}
+                            onClose={closeModal}
+                            modalText={modalText}
+                            onConfirm={afterpacking}
+                          />
+                        )}
+                      {isNewOrderModalOpen &&
+                        item.status === 'READY_TO_SHIP' && (
+                          <ModalTracking
+                            onClose={closeModal}
+                            isOpen={isNewOrderModalOpen}
+                            selectedCardId={item.id}
+                          />
+                        )}
+                      {isOrderCancelledModalOpen &&
+                        item.status === 'ORDER_CANCELLED' && (
+                          <ModalWhatsapp
+                            onClose={closeModal}
+                            isOpen={isOrderCancelledModalOpen}
+                            selectedCardId={item.id}
+                            itemName={item.receiverName}
+                            itemPhone={item.receiverPhone}
+                          />
+                        )}
+                      {isOrderInTransitModalOpen &&
+                        item.status === 'IN_TRANSIT' && (
+                          <ModalInShipping
+                            onClose={closeModal}
+                            isOpen={isOrderInTransitModalOpen}
+                            data={props.dataTracking}
+                            selectedCardId={selectedCardId}
+                          />
+                        )}
+                      {isOrderCompletedModalOpen &&
+                        item.status === 'ORDER_COMPLETED' && (
+                          <ModalWhatsapp
+                            isOpen={isOrderCompletedModalOpen}
+                            onClose={closeModal}
+                            selectedCardId={item.id}
+                            itemName={item.receiverName}
+                            itemPhone={item.receiverPhone}
+                          />
+                        )}
                     </Flex>
                     <Text
                       mb={1}
@@ -382,11 +515,10 @@ export default function UnpaidCard() {
                       color={'#909090'}
                       px={3}
                     >
-                      INV/{data.invoiceNumber}
+                      {item.invoiceNumber}
                     </Text>
                     <Divider />
-
-                    <Link to={`detail/${data.id}`}>
+                    <Link to={`detail/${item.id}`}>
                       <Flex justifyContent={'space-between'} px={3}>
                         <Box display={'flex'} gap={3} w={'80%'}>
                           <Img
@@ -394,8 +526,8 @@ export default function UnpaidCard() {
                             h={'52px'}
                             display={'inline'}
                             borderRadius={'md'}
-                            src={`${data.cart?.cartItems[0]?.product?.attachments.map(
-                              (item: any) => item.url
+                            src={`${item.cart?.cartItems.map((item) =>
+                              item.product?.attachments?.map((item) => item.url)
                             )}`}
                             mt={3}
                           />
@@ -408,18 +540,17 @@ export default function UnpaidCard() {
                             whiteSpace={'nowrap'}
                             fontWeight={'700'}
                           >
-                            {data.cart?.cartItems.map(
-                              (item: any) => item.product?.name
+                            {item.cart?.cartItems.map(
+                              (item) => item.product?.name
                             )}
                             <Text
                               color={'gray.400'}
                               pb={3}
                               fontWeight={'normal'}
                             >
-                              {data.cart?.cartItems.map(
-                                (item: any) => item.qty
-                              )}{' '}
+                              {item.cart?.cartItems.map((item) => item.qty)}{' '}
                               Barang
+                              {/* desk {item.cart?.cartItems.map((item) =>item.product.description)} */}
                             </Text>
                           </Text>
                         </Box>
@@ -433,7 +564,7 @@ export default function UnpaidCard() {
                             </Text>
                           </Flex>
                           <Text fontWeight={'bold'} fontSize={'14px'}>
-                            Rp {data.price.toLocaleString('id-ID')}
+                            Rp {item.price.toLocaleString('id-ID')}
                           </Text>
                         </Box>
                       </Flex>
@@ -443,9 +574,10 @@ export default function UnpaidCard() {
               </Box>
             </Card>
           ))}
-          {/* ))} */}
         </Box>
       )}
+
+      {/* END CARD */}
     </>
   );
 }

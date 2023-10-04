@@ -29,8 +29,8 @@ import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 export default function ModalInShipping(props: {
   isOpen: boolean;
   onClose: () => void;
-  data: IBiteshipTracking;
   selectedCardId: string;
+  data: IBiteshipTracking;
 }) {
   const { trackingInfoArray, trackingInfo } = UseBiteshipTrack(
     props.selectedCardId

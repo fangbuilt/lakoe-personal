@@ -24,7 +24,6 @@ export function UseBiteshipTrack(trackingNumber: string) {
 
       setTrackingInfo(response.data);
       setTrackingInfoArray(response.data.history);
-      // }
     } catch (err) {
       setError(null);
     }
@@ -32,6 +31,7 @@ export function UseBiteshipTrack(trackingNumber: string) {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

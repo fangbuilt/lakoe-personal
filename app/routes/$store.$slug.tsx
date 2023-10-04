@@ -23,7 +23,7 @@ import {
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
-import { handleClick } from './productUnpaid4';
+import { handleClick, handleClickSeller } from './productUnpaid4';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
@@ -41,6 +41,9 @@ export const action = async ({ request }: ActionArgs) => {
     const name = formData.get('username') as string;
     const telp = formData.get('no-telp') as string;
     const email = formData.get('email') as string;
+    const emailSeller = formData.get('emailSeller') as string;
+    const nameStore = formData.get('nameStore') as string;
+    const address = formData.get('address') as string;
     const province = formData.get('province') as string;
     const district = formData.get('district') as string;
     const village = formData.get('village') as string;
@@ -146,10 +149,17 @@ export const action = async ({ request }: ActionArgs) => {
       getCourier,
     };
 
+    const totalPriceSendEmail = `Rp ${totalPriceUnique.toLocaleString(
+      'id-ID'
+    )}`;
+    console.log('datasGetCheckoutDetail');
+    handleClick(name, email, totalPriceSendEmail);
+    handleClickSeller(emailSeller, name, totalPriceSendEmail, nameStore);
+    // sendDynamicEmail(telp, name, email);
+    console.log('address', address);
+
     return await createCheckout(data);
     await createCheckout(data);
-
-    handleClick(telp, name, email);
   }
   return null;
 };
