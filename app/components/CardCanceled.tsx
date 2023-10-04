@@ -31,7 +31,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import { whatsappConfiguration } from '../utils/templateMessage';
+import { whatsappConfiguration } from '../utils/TemplateMessage';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';

@@ -17,7 +17,7 @@ import { Form } from '@remix-run/react';
 import React from 'react';
 import { BsBank } from 'react-icons/bs';
 import { BiEditAlt } from 'react-icons/bi';
-import { SelectBankOptionUpdate } from './SelectBankOption';
+import { SelectBankOptionUpdate } from './selectBankOption';
 
 export default function UpdateBank(props: any) {
   const { id } = props;
