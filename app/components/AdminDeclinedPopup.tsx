@@ -18,7 +18,6 @@ import {
 } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { useState } from 'react';
-
 import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 
 export default function AdminDeclinedPopup(props: any) {
@@ -27,6 +26,7 @@ export default function AdminDeclinedPopup(props: any) {
     actionType: 'create',
     withdrawId: dataWithdrawal.id || '',
     storeId: dataWithdrawal.store?.id || '',
+    bankAccountId: dataWithdrawal.bankAccount?.id || '',
     reason: '',
   });
 
@@ -110,7 +110,7 @@ export default function AdminDeclinedPopup(props: any) {
                   <Text fontWeight={700}>
                     {dataWithdrawal.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
                 </Box>
                 <Box>
                   <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
@@ -125,7 +125,7 @@ export default function AdminDeclinedPopup(props: any) {
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>:{dataWithdrawal.bankAccount.accountNumber}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
@@ -174,16 +174,19 @@ export default function AdminDeclinedPopup(props: any) {
                   <FormControl>
                     <Input type="hidden" name="actionType" value="create" />
                     <Input
-                      type="hidden"
+                      type="text"
                       name="withdrawId"
                       value={formData.withdrawId}
-                      display={'none'}
                     />
                     <Input
-                      type="hidden"
+                      type="text"
                       name="storeId"
                       value={formData.storeId}
-                      display={'none'}
+                    />
+                    <Input
+                      type="text"
+                      name="bankAccountId"
+                      value={formData.bankAccountId}
                     />
                     <FormLabel fontSize="12px" fontWeight={700}>
                       Alasan Penolakan

@@ -1,8 +1,11 @@
 import type { z } from 'zod';
 import type { MootaOrderSchema } from './order.schema';
 import { db } from '~/libs/prisma/db.server';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
+import { ActionArgs } from '@remix-run/node';
 
-export async function getProductUnpid() {
+export async function getProductUnpid(getSearchTerm: string) {
   const payments = await db.invoice.findMany({
     where: {
       status: 'UNPAID',
@@ -10,6 +13,7 @@ export async function getProductUnpid() {
     include: {
       user: true,
       payment: true,
+      courier:true,
       cart: {
         include: {
           store: {
@@ -20,6 +24,12 @@ export async function getProductUnpid() {
           cartItems: {
             include: {
               product: {
+                where: {
+                  name: {
+                    contains: getSearchTerm,
+                    // mode: "insensitive",
+                  },
+                },
                 include: {
                   attachments: true,
                   store: true,
@@ -229,8 +239,16 @@ export async function getInvoiceProductData() {
         status: 'NEW_ORDER',
       },
       include: {
+        payment: true,
+        courier: true,
         cart: {
           include: {
+            store: {
+              include: {
+                users: true,
+                locations: true,
+              },
+            },
             cartItems: {
               include: {
                 product: {
@@ -361,4 +379,65 @@ export async function updateStatusInvoice(data: any) {
       id: id,
     },
   });
+}
+
+export async function CanceledService() {
+  return await db.invoice.findMany({
+    where: {
+      status: "ORDER_CANCELLED",
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+export async function SuccessService() {
+  return await db.invoice.findMany({
+    where: {
+      status: "ORDER_COMPLETED",
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+
+  });
+}
+
+export async function whatsappTemplateDb(){
+
+  return await db.messageTemplate.findMany({
+
+  })
 }

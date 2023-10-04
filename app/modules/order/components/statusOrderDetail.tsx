@@ -62,7 +62,6 @@ export function getStatusLacakButton(status: string) {
         padding={`var(--4, 16px) var(--5, 20px)`}
         alignItems={'center'}
         alignSelf={'stretch'}
-        borderRadius={`var(--rounded-lg, 12px)`}
         background={`var(--gray-50, #FFF)`}
       >
         <Box>

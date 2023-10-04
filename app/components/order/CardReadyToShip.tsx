@@ -11,7 +11,7 @@ import {
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { loader } from "~/routes/order";
-import ModalTracking from "./orderTrackingModal";
+import ModalTracking from "../orderTrackingModal";
 
 export function formatCurrency(price: number): string {
   const formattedAmount = new Intl.NumberFormat("id-ID", {

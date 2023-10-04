@@ -11,31 +11,28 @@ import {
 } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import type { loader } from '~/routes/order';
-import CardCanceled from '../components/CardCanceled';
-import ScrollBox from '../components/ScrollBox';
-import CardReadyToShip from '~/components/CardReadyToShip';
-import UnpaidAllCard from '~/components/CardUnpaidAll';
-import UnpaidCard from '~/components/CardUnpaid';
-import CardInShipping from '~/components/CardInShipping';
-import CardNewOrderBa from '~/components/CardNewOrderBa';
-
-export default function NavOrder({ allOrderSevice }: any) {
+import ScrollBox from '~/components/ScrollBox';
+import { loader } from '~/routes/order';
+import CardCenceled from '~/components/order/CardCanceled';
+import CardSucces from '~/components/order/CardSuccesOrder';
+import CardReadyToShip from '~/components/order/CardReadyToShip';
+// import CardSucces from '~/components/order/CardSuccesOrder';
+// import UnpaidCard from '~/components/order/CardUnpaid';
+// import UnpaidCard from '~/components/order/CardUnpaid';
+export function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
-  const { unpaidCard } = useLoaderData<typeof loader>();
-  const notificationCount =
-    cardProduct.dataProductReadyToShip.length > 0
-      ? cardProduct.dataProductReadyToShip.length
-      : 0;
+  // const { unpaidCard } = useLoaderData<typeof loader>();
+  // const notificationCount =
+  //   cardProduct.dataProductReadyToShip.length > 0
+  //     ? cardProduct.dataProductReadyToShip.length
+  //     : 0;
   const [activeTab, setActiveTab] = useState(0);
   const handleClickTab = (index: number) => {
     setActiveTab(index);
   };
-  // const {unpaidCard} = useLoaderData<typeof loader>()
   return (
     <>
       <Box
-        key={allOrderSevice}
         background={'whitesmoke'}
         style={{ width: '100%', marginLeft: '-5px', marginRight: '50%' }}
       >
@@ -63,7 +60,6 @@ export default function NavOrder({ allOrderSevice }: any) {
                 overflow={'scroll'}
                 sx={{
                   '::-webkit-scrollbar': {
-                    // i want displayed scrollbar if user use mouse for scrolling, but if scrollbar not none is a no clear ,
                     display: 'none',
                   },
                 }}
@@ -94,7 +90,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          {unpaidCard.length}
+                          {/* {unpaidCard.length} */}
                           {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
@@ -148,7 +144,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          {notificationCount}{' '}
+                          {/* {notificationCount} */}
                           {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
@@ -212,43 +208,43 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <UnpaidAllCard />
+                   <p>semua</p>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <UnpaidCard />
+                    {/* <UnpaidCard/> */}
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardNewOrderBa />
+                    <p>pesanan baru</p>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardReadyToShip />
+                  <CardReadyToShip/>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardInShipping />
+                    <p>dalam Pengiriman</p>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <h1>pesanan selesai</h1>
+                  <CardSucces/>
                   </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardCanceled />
+                    <CardCenceled  />
                   </TabPanel>
                 </ScrollBox>
 
@@ -261,3 +257,4 @@ export default function NavOrder({ allOrderSevice }: any) {
     </>
   );
 }
+

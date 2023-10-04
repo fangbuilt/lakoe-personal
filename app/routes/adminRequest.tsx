@@ -1,37 +1,19 @@
 import { Flex } from '@chakra-ui/react';
-import { redirect, type ActionArgs, type LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminRequest from '~/components/AdminRequest';
-import { ImplementGridAdmin } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
+import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
+import { authorize } from '~/middleware/authorization';
 import {
   createDeclinedReason,
   getWithdrawalList,
   updateStatusWithdraw,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '1');
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return await getWithdrawalList();
-  } else if (role?.roleId === '2') {
-    return redirect('/dashboard');
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  return await getWithdrawalList();
 }
 
 export async function action({ request }: ActionArgs) {
@@ -55,16 +37,24 @@ export async function action({ request }: ActionArgs) {
   }
   const withdrawId = formData.get('withdrawId');
   const storeId = formData.get('storeId');
+  const bankAccountId = formData.get('bankAccountId');
   const reason = formData.get('reason');
 
-  if (actionType === 'create' && withdrawId && storeId && reason) {
+  if (
+    actionType === 'create' &&
+    withdrawId &&
+    storeId &&
+    bankAccountId &&
+    reason
+  ) {
     try {
       const createReasonResult = await createDeclinedReason(
         {
           reason: reason as string,
         },
         withdrawId as string,
-        storeId as string
+        storeId as string,
+        bankAccountId as string
       );
       console.log('This is the declined reason', createReasonResult);
     } catch (error) {
@@ -77,10 +67,10 @@ export async function action({ request }: ActionArgs) {
 export default function DasboardAdminRequest() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdmin>
+    <ImplementGridAdminWithdraw>
       <Flex h={'100vh'} width={'100%'}>
         <AdminRequest dataWithdrawal={dataWithdrawal} />
       </Flex>
-    </ImplementGridAdmin>
+    </ImplementGridAdminWithdraw>
   );
 }

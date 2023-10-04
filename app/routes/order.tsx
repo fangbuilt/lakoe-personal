@@ -1,106 +1,62 @@
 import crypto from "crypto";
 
-import { json, redirect } from "@remix-run/node";
-import type { LoaderArgs, ActionArgs } from "@remix-run/node";
-import { MootaOrderSchema } from "~/modules/order/order.schema";
+import { json, redirect, type ActionArgs, LoaderArgs } from '@remix-run/node';
+import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
-  getProductUnpid,
   updateInvoiceStatus,
-} from "~/modules/order/order.service";
+  CanceledService,
+  whatsappTemplateDb,
+  SuccessService,
+  getProductUnpid,
 
-import { Flex } from "@chakra-ui/react";
-import { useLoaderData } from "@remix-run/react";
-import { ImplementGrid } from "~/layouts/Grid";
-import NavOrder from "~/layouts/NavOrder";
+} from '~/modules/order/order.service';
 
-import { db } from "~/libs/prisma/db.server";
-import CanceledService from "~/modules/order/orderCanceledService";
-import getDataInShipping from "~/modules/order/orderShippingService";
-import { getUserId } from "~/modules/auth/auth.service";
+import { Flex} from '@chakra-ui/react';
+import { useLoaderData } from '@remix-run/react';
+import { ImplementGrid } from '~/layouts/Grid';
+import {NavOrder} from '~/layouts/NavOrder';
+import { db } from '~/libs/prisma/db.server';
+import getDataInShipping from '~/modules/order/orderShippingService';
 
-// export async function action({ request }: ActionArgs) {
-//   if (request.method.toLowerCase() === 'patch') {
-//     const formData = await request.formData();
-
-//     const id = formData.get('id') as string;
-//     const price = formData.get('price');
-//     const stock = formData.get('stock');
-
-//     await updateInvoiceStatus({ id, price, stock });
-//   }
-
-//   return redirect('/order');
-// }
-
-// export async function loader() {
-//   const apiKey = process.env.BITESHIP_API_KEY;
-//   const dataProductReadyToShip = await getDataProductReadyToShip();
-
-//   const [canceledService] = await Promise.all([
-//     CanceledService(),
-//     // ready(),
-//     //your order service here !
-//   ]);
-//   const dataInvoice = await getInvoiceByStatus();
-
-//   return json({
-//     canceledService,
-//     dataInvoice,
-//     dataShipping: await getDataInShipping(),
-//     dataProductReadyToShip,
-//     apiKey,
-//     // your return order service here !
-//   });
-// }
-
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect("/auth/login");
-  }
-
+export const loader = async ({ request }: LoaderArgs) => {
   const apiKey = process.env.BITESHIP_API_KEY;
-  const dataProductReadyToShip = await getDataProductReadyToShip();
-  //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
-    getAllProductUnpid(),
-    getProductUnpid(),
-    CanceledService(),
-  ]);
-  const dataInvoice = await getInvoiceByStatus();
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get("search") || "";
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
+  try {
+    const [unpaidCardAll, unpaidCard, canceledService, whatsappDb, succesService] = await Promise.all([
+      getAllProductUnpid(),
+      getProductUnpid(searchTerm),
+      CanceledService(),
+      whatsappTemplateDb(),
+      SuccessService()
+    ]);
 
-  const currentTime = new Date().getTime();
+    const dataInvoice = await getInvoiceByStatus();
 
-  if (role?.roleId === "1") {
-    return redirect("/dashboardAdmin");
-  } else if (role?.roleId === "2") {
+    const currentTime = new Date().getTime()
+
     return json({
       unpaidCardAll,
       unpaidCard,
       canceledService,
+      whatsappDb,
+      succesService,
       dataInvoice,
       dataShipping: await getDataInShipping(),
-      dataProductReadyToShip,
+      dataProductReadyToShip: await getDataProductReadyToShip(),
       apiKey,
       currentTime,
     });
-  } else if (role?.roleId === "3") {
-    return redirect("/checkout");
-  } else {
-    return redirect("/logout");
+  } catch (error) {
+    console.error("error:", error);
+    return json({ status: "error", message: "Terjadi kesalahan dalam memuat data" }, 500);
   }
-}
-
+};
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get("x-forwarded-for") as string;
 

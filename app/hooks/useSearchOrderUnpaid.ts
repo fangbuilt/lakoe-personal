@@ -18,11 +18,12 @@ export default function UseSearchProductUnpaid() {
           .map((item) => item.product?.name?.toLowerCase())
           .flat() || [];
       const invoiceNumber = items.invoiceNumber?.toLowerCase() || '';
-
+      const kurirSearch = items.courier?.courierName?.toLowerCase() || "";
+      console.log('kurirrrrr', kurirSearch)
       return (
         productName.some((name) => name && name.indexOf(lowerQuery) !== -1) ||
         invoiceNumber.indexOf(lowerQuery) !== -1
-        // || kurirSearch.indexOf(lowerQuery) !== -1
+        || kurirSearch.indexOf(lowerQuery) !== -1
       );
     });
     setFilteredOrder(filtered);
