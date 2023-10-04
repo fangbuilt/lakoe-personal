@@ -39,6 +39,7 @@
     "@types/axios": "^0.14.0",
     "@uidotdev/usehooks": "^2.2.0",
     "@vercel/node": "^2.10.3",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "axios": "^1.5.0",
     "cloudinary": "^1.40.0",

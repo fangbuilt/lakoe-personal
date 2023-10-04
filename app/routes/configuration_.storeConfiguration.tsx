@@ -9,34 +9,33 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
-import { db } from '~/libs/prisma/db.server';
-import { ImplementGrid } from '~/layouts/Grid';
-import { Informations } from '~/modules/configuration/components/informations/information';
-import createLocation, {
-  getAllDataLocation,
-  getMessages,
-  updateMessage,
-  deleteMessage,
-  createMessage,
-  deleteLocation,
-  updateLocation,
-  getStoreId,
-  updateMain,
-} from '~/modules/configuration/configuration.service';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
-import Locations from '~/modules/configuration/components/location/Locations';
+import { ImplementGrid } from '~/layouts/Grid';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import {
   CreateButton,
-  UpdateButton,
   DeleteButton,
+  UpdateButton,
 } from '~/modules/configuration/components/CrudModal';
 import Scroll from '~/modules/configuration/components/Scroll';
-import { getUserId } from '~/modules/auth/auth.service';
+import { Informations } from '~/modules/configuration/components/informations/information';
+import Locations from '~/modules/configuration/components/location/Locations';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
+import createLocation, {
+  createMessage,
+  deleteLocation,
+  deleteMessage,
+  getAllDataLocation,
+  getMessages,
+  getStoreId,
+  updateLocation,
+  updateMessage,
+} from '~/modules/configuration/configuration.service';
 
-export async function loader({ request }: ActionArgs) {
+export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   if (!userId) {
     return redirect('/auth/login');
@@ -52,7 +51,7 @@ export async function loader({ request }: ActionArgs) {
 
   const store = auth?.storeId;
   const store_id = await getStoreId(store);
-  const messages = await getMessages();
+  const messages = await getMessages(store);
 
   const role = await db.user.findFirst({
     where: {
@@ -126,13 +125,6 @@ export async function action({ request }: ActionArgs) {
       cityDistrict,
       postalCode,
       isMainLocation,
-    });
-  } else if (action === 'editmainlocation') {
-    console.log('masuk main!');
-    const id = formData.get('id') as string;
-
-    await updateMain(id, {
-      isMainLocation: 'true',
     });
   }
   //======================================================
@@ -227,7 +219,9 @@ export default function StoreConfiguration() {
 
           <TabPanels>
             <Informations />
+
             <Locations />
+
             <TabPanel>
               <Flex
                 justifyContent={'space-between'}

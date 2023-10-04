@@ -121,8 +121,13 @@ export async function updateStoreInformation(storeId: string, data: any) {
   return dataUpdate;
 }
 
-export async function getMessages() {
+//ini service template message=========================
+
+export async function getMessages(id: any) {
   return await db.messageTemplate.findMany({
+    where: {
+      storeId: id,
+    },
     orderBy: { createdAt: 'desc' },
   });
 }
@@ -136,7 +141,6 @@ export async function getStoreId(id: any) {
 }
 
 export async function createMessage(name: any, id: any, content: any) {
-  console.log(id);
   return await db.messageTemplate.create({
     data: { name: name, content: content, storeId: id },
   });
