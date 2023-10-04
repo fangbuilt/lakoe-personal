@@ -19,7 +19,7 @@ model User {
   phone                  String                  @unique
   password               String
   store                  Store?                  @relation(fields: [storeId], references: [id])
-  storeId                String?                 
+  storeId                String?
   role                   Role?                   @relation(fields: [roleId], references: [id])
   roleId                 String
   profile                Profile?
@@ -356,6 +356,8 @@ model Payment {
   id        String    @id @unique @default(uuid())
   bank      String
   amount    Float
+  accountNumber String
+  accountName String
   status    String
   user      User?     @relation(fields: [userId], references: [id])
   userId    String?
@@ -366,6 +368,7 @@ model Payment {
   @@index([userId])
   @@map("payments")
 }
+
 
 model Courier {
   id                           String    @id @unique @default(uuid())

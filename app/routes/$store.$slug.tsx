@@ -45,6 +45,8 @@ export const action = async ({ request }: ActionArgs) => {
     const district = formData.get('district') as string;
     const village = formData.get('village') as string;
     const description = formData.get('description') as string;
+    // const accountName = formData.get('accountName') as string;
+    // const accountNumber = formData.get('accountNumber') as string;
     const courier = formData.get('courier') as string;
     const courierService = +(formData.get('courierService') as string);
 
@@ -105,6 +107,8 @@ export const action = async ({ request }: ActionArgs) => {
       amount: totalPriceUnique + courierService,
       status: 'UNPAID',
       userId: userId,
+      // accountName: accountName,
+      // accountNumber: accountNumber,
     };
 
     const getCourier = {

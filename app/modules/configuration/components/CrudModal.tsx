@@ -19,7 +19,8 @@ import Trash from '../../../assets/icon-pack/trash.svg';
 import CloseCircle from '../../../assets/icon-pack/close-circle.svg';
 import type { ITemplateMessage } from '~/interfaces/TemplateMessage';
 import { Form, useNavigation } from '@remix-run/react';
-import React, { useRef, useEffect , useState } from 'react';
+import type { FormEvent } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEditor, EditorContent } from '@tiptap/react';
 import Tiptap, { styles } from '../hooks/Tiptap';
@@ -260,6 +261,10 @@ export function CreateButton(data: any) {
     }
   };
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <>
       <Button
@@ -298,7 +303,12 @@ export function CreateButton(data: any) {
               <Image w={'30px'} src={CloseCircle} />
             </Button>
           </Box>
-          <Form method="post" encType="multipart/form-data" ref={formRef}>
+          <Form
+            method="post"
+            encType="multipart/form-data"
+            ref={formRef}
+            onSubmit={handleSubmit}
+          >
             <Box>
               <Input type="hidden" value={data.storeId} name="storeId" />
             </Box>
