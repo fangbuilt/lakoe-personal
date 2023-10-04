@@ -139,7 +139,7 @@ export async function action({ request }: ActionArgs) {
 
     console.log('ini logoAttachment', logoAttachment);
 
-    const id = formData.get('storeId') as string;
+    const id = formData.get('id') as string;
 
     await updateStoreInformation(id, {
       slogan,
