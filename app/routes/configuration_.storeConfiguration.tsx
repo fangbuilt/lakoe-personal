@@ -22,6 +22,7 @@ import createLocation, {
   deleteLocation,
   updateLocation,
   getStoreId,
+  updateMain,
 } from '~/modules/configuration/configuration.service';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
@@ -33,15 +34,41 @@ import {
   DeleteButton,
 } from '~/modules/configuration/components/CrudModal';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { getUserId } from '~/modules/auth/auth.service';
 
-export async function loader({ params }: ActionArgs) {
+export async function loader({ request }: ActionArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const auth = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
   const getLocationData = await getAllDataLocation();
 
+  const store = auth?.storeId;
+  const store_id = await getStoreId(store);
   const messages = await getMessages();
-  const { storeId } = params;
-  const store_id = await getStoreId(storeId);
 
-  return { messages, store_id, getLocationData };
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return { messages, store_id, getLocationData };
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -57,7 +84,7 @@ export async function action({ request }: ActionArgs) {
   const longtitude = formData.get('longtitude');
   const cityDistrict = formData.get('cityDistrict');
   const postalCode = formData.get('postalCode') as string;
-  const isMainLocation = true;
+  const isMainLocation = false;
   console.log('ini isi dari name :', name);
   console.log('ini isi dari adres :', address);
   console.log('ini isi dari lat :', latitude);
@@ -78,13 +105,13 @@ export async function action({ request }: ActionArgs) {
       postalCode,
       isMainLocation,
     });
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration `;
 
     return redirect(redirectURL);
   } else if (action === 'deletelocation') {
     const id = formData.get('id') as string;
     await deleteLocation(id);
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration `;
 
     return redirect(redirectURL);
   } else if (action === 'editlocation') {
@@ -99,6 +126,13 @@ export async function action({ request }: ActionArgs) {
       cityDistrict,
       postalCode,
       isMainLocation,
+    });
+  } else if (action === 'editmainlocation') {
+    console.log('masuk main!');
+    const id = formData.get('id') as string;
+
+    await updateMain(id, {
+      isMainLocation: 'true',
     });
   }
   //======================================================
@@ -192,13 +226,8 @@ export default function StoreConfiguration() {
           </TabList>
 
           <TabPanels>
-            {/* INI BAGIAN rifki */}
             <Informations />
-
-            {/* INI BAGIAN BAGZA */}
             <Locations />
-
-            {/* INI BAGIAN MIKHAEL DAN HELEN */}
             <TabPanel>
               <Flex
                 justifyContent={'space-between'}

@@ -7,7 +7,7 @@ export default async function createLocation(data: any) {
     const location = await db.location.create({
       data: {
         store: {
-          connect: { id: '1' },
+          connect: { id: '4' },
         },
         profile: {
           connect: { id: '1' },
@@ -35,17 +35,12 @@ export async function deleteLocation(id: any) {
 }
 
 export async function updateLocation(id: any, data: any) {
-  // const updateLocation = await db.messageTemplate.update({
-  //   where: { id: id },
-  //   data: { name, content },
-  // });
-  // return updateLocation;
   try {
     const updateLocation = await db.location.update({
       where: { id: id },
       data: {
         store: {
-          connect: { id: '1' },
+          connect: { id: '4' },
         },
         profile: {
           connect: { id: '1' },
@@ -65,6 +60,30 @@ export async function updateLocation(id: any, data: any) {
     console.log('error service', error);
   }
 }
+
+// export async function updateMain(id: any, data: any) {
+//   try {
+//     const updateMain = await db.location.update({
+//       where: { id: id },
+//       data: {
+//         isMainLocation: data.isMainLocation,
+//       },
+//     });
+//     const getMain = await db.location.findMany({
+//       where: { NOT: { id: id } },
+//     });
+//     const updateNotMain = await db.location.updateMany({
+//       where: { NOT: { id: id } },
+//       data: {
+//         isMainLocation: data.isMainLocation,
+//       },
+//     });
+
+//     return { updateMain, getMain, updateNotMain };
+//   } catch (error) {
+//     console.log("error service", error);
+//   }
+// }
 
 export async function getAllDataLocation() {
   return await db.location.findMany({

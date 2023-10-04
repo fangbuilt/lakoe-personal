@@ -25,7 +25,6 @@ import Edit from '~/assets/icon-pack/edit.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { ILocation } from '~/interfaces/Location';
 import Maps from './Maps';
-// import Input from "react-select/dist/declarations/src/components/Input";
 
 //interface modal
 interface CustomModalProps {
@@ -355,43 +354,6 @@ export function CreateButtonLocation() {
                   Tandai lokasi untuk mempermudah pemintaan pickup kurir
                 </Text>
                 <Maps />
-                {/* <Box position={'relative'}>
-                  <Button
-                    bg={'transparent'}
-                    top={'2px'}
-                    left={'120px'}
-                    display={'flex'}
-                    flexDirection={'row'}
-                    zIndex={'1'}
-                    position={'absolute'}
-                    alignItems={'center'}
-                    gap={1}
-                    colorScheme="none"
-                    onClick={openMapModal}
-                  >
-                    <Image src={LocationSlash} />
-                    <Text color={'blue.500'} fontWeight={'bold'}>
-                      Ubah Pinpoint
-                    </Text>
-                  </Button>
-                  <IconButton
-                    icon={
-                      <img
-                        style={{
-                          borderRadius: '10px',
-                          objectFit: 'cover',
-                          height: '80px',
-                          width: '1000px',
-                          filter: 'blur(1px)',
-                        }}
-                        src="https://i.stack.imgur.com/B6fEt.png"
-                        alt="Gambar"
-                      />
-                    }
-                    onClick={openMapModal}
-                    aria-label="Tombol Gambar"
-                  />
-                </Box> */}
               </FormControl>
             </ModalBody>
 
@@ -430,29 +392,6 @@ export function CreateButtonLocation() {
               </Box>
             </ModalFooter>
           </Form>
-          {/* {showAlert && (
-            <Alert status="success" mt={4}>
-            <AlertIcon />
-              Data telah berhasil disimpan.
-              <Button
-                onClick={() => {
-                  setShowAlert(false);
-                  // Opsional, Anda dapat merefresh halaman di sini
-                  window.location.reload();
-                }}
-                position="absolute"
-                right="8px"
-                top="8px"
-                borderRadius={"full"}
-                bg={"green.500"}
-                size={"sm"}
-                color={"white"}
-                colorScheme="green"
-              >
-                OK!
-              </Button>
-            </Alert>
-          )} */}
         </ModalContent>
       </Modal>
     </>
@@ -462,22 +401,6 @@ export function CreateButtonLocation() {
 export function ModalMaps({ isOpen, onClose }: CustomModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size={'xl'}>
-      {/* <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Modal Title</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text>hi</Text>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button variant="ghost">Secondary Action</Button>
-        </ModalFooter>
-      </ModalContent> */}
-
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -525,7 +448,6 @@ export function DeleteButtonLocation(props: ILocation) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isLoading, setIsLoading] = useState(false);
-  //const formRef = useRef<HTMLFormElement | null>(null);
 
   const handleOutsideSubmit = async () => {
     try {
@@ -633,59 +555,6 @@ export function DeleteButtonLocation(props: ILocation) {
                 </Button>
               </Box>
             </ModalFooter>
-            {/* <Box>
-              <Flex
-                pt={4}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                mb={3}
-              >
-                <Text fontSize={"xl"} fontWeight={"medium"}>
-                  Hapus Template Pesan
-                </Text>
-                <Button
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"end"}
-                  onClick={onClose}
-                  variant={"link"}
-                >
-                  <Image w={"30px"} src={CloseCircle} />
-                </Button>
-              </Flex>
-              <HStack spacing="3px">
-                <Text>Apakah kamu yakin untuk menghapus</Text>
-                <Text display={"flex"}>
-                  <Text as={"b"}>{props.name}</Text>?
-                </Text>
-              </HStack>
-              <Text>
-                Sebab, kamu tidak akan dapat mengembalikan template pesan yang
-              </Text>
-              <Text>sudah dihapus.</Text>
-              <Input hidden name="id" value={props.id} />
-              <Flex justifyContent={"flex-end"} pb={4} mt={5}>
-                <Button
-                  variant={"outline"}
-                  borderRadius={"full"}
-                  mr={2}
-                  onClick={onClose}
-                >
-                  Batalkan
-                </Button>
-                <Button
-                  type="submit"
-                  value="delete"
-                  name="action"
-                  colorScheme="blue"
-                  color={"whiteAlpha.900"}
-                  borderRadius={"full"}
-                  onClick={onClose}
-                >
-                  Ya, Hapus
-                </Button>
-              </Flex>
-            </Box> */}
           </Form>
         </ModalContent>
       </Modal>
@@ -696,10 +565,6 @@ export function DeleteButtonLocation(props: ILocation) {
 export function UpdateButtonLocation(props: ILocation) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  //const [title, setTitle] = React.useState(props.name);
-  //const [newContent, setNewcontent] = React.useState(props.name);
-
-  // ==============================================================================
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -722,18 +587,6 @@ export function UpdateButtonLocation(props: ILocation) {
   };
 
   //============================================
-
-  //const [isMapModalOpen, setIsMapModalOpen] = useState(false);
-
-  // const openMapModal = () => {
-  //   setIsMapModalOpen(true);
-  //   onClose(); // Tutup modal utama
-  // };
-
-  // const closeMapModal = () => {
-  //   setIsMapModalOpen(false);
-  //   onClose(); // Tutup modal utama saat menutup modal dalam modal
-  // };
 
   // ini logic select option ==================================================
   interface Provinsi {
@@ -1031,43 +884,6 @@ export function UpdateButtonLocation(props: ILocation) {
                   Tandai lokasi untuk mempermudah pemintaan pickup kurir
                 </Text>
                 <Maps />
-                {/* <Box position={'relative'}>
-                  <Button
-                    bg={'transparent'}
-                    top={'2px'}
-                    left={'120px'}
-                    display={'flex'}
-                    flexDirection={'row'}
-                    zIndex={'1'}
-                    position={'absolute'}
-                    alignItems={'center'}
-                    gap={1}
-                    colorScheme="none"
-                    onClick={openMapModal}
-                  >
-                    <Image src={LocationSlash} />
-                    <Text color={'blue.500'} fontWeight={'bold'}>
-                      Ubah Pinpoint
-                    </Text>
-                  </Button>
-                  <IconButton
-                    icon={
-                      <img
-                        style={{
-                          borderRadius: '10px',
-                          objectFit: 'cover',
-                          height: '80px',
-                          width: '1000px',
-                          filter: 'blur(1px)',
-                        }}
-                        src="https://i.stack.imgur.com/B6fEt.png"
-                        alt="Gambar"
-                      />
-                    }
-                    onClick={openMapModal}
-                    aria-label="Tombol Gambar"
-                  />
-                </Box> */}
               </FormControl>
             </ModalBody>
 
@@ -1109,5 +925,19 @@ export function UpdateButtonLocation(props: ILocation) {
         </ModalContent>
       </Modal>
     </>
+  );
+}
+
+export function UpdateButtonMain(props: ILocation) {
+  return (
+    <Box>
+      <Form method="patch">
+        <Input hidden name="id" value={props.id} />
+        <Input hidden name="action" value="editmainlocation" />
+        <Button type="submit" borderRadius={'full'} size={'xs'}>
+          Buat jadi alamat utama
+        </Button>
+      </Form>
+    </Box>
   );
 }

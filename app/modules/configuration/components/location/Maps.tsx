@@ -57,6 +57,8 @@ export default function Maps() {
           console.log('Longitude:', newLongitude);
         }
       });
+
+      console.log(autocomplete, 'atc');
     };
 
     // Buat elemen <script> untuk memuat pustaka Google Maps API
@@ -86,7 +88,7 @@ export default function Maps() {
           placeholder="Cari alamat..."
           mb={'10px'}
           onKeyDown={handlekeypress}
-          //bg={"red"}
+          required
         />
         <Box id="map" style={{ height: '300px', width: '400px' }}></Box>
         {latitude !== null && longitude !== null && (
