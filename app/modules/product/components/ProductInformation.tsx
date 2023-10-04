@@ -20,6 +20,8 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from '@chakra-ui/icons';
+import type { ChangeEvent} from 'react';
+import { useState } from 'react';
 
 export function ProductInformation() {
   const {
@@ -36,10 +38,16 @@ export function ProductInformation() {
   } = useNestedOptions();
 
   const { handleChange } = useAddProduct();
+  const [productName, setProductName] = useState('');
+  function handleChange2(event: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = event.target;
+    console.log('ini name', name);
 
-  const checkValue = selected.child;
-  console.log(checkValue);
-
+    setProductName(value);
+  }
+  const productNameWithHyphen = productName.replace(/ /g, '-');
+  // const randomNumber = Math.floor(Math.random() * 90) + 10;
+  // const finalProductName = productNameWithHyphen + '-' + randomNumber
   return (
     <Card>
       <CardBody>
@@ -51,7 +59,7 @@ export function ProductInformation() {
               type="text"
               name="name"
               placeholder="Masukan nama produk"
-              onChange={handleChange}
+              onChange={handleChange2}
             />
           </FormControl>
 
@@ -63,7 +71,7 @@ export function ProductInformation() {
                 type="text"
                 name="url"
                 placeholder="nama-produk"
-                onChange={handleChange}
+                value={productNameWithHyphen}
               />
             </InputGroup>
           </FormControl>
