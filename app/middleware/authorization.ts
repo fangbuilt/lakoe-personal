@@ -1,4 +1,4 @@
-import type { LoaderArgs} from '@remix-run/node';
+import type { LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 import { getUserId } from '~/modules/auth/auth.service';
