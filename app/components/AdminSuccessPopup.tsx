@@ -18,6 +18,7 @@ import moment from 'moment';
 import React from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
+import { AdminSuccessNotification } from '~/modules/DashboardMailerlite/mailerliteAdminSuccess';
 
 export default function AdminSuccessPopup(props: any) {
   const { dataWithdrawal } = props;
@@ -93,7 +94,7 @@ export default function AdminSuccessPopup(props: any) {
                   <Text fontWeight={700}>
                     {dataWithdrawal.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
                 </Box>
                 <Box>
                   <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
@@ -182,9 +183,17 @@ export default function AdminSuccessPopup(props: any) {
                   fontSize={'12px'}
                   colorScheme="teal"
                   padding={0}
-                  onClick={onClose}
+                  onClick={() => {
+                    AdminSuccessNotification(
+                      dataWithdrawal.store?.name,
+                      formattedAmount,
+                      dataWithdrawal.bankAccount
+                    );
+
+                    onClose();
+                  }}
                 >
-                  Selesai
+                  Send email to Seller
                 </Button>
               </Box>
 

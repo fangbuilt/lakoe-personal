@@ -239,8 +239,16 @@ export async function getInvoiceProductData() {
         status: 'NEW_ORDER',
       },
       include: {
+        payment: true,
+        courier: true,
         cart: {
           include: {
+            store: {
+              include: {
+                users: true,
+                locations: true,
+              },
+            },
             cartItems: {
               include: {
                 product: {

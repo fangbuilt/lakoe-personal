@@ -18,6 +18,8 @@ import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
 import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
+import AdminDeclinedPopup from './AdminDeclinedPopup';
+import LoadingAttachmentAdmin from './loadingAttachmentLoading';
 
 export default function AdminRequestPopup(props: any) {
   const { dataWithdrawal } = props;
@@ -38,6 +40,8 @@ export default function AdminRequestPopup(props: any) {
     parseInt(dataWithdrawal.amount) - transferFee - tax
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -47,13 +51,17 @@ export default function AdminRequestPopup(props: any) {
 
   const handleApproveClick = async () => {
     try {
-      // Make an API call to update the status
-      await updateStatusWithdraw(dataWithdrawal.id, 'PROCESSING');
-      // Update the local status
-      setStatusUpdated('PROCESSING');
+      setIsLoading(true);
+      await updateStatusWithdraw(dataWithdrawal.id, 'APPROVED');
+      setStatusUpdated('APPROVED');
+
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 7000);
     }
   };
 
@@ -80,139 +88,147 @@ export default function AdminRequestPopup(props: any) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalBody pt={6} pb={2}>
-            <Box padding={'10px'} fontSize={'13px'}>
-              <Box>
-                <Text display={'flex'}>
-                  Nomor Penarikan:{' '}
-                  <Text fontWeight={700}>{dataWithdrawal.id}</Text>
-                </Text>
-                <Text>
-                  {moment(
-                    dataWithdrawal.createdAt,
-                    'YYYY-MM-DD HH:mm:ss'
-                  ).format('LLLL')}
-                </Text>
-              </Box>
-
-              <Flex justifyContent={'space-between'} mt={'10px'}>
+          <Form method="post">
+            <Input type="hidden" name="actionType" value="update" />
+            <Input type="hidden" name="id" value={dataWithdrawal.id} />
+            <ModalBody pt={6} pb={2}>
+              <Box padding={'10px'} fontSize={'13px'}>
                 <Box>
-                  <Text fontWeight={700}>
-                    {dataWithdrawal.bankAccount.accountName}
+                  <Text display={'flex'}>
+                    Nomor Penarikan:{' '}
+                    <Text fontWeight={700}>{dataWithdrawal.id}</Text>
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                  <Text>
+                    {moment(
+                      dataWithdrawal.createdAt,
+                      'YYYY-MM-DD HH:mm:ss'
+                    ).format('LLLL')}
+                  </Text>
                 </Box>
-                <Box>
-                  <Text fontSize={'12px'}>{statusUpdated}</Text>
+
+                <Flex justifyContent={'space-between'} mt={'10px'}>
+                  <Box>
+                    <Text fontWeight={700}>
+                      {dataWithdrawal.bankAccount.accountName}
+                    </Text>
+                    <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
+                  </Box>
+                  <Box>
+                    <Text fontSize={'12px'}>{statusUpdated}</Text>
+                  </Box>
+                </Flex>
+
+                <Box mt={'20px'} fontSize={'12px'}>
+                  <Text fontWeight={700}>Informasi Bank</Text>
+                  <Flex>
+                    <Text width={'150px'}>Nama Bank</Text>
+                    <Text>: {dataWithdrawal.bankAccount.bank}</Text>
+                  </Flex>
+                  <Flex>
+                    <Text width={'150px'}>Nomor Rekening</Text>
+                    <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
+                  </Flex>
+                  <Flex>
+                    <Text width={'150px'}>Nama Pemilik</Text>
+                    <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
+                  </Flex>
+                  <Button
+                    width={'100%'}
+                    textAlign={'center'}
+                    mt={'10px'}
+                    fontSize={'12px'}
+                    colorScheme="teal"
+                    padding={0}
+                  >
+                    Check
+                  </Button>
                 </Box>
-              </Flex>
 
-              <Box mt={'20px'} fontSize={'12px'}>
-                <Text fontWeight={700}>Informasi Bank</Text>
-                <Flex>
-                  <Text width={'150px'}>Nama Bank</Text>
-                  <Text>: {dataWithdrawal.bankAccount.bank}</Text>
-                </Flex>
-                <Flex>
-                  <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
-                </Flex>
-                <Flex>
-                  <Text width={'150px'}>Nama Pemilik</Text>
-                  <Text>: {dataWithdrawal.bankAccount.accountName}</Text>
-                </Flex>
-                <Button
-                  width={'100%'}
-                  textAlign={'center'}
-                  mt={'10px'}
-                  fontSize={'12px'}
-                  colorScheme="teal"
-                  padding={0}
-                >
-                  Check
-                </Button>
-              </Box>
+                <Box mt={'20px'} fontSize={'12px'}>
+                  <Text fontWeight={700}>Rincian</Text>
+                  <Flex justifyContent={'space-between'}>
+                    <Flex>
+                      <Text width={'150px'}>Jumlah Penarikan</Text>
+                      <Text>:</Text>
+                    </Flex>
+                    <Text> {formattedAmount}</Text>
+                  </Flex>
+                  <Flex justifyContent={'space-between'}>
+                    <Flex>
+                      <Text width={'150px'}>Biaya Admin</Text>
+                      <Text>:</Text>
+                    </Flex>
+                    <Text>{formatRupiah(tax)}</Text>
+                  </Flex>
+                  <Text fontSize={'10px'} color={'grey'}>
+                    *1% jumlah penarikan
+                  </Text>
+                  <Flex justifyContent={'space-between'}>
+                    <Flex>
+                      <Text width={'150px'}>Biaya Transfer</Text>
+                      <Text>:</Text>
+                    </Flex>
+                    <Text>{formatRupiah(transferFee)}</Text>
+                  </Flex>
+                  <Divider my={'5px'} py={'1px'} bg={'grey'} />
+                  <Flex justifyContent={'space-between'}>
+                    <Flex>
+                      <Text width={'150px'}>Saldo yang diterima</Text>
+                      <Text>:</Text>
+                    </Flex>
+                    <Text>{withdarwalTotal}</Text>
+                  </Flex>
 
-              <Box mt={'20px'} fontSize={'12px'}>
-                <Text fontWeight={700}>Rincian</Text>
-                <Flex justifyContent={'space-between'}>
-                  <Flex>
-                    <Text width={'150px'}>Jumlah Penarikan</Text>
-                    <Text>:</Text>
-                  </Flex>
-                  <Text> {formattedAmount}</Text>
-                </Flex>
-                <Flex justifyContent={'space-between'}>
-                  <Flex>
-                    <Text width={'150px'}>Biaya Admin</Text>
-                    <Text>:</Text>
-                  </Flex>
-                  <Text>{tax}</Text>
-                </Flex>
-                <Text fontSize={'10px'} color={'grey'}>
-                  *1% jumlah penarikan
-                </Text>
-                <Flex justifyContent={'space-between'}>
-                  <Flex>
-                    <Text width={'150px'}>Biaya Transfer</Text>
-                    <Text>:</Text>
-                  </Flex>
-                  <Text>{formatRupiah(transferFee)}</Text>
-                </Flex>
-                <Divider my={'5px'} py={'1px'} bg={'grey'} />
-                <Flex justifyContent={'space-between'}>
-                  <Flex>
-                    <Text width={'150px'}>Saldo yang diterima</Text>
-                    <Text>:</Text>
-                  </Flex>
-                  <Text>{withdarwalTotal}</Text>
-                </Flex>
-                <Form method="post">
-                  <Input type="hidden" name="actionType" value="update" />
-                  <Input type="hidden" name="id" value={dataWithdrawal.id} />
                   <Flex gap={'5px'} mt={'10px'}>
                     <Button
                       name="status"
-                      value="PROCESSING"
+                      value="APPROVED"
                       flex={'50%'}
                       fontSize={'12px'}
                       colorScheme="teal"
                       padding={0}
                       type="submit"
-                      onClick={handleApproveClick}
+                      onClick={() => {
+                        handleApproveClick();
+                      }}
                     >
                       Approved
                     </Button>
                     <Button
-                      name="status"
-                      value="DECLINED"
                       flex={'50%'}
                       fontSize={'12px'}
-                      colorScheme="teal"
+                      bg={'teal'}
                       padding={0}
-                      type="submit"
-                      onClick={handleApproveClick}
+                      _hover={{ bg: 'teal' }}
                     >
-                      Declined
+                      <AdminDeclinedPopup dataWithdrawal={dataWithdrawal} />
                     </Button>
                   </Flex>
-                </Form>
+                  <Box mt={5} mb={0}>
+                    {isLoading && <LoadingAttachmentAdmin />}
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              colorScheme="teal"
-              mr={3}
-              onClick={onClose}
-              color={'white'}
-              border={'1px solid'}
-              borderColor={'gray.500'}
-              fontSize={'12px'}
-            >
-              Close
-            </Button>
-          </ModalFooter>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                name="status"
+                value="DECLINED"
+                type="submit"
+                colorScheme="teal"
+                mr={3}
+                color={'white'}
+                border={'1px solid'}
+                borderColor={'gray.500'}
+                fontSize={'12px'}
+                onClick={() => {
+                  handleApproveClick();
+                }}
+              >
+                Save
+              </Button>
+            </ModalFooter>
+          </Form>
         </ModalContent>
       </Modal>
     </>

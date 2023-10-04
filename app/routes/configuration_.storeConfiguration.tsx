@@ -10,7 +10,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
@@ -23,8 +23,8 @@ import createLocation, {
   updateMessage,
   deleteMessage,
   createMessage,
-  getStoreid,
   deleteLocation,
+  getStoreid,
 } from '~/modules/configuration/configuration.service';
 
 import {
@@ -35,15 +35,34 @@ import {
 
 import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { getUserId } from '~/modules/auth/auth.service';
+import { db } from '~/libs/prisma/db.server';
+import { authorize } from '~/middleware/authorization';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 
-export async function loader({ params }: ActionArgs) {
-  const getLocationData = await getAllDataLocation();
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
 
-  //console.log("ini getdata:", getLocationData);
+  const userId = getUserId(request);
 
-  const messages = await getMessages();
-  const { storeId } = params;
-  const store_id = await getStoreid(storeId);
+  const user = await db.user.findFirst({
+    where: {
+      id: String(userId),
+    },
+    include: {
+      store: true,
+    },
+  });
+
+  const getLocationDataPromise = getAllDataLocation();
+  const messagesPromise = getMessages(user?.storeId);
+  const storeIdPromise = getStoreid(user?.storeId);
+
+  const [getLocationData, messages, store_id] = await Promise.all([
+    getLocationDataPromise,
+    messagesPromise,
+    storeIdPromise,
+  ]);
 
   return { messages, store_id, getLocationData };
 }
@@ -124,7 +143,7 @@ export async function action({ request }: ActionArgs) {
     return redirect(redirectURL);
   }
 
-  //==================================================================
+  //ini action template message ==================================================================
 
   const action = formData.get('action');
 
@@ -139,14 +158,17 @@ export async function action({ request }: ActionArgs) {
     await deleteMessage(id);
   } else if (action === 'update') {
     const id = formData.get('id') as string;
-    const updatedName = formData.get('updatedName') as string;
-    const updatedContent = formData.get('updatedContent') as string;
+    const name = formData.get('updatedName') as string;
+    const content = formData.get('updatedContent') as string;
 
-    await updateMessage(id, updatedName, updatedContent);
+    const validatedData = updateMessageSchema.parse({ id, name, content });
+
+    await updateMessage(validatedData);
   }
 
   return null;
 }
+
 export default function StoreConfiguration() {
   const data = useLoaderData<typeof loader>();
   return (

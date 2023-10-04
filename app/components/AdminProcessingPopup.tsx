@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   Input,
@@ -11,18 +12,55 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
+  Image,
 } from '@chakra-ui/react';
 import { Form } from '@remix-run/react';
 import moment from 'moment';
+import type { ChangeEvent } from 'react';
 import React, { useState } from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
 import { updateStatusWithdraw } from '~/modules/dashboard/dashboard.service';
+import LoadingAttachmentAdmin from './loadingAttachmentLoading';
 
 export default function AdminProcessingPopup(props: any) {
   const { withdrawalData } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [statusUpdated, setStatusUpdated] = useState(withdrawalData.status);
+  const [selectImage, setSelectImage] = useState<string | undefined | null>(
+    null
+  );
+  const [alertImage, setAlertImage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAlertValidation, setIsAlertValidation] = useState(true);
+
+  const handleImageAlert = () => {
+    setIsAlertValidation(false);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setAlertImage('Successful upload attachment proof✅');
+      setIsLoading(false);
+    }, 3000);
+
+    setTimeout(() => {
+      setIsAlertValidation(true);
+    }, 8000);
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        if (event.target) {
+          setSelectImage(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
@@ -43,13 +81,16 @@ export default function AdminProcessingPopup(props: any) {
 
   const handleApproveClick = async () => {
     try {
-      // Make an API call to update the status
+      setIsLoading(true);
       await updateStatusWithdraw(withdrawalData.id, 'PROCESSING');
-      // Update the local status
       setStatusUpdated('PROCESSING');
       onClose();
     } catch (error) {
       console.error('Error updating status:', error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 7000);
     }
   };
 
@@ -106,7 +147,7 @@ export default function AdminProcessingPopup(props: any) {
                   <Text fontWeight={700}>
                     {withdrawalData.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{withdrawalData.store.name}</Text>
+                  <Text fontSize={'12px'}>{withdrawalData.store?.name}</Text>
                 </Box>
                 <Box>
                   <Text fontSize={'12px'}>{statusUpdated}</Text>
@@ -164,20 +205,67 @@ export default function AdminProcessingPopup(props: any) {
                   <Text> {withdarwalTotal}</Text>
                 </Flex>
               </Box>
-              <Form method="post">
-                <Input type="hidden" name="actionType" value="update" />
-                <Input type="hidden" name="id" value={withdrawalData.id} />
-                <Box mt={'10px'}>
+              <Box>
+                <Form method="post" encType="multipart/form-data">
+                  {/* <Input type="hidden" name="actionType" value="create" /> */}
+                  <Input
+                    type="hidden"
+                    name="withdrawId"
+                    value={withdrawalData.id}
+                  />
                   <Text fontWeight={700}>Bukti Transfer</Text>
-                  <Box mt={'10px'}>
+
+                  {!isAlertValidation && (
+                    <>
+                      {isLoading && <LoadingAttachmentAdmin />}
+                      <Text
+                        color={'white'}
+                        fontSize={'13px'}
+                        mt={'1'}
+                        bg={'green.500'}
+                        p={1}
+                        borderRadius={7}
+                      >
+                        {alertImage}
+                      </Text>
+                    </>
+                  )}
+
+                  <Box mt={'2px'}>
                     <Input
                       type="file"
-                      name="transferProof"
-                      id="transferProof"
+                      name="img"
+                      id="img"
+                      accept="image/*"
+                      onChange={handleImageChange}
                     />
-                    {/* <TagLabel>Upload disini</TagLabel> */}
                   </Box>
+                  {selectImage && (
+                    <Center>
+                      <Box p={4}>
+                        <Image src={selectImage}></Image>
+                      </Box>
+                    </Center>
+                  )}
+                  <Button
+                    width={'100%'}
+                    textAlign={'center'}
+                    mt={'10px'}
+                    fontSize={'12px'}
+                    colorScheme="teal"
+                    padding={0}
+                    type="submit"
+                    onClick={handleImageAlert}
+                  >
+                    upload
+                  </Button>
+                </Form>
+              </Box>
 
+              <Form method="patch">
+                {/* <Input type="hidden" name="actionType" value="update" /> */}
+                <Input type="hidden" name="id" value={withdrawalData.id} />
+                <Box mt={'10px'}>
                   <Button
                     width={'100%'}
                     textAlign={'center'}
@@ -192,6 +280,9 @@ export default function AdminProcessingPopup(props: any) {
                   >
                     Selesai
                   </Button>
+                  <Box mt={5} mb={0}>
+                    {isLoading && <LoadingAttachmentAdmin />}
+                  </Box>
                 </Box>
               </Form>
             </Box>

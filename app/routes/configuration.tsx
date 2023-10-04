@@ -1,6 +1,11 @@
 import { Flex, Heading } from '@chakra-ui/react';
 import { Outlet } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
+import { redirect } from '@remix-run/node';
+
+export async function loader() {
+  return redirect(`/configuration/storeConfiguration`);
+}
 
 export default function Configuration() {
   return (

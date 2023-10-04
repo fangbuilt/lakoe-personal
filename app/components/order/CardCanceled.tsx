@@ -39,7 +39,7 @@ export default function CardCenceled(props: any) {
   } = UseFilterCanceled();
 
   const { selectedSortOption, setSortOption, getSelectedSortOption,sortOrders } =
-    useSortFilter(); // sort selcted
+    useSortFilter(); // sort filter
     const sortedOrders = sortOrders(filteredOrder);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => {
@@ -66,7 +66,6 @@ export default function CardCenceled(props: any) {
 
   return (
     <>
-      {/* start filter */}
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
@@ -92,7 +91,6 @@ export default function CardCenceled(props: any) {
                 color: '#909090',
                 fontSize: '14px',
               }}
-              // value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
               }}
@@ -421,7 +419,6 @@ export default function CardCenceled(props: any) {
               </Box>
             </Card>
           ))}
-          {/* ))} */}
         </Box>
       )}
     </>

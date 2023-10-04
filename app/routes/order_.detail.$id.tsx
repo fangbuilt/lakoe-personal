@@ -1,27 +1,26 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import type { ITracking } from '~/interfaces/order/orderTracking';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import { ImplementGrid } from '~/layouts/Grid';
+import { authorize } from '~/middleware/authorization';
 import StatusOrderDetail from '~/modules/order/components/statusOrderDetail';
 import {
   getInvoiceById,
   updateStatusInvoice,
 } from '~/modules/order/order.service';
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
+
   const { id } = params;
 
-  try {
-    const apiKey = process.env.BITESHIP_API_KEY as string;
-    const dataCart = await getInvoiceById(id as string);
-    return { dataCart, apiKey };
-  } catch (error) {
-    console.error('Loader error:', error);
-    throw error;
-  }
+  const apiKey = process.env.BITESHIP_API_KEY as string;
+  const dataCart = await getInvoiceById(id as string);
+
+  return { dataCart, apiKey };
 }
 
 export async function action({ request }: ActionArgs) {

@@ -9,7 +9,7 @@ import {
   Image,
   Stack,
 } from '@chakra-ui/react';
-import { useLocation, useNavigate } from '@remix-run/react';
+import { Form, useLocation, useNavigate } from '@remix-run/react';
 import BagFilled from '~/assets/icon-pack/navigation-icons/bag-filled.svg';
 import BagOutline from '~/assets/icon-pack/navigation-icons/bag-outline.svg';
 import BoxFilled from '~/assets/icon-pack/navigation-icons/box-filled.svg';
@@ -258,6 +258,19 @@ export function LeftNavigation() {
         >
           Profile
         </Button>
+        <Form action="/auth/logout" method="post">
+          <Button
+            bgColor={'lakoeCyan'}
+            textColor={'white'}
+            _hover={{ textColor: 'black', bgColor: 'gray.200' }}
+            borderRadius={'full'}
+            type="submit"
+            justifyContent={'left'}
+            py={6}
+          >
+            Logout
+          </Button>
+        </Form>
       </Stack>
     </Flex>
   );

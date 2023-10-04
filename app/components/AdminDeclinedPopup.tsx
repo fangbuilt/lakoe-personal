@@ -16,22 +16,26 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form } from '@remix-run/react';
 import moment from 'moment';
 import React, { useState } from 'react';
-
-import { LuZoomIn } from 'react-icons/lu';
 import { AdminDeclinedNotification } from '~/modules/DashboardMailerlite/mailerliteAdminDeclined';
 
 export default function AdminDeclinedPopup(props: any) {
   const { dataWithdrawal } = props;
   const [formData, setFormData] = useState({
-    reasonAdminDeclained: '',
+    actionType: 'create',
+    withdrawId: dataWithdrawal.id || '',
+    storeId: dataWithdrawal.store?.id || '',
+    bankAccountId: dataWithdrawal.bankAccount?.id || '',
+    reason: '',
   });
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (event: any) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,7 +68,7 @@ export default function AdminDeclinedPopup(props: any) {
           padding={'5px 15px'}
           borderRadius={'15px'}
         >
-          <LuZoomIn />
+          Declined
         </Text>
       </Flex>
 
@@ -106,7 +110,7 @@ export default function AdminDeclinedPopup(props: any) {
                   <Text fontWeight={700}>
                     {dataWithdrawal.bankAccount.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataWithdrawal.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataWithdrawal.store?.name}</Text>
                 </Box>
                 <Box>
                   <Text fontSize={'12px'}>{dataWithdrawal.status}</Text>
@@ -121,7 +125,7 @@ export default function AdminDeclinedPopup(props: any) {
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  <Text>:{dataWithdrawal.bankAccount.accountNumber}</Text>
+                  <Text>: {dataWithdrawal.bankAccount.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
@@ -166,33 +170,51 @@ export default function AdminDeclinedPopup(props: any) {
               </Box>
 
               <Box mt={'10px'}>
-                <Form>
+                <form method="post">
                   <FormControl>
-                    <FormLabel fontSize={'12px'} fontWeight={700}>
+                    <Input type="hidden" name="actionType" value="create" />
+                    <Input
+                      type="text"
+                      name="withdrawId"
+                      value={formData.withdrawId}
+                    />
+                    <Input
+                      type="text"
+                      name="storeId"
+                      value={formData.storeId}
+                    />
+                    <Input
+                      type="text"
+                      name="bankAccountId"
+                      value={formData.bankAccountId}
+                    />
+                    <FormLabel fontSize="12px" fontWeight={700}>
                       Alasan Penolakan
                     </FormLabel>
                     <Input
+                      placeholder="Reason of declined..."
                       type="text"
-                      name="reasondAdminDeclined"
-                      value={formData.reasonAdminDeclained}
-                      fontSize={'10px'}
-                      onChange={(event) => handleChange(event)}
+                      name="reason"
+                      fontSize="10px"
+                      onChange={handleChange}
+                      value={formData.reason}
                     />
                   </FormControl>
                   <Button
-                    fontSize={'12px'}
+                    type="submit"
+                    fontSize="12px"
                     colorScheme="teal"
-                    width={'100%'}
-                    textAlign={'center'}
-                    mt={'10px'}
+                    width="100%"
+                    textAlign="center"
+                    mt="10px"
                     onClick={() => {
+                      AdminDeclinedNotification(formData.reason);
                       onClose();
-                      AdminDeclinedNotification(formData.reasonAdminDeclained);
                     }}
                   >
                     Send email to Seller
                   </Button>
-                </Form>
+                </form>
               </Box>
 
               <Box mt={'10px'}>

@@ -1,10 +1,11 @@
 import { Box, Button, Flex, Input, Image, Text } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, Link, useLoaderData } from '@remix-run/react';
 import { AiOutlineClose } from 'react-icons/ai';
 import PopupBank from '~/components/PopupBank';
 import UpdateBank from '~/components/PopupBankUpdate.$id';
+import { authorize } from '~/middleware/authorization';
 import {
   createBank,
   deleteBankList,
@@ -12,7 +13,12 @@ import {
   updateBank,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader(storeId: string) {
+export async function loader(
+  { request, context, params }: DataFunctionArgs,
+  storeId: string
+) {
+  await authorize({ request, context, params }, '1');
+
   return await getBankList(storeId);
 }
 

@@ -1,5 +1,5 @@
 import { Stack } from '@chakra-ui/react';
-import { redirect, type ActionArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import { Action } from '~/modules/product/components/Action';
@@ -15,8 +15,17 @@ import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
+  redirect,
+  json,
 } from '@remix-run/node';
+import { authorize } from '~/middleware/authorization';
 // import { useState } from 'react';
+
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
+
+  return json({});
+}
 
 export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'post') {

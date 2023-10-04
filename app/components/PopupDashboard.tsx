@@ -29,6 +29,7 @@ export default function DashboardPopup({
   bankAccount,
   storeName,
   createdAt,
+  creditSaldo,
 }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
@@ -52,6 +53,7 @@ export default function DashboardPopup({
     bankId: '',
     amount: '',
     bankAccount: '',
+    password: '',
   });
 
   const handleChange = (e: any) => {
@@ -62,14 +64,26 @@ export default function DashboardPopup({
   const handleAmount = () => {
     const { amount } = formData;
     const parsedAmount = parseFloat(amount);
+    const parsedCredit = parseFloat(String(Number(creditSaldo) / 10));
 
     if (isNaN(parsedAmount)) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Amount harus berupa angka');
+      setAlertMessage('Amount harus berupa angka');
     } else if (parsedAmount < 10000) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Penarikan minimal Rp.100.000');
-    } else if (parsedAmount > 250000) {
+      setAlertMessage('Penarikan minimal Rp.100.000');
+    } else if (parsedAmount > 2500000) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Jumlah amount melebihi batas maksimal');
+      setAlertMessage('Jumlah amount melebihi batas maksimal');
+    } else if (parsedAmount > parsedCredit) {
+      setIsFormValidation(false);
+      setAlertAmountMessage('Saldo Anda tidak mencukupi!');
+      setAlertMessage('Saldo Anda tidak mencukupi!');
     } else {
+      setIsFormValidation(true);
       setAlertAmountMessage('');
     }
   };
@@ -196,7 +210,6 @@ export default function DashboardPopup({
                   onChange={(event) => {
                     handleChange(event);
                     handleAmount();
-                    // handleAmountRupiah();
                   }}
                   type="number"
                   ref={initialRef}
@@ -319,6 +332,7 @@ export default function DashboardPopup({
                     toggleTarikKredit();
                     handleAmount();
                   }}
+                  // isDisabled={!isFormValidation}
                 >
                   Tarik Kredit
                 </Button>
