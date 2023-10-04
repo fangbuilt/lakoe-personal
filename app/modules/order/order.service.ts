@@ -315,6 +315,37 @@ export async function getDataProductReadyToShip() {
   });
 }
 
+export default async function ServiceSuccess() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'ORDER_COMPLETED',
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: {
+            include: {
+              messageTemplates: true,
+            },
+          },
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export async function getProductByCategoryId(id: any) {
   try {
     const productcategoryid = await db.product.findMany({
