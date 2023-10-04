@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -13,47 +14,124 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
+import type { FileWithPath } from 'react-dropzone';
 import Dropzone from 'react-dropzone';
 import CloseCircle from '~/assets/icon-pack/button-icons/close-circle.svg';
 import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
-// import useAddProduct from '../hooks/useAddProduct';
-import { useState } from 'react';
-// import axios from 'axios';
+import type { AxiosResponse } from 'axios';
+import axios from 'axios';
+import crypto from 'crypto';
+import type { loader } from '~/routes/product_.add';
+import { useLoaderData } from '@remix-run/react';
+import useAddProduct from '../hooks/useAddProduct';
 
-// interface Photo {
-//   label: string;
-//   name: string;
-//   image: File | null; // Menggunakan File | null
-// }
+// import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '~/constants/cloudinary';
 
 export function ProductDetail() {
+  const [, setSelectedImage] = useState<string | null>(null);
+
+  const data = useLoaderData<typeof loader>();
+
   const [photos, setPhotos] = useState([
     { label: 'Foto Utama', name: 'mainPhoto', image: null },
     { label: 'Foto 2', name: 'photo2', image: null },
-    // { label: 'Foto 3', name: 'photo3', image: null },
-    // { label: 'Foto 4', name: 'photo4', image: null },
-    // { label: 'Foto 5', name: 'photo5', image: null },
+    { label: 'Foto 3', name: 'photo3', image: null },
+    { label: 'Foto 4', name: 'photo4', image: null },
+    { label: 'Foto 5', name: 'photo5', image: null },
   ]);
 
-  const handleImagePreview = (name: string, image: any) => {
-    const updatedPhotos = photos.map((photo) => {
-      if (photo.name === name) {
-        return { ...photo, image };
-      }
-      return photo;
-    });
-    setPhotos(updatedPhotos);
+  const handleImageUpload = async (
+    acceptedFiles: FileWithPath[],
+    index: number
+  ) => {
+    const file = acceptedFiles[0];
+    const imageUrl = URL.createObjectURL(file);
+    const photo = photos[index];
+
+    setSelectedImage(imageUrl);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', data.ENV.CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const response: AxiosResponse = await axios.post(
+        `https://api.cloudinary.com/v1_1/${data.ENV.CLOUDINARY_CLOUD_NAME}/upload`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      // Update the uploaded image URL
+      const updatedPhotos = [...photos];
+      updatedPhotos[index] = { ...photo, image: response.data.secure_url };
+      setPhotos(updatedPhotos);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
   };
 
-  const handleRemoveImage = (name: string) => {
-    const updatedPhotos = photos.map((photo) => {
-      if (photo.name === name) {
-        return { ...photo, image: null };
-      }
-      return photo;
-    });
-    setPhotos(updatedPhotos);
+  const handleRemove = (index: number) => {
+    const photo = photos[index];
+    const imageUrl = photo.image;
+
+    if (imageUrl) {
+      URL.revokeObjectURL(imageUrl);
+
+      // Delete image from Cloudinary
+      deleteImageFromCloudinary(imageUrl);
+
+      // Reset the photo
+      const updatedPhotos = [...photos];
+      updatedPhotos[index] = { ...photo, image: null };
+      setPhotos(updatedPhotos);
+    }
   };
+
+  const deleteImageFromCloudinary = async (imageUrl: string) => {
+    try {
+      // Extract public_id from the Cloudinary image URL
+      const publicId = imageUrl
+        .split('/')
+        .pop()
+        ?.replace(/\.[^/.]+$/, '') as string;
+      const timestamp = new Date().getTime();
+      const apiKey = '524875873527981';
+      const apiSecret = 'vdySQK--pQjVIz6l6vUcENdHowQ';
+      const signature = generateSHA1(generateSignature(publicId, apiSecret));
+
+      // Send a DELETE request to Cloudinary
+      await axios.post(
+        `https://api.cloudinary.com/v1_1/${data.ENV.CLOUDINARY_CLOUD_NAME}/image/destroy`,
+        {
+          public_id: publicId,
+          signature: signature,
+          api_key: apiKey,
+          timestamp: timestamp,
+        }
+      );
+
+      console.log('Image deleted from Cloudinary');
+    } catch (error) {
+      console.error('Error deleting image from Cloudinary:', error);
+    }
+  };
+
+  const generateSHA1 = (data: any) => {
+    const hash = crypto.createHash('sha1');
+    hash.update(data);
+    return hash.digest('hex');
+  };
+
+  const generateSignature = (publicId: string, apiSecret: string) => {
+    const timestamp = new Date().getTime();
+    return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+  };
+
+  const { description, maxCharacters, handleChange } = useAddProduct()
 
   return (
     <Card>
@@ -65,103 +143,93 @@ export function ProductDetail() {
             <Textarea
               maxH={400}
               minH={200}
-              placeholder="Masukan deskripsi lengkap produk kamu"
-              name="description"
+              placeholder="Masukkan deskripsi lengkap produk kamu"
+              name="description" maxLength={3000}
+              minLength={1}
+              value={description}
+              onChange={handleChange}
             />
-            <FormHelperText textAlign={'right'}>0/3000</FormHelperText>
-            {/* how to make the form helper text dynamic as we type? */}
+            <FormHelperText textAlign={'right'}>
+              {description.length}/{maxCharacters}
+            </FormHelperText>
           </FormControl>
 
-          <Flex gap={2} align={'end'} overflowX={'auto'} pb={2}>
+          <Flex gap={2} align="end" overflowX="auto" pb={2}>
             {photos.map((photo, index) => (
               <FormControl isRequired key={index}>
-                {photo.label === 'Foto Utama' && (
-                  <FormLabel>Foto Produk</FormLabel>
-                )}
+                <FormLabel>{photo.label}</FormLabel>
                 <Dropzone
-                  onDrop={(acceptedFiles) => {
-                    handleImagePreview(photo.name, acceptedFiles[0]);
-                  }}
+                  onDrop={(acceptedFiles) =>
+                    handleImageUpload(acceptedFiles, index)
+                  }
                 >
                   {({ getRootProps, getInputProps }) => (
                     <section>
                       <div {...getRootProps()}>
-                        <input
-                          // {...getInputProps()}
-                          name={photo.name}
-                          type="file"
-                          accept="image/*"
-                        />
-
+                        <input {...getInputProps()} />
                         {photo.image ? (
                           <Flex
-                            direction={'column'}
-                            justify={'center'}
-                            align={'center'}
+                            direction="column"
+                            justify="center"
+                            align="center"
                             gap={2}
-                            border={'1px'}
-                            borderRadius={'md'}
-                            borderColor={'gray.400'}
-                            w={'10em'}
-                            h={'10em'}
-                            position={'relative'}
+                            border="1px"
+                            borderRadius="md"
+                            borderColor="gray.400"
+                            w="10em"
+                            h="10em"
+                            position="relative"
                           >
                             <Button
-                              onClick={() => handleRemoveImage(photo.name)}
-                              size={'xs'}
-                              position={'absolute'}
+                              onClick={() => handleRemove(index)}
+                              size="xs"
+                              position="absolute"
                               top={-2}
                               right={-2}
-                              variant={'unstyled'}
-                              borderRadius={'full'}
+                              variant="unstyled"
+                              borderRadius="full"
                             >
                               <Image src={CloseCircle} />
                             </Button>
-                            {photo.label === 'Foto Utama' && (
-                              <Box
-                                position={'absolute'}
-                                top={1}
-                                left={1}
-                                bgColor={'#E8C600'}
-                                px={2}
-                                py={1}
-                                borderRadius={'md'}
-                              >
-                                <Text fontSize={'xs'} fontWeight={'semibold'}>
-                                  Foto Utama
-                                </Text>
-                              </Box>
-                            )}
+                            <Box
+                              position="absolute"
+                              top={1}
+                              left={1}
+                              bgColor="#E8C600"
+                              px={2}
+                              py={1}
+                              borderRadius="md"
+                            >
+                              <Text fontSize="xs" fontWeight="semibold">
+                                {photo.label}
+                              </Text>
+                            </Box>
                             <Image
-                              src={
-                                photo.image
-                                  ? URL.createObjectURL(photo.image)
-                                  : undefined
-                              }
-                              borderRadius={'md'}
-                              aspectRatio={'1 / 1'}
-                              objectFit={'cover'}
+                              src={photo.image}
+                              borderRadius="md"
+                              aspectRatio="1 / 1"
+                              objectFit="cover"
                             />
                           </Flex>
                         ) : (
                           <Flex
-                            direction={'column'}
-                            justify={'center'}
-                            align={'center'}
+                            direction="column"
+                            justify="center"
+                            align="center"
                             gap={2}
-                            border={'1px'}
+                            border="1px"
                             p={10}
-                            borderRadius={'md'}
-                            borderColor={'gray.400'}
-                            borderStyle={'dashed'}
-                            w={'10em'}
-                            h={'10em'}
+                            borderRadius="md"
+                            borderColor="gray.400"
+                            borderStyle="dashed"
+                            w="10em"
+                            h="10em"
                           >
                             <Image src={GalleryAdd} />
                             <Text
-                              textAlign={'center'}
-                              textColor={'gray.400'}
-                              fontSize={'sm'}
+                              textAlign="center"
+                              textColor="gray.400"
+                              fontSize="sm"
                             >
                               {photo.label}
                             </Text>
@@ -171,6 +239,13 @@ export function ProductDetail() {
                     </section>
                   )}
                 </Dropzone>
+                <input
+                  type="text"
+                  name={photo.name}
+                  value={photo.image || ''}
+                  hidden
+                  readOnly
+                />
               </FormControl>
             ))}
           </Flex>

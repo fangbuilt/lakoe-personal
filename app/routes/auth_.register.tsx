@@ -145,6 +145,7 @@ export async function action({ request }: ActionArgs) {
     password,
     storeId,
     roleId,
+    isVerify: false,
   });
   return createUserSession(user.id, redirectTo);
 }

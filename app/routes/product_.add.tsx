@@ -2,17 +2,16 @@ import { Stack } from '@chakra-ui/react';
 import { type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import { Action } from '~/modules/product/components/Action';
 import { Price } from '~/modules/product/components/Price';
 import { ProductDetail } from '~/modules/product/components/ProductDetail';
 import { ProductInformation } from '~/modules/product/components/ProductInformation';
 import { ProductManagement } from '~/modules/product/components/ProductManagement';
-import { ProductVariant } from '~/modules/product/components/ProductVariant';
+import { LazyProductVariant } from '~/modules/product/components/ProductVariant';
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
 import { createProduct } from '~/modules/product/product.service';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
-// import { useState } from 'react';
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -40,17 +39,20 @@ export async function loader({ request }: LoaderArgs) {
     }
   }
 
+
 }
 
 export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'post') {
 
     const formData = await request.formData();
+
     const imageUrl = formData.get('mainPhoto') as string;
     const imageUrl2 = formData.get('photo2') as string;
     const imageUrl3 = formData.get('photo3') as string;
     const imageUrl4 = formData.get('photo4') as string;
     const imageUrl5 = formData.get('photo5') as string;
+
     const storeId = formData.get('storeId') as string;
 
     const data = {
@@ -60,9 +62,7 @@ export async function action({ request }: ActionArgs) {
       url4: imageUrl4,
       url5: imageUrl5,
       name: formData.get('name'),
-
       description: formData.get("description") as string,
-
       minimumOrder: Number(formData.get('min_order')),
       price: parseFloat(formData.get('price') as string),
       stock: parseInt(formData.get('stock') as string),
@@ -98,7 +98,7 @@ export default function AddProduct() {
           <ProductInformation />
           <ProductDetail />
           <input type="text" name='storeId' value={data.storeId} hidden readOnly />
-          <ProductVariant />
+          <LazyProductVariant />
           <Price />
           <ProductManagement />
           <WeightAndShipment />

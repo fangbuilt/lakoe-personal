@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
-import type { Product } from '~/interfaces/Product';
+import type { Product } from '~/interfaces/product';
 
 export default function useAddProduct() {
-  const [preview, setPreview] = useState<string | null>(null);
+  const [previews, setPreviews] = useState<(string | undefined)[]>([undefined, undefined, undefined, undefined, undefined]);
 
   const [form, setForm] = useState<Product>({
     name: '',
     url: '',
     category: '',
     description: '',
-    image: '',
+    attachments: [],
     variant: '',
     price: 0,
-    min_order: 0,
+    minimumOrder: 0,
     stock: 0,
     sku: '',
     weight: 0,
@@ -21,6 +21,9 @@ export default function useAddProduct() {
     width: 0,
     height: 0,
   });
+
+  const [description, setDescription] = useState('')
+  const maxCharacters = 3000
 
   function handleChange(
     event: ChangeEvent<
@@ -30,19 +33,39 @@ export default function useAddProduct() {
     const { name, value } = event.target;
 
     if (event.target.type === 'file') {
-      const eventFile = event.target as HTMLInputElement;
-      const files = eventFile.value as Object;
+      console.log('event.target.type:', event.target.type);
+
+      const files = value as Object;
+
+      console.log('files:', files);
 
       if (!files) return;
 
+      const mediaFile = files as MediaSource | Blob;
+      console.log('mediaFile:', mediaFile);
+      const newPreviews = [...previews]
+      const index = Number(name.split('_')[1])
+
+      newPreviews[index] = URL.createObjectURL(mediaFile)
+      setPreviews(newPreviews)
+
       setForm({
         ...form,
-        [name]: files,
+        [name]: mediaFile,
       });
 
-      const mediaFile = files as MediaSource | Blob;
+    } else if (name === 'description') {
+      const descValue = event.target.value
 
-      setPreview(URL.createObjectURL(mediaFile));
+      if (descValue.length <= maxCharacters) {
+        setDescription(descValue)
+      }
+
+      setForm({
+        ...form,
+        [name]: value,
+      });
+
     } else {
       setForm({
         ...form,
@@ -51,13 +74,15 @@ export default function useAddProduct() {
     }
   }
 
-  function cancelPreview() {
+  function cancelPreview(index: number) {
+    const newPreviews = [...previews]
+    newPreviews[index] = undefined
     setForm({
       ...form,
-      image: '',
+      attachments: [],
     });
-    setPreview(null);
+    setPreviews(newPreviews);
   }
 
-  return { preview, handleChange, cancelPreview };
+  return { previews, handleChange, cancelPreview, description, maxCharacters };
 }
