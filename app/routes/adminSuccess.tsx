@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react;
 import type { DataFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminSuccess from '~/components/AdminSuccess';
