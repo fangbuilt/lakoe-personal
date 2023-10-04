@@ -37,7 +37,7 @@ import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
-import searchFilter from '~/hooks/useSearchOrder';
+import SearchFilter from '~/hooks/useSearchOrder';
 
 export default function CardSuccessed() {
   function formatCurrency(price: number): string {
@@ -50,7 +50,7 @@ export default function CardSuccessed() {
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // modal
-  const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
+  const { setSearchQuery, filteredOrders } = SearchFilter(); // search filter
   const { selectedCouriers, toggleCourier, getSelectedCourier } =
     useFilterCourier(); // courier selected
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
