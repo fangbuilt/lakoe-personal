@@ -137,15 +137,6 @@ export async function createWithdraw(
 ) {
   try {
     const amount = parseFloat(data.amount);
-
-    const user = await db.user.findUnique({
-      where: { id: '1' },
-    });
-
-    if (!user) {
-      throw new Error('User with id not found.');
-    }
-
     const bankAccount = await db.bankAccount.findUnique({
       where: {
         id: id,

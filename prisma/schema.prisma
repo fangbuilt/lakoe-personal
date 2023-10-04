@@ -369,6 +369,7 @@ model Payment {
   bank      String
   amount    Float
   accountNumber String
+  accountName String
   status    String
   user      User?     @relation(fields: [userId], references: [id])
   userId    String?
@@ -501,7 +502,6 @@ model Refund {
     id         String    @id @unique @default(uuid())
     amount     Float
     status     String
-    attachment String
     invoice    Invoice? @relation(fields: [invoiceId], references: [id])
     invoiceId  String   @unique
     attachmentRefund AttachmentRefund[]
