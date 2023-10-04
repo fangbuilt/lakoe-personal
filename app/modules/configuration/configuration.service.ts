@@ -99,7 +99,7 @@ export async function getAllDataLocation() {
 //====================================================++++++
 
 export async function getStoreData(id: string) {
-  const dataStore = await db.store.findMany({
+  const dataStore = await db.store.findFirst({
     where: {
       id: id,
     },
@@ -136,7 +136,7 @@ export async function getStoreid(id: any) {
   // export async function login(data: z.infer<typeof checkoutSchema>) {}
   return await db.store.findFirst({
     where: {
-      id,
+      id: id,
     },
   });
 }

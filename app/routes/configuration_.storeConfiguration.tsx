@@ -41,28 +41,32 @@ import { updateMessageSchema } from '~/modules/configuration/configuration.schem
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
 
-  const userId = getUserId(request);
+  const userId = await getUserId(request);
 
   const user = await db.user.findFirst({
     where: {
-      id: String(userId),
+      id: userId as string,
     },
     include: {
       store: true,
     },
   });
 
+  const storePromise = user?.storeId;
+  console.log(storePromise as string);
+
   const getLocationDataPromise = getAllDataLocation();
   const messagesPromise = getMessages(user?.storeId);
   const storeIdPromise = getStoreid(user?.storeId);
 
-  const [getLocationData, messages, store_id] = await Promise.all([
+  const [getLocationData, messages, store_id, store] = await Promise.all([
     getLocationDataPromise,
     messagesPromise,
     storeIdPromise,
+    storePromise,
   ]);
 
-  return { messages, store_id, getLocationData };
+  return { messages, store_id, getLocationData, store };
 }
 
 export async function action({ request }: ActionArgs) {
@@ -144,7 +148,7 @@ export async function action({ request }: ActionArgs) {
 
     console.log('ini logoAttachment', logoAttachment);
 
-    const id = formData.get('id') as string;
+    const id = formData.get('storeId') as string;
 
     await updateStoreInformation(id, {
       slogan,
