@@ -1,18 +1,40 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
 import AdminAll from '~/components/AdminAll';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import {
   getWithdrawalList,
   updateStatusWithdraw,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader() {
-  return await getWithdrawalList();
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return await getWithdrawalList();
+  } else if (role?.roleId === '2') {
+    return redirect('/dashboard');
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
+
 export async function Action({ request }: ActionArgs) {
   const formData = await request.formData();
   const id = formData.get('id');

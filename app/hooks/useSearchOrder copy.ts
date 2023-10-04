@@ -22,13 +22,13 @@ export function UseSearch() {
               {
                 invoiceNumber: {
                   contains: searchQuery,
-                  mode: 'insensitive', // Membuat pencarian case-insensitive
+                  // mode: 'insensitive', // Membuat pencarian case-insensitive
                 },
               },
               {
                 receiverName: {
                   contains: searchQuery,
-                  mode: 'insensitive',
+                  // mode: 'insensitive',
                 },
               },
             ],
