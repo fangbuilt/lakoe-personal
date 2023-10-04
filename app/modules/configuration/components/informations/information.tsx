@@ -22,13 +22,14 @@ import GalleryEdit from '~/assets/icon-pack/gallery-edit.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { ChangeEvent } from 'react';
 import React, { useEffect, useState } from 'react';
-import { Form } from '@remix-run/react';
+import { Form, useLoaderData } from '@remix-run/react';
 import type { FileWithPath } from 'react-dropzone';
 import Dropzone from 'react-dropzone';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 import crypto from 'crypto';
 import Loading from '../loading';
+import type { loader } from '~/routes/configuration_.storeConfiguration';
 
 const CLOUDINARY_UPLOAD_PRESET = 'eenwxkso';
 const CLOUDINARY_CLOUD_NAME = 'djpxhz3vu';
@@ -183,6 +184,8 @@ export function Informations({ dataStore }: any) {
     const timestamp = new Date().getTime();
     return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
   };
+  const store = useLoaderData<typeof loader>();
+  console.log(store.store as string);
 
   return (
     <TabPanel>
@@ -191,9 +194,13 @@ export function Informations({ dataStore }: any) {
       </Text>
       <Form method="post" encType="multipart/form-data">
         <Input hidden name="action" value="updateInformation" />
-        <Input hidden type="text" name="storeId" value={dataStore.id} />
+        <Input
+          hidden
+          type="text"
+          name="storeId"
+          value={store.store as string}
+        />
         <FormControl>
-          gi
           <Grid
             h="150px"
             templateRows="repeat(2, 1fr)"

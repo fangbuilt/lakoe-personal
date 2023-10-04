@@ -96,10 +96,10 @@ export async function getAllDataLocation() {
   });
 }
 
-//================================================
+//====================================================++++++
 
 export async function getStoreData(id: string) {
-  const dataStore = await db.store.findMany({
+  const dataStore = await db.store.findFirst({
     where: {
       id: id,
     },
@@ -109,7 +109,7 @@ export async function getStoreData(id: string) {
 
 export async function updateStoreInformation(store_id: string, data: any) {
   const dataUpdate = await db.store.update({
-    where: { id: '2' },
+    where: { id: store_id },
     data: {
       name: data.name,
       slogan: data.slogan,
@@ -136,7 +136,7 @@ export async function getStoreid(id: any) {
   // export async function login(data: z.infer<typeof checkoutSchema>) {}
   return await db.store.findFirst({
     where: {
-      id,
+      id: id,
     },
   });
 }
