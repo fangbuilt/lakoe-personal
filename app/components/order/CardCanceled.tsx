@@ -35,7 +35,6 @@ export default function CardCenceled(props: any) {
     useFilterCourier(); // courier selected
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter(); // sort selcted
-    console.log("kurir",selectedCouriers)
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => {
@@ -73,6 +72,7 @@ export default function CardCenceled(props: any) {
                 color: "#909090",
                 fontSize: "14px",
               }}
+
               onChange={(e) => {
                 setSearchQuery(e.target.value);
               }}
@@ -108,7 +108,6 @@ export default function CardCenceled(props: any) {
                 <Checkbox
                   onChange={() => toggleCourier("GoSend")}
                   isChecked={selectedCouriers.includes("GoSend")}
-
                 >
                   GoSend
                 </Checkbox>
@@ -151,19 +150,20 @@ export default function CardCenceled(props: any) {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("J&T")}
-                  isChecked={selectedCouriers.includes("J&T")}
+                  onChange={() => toggleCourier("jnt")}
+                  isChecked={selectedCouriers.includes("jnt")}
                 >
                   J&T
                 </Checkbox>
-                <Input type="hidden" value={selectedCouriers}onChange={(e) => {
+                <Input type="hidden" value={selectedCouriers}
+                onChange={(e) => {
                 setSearchQuery(e.target.value);
               }} ></Input>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier("Tiki")}
-                  isChecked={selectedCouriers.includes("Tiki")}
+                  onChange={() => toggleCourier("tiki")}
+                  isChecked={selectedCouriers.includes("tiki")}
                 >
                   Tiki
                 </Checkbox>
@@ -320,7 +320,6 @@ export default function CardCenceled(props: any) {
         </Box>
       ) : (
         <Box>
-          {/* {filterOrdersByCourier(filteredOrders).map((data, index) => ( */}
           {filteredOrders.map((data:any, index:any) => (
             <Card mb={5} mt={5} boxShadow={"xs"} key={index}>
               <Box>
@@ -372,22 +371,19 @@ export default function CardCenceled(props: any) {
                     <Divider />
 
                     <Link to={`detail/${data.id}`}>
-                      <Flex justifyContent={"space-between"} px={3} >
+                      <Flex justifyContent={"space-between"} px={3} py={2} >
                         <Box display={"flex"} gap={3} w={"80%"}>
                           <Img
                             w={"52px"}
                             h={"52px"}
                             display={"inline"}
                             borderRadius={"md"}
-                            src={"https://images.unsplash.com/photo-1463100099107-aa0980c362e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80"}
-                            // src={
-                            //   data.cart?.cartItems[0]?.product?.attachments[0]
-                            //     ?.url
-                            // }
-                            mt={3}
+                            src={
+                              data.cart?.cartItems[0]?.product?.attachments[0]
+                                ?.url
+                            }
                           />
                           <Text
-                            mt={4}
                             id="fm500"
                             fontSize={"16px"}
                             textOverflow={"ellipsis"}
@@ -400,8 +396,8 @@ export default function CardCenceled(props: any) {
                             )}
                             <Text
                               color={"gray.400"}
-                              pb={3}
                               fontWeight={"normal"}
+                              mt={1}
                             >
                               {data.cart?.cartItems.map(
                                 (item: any) => item.qty
@@ -410,7 +406,7 @@ export default function CardCenceled(props: any) {
                             </Text>
                           </Text>
                         </Box>
-                        <Box mt={4} w={"18%"}>
+                        <Box w={"18%"}>
                           <Flex gap={1} fontWeight={"500"} >
                             <Text color={"#909090"} fontSize={"14px"}>
                               Total
@@ -419,7 +415,7 @@ export default function CardCenceled(props: any) {
                               Belanja
                             </Text>
                           </Flex>
-                          <Text fontWeight={"bold"} fontSize={"14px"}>
+                          <Text fontWeight={"bold"} mt={2} fontSize={"14px"}>
                             {formatCurrency(data.price)}
                           </Text>
                         </Box>

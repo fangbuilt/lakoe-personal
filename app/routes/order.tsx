@@ -12,6 +12,8 @@ import {
   whatsappTemplateDb,
   SuccessService,
   getProductUnpid,
+  filterCourier,
+
 } from '~/modules/order/order.service';
 
 import { Flex} from '@chakra-ui/react';
@@ -20,13 +22,14 @@ import { ImplementGrid } from '~/layouts/Grid';
 import {NavOrder} from '~/layouts/NavOrder';
 import { db } from '~/libs/prisma/db.server';
 import getDataInShipping from '~/modules/order/orderShippingService';
+import { useFilterCourier } from '~/hooks/useFilterCourier';
 
 
 export const loader = async ({ request }: LoaderArgs) => {
   const apiKey = process.env.BITESHIP_API_KEY;
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get("search") || "";
-
+  // const {selectedCouriers} = useFilterCourier()
   console.log("searchTerm:", searchTerm);
 
   try {
@@ -37,6 +40,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       whatsappTemplateDb(),
       SuccessService("newest"),
       SuccessService("oldest"),
+      // filterCourier()
     ]);
 
     const dataInvoice = await getInvoiceByStatus();
@@ -45,12 +49,12 @@ export const loader = async ({ request }: LoaderArgs) => {
       unpaidCardAll,
       unpaidCard,
       canceledService,
+      whatsappDb,
+      succesService,
       dataInvoice,
       dataShipping: await getDataInShipping(),
       dataProductReadyToShip: await getDataProductReadyToShip(),
       apiKey,
-      whatsappDb,
-      succesService,
     });
   } catch (error) {
     console.error("error:", error);

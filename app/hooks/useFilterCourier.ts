@@ -22,6 +22,7 @@ export function useFilterCourier() {
 
   const filteredOrdersList = filteredOrders.filter((order) => {
     const courierName = order.courier?.courierName;
+    
     return courierName && selectedCouriers.includes(courierName);
   });
   const getSelectedCourier = () => {
@@ -31,7 +32,7 @@ export function useFilterCourier() {
   return {
     filteredOrdersList,
     getSelectedCourier,
-    selectedCouriers,
+    selectedCouriers: selectedCouriers as Array<string>,
     toggleCourier,
     setSelectedCouriers,
   };

@@ -455,3 +455,13 @@ export async function whatsappTemplateDb(){
 
 
 //
+
+export async function filterCourier(selectedCouriers: Array<string>){
+  return db.courier.findMany({
+    where: {
+      courierName: {
+        in: selectedCouriers
+      }
+    }
+  })
+}
