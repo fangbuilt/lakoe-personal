@@ -62,6 +62,10 @@ import { authorize } from '~/middleware/authorization';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
 
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
@@ -80,6 +84,11 @@ export async function loader({ request, context, params }: DataFunctionArgs) {
     whatsappTemplateDb(),
   ]);
   const dataInvoice = await getInvoiceByStatus();
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
 
   return json({
     unpaidCardAll,
