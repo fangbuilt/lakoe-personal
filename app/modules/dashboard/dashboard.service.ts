@@ -6,12 +6,16 @@ export async function getStoreData(id: string) {
   return json(
     await db.store.findMany({
       where: {
-        id: '50',
+        id: '4',
       },
       include: {
         bankAccounts: {
           include: {
-            withdraws: true,
+            withdraws: {
+              where: {
+                storeId: '4',
+              },
+            },
           },
         },
       },
@@ -24,7 +28,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '50',
+        storeId: '4',
       },
     })
   );
@@ -54,7 +58,7 @@ export async function createBank(data: any) {
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '50' },
+        connect: { id: '4' },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -91,16 +95,31 @@ export async function updateBank(
 
 //Withdraw
 export async function getWithdrawalList() {
-  return await db.withdraw.findMany({
+  const withdrawalList = await db.withdraw.findMany({
     include: {
-      store: {
-        select: {
-          name: true,
-        },
-      },
+      store: true,
       bankAccount: true,
     },
   });
+
+  return withdrawalList;
+}
+
+export async function updateStatusWithdraw(id: string, statusUpdated: string) {
+  try {
+    const updatedStatus = await db.withdraw.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: statusUpdated,
+      },
+    });
+    return updatedStatus;
+  } catch (error) {
+    console.error('Error updating status:', error);
+    throw error;
+  }
 }
 
 export async function createWithdraw(
@@ -113,7 +132,7 @@ export async function createWithdraw(
     const amount = parseFloat(data.amount);
 
     const user = await db.user.findUnique({
-      where: { id: '50' },
+      where: { id: '5' },
     });
 
     if (!user) {
@@ -135,10 +154,11 @@ export async function createWithdraw(
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '50' },
+          connect: { id: '4' },
         },
         amount: amount,
         status: 'REQUEST',
+        // attachment: data.attachment,
         bankAccount: {
           connect: { id: bankId },
         },
@@ -148,7 +168,6 @@ export async function createWithdraw(
       },
     });
 
-    // console.log("Withdraw created:", withdraw);
     return withdraw;
   } catch (error) {
     console.error('Error creating withdrawal:', error);
@@ -160,4 +179,67 @@ export async function deleteWithdraw(id: string) {
   return await db.withdraw.delete({
     where: { id: id },
   });
+}
+
+export async function createDeclinedReason(
+  data: any,
+  withdrawId: string,
+  storeId: string
+) {
+  const createReason = await db.adminDecline.create({
+    data: {
+      withdraw: {
+        connect: {
+          id: withdrawId,
+        },
+      },
+      store: {
+        connect: {
+          id: storeId,
+        },
+      },
+      reason: data.reason,
+    },
+  });
+  console.log('this is reason declined:', createReason);
+
+  return createReason;
+}
+
+export async function createAttachmentAdmin(
+  attachmentUrl: string,
+  withdrawId: string
+) {
+  try {
+    const createAttachment = await db.attachmentAdmin.create({
+      data: {
+        withdraw: {
+          connect: {
+            id: withdrawId,
+          },
+        },
+        attachment: attachmentUrl,
+      },
+    });
+
+    console.log('Attachment creation success:', createAttachment);
+
+    return createAttachment;
+  } catch (error) {
+    console.error('Error creating attachment:', error);
+    throw error;
+  }
+}
+
+// adminDecline
+
+export async function getReasonDeclined() {
+  const reasonDeclinedList = await db.adminDecline.findMany({
+    include: {
+      store: true,
+      withdraw: true,
+    },
+  });
+
+  return reasonDeclinedList;
 }

@@ -15,27 +15,53 @@ import {
   Text,
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
 import { Form, useLoaderData, useParams } from '@remix-run/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PiShoppingCartThin } from 'react-icons/pi';
 import { db } from '../libs/prisma/db.server';
+import {
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+  redirect,
+} from '@remix-run/node';
+import { uploadImage } from '~/utils/uploadFile/uploads';
 import moment from 'moment';
 import { MootaOrderStatusUpdate } from '~/modules/order/order.service';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 
+export async function loader({ params }: ActionArgs) {
+  const data = params;
+  return await db.invoice.findUnique({
+    where: {
+      id: data.invoiceId as string,
+    },
+    include: {
+      user: true,
+    },
+  });
+}
+
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
-    const formData = await request.formData();
+    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
+      if (name !== 'attachment') {
+        return undefined;
+      }
 
-    const invoiceId = formData.get('invoiceId');
-    // const invoice = formData.get("invoice");
-    const bank = formData.get('bank');
-    const createdAt = formData.get('createdAt');
-    const amount = formData.get('amount') as string;
-    const attachment = formData.get('attachment');
+      const uploadedImage = await uploadImage(data);
 
-    const amountNumber = amount ? parseFloat(amount) : null;
+      return uploadedImage.secure_url;
+    }, createMemoryUploadHandler());
+
+    const formData = await parseMultipartFormData(request, uploadHandler);
+
+    const invoiceId = formData.get('invoiceId') as string;
+    const bank = formData.get('bank') as string;
+    const createdAt = new Date().toISOString();
+    const amount = parseFloat(formData.get('amount') as string);
+    const attachment = formData.get('attachment') as string;
+    console.log(attachment);
 
     const apiData: number | any = await fetchWebhookStatusWithRetry();
 
@@ -43,7 +69,7 @@ export const action = async ({ request }: ActionArgs) => {
 
     const latestAmount = apiData ? parseFloat(apiDataString) : null;
 
-    if (amountNumber === latestAmount) {
+    if (amount === latestAmount) {
       console.log('data amount berhasil !');
       const MootaOrder = MootaOrderSchema.parse({
         amount: latestAmount,
@@ -59,25 +85,19 @@ export const action = async ({ request }: ActionArgs) => {
       amount,
       attachment,
     };
-    console.log(data);
-
-    // await db.confirmationPayment.create({ data });
+    return await db.confirmationPayment.create({
+      data: {
+        invoiceId: data.invoiceId,
+        bank: data.bank,
+        createdAt: data.createdAt,
+        amount: isNaN(data.amount) ? 0 : data.amount,
+        attachment: data.attachment,
+      },
+    });
   }
 
   return redirect(`/checkout/transfer/confirm`);
 };
-
-export async function loader({ params }: ActionArgs) {
-  const data = params;
-  return await db.invoice.findUnique({
-    where: {
-      id: data.invoiceId as string,
-    },
-    include: {
-      user: true,
-    },
-  });
-}
 
 const maxRetryAttempts = 5;
 const baseRetryInterval = 5 * 60 * 1000;
@@ -155,7 +175,6 @@ export async function fetchWebhookStatusWithRetry(
 
 export default function TransferPayment() {
   const { invoiceId } = useParams();
-
   const [file] = useState<File | null>(null);
   const item = useLoaderData<typeof loader>();
 
@@ -178,14 +197,14 @@ export default function TransferPayment() {
         boxShadow="0px 0px 3px 1px rgba(3, 3, 3, 0.3)"
         borderRadius={'3px'}
       >
-        <Form method="post">
+        <Form method="post" encType="multipart/form-data">
           <Stack spacing={4}>
             <FormControl id="invoiceId" isRequired>
               <FormLabel>Order ID</FormLabel>
               <Input
                 name="invoiceId"
                 value={item?.id}
-                type="text"
+                type="readOnly"
                 // placeholder={item?.id}
               />
             </FormControl>
@@ -195,6 +214,7 @@ export default function TransferPayment() {
                 name="invoice"
                 type="text"
                 value={item?.receiverName}
+
                 // placeholder={item?.receiverName}
               />
             </FormControl>
@@ -233,6 +253,7 @@ export default function TransferPayment() {
               <FormLabel>Bukti Transfer</FormLabel>
               <Box position={'relative'} mb={5} alignItems={'center'}>
                 <Input
+                  id="file-input"
                   name="attachment"
                   position={'absolute'}
                   p={1}
@@ -257,7 +278,7 @@ export default function TransferPayment() {
         </Form>
       </Container>
       <Box display={'none'}>
-        <Text>{invoiceId}</Text>
+        <Text>{invoiceId} </Text>
       </Box>
     </Flex>
   );

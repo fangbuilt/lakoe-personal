@@ -1,15 +1,15 @@
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
-  ignoredRouteFiles: ["**/.*"],
+  ignoredRouteFiles: ['**/.*'],
   // When running locally in development mode, we use the built-in remix
   // server. This does not understand the vercel lambda module format,
   // so we default back to the standard build output.
-  server: process.env.NODE_ENV === "development" ? undefined : "./server.ts",
-  serverBuildPath: "api/index.js",
+  server: process.env.NODE_ENV === 'development' ? undefined : './server.ts',
+  serverBuildPath: 'api/index.js',
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // publicPath: "/build/",
-  serverModuleFormat: "cjs",
+  serverModuleFormat: 'cjs',
   future: {
     v2_dev: true,
     v2_errorBoundary: true,
@@ -18,4 +18,17 @@ module.exports = {
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
   },
+
+  // loaders: [
+  //   {
+  //     // Match your API route pattern
+  //     match: (url) => {
+  //       console.log('Matching URL:', url.pathname);
+  //       const loaderPath = require.resolve('./routes/register');
+  //       console.log('Loader Path:', loaderPath);
+  //       return url.pathname === '/register';
+  //     },
+  //     loader: require.resolve('./routes/register'), // Path to your TypeScript API route
+  //   },
+  // ],
 };

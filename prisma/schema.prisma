@@ -29,6 +29,8 @@ model User {
   invoices               Invoice[]
   payments               Payment[]
   withdraws              Withdraw[]
+  verify                 Verify[]
+  isVerify                Boolean
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
@@ -45,8 +47,9 @@ model AttachmentAdmin {
   withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
   withdrawId String
 
-  @@map("attachments_admin")
   @@index([withdrawId])
+  @@map("attachments_admin")
+
 }
 
 
@@ -222,7 +225,7 @@ model Variant {
   id             String          @id @unique @default(uuid())
   name           String
   isActive       Boolean
-  product        Product         @relation(fields: [productId], references: [id])
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId      String
   variantOptions VariantOption[]
   createdAt      DateTime        @default(now())
@@ -339,8 +342,9 @@ model Invoice {
   userId                 String?
   payment                Payment?                @relation(fields: [paymentId], references: [id])
   paymentId              String
-  biteshipTrackinglimits BiteshipTrackingLimit[]
+  biteshipTrackinglimits BiteshipTrackingLimit?
   invoiceHistories       InvoiceHistory[]
+  refund                 Refund[]
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @default(now())
 
@@ -415,6 +419,7 @@ model BankAccount {
   store         Store?     @relation(fields: [storeId], references: [id])
   storeId       String
   withdraws     Withdraw[]
+  adminDecline  AdminDecline[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @default(now())
 
@@ -425,6 +430,7 @@ model BankAccount {
 model ProductAttachment {
   id        String   @id @unique @default(uuid())
   url       String
+  isMain    Boolean  @default(false)
   product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId String
   createdAt DateTime @default(now())
@@ -453,7 +459,7 @@ model BiteshipTrackingLimit {
   user           User?    @relation(fields: [userId], references: [id])
   userId         String
   invoice        Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId      String
+  invoiceId      String   @unique
   nextAccessTime DateTime
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
@@ -470,10 +476,40 @@ model AdminDecline {
   storeId    String
   withdraw   Withdraw? @relation(fields: [withdrawId], references: [id])
   withdrawId String
+  bankAccount       BankAccount? @relation(fields: [bankAccountId], references: [id])
+  bankAccountId     String @unique
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
 
-  @@map("admin_decline")
   @@index([storeId])
+  @@index([bankAccountId])
   @@index([withdrawId])
+  @@map("admin_decline")
+
+}
+
+model Refund {
+    id         String    @id @unique @default(uuid())
+    amount     Float
+    status     String
+    attachment String
+    invoice    Invoice? @relation(fields: [invoiceId], references: [id])
+    invoiceId  String   @unique
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @default(now())
+
+   @@index([invoiceId])
+   @@map("refund")
+}
+
+model Verify {
+  id         String     @id @unique @default(uuid())
+  token      String
+  user       User?      @relation(fields: [userId], references: [id])
+  userId     String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now())
+
+  @@index([userId])
+  @@map("verify")
 }

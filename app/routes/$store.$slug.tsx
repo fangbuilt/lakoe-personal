@@ -23,6 +23,7 @@ import {
   getCheckoutDetail,
 } from '../modules/checkout/checkout.service';
 import input from '../utils/dataFake.json';
+import { handleClick } from './productUnpaid4';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
@@ -30,8 +31,6 @@ export async function loader({ params }: ActionArgs) {
     slug: data.slug,
     store: data.store?.replace(/-/g, ' '),
   };
-
-  // const detail =
   return getCheckoutDetail(getData);
 }
 
@@ -62,17 +61,6 @@ export const action = async ({ request }: ActionArgs) => {
     const variantOptionValueId = formData.get('valueId') as string;
     const stock = +(formData.get('stock') as string);
     const rates = +(formData.get('rates') as string);
-
-    if (!courier) {
-      console.log('Please select courier');
-      return false;
-    } else if (!courierService) {
-      console.log('Please select courier service');
-      return false;
-    } else if (!payment) {
-      console.log('Please select payment');
-      return false;
-    }
 
     const invoice = {
       price: totalPriceUnique + courierService,
@@ -158,22 +146,16 @@ export const action = async ({ request }: ActionArgs) => {
       getCourier,
     };
 
-    console.log('data : ', data);
-
-    // return redirect("/checkout");
     return await createCheckout(data);
+    await createCheckout(data);
+
+    handleClick(telp, name, email);
   }
   return null;
 };
 
 export default function Checkout() {
-  const data = useLoaderData<typeof loader>();
-
-  const item =
-    typeof data === 'object' && 'product' in data ? data.product : null;
-  const getUnique = 'unique' in data ? data.unique : null;
-  const uniqueNumber = getUnique as number;
-
+  const item = useLoaderData<typeof loader>();
   const { slug, store } = useParams();
 
   const [count, setCount] = useState<number>(1);
@@ -190,6 +172,8 @@ export default function Checkout() {
     setCount(e.target.value);
   };
 
+  const unique = Math.floor(Math.random() * (200 - 100)) + 100;
+
   const [selectedOption, setSelectedOption] = useState(0);
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,15 +181,6 @@ export default function Checkout() {
     const valueInt = parseInt(value);
     setSelectedOption(valueInt);
   };
-
-  const limit = item?.variants[selectedOption].variantOptions[0]
-    .variantOptionValues[0].stock as number;
-
-  if (count <= 0) {
-    setCount(1);
-  } else if (count > limit) {
-    setCount(limit);
-  }
 
   return (
     <>
@@ -226,14 +201,11 @@ export default function Checkout() {
           m={3}
           p={3}
           bgColor={'#dcdcdc'}
-          w={'90%'}
         >
           <Form method="post">
             <Box>
               <TableContainer>
                 <Box>
-                  <div id="message"></div>
-                  {/* <Text id="message"></Text> */}
                   <Text>Produk Dipesan</Text>
                 </Box>
                 <Table variant="simple">
@@ -270,7 +242,6 @@ export default function Checkout() {
                               (item?.variants[selectedOption].variantOptions[0]
                                 .variantOptionValues[0].stock as number) - count
                             }
-                            readOnly
                           />
                         </Box>
                       </Td>
@@ -340,29 +311,21 @@ export default function Checkout() {
                 type="hidden"
                 name="option"
                 value={selectedOption}
-                readOnly
                 required
               />
               <Input
                 type="hidden"
                 name="price"
-                readOnly
                 value={
                   item?.variants[selectedOption].variantOptions[0]
                     .variantOptionValues[0].price
                 }
               />
-              <Input
-                type="hidden"
-                name="storeId"
-                value={item?.storeId}
-                readOnly
-              />
-              <Input type="hidden" name="productId" value={item?.id} readOnly />
+              <Input type="hidden" name="storeId" value={item?.storeId} />
+              <Input type="hidden" name="productId" value={item?.id} />
               <Input
                 type="hidden"
                 name="valueId"
-                readOnly
                 value={
                   item?.variants[selectedOption].variantOptions[0]
                     .variantOptionValues[0].id
@@ -371,13 +334,11 @@ export default function Checkout() {
               <Input
                 type="hidden"
                 name="variantOptionId"
-                readOnly
                 value={item?.variants[selectedOption].variantOptions[0].id}
               />
               <Input
                 type="hidden"
                 name="userId"
-                readOnly
                 value={item?.store?.users[selectedOption].id}
               />
             </Box>
@@ -402,12 +363,12 @@ export default function Checkout() {
                   <CheckoutCourier
                     name={item?.name}
                     description={item?.description}
-                    unique={getUnique}
+                    unique={unique}
                     total={
                       (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
-                      uniqueNumber
+                      unique
                     }
                     totalPrice={
                       (item?.variants[selectedOption].variantOptions[0]
@@ -417,7 +378,7 @@ export default function Checkout() {
                       (item?.variants[selectedOption].variantOptions[0]
                         .variantOptionValues[0].price as number) *
                         count +
-                      uniqueNumber
+                      unique
                     }
                   />
                 </Box>

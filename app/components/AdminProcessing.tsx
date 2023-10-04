@@ -27,6 +27,9 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
     (item: any) => item.status === 'REQUEST'
   );
+  const filteredDataApproved = dataWithdrawal.filter(
+    (item: any) => item.status === 'APPROVED'
+  );
   const filteredDataProcessing = dataWithdrawal.filter(
     (item: any) => item.status === 'PROCESSING'
   );
@@ -45,6 +48,7 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
 
   const withdrawalCountAll = dataWithdrawal.length;
   const withdrawalCountByRequest = filteredDataRequest.length;
+  const withdrawalCountByApproved = filteredDataApproved.length;
   const withdrawalCountByProcessing = filteredDataProcessing.length;
   const withdrawalCountBySuccess = filteredDataSuccess.length;
   const withdrawalCountByDeclined = filteredDataDeclined.length;
@@ -73,7 +77,6 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
     <>
       <Box
         width={'100%'}
-        mr={'10px'}
         padding={'10px'}
         borderRadius={'15px'}
         boxShadow="base"
@@ -82,7 +85,7 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
         bg="white"
       >
         <Box>
-          <Tabs defaultIndex={2}>
+          <Tabs defaultIndex={3}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
                 Daftar Penarikan Dana
@@ -146,6 +149,32 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
                             <Text fontSize={'12px'}>Request</Text>
+                          </Flex>
+                        </Tab>
+                      </Link>
+                    </Box>
+                  </Box>
+
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
+                      <Link to={'/adminApproved'}>
+                        <Tab>
+                          {/* NOTIFICATION ORDER */}
+                          <Text
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
+                            borderRadius={'full'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
+                            marginRight={2}
+                          >
+                            {withdrawalCountByApproved}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
+                          </Text>
+                          {/* END NOTIFICATION ORDER */}
+                          <Flex gap={1.5}>
+                            <Text fontSize={'12px'}>Approved</Text>
                           </Flex>
                         </Tab>
                       </Link>
@@ -265,16 +294,16 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    ID Withdraw
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Store
+                    Nomor Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Saldo Penarikan
+                    Nama Store
+                  </Th>
+                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                    Jumlah Penarikan
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -290,28 +319,31 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
                     </Td>
-
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
-                    </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.store?.name}
+                    </Td>
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {formatRupiah(item.amount)}
                     </Td>
                     <Td margin={'2px 0'}>
-                      <Text
-                        borderRadius={'15px'}
-                        bg={'grey'}
-                        color={'white'}
-                        px={'5px'}
-                        fontSize={'10px'}
-                        textAlign={'center'}
-                      >
-                        {item.status}
+                      <Text>
+                        {item.status === 'PROCESSING' && (
+                          <Text
+                            bg={'teal'}
+                            color={'white'}
+                            borderRadius={'15px'}
+                            px={'5px'}
+                            fontSize={'10px'}
+                            textAlign={'center'}
+                          >
+                            PROCESSING
+                          </Text>
+                        )}
                       </Text>
                     </Td>
 
