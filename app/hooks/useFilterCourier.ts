@@ -3,20 +3,45 @@ import { useState } from 'react';
 import type { loader } from '~/routes/order';
 // import UseSearchAll from './useSearchOrderAll';
 
+export interface Order {
+  id: number;
+  courier: string;
+  orderNumber: string;
+}
 export function useFilterCourier() {
   const { unpaidCard } = useLoaderData<typeof loader>();
   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
+  //   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
+  //   // const [searchResults, setSearchResults] = useState([]);
+  //   const toggleCourier = (courier: string) => {
+  //     if (selectedCouriers.includes(courier)) {
+  //       setSelectedCouriers((prevSelected) =>
+  //         prevSelected.filter((selected) => selected !== courier)
+  //       );
+  //     } else {
+  //       setSelectedCouriers((prevSelected) => [...prevSelected, courier]);
+  //     }
+  //   };
+  //   const getSelectedCourier = () => {
+  //     return selectedCouriers.length;
+  //   };
+
+  //   return { selectedCouriers, toggleCourier, getSelectedCourier };
+  // }
+
+  // Fungsi untuk menerpkan filter berdasarkan kurir yang dipilih
+
   const toggleCourier = (courier: string) => {
     if (selectedCouriers.includes(courier)) {
-      setSelectedCouriers((prevSelected) =>
-        prevSelected.filter((selected) => selected !== courier)
+      setSelectedCouriers(
+        selectedCouriers.filter((selected) => selected !== courier)
       );
     } else {
-      setSelectedCouriers((prevSelected) => [...prevSelected, courier]);
+      setSelectedCouriers([...selectedCouriers, courier]);
     }
   };
 
-  unpaidCard.filter((order: any) => {
+  const filteredOrdersList = unpaidCard.filter((order: any) => {
     const courierName = order.courier?.courierName;
     return courierName && selectedCouriers.includes(courierName);
   });
@@ -24,5 +49,11 @@ export function useFilterCourier() {
     return selectedCouriers.length;
   };
 
-  return { selectedCouriers, toggleCourier, getSelectedCourier };
+  return {
+    filteredOrdersList,
+    getSelectedCourier,
+    selectedCouriers,
+    toggleCourier,
+    setSelectedCouriers,
+  };
 }

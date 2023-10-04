@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import UseSearchAll from './useSearchOrderAll';
+import { useLoaderData } from '@remix-run/react';
+import type { loader } from '~/routes/order';
 
 export interface Order {
   id: number;
@@ -7,7 +8,7 @@ export interface Order {
   orderNumber: string;
 }
 export function useFilterCourierUnpaid() {
-  const { filteredOrders } = UseSearchAll();
+  const { unpaidCard } = useLoaderData<typeof loader>();
   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
   //   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
   //   // const [searchResults, setSearchResults] = useState([]);
@@ -39,7 +40,7 @@ export function useFilterCourierUnpaid() {
     }
   };
 
-  const filteredOrdersList = filteredOrders.filter((order) => {
+  const filteredOrdersList = unpaidCard.filter((order) => {
     const courierName = order.courier?.courierName;
     return courierName && selectedCouriers.includes(courierName);
   });

@@ -37,9 +37,9 @@ import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
-import searchFilter from '~/hooks/useSearchOrder';
 import OrderUnpaidModal from './modalProps/modalWhatsapp';
 import { useState } from 'react';
+import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 
 export default function CardCenceled() {
   function formatCurrency(price: number): string {
@@ -50,11 +50,15 @@ export default function CardCenceled() {
       maximumFractionDigits: 0,
     });
   }
-
-  // const { isOpen, onOpen, onClose } = useDisclosure(); // modal
-  const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
-  const { selectedCouriers, toggleCourier, getSelectedCourier } =
-    useFilterCourier(); // courier selected
+  const {
+    getSelectedCourier,
+    filteredOrder,
+    setSearchQuery,
+    // searchQuery,
+    selectedCouriers,
+    // handleCourierCheckboxChange,
+  } = UseSearchProductUnpaid();
+  const { toggleCourier } = useFilterCourier(); // courier selected
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter(); // sort selcted
 
@@ -302,7 +306,7 @@ export default function CardCenceled() {
           </Menu>
         </Box>
       </Box>
-      {filteredOrders.length === 0 ? (
+      {filteredOrder.length === 0 ? (
         <Box marginTop={'70px'}>
           <Center>
             <Box textAlign="center" mt={5} display={'flex'}>
@@ -318,7 +322,7 @@ export default function CardCenceled() {
         </Box>
       ) : (
         <Box>
-          {filteredOrders.map((data) => (
+          {filteredOrder.map((data) => (
             <Card mb={5} mt={5} boxShadow={'xs'} key={data.id}>
               <Box>
                 <Box mt={5}>

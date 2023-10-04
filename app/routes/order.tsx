@@ -82,7 +82,44 @@ export async function loader({ request }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
 
-  const formData = await request.formData();
+  if (isMootaIP(requestIP)) {
+    if (request.method === 'POST') {
+      try {
+        const requestBody = await request.text();
+
+        const payloads = JSON.parse(requestBody);
+        console.log('payloads', payloads);
+
+        const secretKey = process.env.MOOTA_SECRET as string;
+
+        const amount = payloads[0].amount as number;
+
+        const signature = request.headers.get('Signature') as string;
+
+        if (verifySignature(secretKey, requestBody, signature)) {
+          const MootaOrder = MootaOrderSchema.parse({
+            amount,
+          });
+          await MootaOrderStatusUpdate(MootaOrder);
+        } else {
+          console.log('error verify Signature!');
+        }
+
+        return json({ data: payloads }, 200);
+      } catch (error) {
+        return new Response('Error in The Use webhook', {
+          status: 500,
+        });
+      }
+    }
+  }
+}
+
+//mas rino dan mba puja ,webhook gw ga jalan gara gara code lu ,tuh gw pisahin pake function
+//coba cari cara lain  by badriana & malik & adi & mas surya & mas ilham
+
+export async function ReadyShip(req: any) {
+  const formData = await req.formData();
   const id = formData.get('id') as string;
   const status = formData.get('status') as string;
   const actionType = formData.get('actionType') as string;
@@ -104,38 +141,8 @@ export async function action({ request }: ActionArgs) {
       },
     });
   }
-
-  if (isMootaIP(requestIP)) {
-    if (request.method === 'POST') {
-      try {
-        const requestBody = await request.text();
-        const payloads = JSON.parse(requestBody);
-        console.log('payloads', payloads);
-        const secretKey = process.env.MOOTA_SECRET as string;
-
-        const amount = payloads[0].amount as number;
-
-        const signature = request.headers.get('Signature') as string;
-
-        if (verifySignature(secretKey, requestBody, signature)) {
-          const MootaOrder = MootaOrderSchema.parse({
-            amount,
-          });
-          await MootaOrderStatusUpdate(MootaOrder);
-        } else {
-          console.log('error verify Signature!');
-        }
-        return json({ data: requestBody }, 200);
-      } catch (error) {
-        return new Response('Error in The Use webhook', {
-          status: 500,
-        });
-      }
-    }
-  }
-
-  if (request.method.toLowerCase() === 'patch') {
-    const formData = await request.formData();
+  if (req.method.toLowerCase() === 'patch') {
+    const formData = await req.formData();
 
     const id = formData.get('id') as string;
     const price = formData.get('price');

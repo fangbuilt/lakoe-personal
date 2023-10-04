@@ -37,7 +37,7 @@ import SearchProduct from '../assets/icon-pack/search-product.svg';
 import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
-import searchFilter from '~/hooks/useSearchOrder';
+import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 
 export default function CardSuccessed() {
   function formatCurrency(price: number): string {
@@ -50,9 +50,15 @@ export default function CardSuccessed() {
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // modal
-  const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
-  const { selectedCouriers, toggleCourier, getSelectedCourier } =
-    useFilterCourier(); // courier selected
+  const {
+    getSelectedCourier,
+    filteredOrder,
+    setSearchQuery,
+    // searchQuery,
+    selectedCouriers,
+    // handleCourierCheckboxChange,
+  } = UseSearchProductUnpaid();
+  const { toggleCourier } = useFilterCourier(); // courier selected
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortFilter(); // sort selcted
 
@@ -291,7 +297,7 @@ export default function CardSuccessed() {
           </Menu>
         </Box>
       </Box>
-      {filteredOrders.length === 0 ? (
+      {filteredOrder.length === 0 ? (
         <Box marginTop={'70px'}>
           <Center>
             <Box textAlign="center" mt={5} display={'flex'}>
@@ -307,7 +313,7 @@ export default function CardSuccessed() {
         </Box>
       ) : (
         <Box>
-          {filteredOrders.map((data, index) => (
+          {filteredOrder.map((data, index) => (
             <Card mb={5} mt={5} boxShadow={'xs'} key={data.id}>
               <Box>
                 <Box mt={5}>

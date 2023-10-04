@@ -104,9 +104,6 @@ export default function CardAllOrder(props: {
   //   setSelectedCouriers,
   // } = useFilterCourier();
 
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter();
-
   const {
     getSelectedCourier,
     filteredOrder,
@@ -115,7 +112,28 @@ export default function CardAllOrder(props: {
     selectedCouriers,
     handleCourierCheckboxChange,
   } = UseSearchProductAll();
+  const {
+    selectedSortOption,
+    setSortOption,
+    getSelectedSortOption,
+    sortOrders,
+  } = useSortFilter(); // sort selcted
   //Button color
+  const sortedOrders = sortOrders(filteredOrder);
+
+  if (selectedSortOption === 'Paling Baru') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
+    });
+  } else if (selectedSortOption === 'Paling Lama') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
   const defaultItem: Item = {
     status: 'UNPAID',
   };
@@ -391,9 +409,9 @@ export default function CardAllOrder(props: {
         </Box>
       ) : (
         <Box marginTop={'10px'}>
-          {filteredOrder.map((item, index) => (
+          {sortedOrders.map((item) => (
             // eslint-disable-next-line react/jsx-key
-            <Card mb={5} mt={5} boxShadow={'xs'} key={index}>
+            <Card mb={5} mt={5} boxShadow={'xs'} key={item.id}>
               <Box>
                 <Box>
                   <Box>
@@ -526,8 +544,10 @@ export default function CardAllOrder(props: {
                             h={'52px'}
                             display={'inline'}
                             borderRadius={'md'}
-                            src={`${item.cart?.cartItems.map((item) =>
-                              item.product?.attachments?.map((item) => item.url)
+                            src={`${item.cart?.cartItems.map((item: any) =>
+                              item.product?.attachments?.map(
+                                (item: any) => item.url
+                              )
                             )}`}
                             mt={3}
                           />
@@ -541,16 +561,18 @@ export default function CardAllOrder(props: {
                             fontWeight={'700'}
                           >
                             {item.cart?.cartItems.map(
-                              (item) => item.product?.name
+                              (item: any) => item.product?.name
                             )}
                             <Text
                               color={'gray.400'}
                               pb={3}
                               fontWeight={'normal'}
                             >
-                              {item.cart?.cartItems.map((item) => item.qty)}{' '}
+                              {item.cart?.cartItems.map(
+                                (item: any) => item.qty
+                              )}{' '}
                               Barang
-                              {/* desk {item.cart?.cartItems.map((item) =>item.product.description)} */}
+                              {/* desk {item.cart?.cartItems.map((item:any) =>item.product.description)} */}
                             </Text>
                           </Text>
                         </Box>
