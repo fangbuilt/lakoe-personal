@@ -12,7 +12,6 @@ import {
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import type { loader } from '~/routes/order';
-import CardCanceled from '../components/CardCanceled';
 import ScrollBox from '../components/ScrollBox';
 import CardReadyToShip from '~/components/CardReadyToShip';
 import UnpaidAllCard from '~/components/CardUnpaidAll';
@@ -20,6 +19,7 @@ import UnpaidCard from '~/components/CardUnpaid';
 import CardInShipping from '~/components/CardInShipping';
 import CardNewOrderBa from '~/components/CardNewOrderBa';
 import CardSuccess from '~/components/CardSuccess';
+import CardCenceled from '~/components/CardCanceled';
 
 export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
@@ -249,7 +249,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardCanceled />
+                    <CardCenceled />
                   </TabPanel>
                 </ScrollBox>
 

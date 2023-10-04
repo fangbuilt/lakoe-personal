@@ -1,9 +1,4 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   Card,
@@ -15,46 +10,61 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
-  useDisclosure,
   Input,
   InputGroup,
   InputLeftElement,
   Image,
+  Divider,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
+
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import { whatsappConfiguration } from '../utils/TemplateMessage';
 import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
-import searchFilter from '~/hooks/useSearchOrder';
+import { useState } from 'react';
+import { Link } from '@remix-run/react';
+import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
+import ModalWhatsapp from '~/modalProps/modalWhatsapp';
+import UseFilterSuccess from '~/modules/order/hooks/useFilterSuccess';
+export default function CardSuccess(props: any) {
+  const {
+    getSelectedCourier,
+    filteredOrder,
+    setSearchQuery,
+    selectedCouriers,
+    handleCourierCheckboxChange,
+  } = UseFilterSuccess();
 
-export default function CardSuccess() {
-  function formatCurrency(price: number): string {
-    return price.toLocaleString('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+  const {
+    selectedSortOption,
+    setSortOption,
+    getSelectedSortOption,
+    sortOrders,
+  } = useSortFilter(); // sort selcted
+  const sortedOrders = sortOrders(filteredOrder);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
+  if (selectedSortOption === 'Paling Baru') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
+    });
+  } else if (selectedSortOption === 'Paling Lama') {
+    sortedOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA.getTime() - dateB.getTime();
     });
   }
-
-  const { isOpen, onOpen, onClose } = useDisclosure(); // modal
-  const { setSearchQuery, filteredOrders } = searchFilter(); // search filter
-  const { selectedCouriers, toggleCourier, getSelectedCourier } =
-    useFilterCourier(); // courier selected
-  const { selectedSortOption, setSortOption, getSelectedSortOption } =
-    useSortFilter(); // sort selcted
 
   return (
     <>
@@ -84,7 +94,10 @@ export default function CardSuccess() {
                 color: '#909090',
                 fontSize: '14px',
               }}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              // value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
             />
           </InputGroup>
 
@@ -112,82 +125,81 @@ export default function CardSuccess() {
                 top={3}
               />
             </MenuButton>
-
             <MenuList>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier('GoSend')}
-                  isChecked={selectedCouriers.includes('GoSend')}
-                >
-                  GoSend
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('GrabExpress')}
-                  isChecked={selectedCouriers.includes('GrabExpress')}
-                >
-                  GrabExpress
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('AnterAja')}
-                  isChecked={selectedCouriers.includes('AnterAja')}
-                >
-                  AnterAja
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('JNE')}
-                  isChecked={selectedCouriers.includes('JNE')}
-                >
-                  JNE
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('J&T')}
-                  isChecked={selectedCouriers.includes('J&T')}
-                >
-                  J&T
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  onChange={() => toggleCourier('Lion Parcel')}
-                  isChecked={selectedCouriers.includes('Lion Parcel')}
+                  onChange={() => handleCourierCheckboxChange('lion parcel')}
+                  checked={selectedCouriers.includes('lion parcel')}
                 >
                   Lion Parcel
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier('Ninja Xpress')}
-                  isChecked={selectedCouriers.includes('Ninja Xpress')}
+                  onChange={() => handleCourierCheckboxChange('grabexpress')}
+                  isChecked={selectedCouriers.includes('grabexpress')}
                 >
-                  Ninja Xpress
+                  GrabExpress
                 </Checkbox>
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => toggleCourier('Pos Indonesia')}
-                  isChecked={selectedCouriers.includes('Pos Indonesia')}
+                  onChange={() => handleCourierCheckboxChange('anteraja')}
+                  isChecked={selectedCouriers.includes('anteraja')}
                 >
-                  Pos Indonesia
+                  AnterAja
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('jne')}
+                  isChecked={selectedCouriers.includes('jne')}
+                >
+                  JNE
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('jnt')}
+                  isChecked={selectedCouriers.includes('jnt')}
+                >
+                  J&T
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('tiki')}
+                  isChecked={selectedCouriers.includes('tiki')}
+                >
+                  Tiki
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() => handleCourierCheckboxChange('ShopeeExpress')}
+                  isChecked={selectedCouriers.includes('ShopeeExpress')}
+                >
+                  Shopee Express
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  onChange={() =>
+                    handleCourierCheckboxChange('tokopediaExpress')
+                  }
+                  isChecked={selectedCouriers.includes('tokopediaExpress')}
+                >
+                  Tokopedia Express
                 </Checkbox>
               </MenuItem>
             </MenuList>
           </Menu>
-
           <Menu closeOnSelect={false}>
             <MenuButton
               as={Button}
               w={'100%'}
               variant="outline"
               bgColor={'white'}
-              // me={2}
             >
               <Image
                 src={ChevronDownIcon}
@@ -291,7 +303,7 @@ export default function CardSuccess() {
           </Menu>
         </Box>
       </Box>
-      {filteredOrders.length === 0 ? (
+      {filteredOrder.length === 0 ? (
         <Box marginTop={'70px'}>
           <Center>
             <Box textAlign="center" mt={5} display={'flex'}>
@@ -307,19 +319,20 @@ export default function CardSuccess() {
         </Box>
       ) : (
         <Box>
-          {filteredOrders.map((data, index) => (
-            <Card mb={5} mt={5} boxShadow={'xs'} key={data.id}>
+          {sortedOrders.map((data: any, index: any) => (
+            <Card mb={5} mt={5} boxShadow={'xs'} key={index}>
               <Box>
-                <Box mt={5}>
+                <Box>
                   <Box>
-                    <Flex justifyContent={'space-between'} px={2}>
+                    <Flex justifyContent={'space-between'} px={3} py={2}>
                       <Button
                         bg={'gray'}
                         color={'white'}
                         fontWeight={'bold'}
-                        colorScheme="gray.300"
+                        colorScheme="gray.200"
                         size={'sm'}
                         pointerEvents={'none'}
+                        height={'24px'}
                       >
                         {data.status === 'ORDER_COMPLETED'
                           ? 'Pesanan Selesai'
@@ -334,117 +347,92 @@ export default function CardSuccess() {
                         borderRadius={'full'}
                         fontSize={'14px'}
                         height={'32px'}
-                        onClick={onOpen}
-                        py={4}
+                        onClick={() => {
+                          openModal();
+                        }}
+                        py={1}
+                        size={'sm'}
+                        px={3}
+                        fontWeight={'600'}
                       >
                         Hubungi Pembeli
                       </Button>
-
-                      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                        <ModalOverlay bg={'whiteAlpha.50'} />
-                        <ModalContent>
-                          <ModalHeader>
-                            Send Message To {data.receiverName}{' '}
-                          </ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <Accordion allowToggle>
-                              {data.cart?.store?.messageTemplates.map(
-                                (item) => (
-                                  <AccordionItem key={item.id}>
-                                    <Text>
-                                      <AccordionButton>
-                                        <Box
-                                          as="span"
-                                          flex="1"
-                                          textAlign="left"
-                                        >
-                                          Template Message {item.id}
-                                        </Box>
-                                        <AccordionIcon />
-                                      </AccordionButton>
-                                    </Text>
-                                    <AccordionPanel pb={4}>
-                                      {item.content} hehe
-                                      <Button
-                                        colorScheme={'whatsapp'}
-                                        float={'right'}
-                                      >
-                                        <Link
-                                          to={whatsappConfiguration(
-                                            data.receiverPhone,
-                                            item.content
-                                          )}
-                                        >
-                                          Kirim
-                                        </Link>
-                                      </Button>
-                                    </AccordionPanel>
-                                  </AccordionItem>
-                                )
-                              )}
-                            </Accordion>
-                          </ModalBody>
-                          <ModalFooter></ModalFooter>
-                        </ModalContent>
-                      </Modal>
+                      <ModalWhatsapp
+                        isOpen={modalIsOpen}
+                        onClose={closeModal}
+                        selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
+                        itemName={data.receiverName}
+                        itemPhone={data.receiverPhone}
+                      />
                     </Flex>
-                    <Text my={1} fontSize={'14px'} color={'gray.400'} px={2}>
+                    <Text
+                      mb={1}
+                      fontSize={'14px'}
+                      mt={-3}
+                      color={'#909090'}
+                      px={3}
+                    >
                       INV/{data.invoiceNumber}
                     </Text>
-                    <hr />
+                    <Divider />
 
-                    <Flex justifyContent={'space-between'}>
-                      <Box display={'flex'} gap={3} w={'80%'}>
-                        <Img
-                          w={'52px'}
-                          h={'52px'}
-                          display={'inline'}
-                          borderRadius={'md'}
-                          src={
-                            data.cart?.cartItems[0]?.product?.attachments[0]
-                              ?.url
-                          }
-                          mt={3}
-                          ms={2}
-                        />
-                        <Text
-                          mt={4}
-                          id="fm500"
-                          fontSize={'16px'}
-                          textOverflow={'ellipsis'}
-                          overflow={'hidden'}
-                          whiteSpace={'nowrap'}
-                          fontWeight={'700'}
-                        >
-                          {data.cart?.cartItems.map(
-                            (item) => item.product?.name
-                          )}
-                          <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                            {data.cart?.cartItems.map((item) => item.qty)}{' '}
-                            Barang
+                    <Link to={`detail/${data.id}`}>
+                      <Flex justifyContent={'space-between'} px={3} py={2}>
+                        <Box display={'flex'} gap={3} w={'80%'}>
+                          <Img
+                            w={'52px'}
+                            h={'52px'}
+                            display={'inline'}
+                            borderRadius={'md'}
+                            src={
+                              data.cart?.cartItems[0]?.product?.attachments[0]
+                                ?.url
+                            }
+                          />
+                          <Text
+                            id="fm500"
+                            fontSize={'16px'}
+                            textOverflow={'ellipsis'}
+                            overflow={'hidden'}
+                            whiteSpace={'nowrap'}
+                            fontWeight={'700'}
+                          >
+                            {data.cart?.cartItems.map(
+                              (item: any) => item.product?.name
+                            )}
+                            <Text
+                              color={'gray.400'}
+                              fontWeight={'normal'}
+                              mt={1}
+                            >
+                              {data.cart?.cartItems.map(
+                                (item: any) => item.qty
+                              )}{' '}
+                              Barang
+                            </Text>
                           </Text>
-                        </Text>
-                      </Box>
-                      <Box mt={4} w={'18%'}>
-                        <Flex gap={1}>
-                          <Text color={'#909090'} fontSize={'14px'}>
-                            Total
+                        </Box>
+                        <Box w={'18%'}>
+                          <Flex gap={1} fontWeight={'500'}>
+                            <Text color={'#909090'} fontSize={'14px'}>
+                              Total
+                            </Text>
+                            <Text color={'#909090'} fontSize={'14px'}>
+                              Belanja
+                            </Text>
+                          </Flex>
+                          <Text fontWeight={'bold'} mt={2} fontSize={'14px'}>
+                            {formatCurrency(data.price)}
                           </Text>
-                          <Text color={'#909090'} fontSize={'14px'}>
-                            Belanja
-                          </Text>
-                        </Flex>
-                        <Text fontWeight={'bold'} fontSize={'14px'}>
-                          {formatCurrency(data.price)}
-                        </Text>
-                      </Box>
-                    </Flex>
+                        </Box>
+                      </Flex>
+                    </Link>
                   </Box>
                 </Box>
               </Box>
             </Card>
           ))}
+          {/* ))} */}
         </Box>
       )}
     </>

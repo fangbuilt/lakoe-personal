@@ -392,3 +392,7 @@ export async function updateStatusInvoice(data: any) {
     },
   });
 }
+
+export async function whatsappTemplateDb() {
+  return await db.messageTemplate.findMany({});
+}

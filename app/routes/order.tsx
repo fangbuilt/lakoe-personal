@@ -3,13 +3,14 @@ import crypto from 'crypto';
 import { json, redirect } from '@remix-run/node';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 import { MootaOrderSchema } from '~/modules/order/order.schema';
-import {
+import ServiceSuccess, {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
   getProductUnpid,
   updateInvoiceStatus,
+  whatsappTemplateDb,
 } from '~/modules/order/order.service';
 
 import { Flex } from '@chakra-ui/react';
@@ -66,10 +67,18 @@ export async function loader({ request }: LoaderArgs) {
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
+  const [
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    successedService,
+    whatsappDb,
+  ] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),
     CanceledService(),
+    ServiceSuccess(),
+    whatsappTemplateDb(),
   ]);
   const dataInvoice = await getInvoiceByStatus();
 
@@ -86,6 +95,8 @@ export async function loader({ request }: LoaderArgs) {
       unpaidCardAll,
       unpaidCard,
       canceledService,
+      successedService,
+      whatsappDb,
       dataInvoice,
       dataShipping: await getDataInShipping(),
       dataProductReadyToShip,
