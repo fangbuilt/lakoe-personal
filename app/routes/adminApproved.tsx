@@ -1,8 +1,8 @@
 import { Flex } from '@chakra-ui/react';
-import type { DataFunctionArgs, ActionArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminApproved from '~/components/AdminApproved';
-import { ImplementGridAdmin } from '~/layouts/Grid';
+import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import { authorize } from '~/middleware/authorization';
 import {
   createDeclinedReason,
@@ -37,32 +37,40 @@ export async function action({ request }: ActionArgs) {
 
   const withdrawId = formData.get('withdrawId');
   const storeId = formData.get('storeId');
+  const bankAccountId = formData.get('bankAccountId');
   const reason = formData.get('reason');
 
-  if (actionType === 'create' && withdrawId && storeId && reason) {
+  if (
+    actionType === 'create' &&
+    withdrawId &&
+    storeId &&
+    bankAccountId &&
+    reason
+  ) {
     try {
       const createReasonResult = await createDeclinedReason(
         {
           reason: reason as string,
         },
         withdrawId as string,
-        storeId as string
+        storeId as string,
+        bankAccountId as string
       );
       console.log('This is the declined reason', createReasonResult);
     } catch (error) {
       console.error('Error creating declined reason:', error);
     }
   }
-  return null;
+  return redirect('/adminApproved');
 }
 
-export default function DasboardAdminRequest() {
+export default function DasboardAdminApproved() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdmin>
+    <ImplementGridAdminWithdraw>
       <Flex h={'100vh'} width={'100%'}>
         <AdminApproved dataWithdrawal={dataWithdrawal} />
       </Flex>
-    </ImplementGridAdmin>
+    </ImplementGridAdminWithdraw>
   );
 }

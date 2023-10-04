@@ -1,21 +1,17 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import AdminRequest from '~/components/AdminRequest';
-import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
-import { authorize } from '~/middleware/authorization';
+import AdminRequestRefund from '~/components/AdminRequestRefund';
+import { ImplementGridAdminRefund } from '~/layouts/Grid';
 import {
   createDeclinedReason,
-  getWithdrawalList,
-  updateStatusWithdraw,
+  getRefundData,
+  updateStatusRefund,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader({ request, context, params }: DataFunctionArgs) {
-  await authorize({ request, context, params }, '1');
-
-  return await getWithdrawalList();
+export async function loader() {
+  return await getRefundData();
 }
-
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const id = formData.get('id');
@@ -24,14 +20,14 @@ export async function action({ request }: ActionArgs) {
 
   if (actionType === 'update' && status) {
     try {
-      const updateStatus = await updateStatusWithdraw(
+      const updateStatus = await updateStatusRefund(
         id as string,
         status as string
       ); // Pass both id and status
-      console.log('Status updated successfully:', updateStatus);
+      console.log('Status Refund updated successfully:', updateStatus);
       // Handle success
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error('Error Refund updating status:', error);
       throw error;
     }
   }
@@ -61,16 +57,16 @@ export async function action({ request }: ActionArgs) {
       console.error('Error creating declined reason:', error);
     }
   }
-  return null;
+  return redirect('/adminApprovedRefund');
 }
 
-export default function DasboardAdminRequest() {
-  const dataWithdrawal = useLoaderData<typeof loader>();
+export default function DasboardAdminRequestRefund() {
+  const dataRefund = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdminWithdraw>
+    <ImplementGridAdminRefund>
       <Flex h={'100vh'} width={'100%'}>
-        <AdminRequest dataWithdrawal={dataWithdrawal} />
+        <AdminRequestRefund dataRefund={dataRefund} />
       </Flex>
-    </ImplementGridAdminWithdraw>
+    </ImplementGridAdminRefund>
   );
 }

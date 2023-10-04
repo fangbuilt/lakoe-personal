@@ -48,6 +48,54 @@ export async function loader({ request, context, params }: DataFunctionArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
+  // const prisma = new PrismaClient();
+  // // updateCreditWhenStatusWithdrawIsDeclined
+  // async function updateCredit(storeId: string) {
+  //   try {
+  //     const findDeclinedStatusWithdraw = await prisma.withdraw.findMany({
+  //       where: {
+  //         storeId: "1",
+  //         status: "DECLINED",
+  //       },
+  //     });
+
+  //     const calculateAmountWithDeclinedStatus =
+  //       findDeclinedStatusWithdraw.reduce(
+  //         (total, withdraw) => total + withdraw.amount,
+  //         0
+  //       );
+
+  //     if (calculateAmountWithDeclinedStatus > 0) {
+  //       const store = await prisma.store.findUnique({
+  //         where: {
+  //           id: "1",
+  //         },
+  //       });
+
+  //       if (store) {
+  //         const updateCreditStore = await prisma.store.update({
+  //           where: {
+  //             id: "1",
+  //           },
+  //           data: {
+  //             credit: store.credit + calculateAmountWithDeclinedStatus,
+  //           },
+  //         });
+  //         console.log("update credit", updateCreditStore);
+  //         return updateCreditStore;
+  //       } else {
+  //         throw new Error(`Store with ID ${storeId} not found.`);
+  //       }
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating credit:", error);
+  //     throw error;
+  //   }
+  //   console.log("update credit", updateCredit);
+  // }
+
   const formData = await request.formData();
 
   const actionType = formData.get('actionType');
@@ -80,15 +128,21 @@ export async function action({ request }: ActionArgs) {
 
       const store = await db.store.findUnique({
         where: {
-          id: '4',
+          id: '1',
         },
       });
       if (store) {
-        const newCredit = store.credit - amount;
+        let newCredit = 0;
+
+        if (store.credit > amount) {
+          newCredit = store.credit - amount;
+        } else {
+          throw new Error();
+        }
 
         await db.store.update({
           where: {
-            id: '4',
+            id: '1',
           },
           data: {
             credit: newCredit,
@@ -122,25 +176,23 @@ export default function Dashboard() {
     }).format(saldo);
   }
 
-  // let totalWithdrawAmount = 0;
-  // data.forEach((item) => {
-  //   if (item.bankAccounts && item.bankAccounts.length > 0) {
-  //     item.bankAccounts.forEach((account) => {
-  //       if (account.withdraws && account.withdraws.length > 0) {
-  //         account.withdraws.forEach((withdraw) => {
-  //           if (
-  //             withdraw.status !== 'SUCCESS' &&
-  //             withdraw.status !== 'DECLINED'
-  //           ) {
-  //             totalWithdrawAmount += parseFloat(withdraw.amount.toString());
-  //           } else if (withdraw.status === 'DECLINED') {
-  //             item.credit += parseFloat(withdraw.amount.toString());
-  //           }
-  //         });
-  //       }
-  //     });
-  //   }
-  // });
+  let totalWithdrawAmount = 0;
+  data.forEach((item) => {
+    if (item.bankAccounts && item.bankAccounts.length > 0) {
+      item.bankAccounts.forEach((account) => {
+        if (account.withdraws && account.withdraws.length > 0) {
+          account.withdraws.forEach((withdraw) => {
+            if (
+              withdraw.status !== 'SUCCESS' &&
+              withdraw.status !== 'DECLINED'
+            ) {
+              totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+            }
+          });
+        }
+      });
+    }
+  });
 
   // let createdAtArray: string[] = [];
   // data.forEach((dataItem) => {
@@ -187,7 +239,8 @@ export default function Dashboard() {
                   key={item.id}
                   bankAccount={item.bankAccounts}
                   storeName={item.name}
-                  createdAt={item.createdAt}
+                  createdAt={createdAtArray}
+                  creditSaldo={item.credit}
                 />
               ))}
             </Box>
@@ -206,7 +259,7 @@ export default function Dashboard() {
               </Text>
               <Text fontSize={'13px'}>Penarikan sedang dalam proses</Text>
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#656565'}>
-                {/* {formatRupiah(totalWithdrawAmount)} */}
+                {formatRupiah(totalWithdrawAmount)}
               </Text>
             </Box>
             <Box

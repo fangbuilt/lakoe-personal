@@ -13,25 +13,29 @@ import {
   Tbody,
   Td,
   Input,
+  VStack,
   FormControl,
   Select,
-  VStack,
 } from '@chakra-ui/react';
 
 import { Link } from '@remix-run/react';
 import moment from 'moment';
-import { useState } from 'react';
-import AdminDeclinedPreview from './AdminDeclinedPreview';
-import { CheckCircleIcon } from '@chakra-ui/icons';
+import React, { useState } from 'react';
+import AdminProcessingRefundPopup from './AdminProcessingRefundPopup';
 
-export default function AdminDeclined({ dataDeclined }: any) {
-  const filteredDataDeclined = dataDeclined
-    .map((item: any) => {
-      if (item.withdraw.status === 'DECLINED') {
-        return item;
-      }
-    })
-    .filter(Boolean);
+export default function AdminProcessingRefund({ dataRefund }: any) {
+  const filteredDataRequest = dataRefund.filter(
+    (item: any) => item.status === 'REQUEST'
+  );
+  const filteredDataApproved = dataRefund.filter(
+    (item: any) => item.status === 'APPROVED'
+  );
+  const filteredDataProcessing = dataRefund.filter(
+    (item: any) => item.status === 'PROCESSING'
+  );
+  const filteredDataSuccess = dataRefund.filter(
+    (item: any) => item.status === 'SUCCESS'
+  );
 
   function formatRupiah(amount: number) {
     return new Intl.NumberFormat('id-ID', {
@@ -40,7 +44,11 @@ export default function AdminDeclined({ dataDeclined }: any) {
     }).format(amount);
   }
 
-  const withdrawalCountByDeclined = filteredDataDeclined.length;
+  const withdrawalCountAll = dataRefund.length;
+  const withdrawalCountByRequest = filteredDataRequest.length;
+  const withdrawalCountByApproved = filteredDataApproved.length;
+  const withdrawalCountByProcessing = filteredDataProcessing.length;
+  const withdrawalCountBySuccess = filteredDataSuccess.length;
 
   interface SelectOption {
     value: string;
@@ -75,10 +83,10 @@ export default function AdminDeclined({ dataDeclined }: any) {
         overflow={'auto'}
       >
         <Box>
-          <Tabs defaultIndex={5}>
+          <Tabs defaultIndex={3}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
-                Daftar Penarikan Dana
+                Daftar Refund
               </Text>
             </Box>
 
@@ -95,17 +103,20 @@ export default function AdminDeclined({ dataDeclined }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdminWithdraw'}>
+                      <Link to={'/dashboardAdminRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountAll}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -118,17 +129,20 @@ export default function AdminDeclined({ dataDeclined }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminRequest'}>
+                      <Link to={'/adminRequestRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountByRequest}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -141,17 +155,20 @@ export default function AdminDeclined({ dataDeclined }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminApproved'}>
+                      <Link to={'/adminApprovedRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountByApproved}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
                           <Flex gap={1.5}>
@@ -164,17 +181,20 @@ export default function AdminDeclined({ dataDeclined }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminProcessing'}>
+                      <Link to={'/adminProcessingRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
-                            color={'teal'}
+                            my={2}
+                            color={'white'}
+                            bg={'teal'}
                             borderRadius={'full'}
-                            fontSize={'17px'}
+                            boxSize={'18px'}
+                            fontSize={'12px'}
                             marginRight={2}
-                            mb={1}
                           >
-                            <CheckCircleIcon />
+                            {withdrawalCountByProcessing}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
 
@@ -188,32 +208,9 @@ export default function AdminDeclined({ dataDeclined }: any) {
 
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/adminSuccess'}>
+                      <Link to={'/adminSuccessRefund'}>
                         <Tab>
                           {/* NOTIFICATION ORDER  !*/}
-                          <Text
-                            color={'teal'}
-                            borderRadius={'full'}
-                            fontSize={'17px'}
-                            marginRight={2}
-                            mb={1}
-                          >
-                            <CheckCircleIcon />
-                          </Text>
-                          {/* END NOTIFICATION ORDER */}
-
-                          <Flex gap={1.5}>
-                            <Text fontSize={'12px'}>Success</Text>
-                          </Flex>
-                        </Tab>
-                      </Link>
-                    </Box>
-                  </Box>
-                  <Box textAlign={'center'}>
-                    <Box display={'flex'}>
-                      <Link to={'/adminDeclined'}>
-                        <Tab>
-                          {/* NOTIFICATION ORDER */}
                           <Text
                             my={2}
                             color={'white'}
@@ -223,11 +220,13 @@ export default function AdminDeclined({ dataDeclined }: any) {
                             fontSize={'12px'}
                             marginRight={2}
                           >
-                            {withdrawalCountByDeclined}{' '}
+                            {withdrawalCountBySuccess}{' '}
+                            {/* INSERT YOUR NOTIF DATA HERE */}
                           </Text>
                           {/* END NOTIFICATION ORDER */}
+
                           <Flex gap={1.5}>
-                            <Text fontSize={'12px'}>Declined</Text>
+                            <Text fontSize={'12px'}>Success</Text>
                           </Flex>
                         </Tab>
                       </Link>
@@ -268,16 +267,16 @@ export default function AdminDeclined({ dataDeclined }: any) {
               <Thead>
                 <Tr fontSize={'12px'}>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nomor Penarikan
+                    ID Refund
+                  </Th>
+                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                    Penerima
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Tanggal
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Nama Store
-                  </Th>
-                  <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                    Jumlah Penarikan
+                    Amount
                   </Th>
                   <Th px={'5px'} fontSize={'10px'} textAlign={'center'}>
                     Status
@@ -288,34 +287,36 @@ export default function AdminDeclined({ dataDeclined }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredDataDeclined.map((item: any) => (
+                {filteredDataProcessing.map((item: any) => (
                   <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
                     </Td>
+
+                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
+                      {item.invoice.receiverName}
+                    </Td>
+
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
-                    </Td>
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {formatRupiah(item.withdraw?.amount)}
+                      {formatRupiah(item.amount)}
                     </Td>
                     <Td margin={'2px 0'}>
                       <Text>
-                        {item.withdraw.status === 'DECLINED' && (
+                        {item.status === 'PROCESSING' && (
                           <Text
-                            bg={'RED'}
+                            bg={'teal'}
                             color={'white'}
                             borderRadius={'15px'}
                             px={'5px'}
                             fontSize={'10px'}
                             textAlign={'center'}
                           >
-                            DECLINED
+                            PROCESSING
                           </Text>
                         )}
                       </Text>
@@ -330,7 +331,7 @@ export default function AdminDeclined({ dataDeclined }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminDeclinedPreview dataDeclined={item} />
+                        <AdminProcessingRefundPopup dataRefund={item} />
                       </Text>
                     </Td>
                   </Tr>

@@ -3,7 +3,7 @@ import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminAll from '~/components/AdminAll';
-import { ImplementGridAdmin } from '~/layouts/Grid';
+import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import { authorize } from '~/middleware/authorization';
 import {
   getWithdrawalList,
@@ -60,13 +60,13 @@ export async function action({ request }: ActionArgs) {
   return redirect('/adminProcessing');
 }
 
-export default function DashboardAdmin() {
+export default function DashboardAdminWithdraw() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdmin>
+    <ImplementGridAdminWithdraw>
       <Flex h={'100vh'} width={'100%'}>
         <AdminAll dataWithdrawal={dataWithdrawal} />
       </Flex>
-    </ImplementGridAdmin>
+    </ImplementGridAdminWithdraw>
   );
 }
