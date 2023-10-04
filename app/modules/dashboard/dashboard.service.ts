@@ -2,18 +2,18 @@ import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
 // Fetching data store, bankAccount, withdraw
-export async function getStoreData(id: string) {
+export async function getStoreData(storeId: string) {
   return json(
     await db.store.findMany({
       where: {
-        id: '4',
+        id: '1',
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '4',
+                storeId: '1',
               },
             },
           },
@@ -28,7 +28,7 @@ export async function getBankList(storeId: string) {
   return json(
     await db.bankAccount.findMany({
       where: {
-        storeId: '4',
+        storeId: '1',
       },
     })
   );
@@ -58,7 +58,7 @@ export async function createBank(data: any) {
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '4' },
+        connect: { id: '1' },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -99,13 +99,19 @@ export async function getWithdrawalList() {
     include: {
       store: true,
       bankAccount: true,
+      attachmentWithdraw: true,
+      adminDecline: true,
     },
   });
 
   return withdrawalList;
 }
 
-export async function updateStatusWithdraw(id: string, statusUpdated: string) {
+export async function updateStatusWithdraw(
+  id: string,
+  statusUpdated: string,
+  dateUpdated?: string
+) {
   try {
     const updatedStatus = await db.withdraw.update({
       where: {
@@ -113,6 +119,7 @@ export async function updateStatusWithdraw(id: string, statusUpdated: string) {
       },
       data: {
         status: statusUpdated,
+        updatedAt: dateUpdated,
       },
     });
     return updatedStatus;
@@ -130,14 +137,17 @@ export async function createWithdraw(
 ) {
   try {
     const amount = parseFloat(data.amount);
-
     const user = await db.user.findUnique({
-      where: { id: '5' },
+      where: {
+        id: '1',
+      },
     });
 
     if (!user) {
-      throw new Error('User with id not found.');
+      throw new Error('user Id not found.');
     }
+
+    const userId = user.id;
 
     const bankAccount = await db.bankAccount.findUnique({
       where: {
@@ -151,10 +161,11 @@ export async function createWithdraw(
 
     const bankId = bankAccount.id;
 
+    const now = new Date();
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '4' },
+          connect: { id: '1' },
         },
         amount: amount,
         status: 'REQUEST',
@@ -163,8 +174,9 @@ export async function createWithdraw(
           connect: { id: bankId },
         },
         approvedBy: {
-          connect: { id: '1' },
+          connect: { id: userId },
         },
+        updatedAt: now,
       },
     });
 
@@ -184,7 +196,8 @@ export async function deleteWithdraw(id: string) {
 export async function createDeclinedReason(
   data: any,
   withdrawId: string,
-  storeId: string
+  storeId: string,
+  bankAccountId: string
 ) {
   const createReason = await db.adminDecline.create({
     data: {
@@ -198,6 +211,11 @@ export async function createDeclinedReason(
           id: storeId,
         },
       },
+      bankAccount: {
+        connect: {
+          id: bankAccountId,
+        },
+      },
       reason: data.reason,
     },
   });
@@ -206,12 +224,12 @@ export async function createDeclinedReason(
   return createReason;
 }
 
-export async function createAttachmentAdmin(
+export async function createAttachmentWithdraw(
   attachmentUrl: string,
   withdrawId: string
 ) {
   try {
-    const createAttachment = await db.attachmentAdmin.create({
+    const createAttachment = await db.attachmentWithdraw.create({
       data: {
         withdraw: {
           connect: {
@@ -238,8 +256,72 @@ export async function getReasonDeclined() {
     include: {
       store: true,
       withdraw: true,
+      bankAccount: true,
     },
   });
 
   return reasonDeclinedList;
+}
+
+//REFUND
+export async function getRefundData() {
+  const refundData = await db.refund.findMany({
+    include: {
+      invoice: {
+        include: {
+          payment: true,
+        },
+      },
+    },
+  });
+
+  return refundData;
+}
+
+export async function updateStatusRefund(
+  id: string,
+  statusUpdated: string,
+  dateUpdated?: string
+) {
+  try {
+    const updatedStatus = await db.refund.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: statusUpdated,
+        updatedAt: dateUpdated,
+      },
+    });
+    return updatedStatus;
+  } catch (error) {
+    console.error('Error updating status:', error);
+    throw error;
+  }
+}
+
+//CreateAttachmentRefund
+export async function createAttachmentRefund(
+  attachmentUrl: string,
+  refundId: string
+) {
+  try {
+    const createAttachment = await db.attachmentRefund.create({
+      data: {
+        refund: {
+          connect: {
+            id: refundId,
+          },
+        },
+        attachment: attachmentUrl,
+      },
+    });
+
+    console.log('Attachment creation success:', createAttachment);
+
+    return createAttachment;
+  } catch (error) {
+    console.error('Error creating attachment:', error);
+    throw error;
+  }
 }

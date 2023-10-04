@@ -1,15 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import crypto from 'crypto';
 
+import type { ActionArgs, LoaderArgs, DataFunctionArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
-  MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
   getProductUnpid,
-  updateInvoiceStatus,
 } from '~/modules/order/order.service';
 
 import { Flex } from '@chakra-ui/react';
@@ -18,9 +18,10 @@ import { ImplementGrid } from '~/layouts/Grid';
 import NavOrder from '~/layouts/NavOrder';
 
 import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
-import { getUserId } from '~/modules/auth/auth.service';
+import { authorize } from '~/middleware/authorization';
 
 // export async function action({ request }: ActionArgs) {
 //   if (request.method.toLowerCase() === 'patch') {
@@ -57,11 +58,8 @@ import { getUserId } from '~/modules/auth/auth.service';
 //   });
 // }
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
 
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
@@ -73,29 +71,15 @@ export async function loader({ request }: LoaderArgs) {
   ]);
   const dataInvoice = await getInvoiceByStatus();
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
+  return json({
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    dataInvoice,
+    dataShipping: await getDataInShipping(),
+    dataProductReadyToShip,
+    apiKey,
   });
-
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return json({
-      unpaidCardAll,
-      unpaidCard,
-      canceledService,
-      dataInvoice,
-      dataShipping: await getDataInShipping(),
-      dataProductReadyToShip,
-      apiKey,
-    });
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -107,6 +91,20 @@ export async function action({ request }: ActionArgs) {
   const actionType = formData.get('actionType') as string;
 
   console.log('yg kamu cari', id, actionType, status);
+
+  if (actionType === 'updateDbCourierId') {
+    const id = formData.get('id') as string;
+    const orderId = formData.get('orderId') as string;
+
+    await db.courier.update({
+      where: {
+        id,
+      },
+      data: {
+        orderId,
+      },
+    });
+  }
 
   if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
     console.log('masuk sini');
@@ -130,47 +128,6 @@ export async function action({ request }: ActionArgs) {
     // alert
     console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
   }
-
-  if (isMootaIP(requestIP)) {
-    if (request.method === 'POST') {
-      try {
-        const requestBody = await request.text();
-
-        const payloads = JSON.parse(requestBody);
-
-        const secretKey = process.env.MOOTA_SECRET as string;
-
-        const amount = payloads[0].amount as number;
-
-        const signature = request.headers.get('Signature') as string;
-
-        if (verifySignature(secretKey, requestBody, signature)) {
-          const MootaOrder = MootaOrderSchema.parse({
-            amount,
-          });
-          await MootaOrderStatusUpdate(MootaOrder);
-        } else {
-          console.log('error verify Signature!');
-        }
-        return json({ data: requestBody }, 200);
-      } catch (error) {
-        return new Response('Error in The Use webhook', {
-          status: 500,
-        });
-      }
-    }
-  }
-
-  if (request.method.toLowerCase() === 'patch') {
-    const formData = await request.formData();
-
-    const id = formData.get('id') as string;
-    const price = formData.get('price');
-    const stock = formData.get('stock');
-
-    await updateInvoiceStatus({ id, price, stock });
-  }
-  return redirect('/order');
 }
 
 function isMootaIP(requestIP: string) {

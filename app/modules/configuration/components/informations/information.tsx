@@ -191,7 +191,7 @@ export function Informations({ dataStore }: any) {
       </Text>
       <Form method="post" encType="multipart/form-data">
         <Input hidden name="action" value="updateInformation" />
-        <Input hidden type="text" name="storeId" value={dataStore.id} />
+        <Input type="text" name="storeId" value={dataStore.id} />
         <FormControl>
           <Grid
             h="150px"

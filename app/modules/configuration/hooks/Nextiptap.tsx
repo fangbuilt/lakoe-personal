@@ -1,11 +1,10 @@
 import { css } from './style';
 import { useEditor, EditorContent } from '@tiptap/react';
-import { Button, Box } from '@chakra-ui/react';
 import StarterKit from '@tiptap/starter-kit';
 
 const extensions = [StarterKit];
 
-export const styles = {
+const styles = {
   container: css({
     display: 'flex',
     flexDirection: 'column',
@@ -40,14 +39,14 @@ const Tiptap = (props: { content: string; setContent: any }) => {
 
   return (
     <>
-      <Box mb={2}>
-        <Button
-          fontWeight={'normal'}
-          fontSize="md"
-          size={'sm'}
-          variant={'outline'}
-          borderRadius={'full'}
-          mr={1}
+      <div style={{ marginBottom: '5px' }}>
+        <button
+          style={{
+            border: '1px ridge',
+            padding: '3px 12px',
+            marginRight: '5px',
+            borderRadius: '16px',
+          }}
           onClick={() =>
             editor
               .chain()
@@ -57,14 +56,14 @@ const Tiptap = (props: { content: string; setContent: any }) => {
           }
         >
           Nama Customer
-        </Button>
-        <Button
-          fontWeight={'normal'}
-          fontSize="md"
-          size={'sm'}
-          variant={'outline'}
-          borderRadius={'full'}
-          mr={1}
+        </button>
+        <button
+          style={{
+            border: '1px ridge',
+            padding: '3px 12px',
+            marginRight: '5px',
+            borderRadius: '16px',
+          }}
           onClick={() =>
             editor
               .chain()
@@ -74,14 +73,14 @@ const Tiptap = (props: { content: string; setContent: any }) => {
           }
         >
           Nama Produk
-        </Button>
-        <Button
-          fontWeight={'normal'}
-          fontSize="md"
-          size={'sm'}
-          variant={'outline'}
-          borderRadius={'full'}
-          mr={1}
+        </button>
+        <button
+          style={{
+            border: '1px ridge',
+            padding: '3px 12px',
+            marginRight: '5px',
+            borderRadius: '16px',
+          }}
           onClick={() =>
             editor
               .chain()
@@ -91,12 +90,12 @@ const Tiptap = (props: { content: string; setContent: any }) => {
           }
         >
           Nama Toko
-        </Button>
-      </Box>
+        </button>
+      </div>
 
-      <Box className={styles.container()}>
+      <div className={styles.container()}>
         <EditorContent editor={editor} />
-      </Box>
+      </div>
     </>
   );
 };

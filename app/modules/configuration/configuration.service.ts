@@ -107,9 +107,9 @@ export async function getStoreData(id: string) {
   return dataStore;
 }
 
-export async function updateStoreInformation(storeId: string, data: any) {
+export async function updateStoreInformation(store_id: string, data: any) {
   const dataUpdate = await db.store.update({
-    where: { id: storeId },
+    where: { id: '2' },
     data: {
       name: data.name,
       slogan: data.slogan,
@@ -132,8 +132,9 @@ export async function getMessages(id: any) {
   });
 }
 
-export async function getStoreId(id: any) {
-  return await db.store.findUnique({
+export async function getStoreid(id: any) {
+  // export async function login(data: z.infer<typeof checkoutSchema>) {}
+  return await db.store.findFirst({
     where: {
       id,
     },

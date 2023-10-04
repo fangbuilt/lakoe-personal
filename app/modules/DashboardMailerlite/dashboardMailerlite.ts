@@ -30,7 +30,7 @@ export function WithdrawNotification(
   bankAccount: string,
   accountName: string
 ) {
-  const oriEmail = 'rahmatrizkyrifai@gmail.com';
+  const oriEmail = 'muhammadalisyamsi@gmail.com';
   const params: IMailerLite = {
     email: generateRandomEmail(oriEmail, 10),
 
