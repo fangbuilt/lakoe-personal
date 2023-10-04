@@ -1,11 +1,6 @@
 import { Stack } from '@chakra-ui/react';
-<<<<<<< HEAD
 import { type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
-=======
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
-import { Form } from '@remix-run/react';
->>>>>>> 6751982d4395ec2b5232b1f183edc4ccd04baa21
 import { ImplementGrid } from '~/layouts/Grid';
 import { Action } from '~/modules/product/components/Action';
 import { Price } from '~/modules/product/components/Price';
@@ -15,14 +10,6 @@ import { ProductManagement } from '~/modules/product/components/ProductManagemen
 import { ProductVariant } from '~/modules/product/components/ProductVariant';
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
 import { createProduct } from '~/modules/product/product.service';
-import { uploadImage } from '~/utils/uploadImage';
-import {
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-  redirect,
-  json,
-} from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 import { getUserId } from '~/modules/auth/auth.service';
 // import { useState } from 'react';
@@ -39,7 +26,6 @@ export async function loader({ request }: LoaderArgs) {
     },
   });
 
-<<<<<<< HEAD
   const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET as string;
   const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME as string;
 
@@ -54,56 +40,29 @@ export async function loader({ request }: LoaderArgs) {
     }
   }
 
-
-=======
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return json({});
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
->>>>>>> 6751982d4395ec2b5232b1f183edc4ccd04baa21
 }
 
 export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'post') {
-    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
-      if (name !== 'mainPhoto' && name !== 'photo2') {
-        return undefined;
-      }
 
-      const uploadedImage = await uploadImage(data);
-
-      return uploadedImage.secure_url;
-    }, createMemoryUploadHandler());
-
-    const formData = await parseMultipartFormData(request, uploadHandler);
+    const formData = await request.formData();
     const imageUrl = formData.get('mainPhoto') as string;
     const imageUrl2 = formData.get('photo2') as string;
-<<<<<<< HEAD
     const imageUrl3 = formData.get('photo3') as string;
     const imageUrl4 = formData.get('photo4') as string;
     const imageUrl5 = formData.get('photo5') as string;
-
     const storeId = formData.get('storeId') as string;
-=======
-    const height = parseFloat(formData.get('height') as string);
-    console.log('image', imageUrl);
-    console.log('image2', imageUrl2);
->>>>>>> 6751982d4395ec2b5232b1f183edc4ccd04baa21
 
     const data = {
       url1: imageUrl,
       url2: imageUrl2,
+      url3: imageUrl3,
+      url4: imageUrl4,
+      url5: imageUrl5,
       name: formData.get('name'),
-<<<<<<< HEAD
+
       description: formData.get("description") as string,
-=======
-      description: formData.get('description'),
->>>>>>> 6751982d4395ec2b5232b1f183edc4ccd04baa21
+
       minimumOrder: Number(formData.get('min_order')),
       price: parseFloat(formData.get('price') as string),
       stock: parseInt(formData.get('stock') as string),
