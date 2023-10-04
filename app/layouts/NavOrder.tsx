@@ -16,20 +16,22 @@ import { loader } from '~/routes/order';
 import CardCenceled from '~/components/order/CardCanceled';
 import CardSucces from '~/components/order/CardSuccesOrder';
 import CardReadyToShip from '~/components/order/CardReadyToShip';
+import CardInShipping from '~/components/order/CardInShipping';
+import { number } from 'zod';
 // import CardSucces from '~/components/order/CardSuccesOrder';
 // import UnpaidCard from '~/components/order/CardUnpaid';
 // import UnpaidCard from '~/components/order/CardUnpaid';
 export function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
-  // const { unpaidCard } = useLoaderData<typeof loader>();
-  // const notificationCount =
-  //   cardProduct.dataProductReadyToShip.length > 0
-  //     ? cardProduct.dataProductReadyToShip.length
-  //     : 0;
+  const notificationCount =
+    cardProduct.dataProductReadyToShip.length > 0
+      ? cardProduct.dataProductReadyToShip.length
+      : 0;
   const [activeTab, setActiveTab] = useState(0);
   const handleClickTab = (index: number) => {
     setActiveTab(index);
   };
+  const notifCountInShipping = cardProduct.dataShipping.length > 0 ? cardProduct.dataShipping.length : 0;
   return (
     <>
       <Box
@@ -144,7 +146,7 @@ export function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          {/* {notificationCount} */}
+                          {notificationCount}
                           {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
@@ -162,6 +164,7 @@ export function NavOrder({ allOrderSevice }: any) {
                         fontWeight={activeTab === 4 ? '700' : '500'}
                       >
                         {/* NOTIFICATION ORDER */}
+
                         <Text
                           my={4}
                           color={'white'}
@@ -170,8 +173,11 @@ export function NavOrder({ allOrderSevice }: any) {
                           boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
+
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+
+                          {notifCountInShipping}
+
                         </Text>
                         {/* END NOTIFICATION ORDER */}
                         <Flex gap={1.5}>
@@ -232,7 +238,7 @@ export function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <p>dalam Pengiriman</p>
+                  <CardInShipping/>
                   </TabPanel>
                 </ScrollBox>
 

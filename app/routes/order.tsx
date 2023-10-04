@@ -33,7 +33,9 @@ export const loader = async ({ request }: LoaderArgs) => {
       getProductUnpid(searchTerm),
       CanceledService(),
       whatsappTemplateDb(),
-      SuccessService()
+      SuccessService(),
+      
+
     ]);
 
     const dataInvoice = await getInvoiceByStatus();
