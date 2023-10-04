@@ -9,7 +9,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 import { ImplementGrid } from '~/layouts/Grid';
 import { Informations } from '~/modules/configuration/components/informations/information';
@@ -22,6 +22,7 @@ import createLocation, {
   deleteLocation,
   updateLocation,
   getStoreId,
+  updateStoreInformation,
 } from '~/modules/configuration/configuration.service';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
@@ -33,15 +34,41 @@ import {
   DeleteButton,
 } from '~/modules/configuration/components/CrudModal';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { getUserId } from '~/modules/auth/auth.service';
 
-export async function loader({ params }: ActionArgs) {
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const auth = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
   const getLocationData = await getAllDataLocation();
 
+  const store = auth?.storeId;
+  const store_id = await getStoreId(store);
   const messages = await getMessages();
-  const { storeId } = params;
-  const store_id = await getStoreId(storeId);
 
-  return { messages, store_id, getLocationData };
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return { messages, store_id, getLocationData };
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -78,13 +105,13 @@ export async function action({ request }: ActionArgs) {
       postalCode,
       isMainLocation,
     });
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration `;
 
     return redirect(redirectURL);
   } else if (action === 'deletelocation') {
     const id = formData.get('id') as string;
     await deleteLocation(id);
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration `;
 
     return redirect(redirectURL);
   } else if (action === 'editlocation') {
@@ -102,34 +129,26 @@ export async function action({ request }: ActionArgs) {
     });
   }
   //======================================================
-  if (action === 'createInformation') {
+  if (action === 'updateInformation') {
     const slogan = formData.get('slogan') as string;
     const description = formData.get('description') as string;
     const name = formData.get('name') as string;
     const domain = `lakoe.store/${name}`;
     const logoAttachment = formData.get('logoAttachment') as string;
+
     console.log('ini logoAttachment', logoAttachment);
 
-    const data = {
+    const id = formData.get('storeId') as string;
+
+    await updateStoreInformation(id, {
       slogan,
-      description,
-      name,
       domain,
+      name,
       logoAttachment,
-    };
-
-    await db.store.create({
-      data: {
-        slogan: data.slogan,
-        domain: data.domain,
-        name: data.name,
-        logoAttachment: data.logoAttachment,
-
-        description: data.description,
-      },
+      description,
     });
 
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration `;
 
     return redirect(redirectURL);
   }
@@ -193,13 +212,9 @@ export default function StoreConfiguration() {
           </TabList>
 
           <TabPanels>
-            {/* INI BAGIAN rifki */}
-            <Informations />
-
-            {/* INI BAGIAN BAGZA */}
+            <Informations dataStore={data.store_id} />
             <Locations />
 
-            {/* INI BAGIAN MIKHAEL DAN HELEN */}
             <TabPanel>
               <Flex
                 justifyContent={'space-between'}
