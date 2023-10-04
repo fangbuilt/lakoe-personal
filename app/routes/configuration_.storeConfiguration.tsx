@@ -13,32 +13,35 @@ import {
 import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
-import Locations from '~/modules/configuration/components/location/Locations';
 import { Informations } from '~/modules/configuration/components/informations/information';
+import Locations from '~/modules/configuration/components/location/Locations';
 import createLocation, {
-  getAllDataLocation,
-  createStoreInformation,
-  updateStoreInformation,
-  getMessages,
-  updateMessage,
-  deleteMessage,
   createMessage,
+  createStoreInformation,
   deleteLocation,
+  deleteMessage,
+  getAllDataLocation,
+  getMessages,
   getStoreid,
+  updateMessage,
+  updateStoreInformation,
 } from '~/modules/configuration/configuration.service';
 
 import {
+  CreateButton,
   DeleteButton,
   UpdateButton,
-  CreateButton,
 } from '~/modules/configuration/components/CrudModal';
 
 import { useLoaderData } from '@remix-run/react';
-import Scroll from '~/modules/configuration/components/Scroll';
-import { getUserId } from '~/modules/auth/auth.service';
 import { db } from '~/libs/prisma/db.server';
 import { authorize } from '~/middleware/authorization';
-import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
+import { getUserId } from '~/modules/auth/auth.service';
+import Scroll from '~/modules/configuration/components/Scroll';
+import {
+  createMessageSchema,
+  updateMessageSchema,
+} from '~/modules/configuration/configuration.schema';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
@@ -152,7 +155,9 @@ export async function action({ request }: ActionArgs) {
     const storeId = formData.get('storeId') as string;
     const content = formData.get('content') as string;
 
-    await createMessage(name, storeId, content);
+    const validatedData = createMessageSchema.parse({ name, storeId, content });
+
+    await createMessage(validatedData);
   } else if (action === 'delete') {
     const id = formData.get('id') as string;
     await deleteMessage(id);

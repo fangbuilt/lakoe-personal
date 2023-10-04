@@ -1,5 +1,8 @@
 import type { z } from 'zod';
-import type { updateMessageSchema } from './configuration.schema';
+import type {
+  createMessageSchema,
+  updateMessageSchema,
+} from './configuration.schema';
 import { db } from '~/libs/prisma/db.server';
 
 export default async function createLocation(data: any) {
@@ -79,16 +82,15 @@ export async function getMessages(id: any) {
 export async function getStoreid(id: any) {
   // export async function login(data: z.infer<typeof checkoutSchema>) {}
   return await db.store.findFirst({
-
     where: {
       id,
     },
   });
 }
 
-export async function createMessage(name: any, id: any, content: any) {
+export async function createMessage(data: z.infer<typeof createMessageSchema>) {
   return await db.messageTemplate.create({
-    data: { name: name, content: content, storeId: id },
+    data,
   });
 }
 
