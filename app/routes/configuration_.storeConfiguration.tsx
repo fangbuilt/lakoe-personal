@@ -10,11 +10,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
-import { db } from '~/libs/prisma/db.server';
 import { ImplementGrid } from '~/layouts/Grid';
 import { Informations } from '~/modules/configuration/components/informations/information';
 import createLocation, {
   getAllDataLocation,
+  updateStoreInformation,
   getMessages,
   updateMessage,
   deleteMessage,
@@ -22,18 +22,19 @@ import createLocation, {
   deleteLocation,
   updateLocation,
   getStoreId,
-  updateStoreInformation,
 } from '~/modules/configuration/configuration.service';
 import { redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 import Locations from '~/modules/configuration/components/location/Locations';
 import {
-  CreateButton,
-  UpdateButton,
   DeleteButton,
+  UpdateButton,
+  CreateButton,
 } from '~/modules/configuration/components/CrudModal';
+
+import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { db } from '~/libs/prisma/db.server';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 import { getUserId } from '~/modules/auth/auth.service';
 
 export async function loader({ request }: LoaderArgs) {
@@ -52,7 +53,7 @@ export async function loader({ request }: LoaderArgs) {
 
   const store = auth?.storeId;
   const store_id = await getStoreId(store);
-  const messages = await getMessages();
+  const messages = await getMessages(store);
 
   const role = await db.user.findFirst({
     where: {

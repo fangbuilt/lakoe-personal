@@ -52,6 +52,7 @@ async function main() {
           .rangeToNumber({ min: 100000000, max: 999999999 })
           .toString(),
         storeId: faker.helpers.arrayElement(relationsId),
+        isVerify: false,
         roleId: '2',
       },
     });
