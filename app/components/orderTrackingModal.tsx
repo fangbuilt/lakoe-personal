@@ -28,11 +28,9 @@ interface SendProps {
 }
 
 export default function ModalTracking(props: SendProps) {
-  // const biteshipTracing = useLoaderData<typeof loader>();
   const { orderTrackingsData, orderMultiTrackingsData } = useOrderTracking(
     props.selectedCardId
   );
-
   let steps = orderMultiTrackingsData;
 
   const { activeStep } = useSteps({
@@ -177,7 +175,7 @@ export default function ModalTracking(props: SendProps) {
                     lineHeight={'20px'}
                     color={'#1D1D1D'}
                   >
-                    {orderTrackingsData?.status ?? 'N/A'}
+                    {orderTrackingsData?.status}
                   </Text>
                 </Box>
               </Box>
@@ -193,52 +191,18 @@ export default function ModalTracking(props: SendProps) {
                   borderRadius={'12px'}
                   index={activeStep}
                   orientation="vertical"
+                  // height="110%"
                   width={'100%'}
-                  height={'350px'}
-                  gap="0"
+                  gap="5"
                   p={'16px'}
                 >
                   {steps.reverse().map((step: any, index: number) => (
                     <Step key={index}>
-                      <StepIndicator>
+                      <StepIndicator fontSize={'11px'}>
                         <StepStatus
-                          complete={
-                            <div
-                              style={{
-                                background:
-                                  index === 0 ? '#C5F8FF' : 'transparent',
-                                borderRadius: '50%',
-                                padding: '7px',
-                                display: 'inline-block',
-                              }}
-                            >
-                              <BsCircleFill size={'12px'} color="#0086B4" />
-                            </div>
-                          }
-                          incomplete={
-                            <div
-                              style={{
-                                background: '#F8F8F8',
-                                borderRadius: '50%',
-                                padding: '7px',
-                                display: 'inline-block',
-                              }}
-                            >
-                              <BsCircleFill size={'12px'} color="#D5D5D5" />
-                            </div>
-                          }
-                          active={
-                            <div
-                              style={{
-                                background: '#F8F8F8',
-                                borderRadius: '50%',
-                                padding: '7px',
-                                display: 'inline-block',
-                              }}
-                            >
-                              <BsCircleFill size={'12px'} color="#D5D5D5" />
-                            </div>
-                          }
+                          complete={<BsCircleFill />}
+                          incomplete={<BsCircleFill color="gray" />}
+                          active={<BsCircleFill color="gray" />}
                         />
                       </StepIndicator>
 
