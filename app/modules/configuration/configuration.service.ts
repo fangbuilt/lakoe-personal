@@ -121,7 +121,7 @@ export async function updateStoreInformation(store_id: string, data: any) {
   return dataUpdate;
 }
 
-//ini service template message=========================
+//ini service template message====================
 
 export async function getMessages(id: any) {
   return await db.messageTemplate.findMany({
