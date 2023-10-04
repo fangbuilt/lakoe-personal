@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 import { redirect, type ActionArgs, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import AdminRequest from '~/components/AdminRequest';
+import AdminApproved from '~/components/AdminApproved';
 import { ImplementGridAdmin } from '~/layouts/Grid';
 import { db } from '~/libs/prisma/db.server';
 import { getUserId } from '~/modules/auth/auth.service';
@@ -45,14 +45,14 @@ export async function action({ request }: ActionArgs) {
       const updateStatus = await updateStatusWithdraw(
         id as string,
         status as string
-      ); // Pass both id and status
+      );
       console.log('Status updated successfully:', updateStatus);
-      // Handle success
     } catch (error) {
       console.error('Error updating status:', error);
       throw error;
     }
   }
+
   const withdrawId = formData.get('withdrawId');
   const storeId = formData.get('storeId');
   const reason = formData.get('reason');
@@ -79,7 +79,7 @@ export default function DasboardAdminRequest() {
   return (
     <ImplementGridAdmin>
       <Flex h={'100vh'} width={'100%'}>
-        <AdminRequest dataWithdrawal={dataWithdrawal} />
+        <AdminApproved dataWithdrawal={dataWithdrawal} />
       </Flex>
     </ImplementGridAdmin>
   );

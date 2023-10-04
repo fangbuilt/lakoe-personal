@@ -20,10 +20,10 @@ import {
 
 import { Link } from '@remix-run/react';
 import moment from 'moment';
-import { useState } from 'react';
-import AdminProcessingPopup from './AdminProcessingPopup';
+import React, { useState } from 'react';
+import AdminApprovedPopup from './AdminApprovedPopup';
 
-export default function AdminProcessing({ dataWithdrawal }: any) {
+export default function AdminApproved({ dataWithdrawal }: any) {
   const filteredDataRequest = dataWithdrawal.filter(
     (item: any) => item.status === 'REQUEST'
   );
@@ -85,7 +85,7 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
         bg="white"
       >
         <Box>
-          <Tabs defaultIndex={3}>
+          <Tabs defaultIndex={2}>
             <Box my={4} mx={5}>
               <Text fontWeight={'bold'} fontSize={'16px'}>
                 Daftar Penarikan Dana
@@ -314,7 +314,7 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredDataProcessing.map((item: any) => (
+                {filteredDataApproved.map((item: any) => (
                   <Tr key={item.id}>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       123ASD
@@ -332,16 +332,16 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
                     </Td>
                     <Td margin={'2px 0'}>
                       <Text>
-                        {item.status === 'PROCESSING' && (
+                        {item.status === 'APPROVED' && (
                           <Text
-                            bg={'teal'}
+                            bg={'blue.600'}
                             color={'white'}
                             borderRadius={'15px'}
                             px={'5px'}
                             fontSize={'10px'}
                             textAlign={'center'}
                           >
-                            PROCESSING
+                            APPROVED
                           </Text>
                         )}
                       </Text>
@@ -356,7 +356,7 @@ export default function AdminProcessing({ dataWithdrawal }: any) {
                         px={'5px'}
                         fontSize={'10px'}
                       >
-                        <AdminProcessingPopup withdrawalData={item} />
+                        <AdminApprovedPopup dataWithdrawal={item} />
                       </Text>
                     </Td>
                   </Tr>

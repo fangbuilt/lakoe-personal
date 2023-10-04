@@ -1,28 +1,26 @@
 import {
   Box,
   Button,
+  Flex,
+  Image,
   TabPanel,
   Table,
   TableContainer,
-  Tbody,
   Td,
-  Tr,
   Text,
-  Image,
+  Tr,
 } from '@chakra-ui/react';
-//import Location from "~/assets/icon-pack/location.svg";
-import Edit from '~/assets/icon-pack/edit.svg';
-import Trash from '~/assets/icon-pack/trash.svg';
-import LocationSlash from '~/assets/icon-pack/location-slash.svg';
-import React, { useState } from 'react';
-import { ModalCreateLocation, ModalDelete } from './Modals';
 import { useLoaderData } from '@remix-run/react';
+import { useState } from 'react';
+import Edit from '~/assets/icon-pack/edit.svg';
+import Location from '~/assets/icon-pack/location.svg';
 import type { loader } from '~/routes/configuration_.storeConfiguration_.$storeId';
+import { DeleteButton, ModalCreateLocation } from './Modals';
 
 export default function Locations() {
   // ini logic modal
   const [isOpenModal1, setIsOpenModal1] = useState(false);
-  const [isOpenModal2, setIsOpenModal2] = useState(false);
+  //const [, setIsOpenModal2] = useState(false);
 
   const openModal1 = () => {
     setIsOpenModal1(true);
@@ -32,13 +30,13 @@ export default function Locations() {
     setIsOpenModal1(false);
   };
 
-  const openModal2 = () => {
-    setIsOpenModal2(true);
-  };
+  // const openModal2 = () => {
+  //   setIsOpenModal2(true);
+  // };
 
-  const closeModal2 = () => {
-    setIsOpenModal2(false);
-  };
+  // const closeModal2 = () => {
+  //   setIsOpenModal2(false);
+  // };
 
   //get data location dari db
   const newData = useLoaderData<typeof loader>();
@@ -226,70 +224,104 @@ export default function Locations() {
               p={'10px'}
               mt={'10px'}
             >
-              <Table variant="none" fontSize={'12px'}>
-                <Tbody>
-                  <Tr>
-                    <Td p={'0px'}>Nama Lokasi</Td>
-                    <Td p={'0px'}>{data.name}</Td>
-                    <Td p={'0px'}>
-                      <Button
-                        borderRadius={'full'}
-                        bg={'white'}
-                        border={'1px solid #aeaeae'}
-                        p={'0px'}
-                        me={'7px'}
-                        size={'sm'}
-                        onClick={openModal2}
-                      >
-                        <Image w={'15px'} src={Trash} />
-                      </Button>
-                      <Button
-                        borderRadius={'full'}
-                        bg={'white'}
-                        border={'1px solid #aeaeae'}
-                        p={'0px'}
-                        size={'sm'}
-                      >
-                        <Image w={'15px'} src={Edit} />
-                      </Button>
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td p={'0px'}>Alamat</Td>
-                    <Td p={'0px'}>{data.address}</Td>
-                    <Td p={'0px'}></Td>
-                  </Tr>
-                  <Tr>
-                    <Td p={'0px'}>Kota/Kecamatan</Td>
-                    <Td p={'0px'}>{data.cityDistrict}</Td>
-                    <Td p={'0px'}></Td>
-                  </Tr>
-                  <Tr>
-                    <Td p={'0px'}>Kode Pos</Td>
-                    <Td p={'0px'}>{data.postalCode}</Td>
-                    <Td p={'0px'}></Td>
-                  </Tr>
-                  <Tr>
-                    <Td p={'0px'}>Pinpoint</Td>
-                    <Td p={'0px'}>
-                      <Box
-                        color={'#aeaeae'}
-                        display={'flex'}
-                        flexDirection={'row'}
-                      >
-                        <Image src={LocationSlash} />
-                        <Text>Belum Endpoint</Text>
-                      </Box>
-                    </Td>
-                    <Td p={'0px'}></Td>
-                  </Tr>
-                </Tbody>
-              </Table>
+              <Flex gap={5} justifyContent={'space-between'}>
+                <Box>
+                  <Table variant="none" fontSize={'12px'}>
+                    <Tr>
+                      <Td p={'0px'}>Nama Lokasi</Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Alamat</Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Kota/Kecamatan</Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Kode Pos</Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>Pinpoint</Td>
+                    </Tr>
+                  </Table>
+                </Box>
+                <Box w={'100%'} ps={'20px'}>
+                  <Table variant="none" fontSize={'12px'}>
+                    <Tr>
+                      <Td p={'0px'} fontWeight={'bold'}>
+                        {data.name}
+                      </Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>{data.address}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>{data.cityDistrict}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>{data.postalCode}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}>
+                        <Box
+                          color={'#0086B4'}
+                          display={'flex'}
+                          flexDirection={'row'}
+                        >
+                          <Image src={Location} />
+                          <Text>Sudah Endpoint</Text>
+                        </Box>
+                      </Td>
+                    </Tr>
+                  </Table>
+                </Box>
+                <Box>
+                  <Table variant="none" fontSize={'12px'}>
+                    <Tr>
+                      <Td p={'0px'}>
+                        <Flex>
+                          <DeleteButton
+                            id={data.id}
+                            name={data.name}
+                            address={''}
+                            addressNote={''}
+                            latitude={''}
+                            longtitude={''}
+                            postalCode={''}
+                            cityDistrict={''}
+                            isMainLocation={false}
+                          />
+                          <Button
+                            borderRadius={'full'}
+                            bg={'white'}
+                            border={'1px solid #aeaeae'}
+                            p={'0px'}
+                            size={'sm'}
+                          >
+                            <Image w={'15px'} src={Edit} />
+                          </Button>
+                        </Flex>
+                      </Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                    <Tr>
+                      <Td p={'0px'}></Td>
+                    </Tr>
+                  </Table>
+                </Box>
+              </Flex>
             </TableContainer>
           ))}
         </Box>
         <ModalCreateLocation isOpen={isOpenModal1} onClose={closeModal1} />
-        <ModalDelete isOpen={isOpenModal2} onClose={closeModal2} />
+        {/* <ModalDelete isOpen={isOpenModal2} onClose={closeModal2} /> */}
       </TabPanel>
     </>
   );
