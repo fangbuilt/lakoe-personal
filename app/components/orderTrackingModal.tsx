@@ -17,9 +17,9 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react';
+import { format } from "date-fns-tz";
 import { BsCircleFill } from 'react-icons/bs';
 import useOrderTracking from '~/hooks/useOrderTracking';
-import { dateConversion } from '~/modules/order/hooks/useOrderDetail';
 
 interface SendProps {
   isOpen: boolean;
@@ -209,7 +209,11 @@ export default function ModalTracking(props: SendProps) {
                       <Box flexShrink="0">
                         <StepTitle>{step.note}</StepTitle>
                         <StepDescription>
-                          {dateConversion(step.updated_at).toLocaleString()} WIB
+                        {format(
+                              new Date(step?.updated_at),
+                              "EEE, dd MMM yyyy - HH:mm zzzz", // Desired output format
+                              { timeZone: "Asia/Jakarta" } // Time zone (WIB)
+                            )}
                         </StepDescription>
                       </Box>
 

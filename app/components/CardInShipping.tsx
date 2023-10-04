@@ -55,7 +55,7 @@ export default function CardInShipping(props: { dataTracking: ITracking }) {
                       key={data.id}
                       isOpen={modalIsOpen}
                       onClose={closeModal}
-                      data={props.dataTracking}
+                      data={dataTracking}
                       selectedCardId={selectedCardId}
                     />
                   )}
