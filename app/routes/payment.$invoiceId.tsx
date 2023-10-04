@@ -15,37 +15,21 @@ import {
   Text,
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
-import { Form, useLoaderData, useParams } from '@remix-run/react';
-import React, { useState } from 'react';
+import { redirect ,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from '@remix-run/node';
+import {
+  Form,
+  useLoaderData,
+  useNavigation,
+  useParams,
+} from '@remix-run/react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PiShoppingCartThin } from 'react-icons/pi';
 import { db } from '../libs/prisma/db.server';
-
-export const action = async ({ request }: ActionArgs) => {
-  if (request.method.toLowerCase() === 'post') {
-    const formData = await request.formData();
-
-    const invoiceId = formData.get('invoiceId');
-    // const invoice = formData.get("invoice");
-    const bank = formData.get('bank');
-    const createdAt = formData.get('createdAt');
-    const amount = formData.get('amount');
-    const attachment = formData.get('attachment');
-
-    const data = {
-      invoiceId,
-      bank,
-      createdAt,
-      amount,
-      attachment,
-    };
-    console.log(data);
-
-    // await db.confirmationPayment.create({ data });
-  }
-
-  return redirect(`/checkout/transfer/confirm`);
-};
+import { uploadImage } from '~/utils/uploadImage';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
@@ -59,11 +43,64 @@ export async function loader({ params }: ActionArgs) {
   });
 }
 
+export const action = async ({ request }: ActionArgs) => {
+  if (request.method.toLowerCase() === 'post') {
+    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
+      if (name !== 'attachment') {
+        return undefined;
+      }
+
+      const uploadedImage = await uploadImage(data);
+      return uploadedImage.secure_url;
+    }, createMemoryUploadHandler());
+
+    const formData = await parseMultipartFormData(request, uploadHandler);
+    const invoiceId = formData.get('invoiceId') as string;
+    const bank = formData.get('bank') as string;
+    const createdAt = new Date().toISOString();
+    const amount = parseFloat(formData.get('amount') as string);
+    const attachment = formData.get('attachment') as string;
+    console.log(attachment);
+
+    const data = {
+      invoiceId,
+      bank,
+      createdAt,
+      amount,
+      attachment,
+    };
+    console.log(data);
+
+    await db.confirmationPayment.create({
+      data: {
+        invoiceId: data.invoiceId,
+        bank: data.bank,
+        createdAt: data.createdAt,
+        amount: isNaN(data.amount) ? 0 : data.amount,
+        attachment: data.attachment,
+      },
+    });
+    // await db.confirmationPayment.create({ data });
+  }
+
+  return redirect(`/checkout/transfer/confirm`);
+};
+
 export default function TransferPayment() {
   const { invoiceId } = useParams();
 
   const [file] = useState<File | null>(null);
   const item = useLoaderData<typeof loader>();
+
+  const { state } = useNavigation();
+
+  const formRef = useRef<HTMLFormElement>(null);
+  let isAdding = state === 'submitting';
+  useEffect(() => {
+    if (isAdding) {
+      formRef.current?.reset();
+    }
+  }, [isAdding]);
 
   return (
     <Flex direction="column" align="center">
@@ -76,7 +113,7 @@ export default function TransferPayment() {
       </Heading>
 
       <Container
-        width={'80%'}
+        width={'500px'}
         bg={'whiteAlpha.50'}
         p={10}
         mt={'3%'}
@@ -84,7 +121,7 @@ export default function TransferPayment() {
         boxShadow="0px 0px 3px 1px rgba(3, 3, 3, 0.3)"
         borderRadius={'3px'}
       >
-        <Form method="post">
+        <Form method="post" encType="multipart/form-data" ref={formRef}>
           <Stack spacing={4}>
             <FormControl id="invoiceId" isRequired>
               <FormLabel>Order ID</FormLabel>

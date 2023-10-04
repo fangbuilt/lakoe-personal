@@ -356,6 +356,8 @@ model Payment {
   id        String    @id @unique @default(uuid())
   bank      String
   amount    Float
+  // accountName String
+  // accountNumber String
   status    String
   user      User?     @relation(fields: [userId], references: [id])
   userId    String?
