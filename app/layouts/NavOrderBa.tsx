@@ -26,7 +26,7 @@ import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
 import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-import CardNewOrderBa from '../components/CardNewOrderBa';
+import CardNewOrderBa from '../components/order/CardNewOrderBa';
 import ScrollBox from '../components/ScrollBox';
 import { useFilterCourier } from '../hooks/useFilterCourier';
 import { UseSearch } from '../hooks/useSearchOrder copy';
@@ -47,7 +47,7 @@ export default function NavOrderBa(props: IOrderDetailInvoiceProps) {
     if (selectedCouriers.length === 0) {
       return true;
     }
-    return selectedCouriers.includes(order.courier);
+    // return selectedCouriers.includes(order.courier);
   });
 
   return (

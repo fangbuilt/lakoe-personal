@@ -14,7 +14,7 @@ import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import Edit from '~/assets/icon-pack/edit.svg';
 import Location from '~/assets/icon-pack/location.svg';
-import type { loader } from '~/routes/configuration_.storeConfiguration_.$storeId';
+import type { loader } from '~/routes/configuration_.storeConfiguration';
 import { DeleteButton, ModalCreateLocation } from './Modals';
 
 export default function Locations() {

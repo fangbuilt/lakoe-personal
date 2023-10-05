@@ -13,17 +13,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  // Step,
-  // StepDescription,
-  // StepIndicator,
-  // StepSeparator,
-  // StepStatus,
-  // StepTitle,
-  // Stepper,
   Text,
 } from '@chakra-ui/react';
 import { Link, useLoaderData } from '@remix-run/react';
-// import { BsCircleFill } from 'react-icons/bs';
 import type { loader } from '~/routes/order';
 import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
 
@@ -35,18 +27,18 @@ interface SendProps {
   itemPhone: string;
 }
 export default function ModalWhatsapp(props: SendProps) {
-  const { getTemplateMessages } = useLoaderData<typeof loader>();
+  const { whatsappTemplateDbs } = useLoaderData<typeof loader>();
 
   return (
     <>
       <Modal isOpen={props.isOpen} onClose={props.onClose}>
         <ModalOverlay bg={'whiteAlpha.100'} />
         <ModalContent>
-          <ModalHeader>Send Message ke {props.itemName}</ModalHeader>
+          <ModalHeader>Send Message</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Accordion allowToggle>
-              {getTemplateMessages.map((itemtemp) => (
+              {whatsappTemplateDbs.map((itemtemp) => (
                 <AccordionItem key={itemtemp.id}>
                   <Text>
                     <AccordionButton>
@@ -57,11 +49,7 @@ export default function ModalWhatsapp(props: SendProps) {
                     </AccordionButton>
                   </Text>
                   <AccordionPanel pb={4}>
-                    {itemtemp.content && (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: itemtemp.content }}
-                      />
-                    )}
+                    {itemtemp.content}
                     <Button colorScheme={'whatsapp'} float={'right'}>
                       <Link
                         to={createWhatsAppTemplateMessageUnpaid(

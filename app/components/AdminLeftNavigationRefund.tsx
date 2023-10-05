@@ -1,7 +1,7 @@
 import { Button, Flex, Stack } from '@chakra-ui/react';
 import { useLocation, useNavigate } from '@remix-run/react';
 
-export function LeftNavigationAdmin() {
+export function LeftNavigationAdminRefund() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,6 +37,32 @@ export function LeftNavigationAdmin() {
         <Button
           justifyContent={'left'}
           // leftIcon={
+          //   location.pathname === "/dashboard" ? (
+          //     <Image src={HomeFilled} />
+          //   ) : (
+          //     <Image src={HomeOutline} />
+          //   )
+          // }
+          variant={
+            location.pathname === '/dashboardAdminWithdraw' ? 'solid' : 'ghost'
+          }
+          py={6}
+          onClick={() => navigate('/dashboardAdminWithdraw')}
+          textColor={
+            location.pathname === '/dashboardAdminWithdraw'
+              ? '#0086B4'
+              : 'unset'
+          }
+          fontWeight={
+            location.pathname === '/dashboardWithdraw' ? 'bold' : 'semibold'
+          }
+        >
+          Penarikan Dana
+        </Button>
+
+        <Button
+          justifyContent={'left'}
+          // leftIcon={
           //   location.pathname === "/product" ? (
           //     <Image src={BoxFilled} />
           //   ) : (
@@ -45,9 +71,9 @@ export function LeftNavigationAdmin() {
           // }
           variant={location.pathname === '/product' ? 'solid' : 'ghost'}
           py={6}
-          onClick={() => navigate('/dashboardAdmin')}
+          onClick={() => navigate('/dashboardAdminRefund')}
           textColor={
-            location.pathname === '/dashboardAdmin'
+            location.pathname === '/dashboardAdminRefund'
               ? '#0086B4'
               : 'unset' || location.pathname === '/adminRequest'
               ? '#0086B4'
@@ -60,7 +86,7 @@ export function LeftNavigationAdmin() {
               : 'unset'
           }
           fontWeight={
-            location.pathname === '/dashboardAdmin'
+            location.pathname === '/dashboardAdminRefund'
               ? 'bold'
               : 'semibold' || location.pathname === '/adminRequest'
               ? 'bold'
@@ -73,7 +99,7 @@ export function LeftNavigationAdmin() {
               : 'semibold'
           }
         >
-          Penarikan Dana
+          Refund
         </Button>
       </Stack>
 

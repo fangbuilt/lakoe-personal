@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { BsCircleFill } from 'react-icons/bs';
 import useOrderTracking from '~/hooks/useOrderTracking';
+import { dateConversion } from '~/modules/order/hooks/useOrderDetail';
 
 interface SendProps {
   isOpen: boolean;
@@ -244,7 +245,7 @@ export default function ModalTracking(props: SendProps) {
                       <Box flexShrink="0">
                         <StepTitle>{step.note}</StepTitle>
                         <StepDescription>
-                          {new Date(step.updated_at).toLocaleString()}
+                          {dateConversion(step.updated_at).toLocaleString()} WIB
                         </StepDescription>
                       </Box>
 

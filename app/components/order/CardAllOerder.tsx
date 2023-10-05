@@ -35,11 +35,11 @@ import {
 import { Form, Link, useLoaderData } from '@remix-run/react';
 import type { loader } from '~/routes/order';
 import React, { useState } from 'react';
-import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
-import SearchProduct from '../assets/icon-pack/search-product.svg';
+import ChevronDownIcon from '../../assets/icon-pack/arrow-dropdown.svg';
+import SearchProduct from '../../assets/icon-pack/search-product.svg';
 // import { useFilterCourier } from '~/hooks/useFilterCourier';
 import { useSortFilter } from '~/hooks/useSortFilter';
-import Empty from '../assets/icon-pack/empty-dot.svg';
+import Empty from '../../assets/icon-pack/empty-dot.svg';
 import { createWhatsAppTemplateMessageUnpaid } from '~/utils/templateOrder';
 import type {
   Item,
@@ -53,26 +53,24 @@ import {
   statusNameButton,
   statusToTemplate,
 } from '~/type/StatusColorMap';
-import ModalTracking from './orderTrackingModal';
+import ModalTracking from '../orderTrackingModal';
 import UnpaidCard from './CardUnpaid';
 import CardReadyToShip from './CardReadyToShip';
 import CardCenceled from './CardCanceled';
-import ModalWhatsapp from './modalProps/modalWhatsapp';
-import CardInShipping from './CardInShipping';
-import ModalInShipping from './ModalInShipping';
+import ModalWhatsapp from '../modalProps/modalWhatsapp';
+import CardInShipping from '../CardInShipping';
+import ModalInShipping from '../ModalInShipping';
 import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 import { ModalComponent } from './CardNewOrderBa';
-import HooksMasRino from './HooksMasRino';
+import HooksMasRino from '../HooksMasRino';
 import UseSearchProductAll from '~/hooks/useSearchOrderAll';
 // import UseSearchProductAll from '~/hooks/useSearchOrderAll';
-import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+import ReceiptSearch from '../../assets/icon-pack/receipt-search.svg';
 
-export default function CardAllOrder(props: {
-  dataTracking: IBiteshipTracking;
-}) {
+export default function CardAllOrder() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   // const { filteredOrder, setSearchQuery, searchQuery } = UseSearchAll();
-  const { getTemplateMessages } = useLoaderData<typeof loader>();
+  // const { getTemplateMessages } = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
   const [isUnpaidModalOpen, setIsUnpaidModalOpen] = useState(false);
@@ -511,7 +509,7 @@ export default function CardAllOrder(props: {
                           <ModalInShipping
                             onClose={closeModal}
                             isOpen={isOrderInTransitModalOpen}
-                            data={props.dataTracking}
+                            data={item.dataTracking}
                             selectedCardId={selectedCardId}
                           />
                         )}

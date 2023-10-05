@@ -9,6 +9,7 @@ import {
   FormLabel,
   Input,
   Button,
+  Textarea,
   Image,
   ModalFooter,
   HStack,
@@ -18,11 +19,9 @@ import Edit from '../../../assets/icon-pack/edit.svg';
 import Trash from '../../../assets/icon-pack/trash.svg';
 import CloseCircle from '../../../assets/icon-pack/close-circle.svg';
 import type { ITemplateMessage } from '~/interfaces/TemplateMessage';
-import { Form, useNavigation } from '@remix-run/react';
-import React, { useRef, useEffect } from 'react';
-import StarterKit from '@tiptap/starter-kit';
-import { useEditor, EditorContent } from '@tiptap/react';
-import Tiptap, { styles } from '../hooks/Tiptap';
+import { Form } from '@remix-run/react';
+import React, { useState } from 'react';
+import Tiptap from '../hooks/Nextiptap';
 
 export function DeleteButton(props: ITemplateMessage) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,7 +38,13 @@ export function DeleteButton(props: ITemplateMessage) {
       >
         <Image w={'15px'} src={Trash} />
       </Button>
-      <Modal isOpen={isOpen} size={'xl'} onClose={onClose} isCentered>
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={isOpen}
+        size={'xl'}
+        onClose={onClose}
+        isCentered
+      >
         <ModalOverlay />
         <ModalContent pl={6} pr={6}>
           <Form method="post">
@@ -108,19 +113,10 @@ export function UpdateButton(props: ITemplateMessage) {
   const handleInputChange = (event: any) => setTitle(event.target.value);
   const [newContent, setNewcontent] = React.useState(props.content);
 
-  console.log(title);
-
-  function newfunc() {
-    setNewcontent(props.content);
-  }
-
   return (
     <>
       <Button
-        onClick={() => {
-          newfunc();
-          onOpen();
-        }}
+        onClick={onOpen}
         borderRadius={'full'}
         bg={'white'}
         border={'1px solid #aeaeae'}
@@ -129,7 +125,13 @@ export function UpdateButton(props: ITemplateMessage) {
       >
         <Image w={'15px'} src={Edit} />
       </Button>
-      <Modal isOpen={isOpen} size={'lg'} onClose={onClose} isCentered>
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={isOpen}
+        size={'lg'}
+        onClose={onClose}
+        isCentered
+      >
         <ModalOverlay />
         <ModalContent pl={6} pr={6}>
           <Form method="patch">
@@ -158,19 +160,13 @@ export function UpdateButton(props: ITemplateMessage) {
               <Input
                 name="updatedName"
                 onChange={handleInputChange}
-                defaultValue={props.name}
+                value={title}
               />
             </FormControl>
             <FormControl isRequired mt={6}>
               <FormLabel fontWeight={'normal'}>Detail Isi Pesan</FormLabel>
-              <Input
-                hidden
-                name="updatedContent"
-                value={
-                  newContent === props.content ? props.content : newContent
-                }
-              />
-              <Tiptap content={props.content} setContent={setNewcontent} />
+              <Input hidden name="updatedContent" value={newContent} />
+              <Tiptap content={newContent} setContent={setNewcontent} />
             </FormControl>
             <Flex justifyContent={'flex-end'} pb={4} mt={'37px'}>
               <Button
@@ -204,37 +200,21 @@ export function UpdateButton(props: ITemplateMessage) {
 
 export function CreateButton(data: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = useState('');
 
-  const editorRef = useRef(null);
-  const { state } = useNavigation();
-  const formRef = useRef<HTMLFormElement>(null);
+  const handleChange = (event: any) => {
+    setValue(event.target.value);
+  };
 
-  let isAdding = state === 'submitting';
-  useEffect(() => {
-    if (isAdding) {
-      formRef.current?.reset();
+  const updateState = (value: any) => {
+    if (value === 'namaPembeli') {
+      setValue((prevState) => prevState + '[Nama Pembeli]');
+    } else if (value === 'namaProduk') {
+      setValue((prevState) => prevState + '[Nama Produk]');
+    } else if (value === 'namaToko') {
+      setValue((prevState) => prevState + '[Nama Toko]');
     }
-  }, [isAdding]);
-
-  const extensions = [StarterKit];
-  const editor = useEditor({
-    extensions,
-    content: value,
-    onUpdate: ({ editor }) => {
-      setValue(editor.getHTML());
-    },
-  });
-
-  if (!editor) {
-    return null;
-  }
-
-  function clearEditor() {
-    if (editor) {
-      editor.commands.clearContent();
-    }
-  }
+  };
 
   return (
     <>
@@ -248,7 +228,7 @@ export function CreateButton(data: any) {
       >
         Buat Template
       </Button>
-      <Modal size={'lg'} isCentered isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent px={5} py={4}>
           <Box
@@ -274,12 +254,12 @@ export function CreateButton(data: any) {
               <Image w={'30px'} src={CloseCircle} />
             </Button>
           </Box>
-          <Form method="post" encType="multipart/form-data" ref={formRef}>
+          <Form method="post">
             <Box>
               <Input type="hidden" value={data.storeId} name="storeId" />
             </Box>
             <Box fontFamily={'Plus Jakarta Sans'} py={3}>
-              <FormControl isRequired mb={5}>
+              <FormControl id="order-id" isRequired mb={5}>
                 <FormLabel>Judul Pesan</FormLabel>
                 <Input
                   name="name"
@@ -290,66 +270,63 @@ export function CreateButton(data: any) {
               <FormControl isRequired>
                 <FormLabel>Detail Isi Pesanan</FormLabel>
               </FormControl>
-              <Input hidden name="content" value={value} />
-              <Box>
-                <Button
-                  name="storeId"
-                  fontWeight={'normal'}
-                  fontSize="md"
-                  size={'sm'}
-                  variant={'outline'}
-                  borderRadius={'full'}
-                  mr={1}
-                  onClick={() =>
-                    editor
-                      .chain()
-                      .focus()
-                      .insertContent('[<strong>Nama Customer</strong>]')
-                      .run()
-                  }
-                >
-                  Nama Pembeli
-                </Button>
-                <Button
-                  name="storeId"
-                  fontWeight={'normal'}
-                  fontSize="md"
-                  size={'sm'}
-                  variant={'outline'}
-                  borderRadius={'full'}
-                  mr={1}
-                  onClick={() =>
-                    editor
-                      .chain()
-                      .focus()
-                      .insertContent('[<strong>Nama Produk</strong>]')
-                      .run()
-                  }
-                >
-                  Nama Produk
-                </Button>
-                <Button
-                  name="storeId"
-                  fontWeight={'normal'}
-                  fontSize="md"
-                  size={'sm'}
-                  variant={'outline'}
-                  borderRadius={'full'}
-                  mr={1}
-                  onClick={() =>
-                    editor
-                      .chain()
-                      .focus()
-                      .insertContent('[<strong>Nama Toko</strong>]')
-                      .run()
-                  }
-                >
-                  Nama Toko
-                </Button>
 
-                <Box mt={2} className={styles.container()}>
-                  <EditorContent editor={editor} ref={editorRef} />
-                </Box>
+              <Box
+                alignItems={'flex-start'}
+                display={'flex'}
+                maxW={'fit-content'}
+                borderRadius={'50%'}
+                gap={'3'}
+              >
+                <Button
+                  bg={'white'}
+                  name="storeId"
+                  height={'30px'}
+                  onClick={() => updateState('namaPembeli')}
+                  color={'var(--text-dark, #1D1D1D)'}
+                  borderRadius={'var(--rounded-full, 9999px)'}
+                  border={'1px solid var(--gray-300, #D5D5D5)'}
+                >
+                  <Text color={'gray.500'} fontSize={'14px'}>
+                    Nama Pembeli
+                  </Text>
+                </Button>
+                <Button
+                  name="storeId"
+                  value={'ProdukName'}
+                  bg={'white'}
+                  height={'30px'}
+                  borderRadius={'50px'}
+                  onClick={() => updateState('namaProduk')}
+                  border={'1px solid var(--gray-300, #D5D5D5)'}
+                >
+                  <Text fontSize={'14px'} color={'gray.500'}>
+                    Nama Produk
+                  </Text>
+                </Button>
+                <Button
+                  name="storeId"
+                  value={'namaToko'}
+                  borderRadius={'50px'}
+                  bg={'white'}
+                  onClick={() => updateState('namaToko')}
+                  border={'1px solid var(--gray-300, #D5D5D5)'}
+                  height={'30px'}
+                >
+                  <Text fontSize={'14px'} color={'gray.500'}>
+                    Nama Toko
+                  </Text>
+                </Button>
+              </Box>
+              <Box mt={'10px'}>
+                <Textarea
+                  name="content"
+                  value={value}
+                  height={'150px'}
+                  color={'gray.500'}
+                  placeholder="Tuliskan Pesanmu"
+                  onChange={handleChange}
+                />
               </Box>
             </Box>
 
@@ -367,10 +344,7 @@ export function CreateButton(data: any) {
               </Button>
               <Button
                 type="submit"
-                onClick={() => {
-                  clearEditor();
-                  onClose();
-                }}
+                onClick={onClose}
                 height={'40px'}
                 width={'103px'}
                 colorScheme="blue"

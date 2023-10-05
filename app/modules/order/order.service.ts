@@ -6,11 +6,6 @@ export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
     where: {
       status: 'UNPAID',
-      courier: {
-        courierName: {
-          in: ['jne', 'poa', 'tiki'],
-        },
-      },
     },
     include: {
       user: true,
@@ -257,8 +252,16 @@ export async function getInvoiceProductData() {
         status: 'NEW_ORDER',
       },
       include: {
+        payment: true,
+        courier: true,
         cart: {
           include: {
+            store: {
+              include: {
+                users: true,
+                locations: true,
+              },
+            },
             cartItems: {
               include: {
                 product: {
@@ -320,6 +323,7 @@ export async function getDataProductReadyToShip() {
     include: {
       invoiceHistories: true,
       courier: true,
+      biteshipTrackinglimits: true,
       cart: {
         include: {
           user: true,
@@ -394,10 +398,10 @@ export async function getTemplateMessage() {
   return await db.messageTemplate.findMany();
 }
 
-export async function SuccesService() {
+export async function CanceledService() {
   return await db.invoice.findMany({
     where: {
-      status: 'ORDER_COMPLETED',
+      status: 'ORDER_CANCELLED',
     },
     include: {
       courier: true,
@@ -435,6 +439,60 @@ export async function updateStatusInvoice2(data: any) {
     },
     where: {
       id: id,
+    },
+  });
+}
+export async function SuccessService() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'ORDER_COMPLETED',
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function whatsappTemplateDb() {
+  return await db.messageTemplate.findMany({});
+}
+
+export default async function getDataInShipping() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'IN_TRANSIT',
+    },
+    include: {
+      courier: true,
+      cart: {
+        include: {
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 }

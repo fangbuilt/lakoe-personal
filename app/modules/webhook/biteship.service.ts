@@ -6,8 +6,13 @@ import {
   UpdateInvoiceStatusInTransit,
   UseOrderSucces,
 } from '~/hooks/useOrderSucces';
+
 import { db } from '~/libs/prisma/db.server';
 import { pickingUp, updateInvoiceStatus } from './hooks/usePickingUp';
+import {
+  droppingOff,
+  updateInvoiceStatusInTransit,
+} from './hooks/useDroppingOff';
 
 export async function getEmail(payload: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -70,21 +75,21 @@ export async function Biteship(payload: any) {
   // Allocated
   try {
     if (payload.status === 'allocated') {
-      const invoice = await db.invoice.findFirst({
-        where: {
-          courierId: payload.courierId,
-        },
-      });
+      // const invoice = await db.invoice.findFirst({
+      //   where: {
+      //     courierId: payload.courierId,
+      //   },
+      // });
 
-      if (!invoice) {
-        console.log('Invoice with Courier ID is not found!');
-        return;
-      }
+      // if (!invoice) {
+      //   console.log('Invoice with Courier ID is not found!');
+      //   return;
+      // }
 
-      await db.courier.update({
-        where: { id: invoice.courierId },
-        data: { orderId: payload.order_id },
-      });
+      // await db.courier.update({
+      //   where: { id: invoice.courierId },
+      //   data: { orderId: payload.order_id },
+      // });
 
       const courier = await db.courier.findFirst({
         where: {
@@ -101,17 +106,6 @@ export async function Biteship(payload: any) {
         where: { courierId: courier.id },
         data: { waybill: payload.courier_waybill_id },
       });
-      console.log('Waybill updated successfully!');
-      console.log('this is payload status: ' + payload.status);
-    }
-
-    // Courier picks up goods
-    if (payload.status === 'picking_up') {
-      const courier = await db.courier.findFirst({
-        where: {
-          orderId: payload.order_id,
-        },
-      });
 
       if (!courier) {
         console.log('Courier ID is not found!');
@@ -122,6 +116,12 @@ export async function Biteship(payload: any) {
         where: { id: courier.id },
         data: { trackingId: payload.courier_tracking_id },
       });
+      console.log('Waybill and tracking updated successfully!');
+      console.log('this is payload status: ' + payload.status);
+    }
+
+    // Courier picks up goods
+    if (payload.status === 'picking_up') {
       const dataInvoice = await getEmail(payload);
 
       // console.log(dataInvoice);
@@ -169,7 +169,7 @@ export async function Biteship(payload: any) {
         qty,
         variantInfo
       );
-      console.log('tracking updated successfully! and email sent succesfully');
+      console.log('Email sent succesfully');
       console.log('this is payload status: ' + payload.status);
     }
 
@@ -193,9 +193,9 @@ export async function Biteship(payload: any) {
 
     // Courier on the way to recipient's location
     if (payload.status === 'dropping_off') {
-      // droppingOff(email, name, waybill);
-      // updateInvoiceStatusInTransit(dataInvoice);
-      // console.log("this is payload status: " + payload.status);
+      droppingOff(email, name, waybill);
+      updateInvoiceStatusInTransit(dataInvoice);
+      console.log('this is payload status: ' + payload.status);
     }
 
     // Item successfully recieved

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import { useSubmit } from '@remix-run/react';
+import { db } from '~/libs/prisma/db.server';
 
 export default function NewOrderHooks() {
   const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
@@ -87,58 +89,111 @@ export default function NewOrderHooks() {
         'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
-        // shipper_contact_name: props[0].cart?.store?.users[0].name,
-        shipper_contact_name: selectedProps?.cart?.store?.users[0].name,
-        shipper_contact_phone: selectedProps?.cart?.store?.users[0].phone,
-        shipper_contact_email: selectedProps?.cart?.store?.users[0].email,
-        shipper_organization: selectedProps?.cart?.store.name,
-        origin_contact_name: selectedProps?.cart?.store?.users[0].name,
-        origin_contact_phone: selectedProps?.cart?.store?.users[0].phone,
-        origin_address: selectedProps?.cart?.store?.locations[0].address,
-        origin_note: selectedProps?.cart?.store?.locations[0].addressNote,
-
+        shipper_contact_name: 'TESTERKU #01',
+        shipper_contact_phone: '123-456-7890',
+        shipper_contact_email: 'TESTERKU #01@example.com',
+        shipper_organization: 'TESTERKU #01',
+        origin_contact_name: 'TESTERKU #01',
+        origin_contact_phone: '123-456-7890',
+        origin_address: '123 Main St',
+        origin_note: 'Near the park',
         origin_coordinate: {
-          latitude: selectedProps?.cart.store.locations[0].latitude,
-          longitude: selectedProps?.cart.store.locations[0].longtitude,
+          latitude: -6.28927,
+          longitude: 106.77492000000007,
         },
-        origin_postal_code: selectedProps?.cart?.store?.locations[0].postalCode,
-        destination_contact_name: selectedProps?.receiverName,
-        destination_contact_phone: selectedProps?.receiverPhone,
-        destination_contact_email: selectedProps?.receiverEmail,
-        destination_address: selectedProps?.receiverAddress,
-        destination_postal_code: selectedProps?.receiverPostalCode,
-        destination_note: selectedProps?.receiverAddressNote,
+        origin_postal_code: '10001',
+        destination_contact_name: 'TESTERKU #01',
+        destination_contact_phone: '987-654-3210',
+        destination_contact_email: 'TESTERKU #01@example.com',
+        destination_address: '456 Elm St',
+        destination_postal_code: '20001',
+        destination_note: 'Behind the mall',
         destination_cash_proof_of_delivery: true,
         destination_coordinate: {
-          latitude: selectedProps?.receiverLatitude,
-          longitude: selectedProps?.receiverLongitude,
+          latitude: -6.2253114,
+          longitude: 106.7993735,
         },
-        courier_company: selectedProps?.courier.courierName,
-
-        courier_type: selectedProps?.courier.courierType,
-        courier_insurance: selectedProps?.courier.courierInsurance,
-        delivery_type: selectedProps?.courier.courierType,
-        delivery_date: selectedProps?.courier.deliveryDate,
-        delivery_time: selectedProps?.courier.deliveryTime,
-        order_note: selectedProps?.courier.description,
+        courier_company: 'grab',
+        courier_type: 'instant',
+        courier_insurance: 'Yes',
+        delivery_type: 'later',
+        delivery_date: '2024-10-10',
+        delivery_time: '14:00 - 16:00',
+        order_note: 'Fragile items, handle with care',
         metadata: {},
         items: [
           {
-            id: selectedProps?.cart.cartItems[0].product.id,
-            name: selectedProps?.cart.cartItems[0].product.name,
-            image: '',
-            description: selectedProps?.cart.cartItems[0].product.description,
-            value: selectedProps?.price,
-            quantity: selectedProps?.cart.cartItems[0].qty,
-            height: selectedProps?.cart.cartItems[0].product.height,
-            length: selectedProps?.cart.cartItems[0].product.length,
-            weight:
-              selectedProps?.cart.cartItems[0].variantOption
-                .variantOptionValues[0].weight,
-            width: selectedProps?.cart.cartItems[0].product.width,
+            id: '12345',
+            name: 'Sample Product',
+            image: 'sample-image.jpg',
+            description: 'Lorem ipsum dolor sit amet',
+            value: 50.99,
+            quantity: 2,
+            height: 10,
+            length: 20,
+            weight: 1.5,
+            width: 15,
           },
         ],
       };
+
+      // BATASSSS..!!!! //
+
+      // const dataforBiteShip = {
+      //   // shipper_contact_name: props[0].cart?.store?.users[0].name,
+      //   shipper_contact_name: selectedProps?.cart?.store?.users[0].name,
+      //   shipper_contact_phone: selectedProps?.cart?.store?.users[0].phone,
+      //   shipper_contact_email: selectedProps?.cart?.store?.users[0].email,
+      //   shipper_organization: selectedProps?.cart?.store.name,
+      //   origin_contact_name: selectedProps?.cart?.store?.users[0].name,
+      //   origin_contact_phone: selectedProps?.cart?.store?.users[0].phone,
+      //   origin_address: selectedProps?.cart?.store?.locations[0].address,
+      //   origin_note: selectedProps?.cart?.store?.locations[0].addressNote,
+
+      //   origin_coordinate: {
+      //     latitude: selectedProps?.cart.store.locations[0].latitude,
+      //     longitude: selectedProps?.cart.store.locations[0].longtitude,
+      //   },
+      //   origin_postal_code: selectedProps?.cart?.store?.locations[0].postalCode,
+      //   destination_contact_name: selectedProps?.receiverName,
+      //   destination_contact_phone: selectedProps?.receiverPhone,
+      //   destination_contact_email: selectedProps?.receiverEmail,
+      //   destination_address: selectedProps?.receiverAddress,
+      //   destination_postal_code: selectedProps?.receiverPostalCode,
+      //   destination_note: selectedProps?.receiverAddressNote,
+      //   destination_cash_proof_of_delivery: true,
+      //   destination_coordinate: {
+      //     latitude: selectedProps?.receiverLatitude,
+      //     longitude: selectedProps?.receiverLongitude,
+      //   },
+      //   courier_company: selectedProps?.courier.courierName,
+
+      //   courier_type: selectedProps?.courier.courierType,
+      //   courier_insurance: selectedProps?.courier.courierInsurance,
+      //   delivery_type: selectedProps?.courier.courierType,
+      //   delivery_date: selectedProps?.courier.deliveryDate,
+      //   delivery_time: selectedProps?.courier.deliveryTime,
+      //   order_note: selectedProps?.courier.description,
+      //   metadata: {},
+      //   items: [
+      //     {
+      //       id: selectedProps?.cart.cartItems[0].product.id,
+      //       name: selectedProps?.cart.cartItems[0].product.name,
+      //       image: '',
+      //       description: selectedProps?.cart.cartItems[0].product.description,
+      //       value: selectedProps?.price,
+      //       quantity: selectedProps?.cart.cartItems[0].qty,
+      //       height: selectedProps?.cart.cartItems[0].product.height,
+      //       length: selectedProps?.cart.cartItems[0].product.length,
+      //       weight:
+      //         selectedProps?.cart.cartItems[0].variantOption
+      //           .variantOptionValues[0].weight,
+      //       width: selectedProps?.cart.cartItems[0].product.width,
+      //     },
+      //   ],
+      // };
+
+      // BATASS //
 
       const orderDataJSON = JSON.stringify(dataforBiteShip);
 
@@ -156,7 +211,29 @@ export default function NewOrderHooks() {
         requestOptions
       );
       const responseDataBITESHIP = await responsebiteship.json();
-      console.log(responseDataBITESHIP);
+      const order_id = responseDataBITESHIP.id;
+
+      async function updateDbCourierId() {
+        try {
+          if (!selectedProps?.courier.orderId) {
+            return console.log('Order ID not found!');
+          }
+
+          submit(
+            {
+              id: selectedProps.courier.id,
+              orderId: order_id,
+              actionType: 'updateDbCourierId',
+            },
+            { method: 'POST' }
+          );
+        } catch (error) {
+          console.error('Terjadi kesalahan:', error);
+          throw error;
+        }
+      }
+      updateDbCourierId();
+      console.log('check id-nya :', responseDataBITESHIP);
       alert(
         'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
       );
@@ -165,7 +242,7 @@ export default function NewOrderHooks() {
     }
   };
 
-  return { setSelectedProps, afterpacking };
+  return { setSelectedProps, afterpacking, handleOrderCourier };
 }
 
 export async function LakoeBalanceByMoota() {
@@ -204,3 +281,6 @@ export async function LakoeBalanceByMoota() {
 
 // Memanggil fungsi untuk melakukan permintaan ke Moota
 LakoeBalanceByMoota();
+function updateDbCourier() {
+  throw new Error('Function not implemented.');
+}

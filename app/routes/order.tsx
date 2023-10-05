@@ -2,28 +2,29 @@ import crypto from 'crypto';
 
 import { json, redirect } from '@remix-run/node';
 import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 
-import {
+import getDataInShipping, {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
-  getProductUnpid,
   updateInvoiceStatus,
+  CanceledService,
+  whatsappTemplateDb,
+  SuccessService,
   getTemplateMessage,
-  SuccesService,
+  getProductUnpid,
 } from '~/modules/order/order.service';
 
 import { Flex } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
-import NavOrder from '~/layouts/NavOrder';
-
 import { db } from '~/libs/prisma/db.server';
-import CanceledService from '~/modules/order/orderCanceledService';
-import getDataInShipping from '~/modules/order/orderShippingService';
 import { getUserId } from '~/modules/auth/auth.service';
+import SuccesService from '~/modules/order/orderSuccessService';
+import { NavOrder } from '~/layouts/NavOrder';
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -41,6 +42,8 @@ export async function loader({ request }: LoaderArgs) {
     getTemplateMessages,
     dataProductReadyToShip,
     succesService,
+    whatsappTemplateDbs,
+    getDataInShippings,
   ] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),
@@ -48,6 +51,8 @@ export async function loader({ request }: LoaderArgs) {
     getTemplateMessage(),
     getDataProductReadyToShip(),
     SuccesService(),
+    whatsappTemplateDb(),
+    getDataInShipping(),
   ]);
   const dataInvoice = await getInvoiceByStatus();
 
@@ -67,7 +72,9 @@ export async function loader({ request }: LoaderArgs) {
       getTemplateMessages,
       dataProductReadyToShip,
       succesService,
-      // successedService,
+      whatsappTemplateDbs,
+      SuccessService,
+      getDataInShippings,
       dataInvoice,
       dataShipping: await getDataInShipping(),
       apiKey,

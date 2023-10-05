@@ -1,10 +1,34 @@
+import type { LoginForm, RegistrationForm } from '~/interfaces/auth';
 import { db } from '~/libs/prisma/db.server';
 import bcrypt from 'bcryptjs';
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
-import type { LoginForm } from '../../interfaces/auth';
+
+export async function register({
+  name,
+  email,
+  phone,
+  password,
+  storeId,
+  roleId,
+  isVerify,
+}: RegistrationForm) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await db.user.create({
+    data: {
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      storeId,
+      roleId,
+    },
+  });
+
+  return { id: user.id, name, email, roleId };
+}
 
 export async function login({ email, password }: LoginForm) {
-  const user = await db.user.findUnique({
+  const user = await db.user.findFirst({
     where: {
       email: email,
     },

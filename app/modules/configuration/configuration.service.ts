@@ -61,8 +61,9 @@ export async function getMessages(id: any) {
   });
 }
 
-export async function getStoreId(id: any) {
-  return await db.store.findUnique({
+export async function getStoreid(id: any) {
+  // export async function login(data: z.infer<typeof checkoutSchema>) {}
+  return await db.store.findFirst({
     where: {
       id,
     },
