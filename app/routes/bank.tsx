@@ -1,10 +1,12 @@
 import { Box, Button, Flex, Input, Image, Text } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, Link, useLoaderData } from '@remix-run/react';
 import { AiOutlineClose } from 'react-icons/ai';
 import PopupBank from '~/components/PopupBank';
 import UpdateBank from '~/components/PopupBankUpdate.$id';
+import { db } from '~/libs/prisma/db.server';
+import { getUserId } from '~/modules/auth/auth.service';
 import {
   createBank,
   deleteBankList,
@@ -12,8 +14,27 @@ import {
   updateBank,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader(storeId: string) {
-  return await getBankList(storeId);
+export async function loader({ request }: LoaderArgs, storeId: string) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    throw redirect('/auth/login');
+  }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    throw redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return await getBankList(userId);
+  } else if (role?.roleId === '3') {
+    throw redirect('/checkout');
+  } else {
+    throw redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -40,14 +61,18 @@ export async function action({ request }: ActionArgs) {
   }
 
   if (actionType === 'create' && bank && accountNumber && accountName) {
-    await createBank({
+    const bankData = {
       store: {
         connect: { id: storeId },
       },
       accountName: accountName,
       bank: bank,
       accountNumber: accountNumber,
-    });
+    };
+
+    const userId = await getUserId(request);
+
+    await createBank(bankData, userId as string); // Pass userId as the second argument
     return redirect('/bank');
   }
 

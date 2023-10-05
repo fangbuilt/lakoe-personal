@@ -1,3 +1,5 @@
+import type { z } from 'zod';
+import type { updateMessageSchema } from './configuration.schema';
 import { db } from '~/libs/prisma/db.server';
 
 export default async function createLocation(data: any) {
@@ -29,6 +31,12 @@ export default async function createLocation(data: any) {
 export async function getAllDataLocation() {
   return await db.location.findMany();
 }
+
+export async function deleteLocation(id: any) {
+  return await db.location.delete({
+    where: { id },
+  });
+}
 //====================================================
 export async function createStoreInformation(data: any) {
   const dataPost = await db.store.create({
@@ -57,15 +65,18 @@ export async function updateStoreInformation(storeId: string, data: any) {
   return dataUpdate;
 }
 
-export async function getMessages() {
-  // export async function login(data: z.infer<typeof checkoutSchema>) {}
+//ini service template message=========================
+
+export async function getMessages(id: any) {
   return await db.messageTemplate.findMany({
-    orderBy: { id: 'asc' },
+    where: {
+      storeId: id,
+    },
+    orderBy: { createdAt: 'desc' },
   });
 }
 
-export async function getStoreid(id: any) {
-  // export async function login(data: z.infer<typeof checkoutSchema>) {}
+export async function getStoreId(id: any) {
   return await db.store.findUnique({
     where: {
       id,
@@ -74,16 +85,15 @@ export async function getStoreid(id: any) {
 }
 
 export async function createMessage(name: any, id: any, content: any) {
-  console.log(id);
   return await db.messageTemplate.create({
     data: { name: name, content: content, storeId: id },
   });
 }
 
-export async function updateMessage(id: any, name: any, content: any) {
+export async function updateMessage(data: z.infer<typeof updateMessageSchema>) {
   const updateMessage = await db.messageTemplate.update({
-    where: { id: id },
-    data: { name, content },
+    where: { id: data.id },
+    data,
   });
 
   return updateMessage;

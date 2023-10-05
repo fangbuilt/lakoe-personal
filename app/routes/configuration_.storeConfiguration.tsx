@@ -10,7 +10,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
 import Locations from '~/modules/configuration/components/location/Locations';
@@ -23,7 +23,8 @@ import createLocation, {
   updateMessage,
   deleteMessage,
   createMessage,
-  getStoreid,
+  getStoreId,
+  deleteLocation,
 } from '~/modules/configuration/configuration.service';
 
 import {
@@ -34,17 +35,43 @@ import {
 
 import { useLoaderData } from '@remix-run/react';
 import Scroll from '~/modules/configuration/components/Scroll';
+import { getUserId } from '~/modules/auth/auth.service';
+import { db } from '~/libs/prisma/db.server';
+import { updateMessageSchema } from '~/modules/configuration/configuration.schema';
 
-export async function loader({ params }: ActionArgs) {
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const auth = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
   const getLocationData = await getAllDataLocation();
 
-  //console.log("ini getdata:", getLocationData);
+  const store = auth?.storeId;
+  const store_id = await getStoreId(store);
+  const messages = await getMessages(store);
 
-  const messages = await getMessages();
-  const { storeId } = params;
-  const store_id = await getStoreid(storeId);
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
 
-  return { messages, store_id, getLocationData };
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return { messages, store_id, getLocationData };
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -92,6 +119,9 @@ export async function action({ request }: ActionArgs) {
     const redirectURL = `/configuration/storeConfiguration/1 `;
 
     return redirect(redirectURL);
+  } else if (actionType === 'deletelocation') {
+    const id = formData.get('id') as string;
+    await deleteLocation(id);
   }
 
   //=======================================================================
@@ -120,7 +150,7 @@ export async function action({ request }: ActionArgs) {
     return redirect(redirectURL);
   }
 
-  //==================================================================
+  //ini action template message ==================================================================
 
   const action = formData.get('action');
 
@@ -135,10 +165,12 @@ export async function action({ request }: ActionArgs) {
     await deleteMessage(id);
   } else if (action === 'update') {
     const id = formData.get('id') as string;
-    const updatedName = formData.get('updatedName') as string;
-    const updatedContent = formData.get('updatedContent') as string;
+    const name = formData.get('updatedName') as string;
+    const content = formData.get('updatedContent') as string;
 
-    await updateMessage(id, updatedName, updatedContent);
+    const validatedData = updateMessageSchema.parse({ id, name, content });
+
+    await updateMessage(validatedData);
   }
 
   return null;

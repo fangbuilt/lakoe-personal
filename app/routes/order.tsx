@@ -1,24 +1,23 @@
 // import crypto from "crypto";
 
-// import { json, redirect, type ActionArgs } from "@remix-run/node";
-// import { MootaOrderSchema } from "~/modules/order/order.schema";
-// import {
-//   MootaOrderStatusUpdate,
-//   getAllProductUnpid,
-//   getDataProductReadyToShip,
-//   getInvoiceByStatus,
-//   getProductUnpid,
-//   updateInvoiceStatus,
-// } from "~/modules/order/order.service";
+import { json, redirect } from '@remix-run/node';
+import type { LoaderArgs } from '@remix-run/node';
+import {
+  getAllProductUnpid,
+  getDataProductReadyToShip,
+  getInvoiceByStatus,
+  getProductUnpid,
+} from '~/modules/order/order.service';
 
 // import { Flex } from "@chakra-ui/react";
 // import { useLoaderData } from "@remix-run/react";
 // import { ImplementGrid } from "~/layouts/Grid";
 // // import NavOrder from '~/layouts/NavOrder';
 
-// import { db } from "~/libs/prisma/db.server";
-// import CanceledService from "~/modules/order/orderCanceledService";
-// import getDataInShipping from "~/modules/order/orderShippingService";
+import { db } from '~/libs/prisma/db.server';
+import CanceledService from '~/modules/order/orderCanceledService';
+import getDataInShipping from '~/modules/order/orderShippingService';
+import { getUserId } from '~/modules/auth/auth.service';
 
 // // export async function action({ request }: ActionArgs) {
 // //   if (request.method.toLowerCase() === 'patch') {
@@ -76,8 +75,46 @@
 //   });
 // }
 
-// export async function action({ request }: ActionArgs) {
-//   const requestIP = request.headers.get("x-forwarded-for") as string;
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
+
+  const apiKey = process.env.BITESHIP_API_KEY;
+  const dataProductReadyToShip = await getDataProductReadyToShip();
+  //jangan ampai terbalik posisi untuk menampilkan data load
+  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
+    getAllProductUnpid(),
+    getProductUnpid(),
+    CanceledService(),
+  ]);
+  const dataInvoice = await getInvoiceByStatus();
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return json({
+      unpaidCardAll,
+      unpaidCard,
+      canceledService,
+      dataInvoice,
+      dataShipping: await getDataInShipping(),
+      dataProductReadyToShip,
+      apiKey,
+    });
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
+}
 
 //   const formData = await request.formData();
 //   const id = formData.get("id") as string;

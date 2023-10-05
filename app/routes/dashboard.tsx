@@ -46,7 +46,9 @@ export async function loader({ request }: LoaderArgs) {
   if (role?.roleId === '1') {
     throw redirect('/dashboardAdmin');
   } else if (role?.roleId === '2') {
-    return await getStoreData(userId);
+    const woi = await getStoreData(userId);
+    console.log('woi', woi);
+    return woi;
   } else if (role?.roleId === '3') {
     throw redirect('/checkout');
   } else {
@@ -112,8 +114,8 @@ export async function action({ request }: ActionArgs) {
   const storeId = formData.get('storeId');
   const bankAccount = formData.get('bankAccount');
   const withdrawId = formData.get('withdrawId');
-
-  if (actionType === 'create' && amount && bankAccount) {
+  const userId = await getUserId(request);
+  if (actionType === 'create' && amount && bankAccount && userId) {
     try {
       const createdWithdraw = await createWithdraw(
         {
@@ -128,14 +130,26 @@ export async function action({ request }: ActionArgs) {
         },
         bankId as string,
         storeId as string,
-        approvedById as string
+        approvedById as string,
+        userId as string
       );
 
       console.log('Withdraw created:', createdWithdraw);
+      const user = await db.user.findFirst({
+        where: {
+          id: userId,
+        },
+      });
+
+      if (!user || !user.storeId) {
+        throw new Error('User or store not found');
+      }
+      console.log('user id :', user.id);
+      console.log('store id :', user.storeId);
 
       const store = await db.store.findUnique({
         where: {
-          id: '1',
+          id: user?.storeId,
         },
       });
       if (store) {
@@ -149,7 +163,7 @@ export async function action({ request }: ActionArgs) {
 
         await db.store.update({
           where: {
-            id: '1',
+            id: user.storeId,
           },
           data: {
             credit: newCredit,
@@ -222,7 +236,7 @@ export default function Dashboard() {
               gap={2}
               p={3}
             >
-              <Text fontSize={'13px'}>Current Balance</Text>
+              <Text fontSize={'13px'}>Current Balance {data?.id}</Text>
 
               <Text
                 fontSize={'20px'}
@@ -230,15 +244,11 @@ export default function Dashboard() {
                 color={'#28a745'}
                 key={data?.id}
               >
-                {formatRupiah(data?.credit as number)}
+                {formatRupiah(
+                  isNaN(data?.credit as number) ? 0 : (data?.credit as number)
+                )}
               </Text>
-              <DashboardPopup
-                key={data?.id}
-                bankAccount={data?.bankAccounts}
-                storeName={data?.name}
-                createdAt={createdAtArray}
-                creditSaldo={data?.credit}
-              />
+              <DashboardPopup data={data?.bankAccounts} Store={data?.id} />
             </Box>
             <Box
               display={'flex'}

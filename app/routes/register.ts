@@ -49,7 +49,6 @@ export async function loader({ request }: { request: Request }) {
         },
       });
 
-      console.log('MASUK SINI GAK 5');
       return new Response(
         JSON.stringify({ message: 'Registration successful' }),
         {
