@@ -21,11 +21,14 @@ import { ImplementGrid } from '~/layouts/Grid';
 import {NavOrder} from '~/layouts/NavOrder';
 import { db } from '~/libs/prisma/db.server';
 import getDataInShipping from '~/modules/order/orderShippingService';
+import { getUserId } from '~/modules/auth/auth.service';
 
-export const loader = async ({ request }: LoaderArgs) => {
+export async function loader({ request }: ActionArgs) {
   const apiKey = process.env.BITESHIP_API_KEY;
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get("search") || "";
+  const dataProductReadyToShip = await getDataProductReadyToShip();
+
 
   try {
     const [unpaidCardAll, unpaidCard, canceledService, whatsappDb, succesService] = await Promise.all([
@@ -35,23 +38,39 @@ export const loader = async ({ request }: LoaderArgs) => {
       whatsappTemplateDb(),
       SuccessService()
     ]);
+    const userId = await getUserId(request);
+    if (!userId) {
+      return redirect("/auth/login");
+    }
 
     const dataInvoice = await getInvoiceByStatus();
 
+    const role = await db.user.findFirst({
+      where: {
+        id: userId as string,
+      },
+    });
+
     const currentTime = new Date().getTime()
 
-    return json({
-      unpaidCardAll,
-      unpaidCard,
-      canceledService,
-      whatsappDb,
-      succesService,
-      dataInvoice,
-      dataShipping: await getDataInShipping(),
-      dataProductReadyToShip: await getDataProductReadyToShip(),
-      apiKey,
-      currentTime,
-    });
+    if (role?.roleId === "1") {
+      return redirect("/dashboardAdmin");
+    } else if (role?.roleId === "2") {
+      return json({
+        unpaidCardAll,
+        unpaidCard,
+        canceledService,
+        dataInvoice,
+        dataShipping: getDataInShipping(),
+        dataProductReadyToShip,
+        apiKey,
+        currentTime,
+      });
+    } else if (role?.roleId === "3") {
+      return redirect("/checkout");
+    } else {
+      return redirect("/logout");
+    }
   } catch (error) {
     console.error("error:", error);
     return json({ status: "error", message: "Terjadi kesalahan dalam memuat data" }, 500);

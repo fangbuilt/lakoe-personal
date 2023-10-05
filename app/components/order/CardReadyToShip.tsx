@@ -8,10 +8,10 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Form, Link, useLoaderData } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import type { loader } from "~/routes/order";
+import { useState } from "react";
+import { Form, useLoaderData } from "@remix-run/react";
 import ModalTracking from "../orderTrackingModal";
+import { loader } from "~/routes/order";
 
 export function formatCurrency(price: number): string {
   const formattedAmount = new Intl.NumberFormat("id-ID", {
@@ -63,7 +63,7 @@ export default function CardReadyToShip() {
     <>
       {/* CARD START HERE */}
 
-      {cardProduct.dataProductReadyToShip.map((data) => (
+      {cardProduct.dataProductReadyToShip.map((data: any) => (
         <Card mb={5} boxShadow={"xs"} key={data.id}>
           <Box key={data.id}>
             <Box mt={5}>
@@ -83,13 +83,6 @@ export default function CardReadyToShip() {
                     method="POST"
                     onSubmit={() => {
                       openModal(data.courier?.trackingId as string, data.id);
-                      console.log(new Date(data.biteshipTrackinglimits?.nextAccessTime ?? "").getTime() / 10000)
-                      console.log(currentTime - (new Date(data.biteshipTrackinglimits?.nextAccessTime ?? "").getTime() / (30 * 60 * 1000)))
-                      console.log((new Date(data.biteshipTrackinglimits?.nextAccessTime ?? "").getTime() / (30 * 60 * 1000)) - currentTime)
-                      console.log(30 * 60 * 1000)
-                      console.log((currentTime / (30 * 60 * 1000)))
-                      console.log((currentTime / 1000) - ((new Date(data.biteshipTrackinglimits?.nextAccessTime ?? "").getTime()) / (1000)))
-                      console.log("Condition Value:", currentTime / 1000 < (new Date(data.biteshipTrackinglimits?.nextAccessTime ?? "").getTime() )/ 1000);
                     }}
                   >
                     <Input
@@ -122,50 +115,49 @@ export default function CardReadyToShip() {
                   {data.invoiceNumber}
                 </Text>
                 <hr />
-                <Link to={"detail/" + data.id}>
-                  <Flex justifyContent={"space-between"}>
-                    <Box display={"flex"} gap={3} w={"80%"}>
-                      {data.cart?.cartItems.map((item, index) => (
-                        <Img
-                          key={index}
-                          w={"52px"}
-                          h={"52px"}
-                          display={"inline"}
-                          borderRadius={"md"}
-                          src={item.product?.attachments[0]?.url}
-                          mt={3}
-                        />
-                      ))}
-                      <Text
-                        mt={4}
-                        id="fm500"
-                        fontSize={"16px"}
-                        textOverflow={"ellipsis"}
-                        overflow={"hidden"}
-                        whiteSpace={"nowrap"}
-                        fontWeight={"700"}
-                      >
-                        {data.cart?.cartItems.map((item) => item.product?.name)}
-                        <Text color={"gray.400"} pb={3} fontWeight={"normal"}>
-                          {data.cart?.cartItems.map((item) => item.qty)} Barang
-                        </Text>
+
+                <Flex justifyContent={"space-between"}>
+                  <Box display={"flex"} gap={3} w={"80%"}>
+                    {data.cart?.cartItems.map((item: any, index: any) => (
+                      <Img
+                        key={index}
+                        w={"52px"}
+                        h={"52px"}
+                        display={"inline"}
+                        borderRadius={"md"}
+                        src={item.product?.attachments[0]?.url}
+                        mt={3}
+                      />
+                    ))}
+                    <Text
+                      mt={4}
+                      id="fm500"
+                      fontSize={"16px"}
+                      textOverflow={"ellipsis"}
+                      overflow={"hidden"}
+                      whiteSpace={"nowrap"}
+                      fontWeight={"700"}
+                    >
+                      {data.cart?.cartItems.map((item: any) => item.product?.name)}
+                      <Text color={"gray.400"} pb={3} fontWeight={"normal"}>
+                        {data.cart?.cartItems.map((item: any) => item.qty)} Barang
                       </Text>
-                    </Box>
-                    <Box mt={4} w={"15%"}>
-                      <Flex gap={1}>
-                        <Text color={"#909090"} fontSize={"14px"}>
-                          Total
-                        </Text>
-                        <Text color={"#909090"} fontSize={"14px"}>
-                          Belanja
-                        </Text>
-                      </Flex>
-                      <Text fontWeight={"bold"} fontSize={"14px"}>
-                        {formatCurrency(data.price)}
+                    </Text>
+                  </Box>
+                  <Box mt={4} w={"15%"}>
+                    <Flex gap={1}>
+                      <Text color={"#909090"} fontSize={"14px"}>
+                        Total
                       </Text>
-                    </Box>
-                  </Flex>
-                </Link>
+                      <Text color={"#909090"} fontSize={"14px"}>
+                        Belanja
+                      </Text>
+                    </Flex>
+                    <Text fontWeight={"bold"} fontSize={"14px"}>
+                      {formatCurrency(data.price)}
+                    </Text>
+                  </Box>
+                </Flex>
               </Box>
             </Box>
           </Box>
