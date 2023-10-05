@@ -15,6 +15,13 @@ const theme = extendTheme({
     body: "'Plus Jakarta Sans', sans-serif;",
   },
   components: { Switch: switchTheme },
+  styles: {
+    global: {
+      '.pac-container': {
+        zIndex: 1500,
+      },
+    },
+  },
 });
 
 export default extendTheme(theme);

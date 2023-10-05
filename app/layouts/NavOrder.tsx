@@ -8,19 +8,19 @@ import {
   TabPanels,
   Tabs,
   Text,
-} from "@chakra-ui/react";
-import { useLoaderData } from "@remix-run/react";
-import { useState } from "react";
-import ScrollBox from "~/components/ScrollBox";
-import { loader } from "~/routes/order";
-import CardCenceled from "~/components/order/CardCanceled";
-import CardSucces from "~/components/order/CardSuccesOrder";
-import CardReadyToShip from "~/components/order/CardReadyToShip";
-import CardNewOrderBa from "~/components/CardNewOrderBa";
-// import CardSucces from '~/components/order/CardSuccesOrder';
-// import UnpaidCard from '~/components/order/CardUnpaid';
-// import UnpaidCard from '~/components/order/CardUnpaid';
-export function NavOrder({ allOrderSevice }: any) {
+} from '@chakra-ui/react';
+import { Link, useLoaderData } from '@remix-run/react';
+import { useState } from 'react';
+import type { loader } from '~/routes/order';
+import CardCanceled from '../components/CardCanceled';
+import ScrollBox from '../components/ScrollBox';
+import CardReadyToShip from '~/components/CardReadyToShip';
+import UnpaidAllCard from '~/components/CardUnpaidAll';
+import UnpaidCard from '~/components/CardUnpaid';
+import CardInShipping from '~/components/CardInShipping';
+import CardNewOrderBa from '~/components/CardNewOrderBa';
+
+export default function NavOrder({ allOrderSevice }: any) {
   const cardProduct = useLoaderData<typeof loader>();
   // const { unpaidCard } = useLoaderData<typeof loader>();
   const notificationCount =
@@ -230,9 +230,7 @@ export function NavOrder({ allOrderSevice }: any) {
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel>
-                    <p>dalam Pengiriman</p>
-                  </TabPanel>
+                  <TabPanel></TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>

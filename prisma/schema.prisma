@@ -180,7 +180,7 @@ model Location {
   longtitude     String
   postalCode     String?
   cityDistrict   String
-  isMainLocation Boolean?
+  isMainLocation Boolean? @default(false)
   store          Store?   @relation(fields: [storeId], references: [id])
   storeId        String
   profile        Profile? @relation(fields: [profileId], references: [id])
@@ -353,15 +353,17 @@ model Invoice {
 }
 
 model Payment {
-  id        String    @id @unique @default(uuid())
-  bank      String
-  amount    Float
-  status    String
-  user      User?     @relation(fields: [userId], references: [id])
-  userId    String?
-  invoices  Invoice[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
+  id            String    @id @unique @default(uuid())
+  bank          String
+  amount        Float
+  accountName   String
+  accountNumber String
+  status        String
+  user          User?     @relation(fields: [userId], references: [id])
+  userId        String?
+  invoices      Invoice[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
 
   @@index([userId])
   @@map("payments")
