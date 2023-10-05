@@ -89,6 +89,29 @@ export async function loader({ request }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
 
+  const formData = await request.formData();
+  const id = formData.get('id') as string;
+  const status = formData.get('status') as string;
+  const actionType = formData.get('actionType') as string;
+
+  if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
+    await db.invoiceHistory.create({
+      data: {
+        status: status,
+        invoiceId: id,
+      },
+    });
+
+    await db.invoice.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+      },
+    });
+  }
+
   if (isMootaIP(requestIP)) {
     if (request.method === 'POST') {
       try {
@@ -120,36 +143,9 @@ export async function action({ request }: ActionArgs) {
       }
     }
   }
-}
 
-//mas rino dan mba puja ,webhook gw ga jalan gara gara code lu ,tuh gw pisahin pake function
-//coba cari cara lain  by badriana & malik & adi & mas surya & mas ilham
-
-export async function ReadyShip(req: any) {
-  const formData = await req.formData();
-  const id = formData.get('id') as string;
-  const status = formData.get('status') as string;
-  const actionType = formData.get('actionType') as string;
-
-  if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
-    await db.invoiceHistory.create({
-      data: {
-        status: status,
-        invoiceId: id,
-      },
-    });
-
-    await db.invoice.update({
-      where: {
-        id: id,
-      },
-      data: {
-        status: status,
-      },
-    });
-  }
-  if (req.method.toLowerCase() === 'patch') {
-    const formData = await req.formData();
+  if (request.method.toLowerCase() === 'patch') {
+    const formData = await request.formData();
 
     const id = formData.get('id') as string;
     const price = formData.get('price');
