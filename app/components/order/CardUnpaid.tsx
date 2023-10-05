@@ -36,31 +36,29 @@ import ChevronDownIcon from '../../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../../assets/icon-pack/empty-dot.svg';
 import ReceiptSearch from '../../assets/icon-pack/receipt-search.svg';
 import SearchProduct from '../../assets/icon-pack/search-product.svg';
-
-import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
+// import UseSearchProductUnpaid from '~/modules/order/hooks/useFIlterCanceled';
 // import { useState } from 'react';
 import ModalWhatsapp from '../modalProps/modalWhatsapp';
 import { useState } from 'react';
+import UseSearchProductUnpaid from '~/hooks/useSearchOrderUnpaid';
 
 export default function UnpaidCard() {
   const {
     getSelectedCourier,
     filteredOrder,
     setSearchQuery,
-    searchQuery,
     selectedCouriers,
     handleCourierCheckboxChange,
   } = UseSearchProductUnpaid();
 
-  console.log(searchQuery);
   const {
     selectedSortOption,
     setSortOption,
     getSelectedSortOption,
     sortOrders,
   } = useSortFilter(); // sort selcted
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const sortedOrders = sortOrders(filteredOrder);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => {
     setModalIsOpen(true);
   };

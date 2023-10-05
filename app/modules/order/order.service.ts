@@ -1,6 +1,6 @@
 import { db } from '~/libs/prisma/db.server';
 import type { z } from 'zod';
-import type { MootaOrderSchema } from './order.schema';
+import type { MootaOrderSchema, confirmationApiSchema } from './order.schema';
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
@@ -132,6 +132,51 @@ export async function MootaOrderStatusUpdate(
     console.log('Paid Payment ,Good Luck Brother :) !');
   }
 }
+export async function ConfirmationPaymentsApiMoota(
+  data: z.infer<typeof confirmationApiSchema>
+) {
+  console.log('data service', data);
+  await db.confirmationPayment.create({
+    data: {
+      invoiceId: data.invoiceId,
+      bank: data.bank,
+      createdAt: data.createdAt,
+      amount: data.amount,
+      attachment: data.attachment,
+    },
+  });
+  const relatedInvoice = await db.invoice.findFirst({
+    where: {
+      paymentId: data.invoiceId,
+    },
+  });
+  if (relatedInvoice) {
+    await db.invoice.update({
+      where: {
+        id: relatedInvoice.id,
+      },
+      data: {
+        status: 'NEW_ORDER',
+      },
+    });
+    await db.invoiceHistory.create({
+      data: {
+        status: 'PAYMENT_COMPLETED',
+        invoiceId: relatedInvoice.id,
+      },
+    });
+  }
+  await db.payment.update({
+    where: {
+      id: data.invoiceId,
+    },
+    data: {
+      status: 'PAID',
+    },
+  });
+
+  console.log('confirmation berhasil di tambahkan');
+}
 
 export async function getInvoiceById(id: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -141,6 +186,7 @@ export async function getInvoiceById(id: any) {
     include: {
       invoiceHistories: true,
       courier: true,
+      biteshipTrackinglimits: true,
       cart: {
         include: {
           user: true,
@@ -480,6 +526,7 @@ export default async function getDataInShipping() {
     },
     include: {
       courier: true,
+      biteshipTrackinglimits: true,
       cart: {
         include: {
           cartItems: {

@@ -33,6 +33,8 @@ export async function loader({ request }: LoaderArgs) {
   }
 
   const apiKey = process.env.BITESHIP_API_KEY;
+
+  const currentTime = new Date().getTime();
   // const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
   const [
@@ -44,6 +46,8 @@ export async function loader({ request }: LoaderArgs) {
     succesService,
     whatsappTemplateDbs,
     getDataInShippings,
+    dataInvoice,
+    ,
   ] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),
@@ -53,8 +57,8 @@ export async function loader({ request }: LoaderArgs) {
     SuccesService(),
     whatsappTemplateDb(),
     getDataInShipping(),
+    getInvoiceByStatus(),
   ]);
-  const dataInvoice = await getInvoiceByStatus();
 
   const role = await db.user.findFirst({
     where: {
@@ -76,6 +80,7 @@ export async function loader({ request }: LoaderArgs) {
       SuccessService,
       getDataInShippings,
       dataInvoice,
+      currentTime,
       dataShipping: await getDataInShipping(),
       apiKey,
     });
@@ -88,30 +93,6 @@ export async function loader({ request }: LoaderArgs) {
 
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get('x-forwarded-for') as string;
-
-  const formData = await request.formData();
-  const id = formData.get('id') as string;
-  const status = formData.get('status') as string;
-  const actionType = formData.get('actionType') as string;
-
-  if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
-    await db.invoiceHistory.create({
-      data: {
-        status: status,
-        invoiceId: id,
-      },
-    });
-
-    await db.invoice.update({
-      where: {
-        id: id,
-      },
-      data: {
-        status: status,
-      },
-    });
-  }
-
   if (isMootaIP(requestIP)) {
     if (request.method === 'POST') {
       try {
@@ -142,6 +123,73 @@ export async function action({ request }: ActionArgs) {
         });
       }
     }
+  }
+  const formData = await request.formData();
+  const id = formData.get('id') as string;
+  const status = formData.get('status') as string;
+  const actionType = formData.get('actionType') as string;
+
+  const invoiceId = String(formData.get('invoiceId'));
+  const userId = '2';
+  const now = new Date();
+
+  // Calculate the timestamp 30 minutes in the future
+  const nextAccessTime = new Date(now.getTime() + 100000);
+
+  if (actionType === 'createTrackingLimit') {
+    const data = {
+      userId,
+      invoiceId,
+      nextAccessTime,
+      updatedAt: now,
+    };
+
+    // await db.biteshipTrackingLimit.deleteMany({
+    //   where: {
+    //     invoiceId: invoiceId
+    //   }
+    // })
+
+    const isAvailable = await db.biteshipTrackingLimit.findFirst({
+      where: {
+        invoiceId: invoiceId,
+      },
+    });
+
+    if (isAvailable) {
+      await db.biteshipTrackingLimit.update({
+        where: {
+          id: isAvailable.id,
+        },
+        data: {
+          nextAccessTime: nextAccessTime,
+        },
+      });
+    } else {
+      await db.biteshipTrackingLimit.create({ data });
+    }
+
+    // await db.biteshipTrackingLimit.create({data})
+
+    return json({ message: 'data added.' });
+  }
+
+  if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
+    await db.invoiceHistory.create({
+      data: {
+        status: status,
+        invoiceId: id,
+      },
+    });
+
+    await db.invoice.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+      },
+    });
   }
 
   if (request.method.toLowerCase() === 'patch') {

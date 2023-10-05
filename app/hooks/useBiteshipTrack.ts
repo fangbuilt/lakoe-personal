@@ -1,14 +1,16 @@
 import { useLoaderData } from '@remix-run/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import type { ITracking } from '~/interfaces/order/orderTracking';
+import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 import type { loader } from '~/routes/order';
 
 export function UseBiteshipTrack(trackingNumber: string) {
   const data = useLoaderData<typeof loader>();
 
-  const [trackingInfoArray, setTrackingInfoArray] = useState<ITracking[]>([]);
-  const [trackingInfo, setTrackingInfo] = useState<ITracking>();
+  const [trackingInfoArray, setTrackingInfoArray] = useState<
+    IBiteshipTracking[]
+  >([]);
+  const [trackingInfo, setTrackingInfo] = useState<IBiteshipTracking>();
   const [error, setError] = useState(null);
 
   const fetchData = async () => {

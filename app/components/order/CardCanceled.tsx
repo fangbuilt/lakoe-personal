@@ -301,6 +301,7 @@ export default function CardCenceled(props: any) {
           </Menu>
         </Box>
       </Box>
+
       {filteredOrder.length === 0 ? (
         <Box marginTop={'70px'}>
           <Center>

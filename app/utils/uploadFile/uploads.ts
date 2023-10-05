@@ -19,7 +19,6 @@ async function uploadImage(data: AsyncIterable<Uint8Array>) {
             resolve(result as UploadApiResponse);
           }
         );
-        console.log('uploadStream', uploadStream);
         await writeAsyncIterableToWritable(data, uploadStream);
       } catch (error) {
         console.log('error data uploads', error);

@@ -23,7 +23,7 @@ model User {
   role                   Role?                   @relation(fields: [roleId], references: [id])
   roleId                 String
   profile                Profile?
-  biteshipTrackingLimits BiteshipTrackingLimit[]
+  biteshipTrackingLimits BiteshipTrackingLimit?
   carts                  Cart[]
   cartItems              CartItem[]
   invoices               Invoice[]
@@ -49,10 +49,7 @@ model AttachmentAdmin {
 
   @@index([withdrawId])
   @@map("attachments_admin")
-
 }
-
-
 
 model Withdraw {
   id              String            @id @unique @default(uuid())
@@ -183,7 +180,7 @@ model Location {
   longtitude     String
   postalCode     String?
   cityDistrict   String
-  isMainLocation Boolean?
+  isMainLocation Boolean? @default(false)
   store          Store?   @relation(fields: [storeId], references: [id])
   storeId        String
   profile        Profile? @relation(fields: [profileId], references: [id])
@@ -337,7 +334,7 @@ model Invoice {
   cart                   Cart?                  @relation(fields: [cartId], references: [id])
   cartId                 String
   courier                Courier?               @relation(fields: [courierId], references: [id])
-  courierId              String
+  courierId              String                 @unique
   user                   User?                  @relation(fields: [userId], references: [id])
   userId                 String?
   payment                Payment?               @relation(fields: [paymentId], references: [id])
@@ -356,19 +353,22 @@ model Invoice {
 }
 
 model Payment {
-  id        String    @id @unique @default(uuid())
-  bank      String
-  amount    Float
-  status    String
-  user      User?     @relation(fields: [userId], references: [id])
-  userId    String?
-  invoices  Invoice[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
+  id            String    @id @unique @default(uuid())
+  bank          String
+  amount        Float
+  accountName   String
+  accountNumber String
+  status        String
+  user          User?     @relation(fields: [userId], references: [id])
+  userId        String?
+  invoices      Invoice[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
 
   @@index([userId])
   @@map("payments")
 }
+
 
 model Courier {
   id                           String    @id @unique @default(uuid())
@@ -457,7 +457,7 @@ model ConfirmationPayment {
 model BiteshipTrackingLimit {
   id             String   @id @unique @default(uuid())
   user           User?    @relation(fields: [userId], references: [id])
-  userId         String
+  userId         String    @unique
   invoice        Invoice? @relation(fields: [invoiceId], references: [id])
   invoiceId      String   @unique
   nextAccessTime DateTime
@@ -485,7 +485,6 @@ model AdminDecline {
   @@index([bankAccountId])
   @@index([withdrawId])
   @@map("admin_decline")
-
 }
 
 model Refund {

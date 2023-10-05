@@ -25,8 +25,12 @@ import CardNewOrderBa from '~/components/order/CardNewOrderBa';
 // import UnpaidCard from '~/components/order/CardUnpaid';
 // import UnpaidCard from '~/components/order/CardUnpaid';
 export function NavOrder({ allOrderSevice }: any) {
-  const { dataProductReadyToShip, unpaidCard, getDataInShippings } =
-    useLoaderData<typeof loader>();
+  const {
+    dataProductReadyToShip,
+    unpaidCard,
+    getDataInShippings,
+    dataInvoice,
+  } = useLoaderData<typeof loader>();
   // const {unpaidCard} = useLoaderData<typeof loader>();
   // const notificationCount =
   //   dataProductReadyToShip.dataProductReadyToShip.length > 0
@@ -124,7 +128,8 @@ export function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {dataInvoice.length}{' '}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 

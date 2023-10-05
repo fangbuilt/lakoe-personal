@@ -31,8 +31,8 @@ import { PiShoppingCartThin } from 'react-icons/pi';
 import { db } from '../libs/prisma/db.server';
 import { uploadImage } from '~/utils/uploadFile/uploads';
 import moment from 'moment';
-import { MootaOrderStatusUpdate } from '~/modules/order/order.service';
-import { MootaOrderSchema } from '~/modules/order/order.schema';
+import { ConfirmationPaymentsApiMoota } from '~/modules/order/order.service';
+import { confirmationApiSchema } from '~/modules/order/order.schema';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
@@ -55,7 +55,6 @@ export const action = async ({ request }: ActionArgs) => {
         }
 
         const uploadedImage = await uploadImage(data);
-        console.log('dataimage', uploadedImage);
 
         return uploadedImage.secure_url;
       }, createMemoryUploadHandler());
@@ -67,27 +66,7 @@ export const action = async ({ request }: ActionArgs) => {
       const createdAt = new Date().toISOString();
       const amount = parseFloat(formData.get('amount') as string);
       const attachment = formData.get('attachment') as string;
-      console.log('invoiceId', invoiceId);
-      console.log('bank', bank);
-      console.log('createdAt', createdAt);
-      console.log('invoiceId', invoiceId);
-      console.log('amount', amount);
-      console.log('attachment', attachment);
-      const apiData: number | any = await fetchWebhookStatusWithRetry();
 
-      const apiDataString = apiData.toString();
-
-      const latestAmount = apiData ? parseFloat(apiDataString) : null;
-
-      if (amount === latestAmount) {
-        console.log('data amount berhasil !');
-        const MootaOrder = MootaOrderSchema.parse({
-          amount: latestAmount,
-        });
-        await MootaOrderStatusUpdate(MootaOrder);
-      } else {
-        console.log('AMOUNT NOT FOUND !');
-      }
       const data = {
         invoiceId,
         bank,
@@ -96,15 +75,26 @@ export const action = async ({ request }: ActionArgs) => {
         attachment,
       };
       console.log('data', data);
-      return await db.confirmationPayment.create({
-        data: {
-          invoiceId: data.invoiceId,
-          bank: data.bank,
-          createdAt: data.createdAt,
-          amount: isNaN(data.amount) ? 0 : data.amount,
-          attachment: data.attachment,
-        },
-      });
+
+      const apiData: number | any = await fetchWebhookStatusWithRetry();
+
+      const apiDataString = apiData.toString();
+
+      const latestAmount = apiData ? parseFloat(apiDataString) : null;
+
+      if (amount === latestAmount) {
+        console.log('data amount berhasil !');
+        const MootaOrderApi = confirmationApiSchema.parse({
+          invoiceId,
+          bank,
+          createdAt,
+          amount: latestAmount,
+          attachment,
+        });
+        await ConfirmationPaymentsApiMoota(MootaOrderApi);
+      } else {
+        console.log('AMOUNT NOT FOUND !');
+      }
     } catch (error) {
       console.error('gagal post bro:', error);
     }
@@ -126,7 +116,7 @@ export async function fetchWebhookStatusWithRetry(
     const token = process.env.TOKEN_ACCOUNT_BANK as string;
 
     const startDate = moment()
-      .subtract(2, 'days')
+      .subtract(4, 'days')
       .format('YYYY-MM-DD') as string;
     const endDate = moment().format('YYYY-MM-DD') as string;
 
