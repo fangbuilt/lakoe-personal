@@ -8,9 +8,6 @@ import {
   getDataProductReadyToShip,
   getInvoiceByStatus,
   updateInvoiceStatus,
-  CanceledService,
-  whatsappTemplateDb,
-  SuccessService,
   getProductUnpid,
 
 } from '~/modules/order/order.service';
@@ -18,10 +15,10 @@ import {
 import { Flex} from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
-import {NavOrder} from '~/layouts/NavOrder';
 import { db } from '~/libs/prisma/db.server';
 import getDataInShipping from '~/modules/order/orderShippingService';
 import { getUserId } from '~/modules/auth/auth.service';
+import NavOrder from "~/layouts/NavOrder";
 
 export async function loader({ request }: ActionArgs) {
   const apiKey = process.env.BITESHIP_API_KEY;
@@ -31,13 +28,13 @@ export async function loader({ request }: ActionArgs) {
 
 
   try {
-    const [unpaidCardAll, unpaidCard, canceledService, whatsappDb, succesService] = await Promise.all([
-      getAllProductUnpid(),
-      getProductUnpid(searchTerm),
-      CanceledService(),
-      whatsappTemplateDb(),
-      SuccessService()
-    ]);
+    // const [unpaidCardAll, unpaidCard, canceledService, whatsappDb, succesService] = await Promise.all([
+    //   getAllProductUnpid(),
+    //   getProductUnpid(searchTerm),
+    //   canceledService(),
+    //   whatsappTemplateDb(),
+    //   SuccessService()
+    // ]);
     const userId = await getUserId(request);
     if (!userId) {
       return redirect("/auth/login");
@@ -57,9 +54,9 @@ export async function loader({ request }: ActionArgs) {
       return redirect("/dashboardAdmin");
     } else if (role?.roleId === "2") {
       return json({
-        unpaidCardAll,
-        unpaidCard,
-        canceledService,
+        // unpaidCardAll,
+        // unpaidCard,
+        // canceledService,
         dataInvoice,
         dataShipping: getDataInShipping(),
         dataProductReadyToShip,
