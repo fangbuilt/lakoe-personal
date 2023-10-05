@@ -18,7 +18,7 @@ export async function loader(
   { request, context, params }: DataFunctionArgs,
   storeId: string
 ) {
-  await authorize({ request, context, params }, '1');
+  await authorize({ request, context, params }, '2');
 
   return await getBankList(storeId);
 }
