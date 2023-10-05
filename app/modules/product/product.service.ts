@@ -11,6 +11,7 @@ export async function createProduct(data: any, storeId: any) {
         length: data.length,
         width: data.width,
         height: data.height,
+        // storeId: storeId,
         store: {
           connect: { id: storeId },
         },
@@ -86,7 +87,32 @@ export async function createProduct(data: any, storeId: any) {
   }
 }
 
-export async function getProduct() {
+export async function getProduct(id: any) {
+  const data = await db.product.findMany({
+    where: {
+      id: id,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      store: true,
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return data;
+}
+
+export async function getProductAll() {
   const data = await db.product.findMany({
     orderBy: {
       createdAt: 'desc',
@@ -193,15 +219,6 @@ export async function updateIsActive(data: any) {
   return status;
 }
 
-export async function getProductTest() {
-  const data = await db.product.findMany({
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
-  return data;
-}
-
 export async function deleteProduct(id: any) {
   const getProductInvoice = await db.invoice.findFirst({
     where: {
@@ -214,7 +231,7 @@ export async function deleteProduct(id: any) {
       },
     },
   });
-  console.log('ini id product', getProductInvoice);
+  // console.log("ini id product", getProductInvoice);
   if (!getProductInvoice) {
     await db.product.delete({
       where: {
@@ -229,21 +246,106 @@ export async function deleteProduct(id: any) {
   }
 }
 
-export async function productCategory(id: any) {
-  const data = await db.category.findMany({
-    where: {
-      parentId: id,
-    },
-    select: { id: true },
-  });
+// export async function productCategory(id: any) {
+//   const data = await db.category.findMany({
+//     where: {
+//       parentId: id,
+//     },
+//     select: { id: true },
+//   });
 
-  const newData = await db.category.findMany({
+//   const newData = await db.category.findMany({
+//     where: {
+//       parentId: {
+//         in: data.map((value) => value.id),
+//       },
+//     },
+//   });
+//   console.log("this data!", newData);
+//   return newData;
+// }
+
+export async function getProductTest(searchTerm: any) {
+  const data = await db.product.findMany({
     where: {
-      parentId: {
-        in: data.map((value) => value.id),
+      category: {
+        name: searchTerm,
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      store: true,
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
       },
     },
   });
+  return data;
+}
 
-  return newData;
+export default async function getProductTestFilter(
+  filterSearch: string,
+  filterCategory: string[]
+  // filterSort: string
+) {
+  const allCategory = [
+    // "Audio, Kamera & Elektronik",
+    'Buku',
+    'Dapur',
+    // "Fashion Anak & Bayi",
+    // "Fashion Muslim",
+    // "Fashion Pria",
+    // "Fashion Wanita",
+  ];
+
+  let getCategory = filterCategory;
+  if (!filterCategory) {
+    getCategory = allCategory;
+  }
+
+  let searchProduct = filterSearch;
+  if (!filterSearch) {
+    searchProduct = '';
+  }
+  // let getSort = filterSort
+  // if (!filterSort){
+  //   getSort = 'desc'
+  // }
+  const data = await db.product.findMany({
+    where: {
+      name: searchProduct,
+      category: {
+        name: {
+          in: getCategory,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      store: true,
+      attachments: true,
+      variants: {
+        include: {
+          variantOptions: {
+            include: {
+              variantOptionValues: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  console.log('ini', data);
+  return data;
 }

@@ -28,7 +28,7 @@ export async function loader({ request }: LoaderArgs) {
   if (role?.roleId === '1') {
     return redirect('/dashboardAdmin');
   } else if (role?.roleId === '2') {
-    return await getProduct();
+    return await getProduct(role.storeId);
   } else if (role?.roleId === '3') {
     return redirect('/checkout');
   } else {

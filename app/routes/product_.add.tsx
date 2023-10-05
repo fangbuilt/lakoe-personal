@@ -1,6 +1,11 @@
-import { Stack } from '@chakra-ui/react';
-import { type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
-import { Form } from '@remix-run/react';
+import { Input, Stack } from '@chakra-ui/react';
+import {
+  type LoaderArgs,
+  type ActionArgs,
+  redirect,
+  json,
+} from '@remix-run/node';
+import { Form, useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import { db } from '~/libs/prisma/db.server';
 import { getUserId } from '~/modules/auth/auth.service';
@@ -9,7 +14,7 @@ import { Price } from '~/modules/product/components/Price';
 import { ProductDetail } from '~/modules/product/components/ProductDetail';
 import { ProductInformation } from '~/modules/product/components/ProductInformation';
 import { ProductManagement } from '~/modules/product/components/ProductManagement';
-// import { ProductVariant } from '~/modules/product/components/ProductVariant';
+// import { ProductVariant } from "~/modules/product/components/ProductVariant";
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
 import { createProduct } from '~/modules/product/product.service';
 
@@ -29,24 +34,20 @@ export async function loader({ request }: LoaderArgs) {
     .CLOUDINARY_UPLOAD_PRESET as string;
   const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME as string;
 
-  if (role?.roleId === '1') {
-    redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return {
-      ENV: {
-        CLOUDINARY_UPLOAD_PRESET,
-        CLOUDINARY_CLOUD_NAME,
-      },
-    };
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  }
+  return json({
+    ENV: {
+      CLOUDINARY_UPLOAD_PRESET,
+      CLOUDINARY_CLOUD_NAME,
+    },
+    storeId: role?.storeId as string,
+  });
 }
 
 export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'post') {
     const formData = await request.formData();
 
+    const storeId = formData.get('storeId') as string;
     const imageUrl = formData.get('mainPhoto') as string;
     const imageUrl2 = formData.get('photo2') as string;
     const imageUrl3 = formData.get('photo3') as string;
@@ -74,17 +75,23 @@ export async function action({ request }: ActionArgs) {
       width: parseFloat(formData.get('width') as string),
       height: height,
     };
-    await createProduct(data, '1');
+    console.log('ini store id', storeId);
+
+    await createProduct(data, storeId);
     return redirect('/product');
   }
   return null;
 }
 
 export default function AddProduct() {
+  const data = useLoaderData<typeof loader>();
+  console.log('ini store id', data.storeId);
+
   return (
     <ImplementGrid>
       <Form method="post" encType="multipart/form-data">
         <Stack mt={'7.5vh'} spacing={4}>
+          <Input name="storeId" defaultValue={data.storeId} readOnly />
           <ProductInformation />
           <ProductDetail />
           {/* <ProductVariant /> */}

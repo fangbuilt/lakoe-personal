@@ -64,7 +64,7 @@ export default function ProductModal(props: IProduct) {
         </Button>
         <Link
           target="_blank"
-          to={`/${props.store.name.replace(/ /g, '-').toLowerCase()}/${
+          to={`/${props.store?.name.replace(/ /g, '-').toLowerCase()}/${
             props.slug
           }`}
         >
