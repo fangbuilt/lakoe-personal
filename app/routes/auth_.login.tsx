@@ -66,7 +66,7 @@ export async function loader({ request }: LoaderArgs) {
   } else if (role?.roleId === '3') {
     return redirect('/checkout');
   } else {
-    return redirect('/logout');
+    return json({});
   }
 }
 

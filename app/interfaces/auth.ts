@@ -5,6 +5,7 @@ export interface RegistrationForm {
   password: string;
   storeId: string;
   roleId: string;
+  isVerify: boolean;
 }
 
 export interface LoginForm {

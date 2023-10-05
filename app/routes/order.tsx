@@ -1,7 +1,7 @@
 // import crypto from "crypto";
 
-import { json, redirect } from '@remix-run/node';
-import type { LoaderArgs } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import type { DataFunctionArgs } from '@remix-run/node';
 import {
   getAllProductUnpid,
   getDataProductReadyToShip,
@@ -14,10 +14,9 @@ import {
 // import { ImplementGrid } from "~/layouts/Grid";
 // // import NavOrder from '~/layouts/NavOrder';
 
-import { db } from '~/libs/prisma/db.server';
 import CanceledService from '~/modules/order/orderCanceledService';
 import getDataInShipping from '~/modules/order/orderShippingService';
-import { getUserId } from '~/modules/auth/auth.service';
+import { authorize } from '~/middleware/authorization';
 
 // // export async function action({ request }: ActionArgs) {
 // //   if (request.method.toLowerCase() === 'patch') {
@@ -75,11 +74,8 @@ import { getUserId } from '~/modules/auth/auth.service';
 //   });
 // }
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
 
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
@@ -91,29 +87,15 @@ export async function loader({ request }: LoaderArgs) {
   ]);
   const dataInvoice = await getInvoiceByStatus();
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
+  return json({
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    dataInvoice,
+    dataShipping: await getDataInShipping(),
+    dataProductReadyToShip,
+    apiKey,
   });
-
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return json({
-      unpaidCardAll,
-      unpaidCard,
-      canceledService,
-      dataInvoice,
-      dataShipping: await getDataInShipping(),
-      dataProductReadyToShip,
-      apiKey,
-    });
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
 }
 
 //   const formData = await request.formData();

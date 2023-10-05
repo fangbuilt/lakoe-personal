@@ -25,33 +25,26 @@ import {
 } from '~/modules/dashboard/dashboard.service';
 import { useLoaderData } from '@remix-run/react';
 import NavbarDashboard from '../modules/dashboard/components/navbarDashboard';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
 import { db } from '~/libs/prisma/db.server';
+import { authorize } from '~/middleware/authorization';
 import { getUserId } from '~/modules/auth/auth.service';
 
-export async function loader({ request }: LoaderArgs, id: string) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '2');
 
-  const role = await db.user.findFirst({
+  const userId = await getUserId(request);
+
+  const user = await db.user.findFirst({
     where: {
       id: userId as string,
     },
   });
 
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return await getStoreData(id);
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  const store = await getStoreData(user?.storeId as string);
+  return { store, userId };
 }
 
 export async function action({ request }: ActionArgs) {
@@ -200,15 +193,16 @@ export default function Dashboard() {
       });
     }
   });
+  console.log(totalWithdrawAmount);
 
-  let createdAtArray: string[] = [];
-  data.forEach((dataItem) => {
-    dataItem.bankAccounts.forEach((bankAccountItem) => {
-      bankAccountItem.withdraws.forEach((withdrawItem) => {
-        createdAtArray.push(withdrawItem.createdAt);
-      });
-    });
-  });
+  // let createdAtArray: string[] = [];
+  // data.forEach((dataItem) => {
+  //   dataItem.bankAccounts.forEach((bankAccountItem) => {
+  //     bankAccountItem.withdraws.forEach((withdrawItem) => {
+  //       createdAtArray.push(withdrawItem.createdAt);
+  //     });
+  //   });
+  // });
 
   return (
     <>
@@ -231,7 +225,7 @@ export default function Dashboard() {
             >
               <Text fontSize={'13px'}>Current Balance</Text>
 
-              {data.map((item) => (
+              {data.map((item: any) => (
                 <Text
                   fontSize={'20px'}
                   fontWeight={'bold'}
@@ -241,13 +235,12 @@ export default function Dashboard() {
                   {formatRupiah(item.credit)}
                 </Text>
               ))}
-              {data.map((item) => (
+              {data.map((item: any) => (
                 <DashboardPopup
                   key={item.id}
                   bankAccount={item.bankAccounts}
                   storeName={item.name}
-                  createdAt={createdAtArray}
-                  creditSaldo={item.credit}
+                  createdAt={item.createdAt}
                 />
               ))}
             </Box>
@@ -266,7 +259,7 @@ export default function Dashboard() {
               </Text>
               <Text fontSize={'13px'}>Penarikan sedang dalam proses</Text>
               <Text fontSize={'20px'} fontWeight={'bold'} color={'#656565'}>
-                {formatRupiah(totalWithdrawAmount)}
+                {/* {formatRupiah(totalWithdrawAmount)} */}
               </Text>
             </Box>
             <Box

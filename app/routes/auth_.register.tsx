@@ -30,10 +30,9 @@ import {
   register,
 } from '~/modules/auth/auth.service';
 import { badRequest } from '~/utils/request.server';
+import { generateRandomString } from '~/utils/randomString';
+import { verifyEmail } from '~/utils/verifyEmail';
 
-// export async function loader() {
-//   return {};
-// }
 function validateUrl(url: string) {
   const urls = ['/', '/checkout', '/dashboard'];
   if (urls.includes(url)) {
@@ -84,7 +83,7 @@ export async function loader({ request }: LoaderArgs) {
   } else if (role?.roleId === '3') {
     return redirect('/checkout');
   } else {
-    return redirect('/logout');
+    return json({});
   }
 }
 
@@ -97,8 +96,10 @@ export async function action({ request }: ActionArgs) {
   const password = String(form.get('password'));
   const storeId = String(null);
   const roleId = '2';
+  const isVerify = false;
+
   const redirectTo = validateUrl(
-    (form.get('redirectTo') as string) || '/checkout'
+    (form.get('redirectTo') as string) || '/dashboard'
   );
 
   if (
@@ -145,8 +146,20 @@ export async function action({ request }: ActionArgs) {
     password,
     storeId,
     roleId,
+    isVerify,
   });
-  return createUserSession(user.id, redirectTo);
+
+  const token = generateRandomString(15);
+
+  await db.verify.create({
+    data: {
+      userId: user.id,
+      token: token,
+    },
+  });
+
+  verifyEmail(email, name, token);
+  return redirect('/verifyAccount');
 }
 
 export default function Register() {

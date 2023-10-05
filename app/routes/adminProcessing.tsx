@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import {
   redirect,
   unstable_composeUploadHandlers as composeUploadHandlers,
@@ -10,8 +10,7 @@ import {
 import { useLoaderData } from '@remix-run/react';
 import AdminProcessing from '~/components/AdminProcessing';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
+import { authorize } from '~/middleware/authorization';
 import {
   createAttachmentWithdraw,
   getWithdrawalList,
@@ -20,27 +19,10 @@ import {
 
 import { uploadImage } from '~/utils/uploadImage';
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '1');
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return await getWithdrawalList();
-  } else if (role?.roleId === '2') {
-    return redirect('/dashboard');
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  return await getWithdrawalList();
 }
 
 export async function action({ request }: ActionArgs) {
