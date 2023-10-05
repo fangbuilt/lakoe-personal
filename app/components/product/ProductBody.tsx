@@ -25,6 +25,7 @@ import ProductEmptyActive from './ProductEmptyActive';
 import ProductEmptyNonActive from './ProductEmptyNonActive';
 import ProductModalSelect from './ProductModalSelect';
 import type { IProduct } from '~/interfaces/product/product';
+import { updateIsActive } from '~/modules/product/product.service';
 
 interface IProductBodyProps {
   product: IProduct[];
@@ -49,6 +50,9 @@ export default function ProductBody(props: IProductBodyProps) {
     setSelectAllChecked(!selectAllChecked);
     const selectedIds = searchProducts.map((product) => product.id);
     setSelectedItems(selectAllChecked ? [] : selectedIds);
+    selectedIds.forEach((productId) => {
+      updateIsActive({ id: productId, isActive: !selectAllChecked });
+    });
   };
 
   useEffect(() => {

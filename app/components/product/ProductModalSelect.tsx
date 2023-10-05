@@ -3,7 +3,6 @@ import {
   Button,
   ButtonGroup,
   Image,
-  Input,
   Modal,
   ModalContent,
   ModalOverlay,
@@ -14,6 +13,7 @@ import { Form } from '@remix-run/react';
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { IProduct } from '~/interfaces/product/product';
+import { updateIsActive } from '~/modules/product/product.service';
 
 export default function ProductModalSelect(
   props: IProduct & { selectedProductCount: number }
@@ -28,6 +28,10 @@ export default function ProductModalSelect(
     onOpen: onDisableOpen,
     onClose: onDisableClose,
   } = useDisclosure();
+
+  const updateStatus = (productId: string) => {
+    updateIsActive({ id: productId, isActive: false });
+  };
 
   return (
     <>
@@ -83,14 +87,16 @@ export default function ProductModalSelect(
             >
               Batalkan
             </Button>
-            <Form method="DELETE">
-              <Input type="hidden" name="id" value={props.id} />
+            <Form method="PATCH">
+              <input type="hidden" name="id" value={props.id} />
               <Button
                 colorScheme="#0086B4"
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50px'}
                 type="submit"
+                value={props.id.toString()}
+                onClick={() => updateStatus(props.id)}
               >
                 Ya, Nonaktifkan
               </Button>
@@ -131,7 +137,7 @@ export default function ProductModalSelect(
               Batalkan
             </Button>
             <Form method="DELETE">
-              <Input type="hidden" name="id" value={props.id} />
+              <input type="hidden" name="id" value={props.id} />
               <Button
                 colorScheme="#0086B4"
                 bgColor={'#0086B4'}

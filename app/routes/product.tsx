@@ -1,38 +1,18 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import ProductBody from '~/components/product/ProductBody';
 import { ImplementGrid } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
 import {
   deleteProduct,
   getProduct,
   update,
+  updateIsActive,
 } from '~/modules/product/product.service';
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
-
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return await getProduct();
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+export async function loader() {
+  return await getProduct();
 }
 
 export async function action({ request }: ActionArgs) {
@@ -50,19 +30,19 @@ export async function action({ request }: ActionArgs) {
     const id = formData.get('id') as string;
     const price = formData.get('price');
     const stock = formData.get('stock');
+    const isActive =
+      (formData.get('isActive') as string) === 'true' ? false : true;
 
-    console.log('id', id);
-    console.log('price', price);
-    console.log('stock', stock);
-
-    await update({ id, price, stock });
-  }
-
-  if (request.method.toLowerCase() === 'post') {
-    const formData = await request.formData();
-    const id = formData.get('id') as string;
-
-    await disableProduct(id);
+    if (price || stock) {
+      const updatePriceStock = {
+        id,
+        price,
+        stock,
+      };
+      await update(updatePriceStock);
+    } else {
+      await updateIsActive({ id, isActive });
+    }
   }
 
   return redirect('/product');
