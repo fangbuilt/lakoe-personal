@@ -4,38 +4,38 @@ import {
   Card,
   Center,
   Checkbox,
-  Divider,
   Flex,
-  Image,
   Img,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Text,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Image,
+  Divider,
 } from '@chakra-ui/react';
 
-import { Link } from '@remix-run/react';
-import { useState } from 'react';
-import { useSortFilter } from '~/hooks/useSortFilter';
-import ModalWhatsapp from '~/modalProps/modalWhatsapp';
-import UseFilterCanceled from '~/modules/order/hooks/useFilterCanceled';
-import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
-import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import Empty from '../assets/icon-pack/empty-dot.svg';
-import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+import ChevronDownIcon from '../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../assets/icon-pack/search-product.svg';
-export default function CardCenceled(props: any) {
+import { useSortFilter } from '~/hooks/useSortFilter';
+import ReceiptSearch from '../assets/icon-pack/receipt-search.svg';
+import { useState } from 'react';
+import { Link } from '@remix-run/react';
+import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
+import ModalWhatsapp from '~/modalProps/modalWhatsapp';
+import UseFilterSuccess from '~/modules/order/hooks/useFilterSuccess';
+export default function CardSuccess(props: any) {
   const {
     getSelectedCourier,
     filteredOrder,
     setSearchQuery,
     selectedCouriers,
     handleCourierCheckboxChange,
-  } = UseFilterCanceled();
+  } = UseFilterSuccess();
 
   const {
     selectedSortOption,
@@ -326,15 +326,17 @@ export default function CardCenceled(props: any) {
                   <Box>
                     <Flex justifyContent={'space-between'} px={3} py={2}>
                       <Button
-                        bg={'#EA3829'}
+                        bg={'gray'}
                         color={'white'}
                         fontWeight={'bold'}
-                        colorScheme="red.500"
+                        colorScheme="gray.200"
                         size={'sm'}
                         pointerEvents={'none'}
                         height={'24px'}
                       >
-                        {data.status === 'ORDER_CANCELLED' ? 'Dibatalkan' : ''}
+                        {data.status === 'ORDER_COMPLETED'
+                          ? 'Pesanan Selesai'
+                          : ''}
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}

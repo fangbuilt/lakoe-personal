@@ -5,11 +5,13 @@ import type { ActionArgs, LoaderArgs, DataFunctionArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 
 import { MootaOrderSchema } from '~/modules/order/order.schema';
-import {
+import ServiceSuccess, {
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
   getProductUnpid,
+  updateInvoiceStatus,
+  whatsappTemplateDb,
 } from '~/modules/order/order.service';
 
 import { Flex } from '@chakra-ui/react';
@@ -60,26 +62,65 @@ import { authorize } from '~/middleware/authorization';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect('/auth/login');
+  }
 
   const apiKey = process.env.BITESHIP_API_KEY;
   const dataProductReadyToShip = await getDataProductReadyToShip();
   //jangan ampai terbalik posisi untuk menampilkan data load
-  const [unpaidCardAll, unpaidCard, canceledService] = await Promise.all([
+  const [
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    successedService,
+    whatsappDb,
+  ] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),
     CanceledService(),
+    ServiceSuccess(),
+    whatsappTemplateDb(),
   ]);
   const dataInvoice = await getInvoiceByStatus();
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
 
   return json({
     unpaidCardAll,
     unpaidCard,
     canceledService,
+    successedService,
+    whatsappDb,
     dataInvoice,
     dataShipping: await getDataInShipping(),
     dataProductReadyToShip,
     apiKey,
   });
+
+  if (role?.roleId === '1') {
+    return redirect('/dashboardAdmin');
+  } else if (role?.roleId === '2') {
+    return json({
+      unpaidCardAll,
+      unpaidCard,
+      canceledService,
+      successedService,
+      whatsappDb,
+      dataInvoice,
+      dataShipping: await getDataInShipping(),
+      dataProductReadyToShip,
+      apiKey,
+    });
+  } else if (role?.roleId === '3') {
+    return redirect('/checkout');
+  } else {
+    return redirect('/logout');
+  }
 }
 
 export async function action({ request }: ActionArgs) {
