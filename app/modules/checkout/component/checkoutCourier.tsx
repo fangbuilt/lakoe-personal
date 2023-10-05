@@ -10,8 +10,8 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
 
+import { useEffect, useState } from 'react';
 // import count from "~/components/count";
 
 const dataCourier = [
@@ -312,6 +312,12 @@ export default function CheckoutCourier(props: any) {
             name="description"
             placeholder="Masukkan Catatan Pemesanan"
           />
+
+          {/* <Input bgColor={'#fcfcfc'} name='accountName' placeholder="Masukkan Nama Akun Bank" />
+          <Box>
+            <Input bgColor={'#fcfcfc'} name='accountNumber' placeholder="Masukkan Nomor Akun Bank" />
+            <Text fontSize={'sm'}>untuk pengembalian uang jika pesananmu dibatalkan</Text>
+          </Box> */}
 
           <Box>
             <Text fontWeight={'bold'}>Pengiriman</Text>

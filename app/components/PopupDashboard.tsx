@@ -25,7 +25,7 @@ import { Form, Link } from '@remix-run/react';
 import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMailerlite';
 import moment from 'moment';
 
-export default function DashboardPopup({ data, Store }: any) {
+export default function DashboardPopup({ data }: any) {
   const [selectedBankAccount, setSelectedBankAccount] = useState<string>('');
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export default function DashboardPopup({ data, Store }: any) {
             <Input type="hidden" name="actionType" value="create" />
 
             <ModalHeader display={'flex'} alignItems={'center'}>
-              <Text ml={'5px'}>Tarik Credit {Store}</Text>
+              <Text ml={'5px'}>Tarik Credit</Text>
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>

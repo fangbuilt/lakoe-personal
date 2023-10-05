@@ -95,18 +95,6 @@ export async function getBankList(userId: string) {
   }
 }
 
-// export async function deleteBankList(id: string) {
-//   await db.withdraw.updateMany({
-//     where: { bankId: id },
-//     data: { bankId: null || undefined },
-//   });
-
-//   await db.bankAccount.delete({
-//     where: { id: id },
-//   });
-//   return { success: true };
-// }
-
 export async function deleteBankList(id: string) {
   // Check if the bank account with the specified ID exists
   const existingBankAccount = await db.bankAccount.findUnique({
@@ -193,8 +181,6 @@ export async function getWithdrawalList() {
       adminDecline: true,
     },
   });
-  // console.log("withdrawalList:", withdrawalList);
-
   return withdrawalList;
 }
 
@@ -311,7 +297,6 @@ export async function createDeclinedReason(
       reason: data.reason,
     },
   });
-  // console.log("this is reason declined:", createReason);
 
   return createReason;
 }

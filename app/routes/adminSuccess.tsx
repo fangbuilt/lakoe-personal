@@ -1,11 +1,10 @@
+import { Flex } from '@chakra-ui/react';
 import type { DataFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminSuccess from '~/components/AdminSuccess';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import { authorize } from '~/middleware/authorization';
 import { getWithdrawalList } from '~/modules/dashboard/dashboard.service';
-import { Flex } from '@chakra-ui/react';
-
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '1');
 

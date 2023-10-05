@@ -229,8 +229,16 @@ export async function getInvoiceProductData() {
         status: 'NEW_ORDER',
       },
       include: {
+        payment: true,
+        courier: true,
         cart: {
           include: {
+            store: {
+              include: {
+                users: true,
+                locations: true,
+              },
+            },
             cartItems: {
               include: {
                 product: {
@@ -315,6 +323,37 @@ export async function getDataProductReadyToShip() {
   });
 }
 
+export default async function ServiceSuccess() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'ORDER_COMPLETED',
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: {
+            include: {
+              messageTemplates: true,
+            },
+          },
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export async function getProductByCategoryId(id: any) {
   try {
     const productcategoryid = await db.product.findMany({
@@ -358,6 +397,47 @@ export async function updateStatusInvoice(data: any) {
     },
     where: {
       id: id,
+    },
+  });
+}
+
+export async function whatsappTemplateDb() {
+  return await db.messageTemplate.findMany({});
+}
+export async function updateStatusInvoice2(data: any) {
+  const { id } = data;
+  const invoice = await db.invoice.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      price: true,
+    },
+  });
+  const price = invoice?.price;
+
+  await db.invoice.update({
+    where: {
+      id: id,
+    },
+    data: {
+      status: 'ORDER_CANCELLED',
+      invoiceHistories: {
+        create: {
+          status: 'ORDER_CANCELLED',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+      refund: {
+        create: {
+          attachment: '',
+          amount: price ?? 0,
+          status: 'REQUEST',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
     },
   });
 }

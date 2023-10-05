@@ -57,54 +57,6 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
-  // const prisma = new PrismaClient();
-  // // updateCreditWhenStatusWithdrawIsDeclined
-  // async function updateCredit(storeId: string) {
-  //   try {
-  //     const findDeclinedStatusWithdraw = await prisma.withdraw.findMany({
-  //       where: {
-  //         storeId: "1",
-  //         status: "DECLINED",
-  //       },
-  //     });
-
-  //     const calculateAmountWithDeclinedStatus =
-  //       findDeclinedStatusWithdraw.reduce(
-  //         (total, withdraw) => total + withdraw.amount,
-  //         0
-  //       );
-
-  //     if (calculateAmountWithDeclinedStatus > 0) {
-  //       const store = await prisma.store.findUnique({
-  //         where: {
-  //           id: "1",
-  //         },
-  //       });
-
-  //       if (store) {
-  //         const updateCreditStore = await prisma.store.update({
-  //           where: {
-  //             id: "1",
-  //           },
-  //           data: {
-  //             credit: store.credit + calculateAmountWithDeclinedStatus,
-  //           },
-  //         });
-  //         console.log("update credit", updateCreditStore);
-  //         return updateCreditStore;
-  //       } else {
-  //         throw new Error(`Store with ID ${storeId} not found.`);
-  //       }
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating credit:", error);
-  //     throw error;
-  //   }
-  //   console.log("update credit", updateCredit);
-  // }
-
   const formData = await request.formData();
 
   const actionType = formData.get('actionType');
@@ -236,7 +188,7 @@ export default function Dashboard() {
               gap={2}
               p={3}
             >
-              <Text fontSize={'13px'}>Current Balance {data?.id}</Text>
+              <Text fontSize={'13px'}>Current Balance</Text>
 
               <Text
                 fontSize={'20px'}
@@ -248,7 +200,7 @@ export default function Dashboard() {
                   isNaN(data?.credit as number) ? 0 : (data?.credit as number)
                 )}
               </Text>
-              <DashboardPopup data={data?.bankAccounts} Store={data?.id} />
+              <DashboardPopup data={data?.bankAccounts} />
             </Box>
             <Box
               display={'flex'}
