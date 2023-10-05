@@ -86,27 +86,28 @@ export default function NewOrderHooks() {
       const baseUrl = 'https://api.biteship.com';
       const endpoint = '/v1/orders';
       const apiKey =
-        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
+        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQVBJX0xBS09FX1RFU1QiLCJ1c2VySWQiOiI2NGY1MjYyMjM5Yzk5YzNkMjg0MDkwM2MiLCJpYXQiOjE2OTQ1NjQ5Mzh9.c7NG5ncA_iE66d3Iv5LAjZ9pdTBMDj5EjqqwoDi6IZQ';
+      // 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
         shipper_contact_name: 'TESTERKU #01',
-        shipper_contact_phone: '123-456-7890',
-        shipper_contact_email: 'TESTERKU #01@example.com',
+        shipper_contact_phone: 123123321321,
+        shipper_contact_email: 'TESTERKU.01@example.com',
         shipper_organization: 'TESTERKU #01',
         origin_contact_name: 'TESTERKU #01',
-        origin_contact_phone: '123-456-7890',
+        origin_contact_phone: 1234567890,
         origin_address: '123 Main St',
         origin_note: 'Near the park',
         origin_coordinate: {
           latitude: -6.28927,
           longitude: 106.77492000000007,
         },
-        origin_postal_code: '10001',
+        origin_postal_code: 12440,
         destination_contact_name: 'TESTERKU #01',
-        destination_contact_phone: '987-654-3210',
-        destination_contact_email: 'TESTERKU #01@example.com',
+        destination_contact_phone: '9876543210',
+        destination_contact_email: 'TESTERKU1201@example.com',
         destination_address: '456 Elm St',
-        destination_postal_code: '20001',
+        destination_postal_code: 17630,
         destination_note: 'Behind the mall',
         destination_cash_proof_of_delivery: true,
         destination_coordinate: {
@@ -115,7 +116,7 @@ export default function NewOrderHooks() {
         },
         courier_company: 'grab',
         courier_type: 'instant',
-        courier_insurance: 'Yes',
+        courier_insurance: 100000,
         delivery_type: 'later',
         delivery_date: '2024-10-10',
         delivery_time: '14:00 - 16:00',
@@ -127,12 +128,12 @@ export default function NewOrderHooks() {
             name: 'Sample Product',
             image: 'sample-image.jpg',
             description: 'Lorem ipsum dolor sit amet',
-            value: 50.99,
+            value: 898989,
             quantity: 2,
             height: 10,
-            length: 20,
-            weight: 1.5,
-            width: 15,
+            length: 10,
+            weight: 1,
+            width: 10,
           },
         ],
       };
