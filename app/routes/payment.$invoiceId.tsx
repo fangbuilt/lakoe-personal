@@ -16,7 +16,6 @@ import {
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
 import {
-  redirect,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
@@ -27,10 +26,13 @@ import {
   useNavigation,
   useParams,
 } from '@remix-run/react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PiShoppingCartThin } from 'react-icons/pi';
 import { db } from '../libs/prisma/db.server';
-import { uploadImage } from '~/utils/uploadImage';
+import { uploadImage } from '~/utils/uploadFile/uploads';
+import moment from 'moment';
+import { MootaOrderStatusUpdate } from '~/modules/order/order.service';
+import { MootaOrderSchema } from '~/modules/order/order.schema';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
@@ -46,50 +48,146 @@ export async function loader({ params }: ActionArgs) {
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
-    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
-      if (name !== 'attachment') {
-        return undefined;
+    try {
+      const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
+        if (name !== 'attachment') {
+          return undefined;
+        }
+
+        const uploadedImage = await uploadImage(data);
+        console.log('dataimage', uploadedImage);
+
+        return uploadedImage.secure_url;
+      }, createMemoryUploadHandler());
+
+      const formData = await parseMultipartFormData(request, uploadHandler);
+
+      const invoiceId = formData.get('invoiceId') as string;
+      const bank = formData.get('bank') as string;
+      const createdAt = new Date().toISOString();
+      const amount = parseFloat(formData.get('amount') as string);
+      const attachment = formData.get('attachment') as string;
+      console.log('invoiceId', invoiceId);
+      console.log('bank', bank);
+      console.log('createdAt', createdAt);
+      console.log('invoiceId', invoiceId);
+      console.log('amount', amount);
+      console.log('attachment', attachment);
+      const apiData: number | any = await fetchWebhookStatusWithRetry();
+
+      const apiDataString = apiData.toString();
+
+      const latestAmount = apiData ? parseFloat(apiDataString) : null;
+
+      if (amount === latestAmount) {
+        console.log('data amount berhasil !');
+        const MootaOrder = MootaOrderSchema.parse({
+          amount: latestAmount,
+        });
+        await MootaOrderStatusUpdate(MootaOrder);
+      } else {
+        console.log('AMOUNT NOT FOUND !');
       }
-
-      const uploadedImage = await uploadImage(data);
-      return uploadedImage.secure_url;
-    }, createMemoryUploadHandler());
-
-    const formData = await parseMultipartFormData(request, uploadHandler);
-    const invoiceId = formData.get('invoiceId') as string;
-    const bank = formData.get('bank') as string;
-    const createdAt = new Date().toISOString();
-    const amount = parseFloat(formData.get('amount') as string);
-    const attachment = formData.get('attachment') as string;
-    console.log(attachment);
-
-    const data = {
-      invoiceId,
-      bank,
-      createdAt,
-      amount,
-      attachment,
-    };
-    console.log(data);
-
-    await db.confirmationPayment.create({
-      data: {
-        invoiceId: data.invoiceId,
-        bank: data.bank,
-        createdAt: data.createdAt,
-        amount: isNaN(data.amount) ? 0 : data.amount,
-        attachment: data.attachment,
-      },
-    });
-    // await db.confirmationPayment.create({ data });
+      const data = {
+        invoiceId,
+        bank,
+        createdAt,
+        amount,
+        attachment,
+      };
+      console.log('data', data);
+      return await db.confirmationPayment.create({
+        data: {
+          invoiceId: data.invoiceId,
+          bank: data.bank,
+          createdAt: data.createdAt,
+          amount: isNaN(data.amount) ? 0 : data.amount,
+          attachment: data.attachment,
+        },
+      });
+    } catch (error) {
+      console.error('gagal post bro:', error);
+    }
   }
 
-  return redirect(`/checkout/transfer/confirm`);
+  return null;
 };
+const maxRetryAttempts = 5;
+const baseRetryInterval = 5 * 60 * 1000;
+const maxRetryInterval = 24 * 60 * 60 * 1000;
+
+export async function fetchWebhookStatusWithRetry(
+  retryCount = 0,
+  retryInterval = baseRetryInterval
+) {
+  let confirmationPay = null;
+  try {
+    const bank_id = process.env.ID_BANK as string;
+    const token = process.env.TOKEN_ACCOUNT_BANK as string;
+
+    const startDate = moment()
+      .subtract(2, 'days')
+      .format('YYYY-MM-DD') as string;
+    const endDate = moment().format('YYYY-MM-DD') as string;
+
+    const url = `https://app.moota.co/api/v2/mutation?bank=${bank_id}&start_date=${startDate}&end_date=${endDate}`;
+
+    const headers = {
+      Location: '/api/v2/mutation{?bank}&{?start_date}&{?end_date}',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+    });
+
+    if (response.ok) {
+      let responseData = await response.json();
+
+      if (responseData.data && responseData.data.length > 0) {
+        // descending date
+        responseData.data.sort((a: any, b: any) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          return dateB - dateA;
+        });
+
+        const latestTransaction = responseData.data[0];
+
+        const amount = latestTransaction.amount as number;
+
+        confirmationPay = amount;
+      }
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam permintaan API:', error);
+
+    if (retryCount < maxRetryAttempts - 1) {
+      //  interval eksponensial
+      retryInterval *= 2;
+      retryInterval = Math.min(retryInterval, maxRetryInterval);
+
+      console.log(
+        `Percobaan ke-${retryCount + 1} akan dilakukan dalam ${
+          retryInterval / 1000
+        } detik.`
+      );
+      await new Promise((resolve) => setTimeout(resolve, retryInterval));
+      return fetchWebhookStatusWithRetry(retryCount + 1, retryInterval);
+    } else {
+      console.error(
+        'Percobaan retry telah mencapai batas. Tidak dapat mengambil status webhook.'
+      );
+      throw new Error('Percobaan retry telah mencapai batas.');
+    }
+  }
+  return confirmationPay;
+}
 
 export default function TransferPayment() {
   const { invoiceId } = useParams();
-
   const [file] = useState<File | null>(null);
   const item = useLoaderData<typeof loader>();
 
@@ -126,12 +224,7 @@ export default function TransferPayment() {
           <Stack spacing={4}>
             <FormControl id="invoiceId" isRequired>
               <FormLabel>Order ID</FormLabel>
-              <Input
-                name="invoiceId"
-                value={item?.id}
-                type="text"
-                // placeholder={item?.id}
-              />
+              <Input name="invoiceId" value={item?.id} type="readOnly" />
             </FormControl>
             <FormControl id="invoice" isRequired>
               <FormLabel>Atas Nama Rekening</FormLabel>
@@ -139,6 +232,7 @@ export default function TransferPayment() {
                 name="invoice"
                 type="text"
                 value={item?.receiverName}
+
                 // placeholder={item?.receiverName}
               />
             </FormControl>
@@ -177,6 +271,7 @@ export default function TransferPayment() {
               <FormLabel>Bukti Transfer</FormLabel>
               <Box position={'relative'} mb={5} alignItems={'center'}>
                 <Input
+                  id="file-input"
                   name="attachment"
                   position={'absolute'}
                   p={1}
@@ -201,7 +296,7 @@ export default function TransferPayment() {
         </Form>
       </Container>
       <Box display={'none'}>
-        <Text>{invoiceId}</Text>
+        <Text>{invoiceId} </Text>
       </Box>
     </Flex>
   );

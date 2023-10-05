@@ -105,47 +105,6 @@ export default function StatusOrderDetail({
     onClose: onCloseModal2,
   } = useDisclosure();
 
-  // const MOOTA_API_TOKEN =
-  //   'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJucWllNHN3OGxsdyIsImp0aSI6ImEwYzhhMWYwODFkYjI2M2RkNDAxZjA2OWZjNmMxNTJhYjgyYjljYzM1Yjg2ODk2YWRhNjU5MGM5YTkwNDM2N2MwMTE2M2MzNTQwZmUwOWM0IiwiaWF0IjoxNjk1ODAwODgyLjQ4MjAyNywibmJmIjoxNjk1ODAwODgyLjQ4MjAyOSwiZXhwIjoxNzI3NDIzMjgyLjQ4MDEyNywic3ViIjoiMzAyNTciLCJzY29wZXMiOlsiYXBpIiwidXNlciIsInVzZXJfcmVhZCIsImJhbmsiLCJiYW5rX3JlYWQiLCJtdXRhdGlvbiIsIm11dGF0aW9uX3JlYWQiXX0.HTdlVZF6dJJaEWpQ5cGY42YzjXpvBGwrtvm4BxUo2Q0DYoO8QR0g8w7I5LfQov-E0Hp8jL3TX78u5H2iXEnAsBuOVgS_oEeRFCNF6PCNnTCbUbg94c5CRg870u0UIsXHPjdoCflzybZZ3qj6nYTQmJanIaQ0ckn8SF2--SWccwwBvE0gRIOCCKD55lsfx1M4lSXF1dbkOfXTq-kmLtqlBup7V34X2-kPQssSeKWYf2UBTbzljj2pnjw4iyN6P9zCfRc0IOuP5BZO7yQPPXJJB_AzNdb8PzzzhG9yeV88CX9xpJ43dw5liYek1RzmCysL_iV-tnjQJsF16l3W8Omkkjo5jd6JnMg4YB6Oig6dPBGAc6-QAyX1cBbO5rjiP6Z2N5rh6byEe5RnXgRkh13S0JPnUnEvM2-02TRreiBRdwkE96-jLAR1_P5Jk2hHbh7X_zWsRNQaMxhCmmL0IEo88QWq-1N8pNeyJAVionN_LqhXdkhhJNLzsbQCLOUaZTShEi7FZPPTnStNE3X3Q4WwU7sQAwej3YI1trlN0UwNzvGPQ1RXjIrsRZeaaTPuD9PMxJBoC-GQF9pvKlhULa66Z3TMXRAwdyuduHdGGRig8vp5hTo1AKZRRjGJyndYWzIxpN86e0KGA9jLh5o7dcbiJ6ICXx8M3ZTyKzEQQbnpsws';
-  // Fungsi untuk mengambil saldo dari Moota API
-  // const fetchSaldo = async () => {
-  //   const url = 'https://app.moota.co/api/v2/bank';
-  //   const headers = {
-  //     Accept: 'application/json',
-  //     Authorization: `Bearer ${MOOTA_API_TOKEN}`,
-  //   };
-
-  //   const response = await fetch(url, { headers });
-  //   if (!response.ok) {
-  //     throw new Error('Gagal mengambil saldo dari Moota API');
-  //   }
-
-  //   const data = await response.json();
-  //   return data.data[0].balance;
-  // };
-
-  // (async () => {
-  //   try {
-  //     const saldo = await fetchSaldo();
-  //     console.log('ini saldo moota', saldo);
-  //   } catch (error) {
-  //     console.error('Terjadi kesalahan:', error);
-  //   }
-  // })();
-
-  // const afterpacking = async () => {
-  //   try {
-  //     const saldo = await fetchSaldo();
-  //     if (saldo > 50000) {
-  //       handleOrderCourier();
-  //     } else {
-  //       handleBalanceNotif();
-  //     }
-  //   } catch (error) {
-  //     console.error('Gagal mengambil saldo:', error);
-  //   }
-  // };
-
   const systembalance = 100000;
 
   const afterpacking = () => {
@@ -197,7 +156,8 @@ export default function StatusOrderDetail({
       const baseUrl = 'https://api.biteship.com';
       const endpoint = '/v1/orders';
       const apiKey =
-        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmlub3B1amEiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUwMjM4NjZ9.V0mGHUqraz6uvr0_uYGyKcTFLTXQq5JqESQSvvmXA2Y'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
+        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmlub3B1amEiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUwMjM4NjZ9.V0mGHUqraz6uvr0_uYGyKcTFLTXQq5JqESQSvvmXA2Y'; //hapus dan gunakan processa.env.blablabla sebelum publish (credentials bukan konsumsi public)
+
       const dataforBiteShip = {
         shipper_contact_name: data?.cart?.user?.name,
         shipper_contact_phone: data?.cart?.user.phone,
@@ -217,7 +177,7 @@ export default function StatusOrderDetail({
         destination_contact_phone: data?.receiverPhone,
         destination_contact_email: data?.receiverEmail,
         destination_address: data?.receiverAddress,
-        destination_postal_code: '14470',
+        destination_postal_code: data?.receiverPostalCode,
         destination_note:
           'antar sampai tujuan dan jangan diturunkan ditengah jalan',
         destination_cash_proof_of_delivery: true,
@@ -225,30 +185,27 @@ export default function StatusOrderDetail({
           latitude: -6.28927,
           longitude: 106.77492000000007,
         },
-
         courier_company: 'grab',
 
-        courier_type: data?.courier.courierType,
-        courier_insurance: data?.courier.courierInsurance,
+        courier_type: 'instant',
+        courier_insurance: true,
         delivery_type: 'later',
-        delivery_date: Date.parse(data?.courier.deliveryDate),
-        delivery_time: Date.parse(data?.courier.deliveryTime),
+        delivery_date: '2024-09-24',
+        delivery_time: '12:00',
         order_note: 'satukan semua pesanan kedalam satu packaging',
         metadata: {},
         items: [
           {
-            id: data?.cart.cartItems[0].product.id,
+            id: 1,
             name: data?.cart.cartItems[0].product.name,
             image: '',
             description: data?.cart.cartItems[0].product.description,
-            value: data?.price,
-            quantity: data?.cart.cartItems[0].qty,
-            height: data?.cart.cartItems[0].product.height,
-            length: data?.cart.cartItems[0].product.length,
-            weight:
-              data?.cart.cartItems[0].variantOption.variantOptionValues[0]
-                .weight,
-            width: data?.cart.cartItems[0].product.width,
+            value: data?.cart.cartItems[0].price,
+            quantity: 2,
+            height: 10,
+            length: 20,
+            weight: 0.5,
+            width: 15,
           },
         ],
       };
@@ -274,7 +231,7 @@ export default function StatusOrderDetail({
   };
   const stepCount = filterStepsByStatus(data?.status).length;
   const stepHeight = 65;
-  const sortedHistories = data?.invoiceHistories.slice().sort((a, b) => {
+  const sortedHistories = data.invoiceHistories.slice().sort((a, b) => {
     return b.id.localeCompare(a.id);
   });
 
@@ -307,13 +264,14 @@ export default function StatusOrderDetail({
         `${mailerBaseUrl}${mailerEndPoint}`,
         mailerRequest
       );
-      await response.json();
+      const responseData = await response.json();
+      console.log('Data Email :', responseData);
     } catch (error) {
       alert(error);
     }
   };
 
-  const products = data?.cart?.cartItems.map((cartItem) => {
+  const products = data.cart.cartItems.map((cartItem) => {
     return { ...cartItem, cartItem };
   });
 
@@ -373,6 +331,7 @@ export default function StatusOrderDetail({
 
   function useStatusLacakPengiriman(status: string, dataTracking: ITracking) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [selectedCardId] = useState<string>('');
     function openModal() {
       setModalIsOpen(true);
     }
@@ -884,57 +843,52 @@ export default function StatusOrderDetail({
                     </Text>
                   </Box>
                 </Box>
-                <Box display={'flex'}>
-                  <Box display={'flex'} gap={1} width={'192px'}>
-                    <Text
-                      color={`var(--text-dark, #1D1D1D)`}
-                      fontSize={'14px'}
-                      fontWeight={'400'}
-                      lineHeight={'20px'}
-                      fontStyle={'normal'}
-                    >
-                      Alamat
-                    </Text>
-                    <Image
-                      height={'18px'}
-                      width={'18px'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                      src={copy}
-                      onClick={handleCopyAddressClick}
-                      style={{ cursor: 'pointer' }}
-                      color={'gray.900'}
-                    />
-                  </Box>
-                  <Box display={'flex'} flexDirection={'column'} width={'100%'}>
-                    <Text
-                      color={`var(--text-dark, #1D1D1D)`}
-                      fontSize={'14px'}
-                      fontWeight={'400'}
-                      lineHeight={'20px'}
-                      fontStyle={'normal'}
-                    >
-                      {data?.receiverAddress}
-                    </Text>
-                    <Text
-                      color={`var(--text-gray, #909090)`}
-                      fontSize={'14px'}
-                      fontWeight={'400'}
-                      lineHeight={'20px'}
-                      fontStyle={'normal'}
-                    >
-                      {data?.receiverPhone}
-                    </Text>
-                    <Text
-                      color={`var(--text-gray, #909090)`}
-                      fontSize={'14px'}
-                      fontWeight={'400'}
-                      lineHeight={'20px'}
-                      fontStyle={'normal'}
-                    >
-                      {data?.receiverName}
-                    </Text>
-                  </Box>
+              </Box>
+              <Box display={'flex'} flexDirection={'column'}>
+                <Text
+                  color={`var(--text-dark, #1D1D1D)`}
+                  fontSize={'14px'}
+                  fontWeight={'700'}
+                  lineHeight={'20px'}
+                >
+                  {data.courier.courierName} - {data.courier.courierServiceName}
+                </Text>
+                <Text
+                  color={`var(--text-dark, #1D1D1D)`}
+                  fontSize={'14px'}
+                  fontWeight={'700'}
+                  lineHeight={'20px'}
+                >
+                  {data.waybill}
+                </Text>
+                <Box display={'flex'} flexDirection={'column'}>
+                  <Text
+                    color={`var(--text-dark, #1D1D1D)`}
+                    fontSize={'14px'}
+                    fontWeight={'400'}
+                    lineHeight={'20px'}
+                    fontStyle={'normal'}
+                  >
+                    {data.receiverAddress}
+                  </Text>
+                  <Text
+                    color={`var(--text-gray, #909090)`}
+                    fontSize={'14px'}
+                    fontWeight={'400'}
+                    lineHeight={'20px'}
+                    fontStyle={'normal'}
+                  >
+                    {data.receiverPhone}
+                  </Text>
+                  <Text
+                    color={`var(--text-gray, #909090)`}
+                    fontSize={'14px'}
+                    fontWeight={'400'}
+                    lineHeight={'20px'}
+                    fontStyle={'normal'}
+                  >
+                    {data.receiverName}
+                  </Text>
                 </Box>
               </Box>
             </Box>

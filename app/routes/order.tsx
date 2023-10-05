@@ -1,78 +1,94 @@
 import crypto from "crypto";
 
-import { json, redirect, type ActionArgs, LoaderArgs } from '@remix-run/node';
-import { MootaOrderSchema } from '~/modules/order/order.schema';
-import {
+import { json, redirect } from "@remix-run/node";
+import type { LoaderArgs, ActionArgs } from "@remix-run/node";
+
+import { MootaOrderSchema } from "~/modules/order/order.schema";
+
+import getDataInShipping, {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
   updateInvoiceStatus,
+  CanceledService,
+  whatsappTemplateDb,
+  SuccessService,
+  getTemplateMessage,
   getProductUnpid,
+} from "~/modules/order/order.service";
 
-} from '~/modules/order/order.service';
+import { Flex } from "@chakra-ui/react";
+import { useLoaderData } from "@remix-run/react";
+import { ImplementGrid } from "~/layouts/Grid";
+import { db } from "~/libs/prisma/db.server";
+import { getUserId } from "~/modules/auth/auth.service";
+import SuccesService from "~/modules/order/orderSuccessService";
+import { NavOrder } from "~/layouts/NavOrder";
 
-import { Flex} from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
-import { ImplementGrid } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import getDataInShipping from '~/modules/order/orderShippingService';
-import { getUserId } from '~/modules/auth/auth.service';
-import NavOrder from "~/layouts/NavOrder";
-
-export async function loader({ request }: ActionArgs) {
-  const apiKey = process.env.BITESHIP_API_KEY;
-  const url = new URL(request.url);
-  const searchTerm = url.searchParams.get("search") || "";
-  const dataProductReadyToShip = await getDataProductReadyToShip();
-
-
-  try {
-    // const [unpaidCardAll, unpaidCard, canceledService, whatsappDb, succesService] = await Promise.all([
-    //   getAllProductUnpid(),
-    //   getProductUnpid(searchTerm),
-    //   canceledService(),
-    //   whatsappTemplateDb(),
-    //   SuccessService()
-    // ]);
-    const userId = await getUserId(request);
-    if (!userId) {
-      return redirect("/auth/login");
-    }
-
-    const dataInvoice = await getInvoiceByStatus();
-
-    const role = await db.user.findFirst({
-      where: {
-        id: userId as string,
-      },
-    });
-
-    const currentTime = new Date().getTime()
-
-    if (role?.roleId === "1") {
-      return redirect("/dashboardAdmin");
-    } else if (role?.roleId === "2") {
-      return json({
-        // unpaidCardAll,
-        // unpaidCard,
-        // canceledService,
-        dataInvoice,
-        dataShipping: getDataInShipping(),
-        dataProductReadyToShip,
-        apiKey,
-        currentTime,
-      });
-    } else if (role?.roleId === "3") {
-      return redirect("/checkout");
-    } else {
-      return redirect("/logout");
-    }
-  } catch (error) {
-    console.error("error:", error);
-    return json({ status: "error", message: "Terjadi kesalahan dalam memuat data" }, 500);
+export async function loader({ request }: LoaderArgs) {
+  const userId = await getUserId(request);
+  if (!userId) {
+    return redirect("/auth/login");
   }
-};
+
+  const apiKey = process.env.BITESHIP_API_KEY;
+  // const dataProductReadyToShip = await getDataProductReadyToShip();
+  //jangan ampai terbalik posisi untuk menampilkan data load
+  const [
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    getTemplateMessages,
+    dataProductReadyToShip,
+    succesService,
+    whatsappTemplateDbs,
+    getDataInShippings,
+  ] = await Promise.all([
+    getAllProductUnpid(),
+    getProductUnpid(),
+    CanceledService(),
+    getTemplateMessage(),
+    getDataProductReadyToShip(),
+    SuccesService(),
+    whatsappTemplateDb(),
+    getDataInShipping(),
+  ]);
+  const dataInvoice = await getInvoiceByStatus();
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId as string,
+    },
+  });
+
+  const currentTime = new Date().getTime();
+
+  if (role?.roleId === "1") {
+    return redirect("/dashboardAdmin");
+  } else if (role?.roleId === "2") {
+    return json({
+      unpaidCardAll,
+      unpaidCard,
+      canceledService,
+      getTemplateMessages,
+      dataProductReadyToShip,
+      succesService,
+      whatsappTemplateDbs,
+      SuccessService,
+      getDataInShippings,
+      dataInvoice,
+      dataShipping: await getDataInShipping(),
+      apiKey,
+      currentTime
+    });
+  } else if (role?.roleId === "3") {
+    return redirect("/checkout");
+  } else {
+    return redirect("/logout");
+  }
+}
+
 export async function action({ request }: ActionArgs) {
   const requestIP = request.headers.get("x-forwarded-for") as string;
 
@@ -81,15 +97,12 @@ export async function action({ request }: ActionArgs) {
   const status = formData.get("status") as string;
   const actionType = formData.get("actionType") as string;
 
-  // console.log('yg kamu cari', id, actionType, status);
-
   const invoiceId = String(formData.get("invoiceId"));
   const userId = "2";
   const now = new Date();
 
   // Calculate the timestamp 30 minutes in the future
   const nextAccessTime = new Date(now.getTime() + 10000);
-  console.log("ini data nextAccessTime", nextAccessTime);
 
   if (actionType === "createTrackingLimit") {
     const data = {
@@ -129,9 +142,21 @@ export async function action({ request }: ActionArgs) {
     return json({ message: "data added." });
   }
 
-  if (actionType === "updateInvoiceAndHistoryStatusReadyToShip") {
-    // console.log('masuk sini');
+  if (actionType === 'updateDbCourierId') {
+    const id = formData.get('id') as string;
+    const orderId = formData.get('orderId') as string;
 
+    await db.courier.update({
+      where: {
+        id,
+      },
+      data: {
+        orderId,
+      },
+    });
+  }
+
+  if (actionType === "updateInvoiceAndHistoryStatusReadyToShip") {
     await db.invoiceHistory.create({
       data: {
         status: status,
@@ -147,9 +172,6 @@ export async function action({ request }: ActionArgs) {
         status: status,
       },
     });
-
-    // alert
-    // console.log('Status "READY_TO_SHIP" berhasil dibuat dan diupdate.');
   }
 
   if (isMootaIP(requestIP)) {
@@ -158,6 +180,7 @@ export async function action({ request }: ActionArgs) {
         const requestBody = await request.text();
 
         const payloads = JSON.parse(requestBody);
+        console.log("payloads", payloads);
 
         const secretKey = process.env.MOOTA_SECRET as string;
 
@@ -173,7 +196,8 @@ export async function action({ request }: ActionArgs) {
         } else {
           console.log("error verify Signature!");
         }
-        return json({ data: requestBody }, 200);
+
+        return json({ data: payloads }, 200);
       } catch (error) {
         return new Response("Error in The Use webhook", {
           status: 500,
@@ -195,13 +219,12 @@ export async function action({ request }: ActionArgs) {
 }
 
 function isMootaIP(requestIP: string) {
-  const allowedIPs = process.env.ALLOWED_IPS?.split(",") ?? [];
+  const allowedIPs = process.env.ALLOWED_IPS?.split(",") || [];
   return allowedIPs.includes(requestIP);
 }
 function verifySignature(secretKey: string, data: string, signature: string) {
   const hmac = crypto.createHmac("sha256", secretKey);
   const computedSignature = hmac.update(data).digest("hex");
-  console.log("computedSignature", computedSignature);
   return computedSignature === signature;
 }
 

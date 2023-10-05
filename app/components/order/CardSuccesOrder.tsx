@@ -16,20 +16,19 @@ import {
   InputLeftElement,
   Image,
   Divider,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import Empty from "../../assets/icon-pack/empty-dot.svg";
-import ChevronDownIcon from "../../assets/icon-pack/arrow-dropdown.svg";
-import SearchProduct from "../../assets/icon-pack/search-product.svg";
-import { useSortFilter } from "~/hooks/useSortFilter";
-import ReceiptSearch from "../../assets/icon-pack/receipt-search.svg";
-import { useState } from "react";
-import ModalWhatsapp from "../modalProps/modalWhatsapp";
-import { Link } from "@remix-run/react";
-import { formatCurrency } from "~/modules/order/hooks/useOrderDetail";
-import { UseFilterSucces } from "~/modules/order/hooks/useFIlterCanceled";
+import Empty from '../../assets/icon-pack/empty-dot.svg';
+import ChevronDownIcon from '../../assets/icon-pack/arrow-dropdown.svg';
+import SearchProduct from '../../assets/icon-pack/search-product.svg';
+import { useSortFilter } from '~/hooks/useSortFilter';
+import ReceiptSearch from '../../assets/icon-pack/receipt-search.svg';
+import { useState } from 'react';
+import ModalWhatsapp from '../modalProps/modalWhatsapp';
+import { Link } from '@remix-run/react';
+import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
+import { UseFilterSucces } from '~/modules/order/hooks/useFIlterCanceled';
 export default function CardSucces(props: any) {
-
   const {
     getSelectedCourier,
     filteredOrder,
@@ -38,10 +37,14 @@ export default function CardSucces(props: any) {
     handleCourierCheckboxChange,
   } = UseFilterSucces();
 
-  const { selectedSortOption, setSortOption, getSelectedSortOption,sortOrders } =
-    useSortFilter(); // sort filter
+  const {
+    selectedSortOption,
+    setSortOption,
+    getSelectedSortOption,
+    sortOrders,
+  } = useSortFilter(); // sort filter
 
-    const sortedOrders = sortOrders(filteredOrder);
+  const sortedOrders = sortOrders(filteredOrder);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => {
     setModalIsOpen(true);
@@ -63,7 +66,6 @@ export default function CardSucces(props: any) {
       return dateA.getTime() - dateB.getTime();
     });
   }
-
 
   return (
     <>
@@ -181,7 +183,9 @@ export default function CardSucces(props: any) {
               </MenuItem>
               <MenuItem>
                 <Checkbox
-                  onChange={() => handleCourierCheckboxChange('tokopediaExpress')}
+                  onChange={() =>
+                    handleCourierCheckboxChange('tokopediaExpress')
+                  }
                   isChecked={selectedCouriers.includes('tokopediaExpress')}
                 >
                   Tokopedia Express
@@ -299,13 +303,13 @@ export default function CardSucces(props: any) {
         </Box>
       </Box>
       {filteredOrder.length === 0 ? (
-        <Box marginTop={"70px"}>
+        <Box marginTop={'70px'}>
           <Center>
-            <Box textAlign="center" mt={5} display={"flex"}>
+            <Box textAlign="center" mt={5} display={'flex'}>
               <Image src={ReceiptSearch} />
               <Text fontSize="16px" mt={1}>
                 Oops, pesanan yang kamu cari tidak ditemukan.
-                <Text fontSize={"12px"} color={"#909090"} textAlign={"left"}>
+                <Text fontSize={'12px'} color={'#909090'} textAlign={'left'}>
                   Coba bisa cari dengan kata kunci lain
                 </Text>
               </Text>
@@ -314,64 +318,71 @@ export default function CardSucces(props: any) {
         </Box>
       ) : (
         <Box>
-          {sortedOrders.map((data:any, index:any) => (
-            <Card mb={5} mt={5} boxShadow={"xs"} key={index}>
+          {sortedOrders.map((data: any, index: any) => (
+            <Card mb={5} mt={5} boxShadow={'xs'} key={index}>
               <Box>
-                <Box >
+                <Box>
                   <Box>
-                    <Flex justifyContent={"space-between"} px={3} py={2}>
+                    <Flex justifyContent={'space-between'} px={3} py={2}>
                       <Button
-                        bg={"gray.200"}
-                        color={"black"}
-                        fontWeight={"bold"}
+                        bg={'gray.200'}
+                        color={'black'}
+                        fontWeight={'bold'}
                         colorScheme="gray.200"
-                        size={"sm"}
-                        pointerEvents={"none"}
-                        height={"24px"}
-
+                        size={'sm'}
+                        pointerEvents={'none'}
+                        height={'24px'}
                       >
-                        {data.status === "ORDER_COMPLETED" ? "Pesanan Selesai" : ""}
+                        {data.status === 'ORDER_COMPLETED'
+                          ? 'Pesanan Selesai'
+                          : ''}
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
 
                       <Button
-                        bg={"transparent"}
-                        border={"1px solid #D5D5D5"}
-                        borderRadius={"full"}
-                        fontSize={"14px"}
-                        height={"32px"}
+                        bg={'transparent'}
+                        border={'1px solid #D5D5D5'}
+                        borderRadius={'full'}
+                        fontSize={'14px'}
+                        height={'32px'}
                         onClick={() => {
                           openModal();
                         }}
                         py={1}
-                        size={"sm"}
+                        size={'sm'}
                         px={3}
-                        fontWeight={"600"}
+                        fontWeight={'600'}
                       >
                         Hubungi Pembeli
                       </Button>
                       <ModalWhatsapp
                         isOpen={modalIsOpen}
                         onClose={closeModal}
-                        selectedCardId={"rCFV2hRPtZp7E7VLoRvge7b2"}
+                        selectedCardId={'rCFV2hRPtZp7E7VLoRvge7b2'}
                         itemName={data.receiverName}
                         itemPhone={data.receiverPhone}
                       />
                     </Flex>
-                    <Text mb={1}fontSize={"14px"} mt={-3} color={"#909090"} px={3}>
+                    <Text
+                      mb={1}
+                      fontSize={'14px'}
+                      mt={-3}
+                      color={'#909090'}
+                      px={3}
+                    >
                       INV/{data.invoiceNumber}
                     </Text>
                     <Divider />
 
                     <Link to={`detail/${data.id}`}>
-                      <Flex justifyContent={"space-between"} px={3} py={2} >
-                        <Box display={"flex"} gap={3} w={"80%"}>
+                      <Flex justifyContent={'space-between'} px={3} py={2}>
+                        <Box display={'flex'} gap={3} w={'80%'}>
                           <Img
-                            w={"52px"}
-                            h={"52px"}
-                            display={"inline"}
-                            borderRadius={"md"}
+                            w={'52px'}
+                            h={'52px'}
+                            display={'inline'}
+                            borderRadius={'md'}
                             src={
                               data.cart?.cartItems[0]?.product?.attachments[0]
                                 ?.url
@@ -379,37 +390,37 @@ export default function CardSucces(props: any) {
                           />
                           <Text
                             id="fm500"
-                            fontSize={"16px"}
-                            textOverflow={"ellipsis"}
-                            overflow={"hidden"}
-                            whiteSpace={"nowrap"}
-                            fontWeight={"700"}
+                            fontSize={'16px'}
+                            textOverflow={'ellipsis'}
+                            overflow={'hidden'}
+                            whiteSpace={'nowrap'}
+                            fontWeight={'700'}
                           >
                             {data.cart?.cartItems.map(
-                              (item:any) => item.product?.name
+                              (item: any) => item.product?.name
                             )}
                             <Text
-                              color={"gray.400"}
-                              fontWeight={"normal"}
+                              color={'gray.400'}
+                              fontWeight={'normal'}
                               mt={1}
                             >
                               {data.cart?.cartItems.map(
                                 (item: any) => item.qty
-                              )}{" "}
+                              )}{' '}
                               Barang
                             </Text>
                           </Text>
                         </Box>
-                        <Box w={"18%"}>
-                          <Flex gap={1} fontWeight={"500"} >
-                            <Text color={"#909090"} fontSize={"14px"}>
+                        <Box w={'18%'}>
+                          <Flex gap={1} fontWeight={'500'}>
+                            <Text color={'#909090'} fontSize={'14px'}>
                               Total
                             </Text>
-                            <Text color={"#909090"} fontSize={"14px"}>
+                            <Text color={'#909090'} fontSize={'14px'}>
                               Belanja
                             </Text>
                           </Flex>
-                          <Text fontWeight={"bold"} mt={2} fontSize={"14px"}>
+                          <Text fontWeight={'bold'} mt={2} fontSize={'14px'}>
                             {formatCurrency(data.price)}
                           </Text>
                         </Box>

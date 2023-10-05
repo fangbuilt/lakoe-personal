@@ -6,7 +6,8 @@
     "dev": "remix dev",
     "typecheck": "tsc",
     "postinstall": "prisma generate",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest"
   },
   "dependencies": {
     "@chakra-ui/icon": "^3.1.0",
@@ -37,7 +38,7 @@
     "@tiptap/react": "^2.1.8",
     "@tiptap/starter-kit": "^2.1.8",
     "@types/axios": "^0.14.0",
-    "@uidotdev/usehooks": "^2.2.0",
+    "@uidotdev/usehooks": "^2.3.1",
     "@vercel/node": "^2.10.3",
     "axios": "^1.5.0",
     "bcryptjs": "^2.4.3",

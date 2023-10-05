@@ -1,33 +1,15 @@
-import type { z } from 'zod';
-import type {
-  createMessageSchema,
-  updateMessageSchema,
-} from './configuration.schema';
+// import type { updateMessage } from '../configuration/configuration.schema';
 import { db } from '~/libs/prisma/db.server';
 
-export default async function createLocation(data: any) {
-  try {
-    const location = await db.location.create({
-      data: {
-        store: {
-          connect: { id: '4' },
-        },
-        profile: {
-          connect: { id: '1' },
-        },
-        name: data.name,
-        address: data.address,
-        latitude: data.latitude,
-        longtitude: data.longtitude,
-        cityDistrict: data.cityDistrict,
-        postalCode: data.postalCode,
-        isMainLocation: data.isMainLocation,
+export async function getStore(storeId: string | undefined) {
+  if (typeof storeId === 'string') {
+    const store = await db.store.findUnique({
+      where: {
+        id: storeId,
       },
     });
 
-    return location;
-  } catch (error) {
-    console.log('error service', error);
+    return store;
   }
 }
 
@@ -150,14 +132,14 @@ export async function createMessage(data: z.infer<typeof createMessageSchema>) {
   });
 }
 
-export async function updateMessage(data: z.infer<typeof updateMessageSchema>) {
-  const updateMessage = await db.messageTemplate.update({
-    where: { id: data.id },
-    data,
-  });
+// export async function updateMessage(data: z.infer<typeof updateMessage>) {
+//   const updateMessage = await db.messageTemplate.update({
+//     where: { id: data.id },
+//     data,
+//   });
 
-  return updateMessage;
-}
+//   return updateMessage;
+// }
 
 export async function deleteMessage(id: any) {
   return await db.messageTemplate.delete({

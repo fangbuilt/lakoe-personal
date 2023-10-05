@@ -6,9 +6,7 @@ import {
   CardBody,
   Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
-  Heading,
   Image,
   Stack,
   Text,
@@ -136,8 +134,7 @@ export function ProductDetail() {
   return (
     <Card>
       <CardBody>
-        <Heading size={'md'}>Detail Produk</Heading>
-        <Stack mt={7} spacing={4} mb={3}>
+        <Stack spacing={4} mb={3}>
           <FormControl isRequired>
             <FormLabel>Deskripsi</FormLabel>
             <Textarea
@@ -150,9 +147,9 @@ export function ProductDetail() {
               value={description}
               onChange={handleChange}
             />
-            <FormHelperText textAlign={'right'}>
-              {description.length}/{maxCharacters}
-            </FormHelperText>
+            <Text fontSize="sm" textAlign="right">
+              0/3000
+            </Text>
           </FormControl>
 
           <Flex gap={2} align="end" overflowX="auto" pb={2}>

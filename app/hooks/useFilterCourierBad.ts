@@ -1,5 +1,5 @@
 // hooks/useFilterCourier.ts
-import { useState } from "react";
+import { useState } from 'react';
 
 // Tipe data pesanan
 export interface Order {
@@ -20,20 +20,19 @@ export function useFilterCourierBad(): FilterCourierHook {
   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
 
   const filterOrders = (orders: Order[]): Order[] => {
-    return orders.filter((order:Order) => {
+    return orders.filter((order: Order) => {
       return selectedCouriers.includes(order.courier);
     });
   };
 
   const toggleCourier = (courier: string) => {
-    console.log('kurrrrrirrr', courier)
+    console.log('kurrrrrirrr', courier);
     if (selectedCouriers.includes(courier)) {
       setSelectedCouriers(selectedCouriers.filter((c) => c !== courier));
     } else {
       setSelectedCouriers([...selectedCouriers, courier]);
     }
   };
-
 
   const getSelectedCourierCount = () => selectedCouriers.length;
 

@@ -1,13 +1,5 @@
-import { z } from 'zod';
+import { object, string } from 'zod';
 
-export const createMessageSchema = z.object({
-  name: z.string().min(5),
-  storeId: z.string(),
-  content: z.string().min(5),
-});
-
-export const updateMessageSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  content: z.string(),
+export const create = object({
+  title: string().min(1),
 });

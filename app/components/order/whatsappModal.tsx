@@ -16,9 +16,9 @@ import {
   useDisclosure,
   Text,
   Input,
-} from "@chakra-ui/react";
-import { Link } from "@remix-run/react";
-import { whatsappConfiguration } from "~/utils/TemplateMessage";
+} from '@chakra-ui/react';
+import { Link } from '@remix-run/react';
+import { whatsappConfiguration } from '~/utils/TemplateMessage';
 
 interface modalWhatsapp {
   userName?: string;
@@ -34,20 +34,19 @@ export default function WhatsappModal(props: modalWhatsapp) {
   return (
     <>
       <Button
-        bg={"transparent"}
-        border={"1px solid #D5D5D5"}
-        borderRadius={"full"}
-        fontSize={"14px"}
-        height={"32px"}
+        bg={'transparent'}
+        border={'1px solid #D5D5D5'}
+        borderRadius={'full'}
+        fontSize={'14px'}
+        height={'32px'}
         onClick={onOpen}
         py={4}
       >
         Hubungi Pembeli
       </Button>
 
-    <Modal onClose={onClose} isOpen={isOpen} isCentered>
-
-        <ModalOverlay bg={"whiteAlpha.50"} />
+      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalOverlay bg={'whiteAlpha.50'} />
         <ModalContent>
           <ModalHeader>Send Message To {props.userName}</ModalHeader>
           <ModalCloseButton />
@@ -65,7 +64,7 @@ export default function WhatsappModal(props: modalWhatsapp) {
                 </Text>
                 <AccordionPanel pb={4}>
                   {props.content}
-                  <Button colorScheme={"whatsapp"} float={"right"}>
+                  <Button colorScheme={'whatsapp'} float={'right'}>
                     <Link
                       to={whatsappConfiguration(
                         props.receiverPhone,
