@@ -1,15 +1,28 @@
-import { Box, Checkbox, Image, Text } from '@chakra-ui/react';
-import { type ReactNode } from 'react';
+import { Box, Checkbox, Switch, Text, Image, Button } from '@chakra-ui/react';
+import { Form } from '@remix-run/react';
+import type { ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import type { IProduct } from '~/interfaces/product/product';
+import { updateIsActive } from '~/modules/product/product.service';
 
 interface IProductCardProps {
   product: IProduct;
+  isActive: boolean;
+  isSelected: boolean;
+  onSelectChange: (isSelected: boolean) => void;
   children?: ReactNode;
 }
 
 export default function ProductCard(props: IProductCardProps) {
-  const { product, children } = props;
+  const { product, isSelected, onSelectChange, children } = props;
+  const { id, isActive } = product;
+  const handleSwitchChange = async () => {
+    try {
+      await updateIsActive({ id, isActive: !isActive });
+    } catch (error) {
+      console.error('Error updating isActive:', error);
+    }
+  };
 
   return (
     <>
@@ -41,9 +54,7 @@ export default function ProductCard(props: IProductCardProps) {
                 >
                   {product.name}
                 </Text>
-                <Box ms={'65px'}>
-                  <Checkbox />
-                </Box>
+                <Box ms={'65px'}></Box>
               </Box>
               <Box display={'flex'} alignItems={'center'} gap={2} mb={2}>
                 <Text fontSize={'16px'}>
@@ -96,7 +107,28 @@ export default function ProductCard(props: IProductCardProps) {
             flexDirection={'column'}
             py={1}
             gap={10}
-          ></Box>
+          >
+            <Checkbox
+              size="lg"
+              isChecked={isSelected}
+              onChange={(e) => onSelectChange(e.target.checked)}
+            />
+            <Form method="PATCH">
+              <input type="hidden" value={product.id} name="id" />
+              <Button
+                type="submit"
+                variant={'ghost'}
+                onClick={handleSwitchChange}
+              >
+                <Switch
+                  size={'md'}
+                  isChecked={product.isActive}
+                  name="isActive"
+                  value={product.isActive.toString()}
+                />
+              </Button>
+            </Form>
+          </Box>
         </Box>
       </Box>
     </>

@@ -1,11 +1,9 @@
 import { Stack } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import ProductBody from '~/components/product/ProductBody';
 import { ImplementGrid } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
 import {
   deleteProduct,
   getProduct,
