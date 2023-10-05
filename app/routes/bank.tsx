@@ -6,6 +6,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import PopupBank from '~/components/PopupBank';
 import UpdateBank from '~/components/PopupBankUpdate.$id';
 import { authorize } from '~/middleware/authorization';
+import { getUserId } from '~/modules/auth/auth.service';
 import {
   createBank,
   deleteBankList,
@@ -46,14 +47,18 @@ export async function action({ request }: ActionArgs) {
   }
 
   if (actionType === 'create' && bank && accountNumber && accountName) {
-    await createBank({
+    const bankData = {
       store: {
         connect: { id: storeId },
       },
       accountName: accountName,
       bank: bank,
       accountNumber: accountNumber,
-    });
+    };
+
+    const userId = await getUserId(request);
+
+    await createBank(bankData, userId as string); // Pass userId as the second argument
     return redirect('/bank');
   }
 

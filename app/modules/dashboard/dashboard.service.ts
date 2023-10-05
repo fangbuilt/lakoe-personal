@@ -1,48 +1,121 @@
-import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
 // Fetching data store, bankAccount, withdraw
-export async function getStoreData(storeId: string) {
-  return json(
-    await db.store.findMany({
+// export async function getStoreData(id: string) {
+//   await db.store.findMany({
+//     where: {
+//       id: "1",
+//     },
+//     include: {
+//       bankAccounts: {
+//         include: {
+//           withdraws: {
+//             where: {
+//               storeId: "1",
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
+// }
+export async function getStoreData(userId: string) {
+  try {
+    const user = await db.user.findFirst({
       where: {
-        id: '1',
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const storeId = user.storeId ?? '';
+
+    const res = await db.store.findFirst({
+      where: {
+        id: storeId,
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '1',
+                storeId: storeId,
               },
             },
           },
         },
       },
-    })
-  );
+    });
+
+    if (!res) {
+      throw new Error('Store not found');
+    }
+
+    return res;
+  } catch (error) {
+    throw error;
+  } finally {
+    await db.$disconnect(); // Close the database connection when done.
+  }
 }
 
 //BankAccount CRUD
-export async function getBankList(storeId: string) {
-  return json(
-    await db.bankAccount.findMany({
+export async function getBankList(userId: string) {
+  try {
+    const user = await db.user.findFirst({
       where: {
-        storeId: '1',
+        id: userId,
       },
-    })
-  );
+    });
+
+    if (!user || !user.storeId) {
+      throw new Error('User or store not found');
+    }
+
+    const result = await db.bankAccount.findMany({
+      where: {
+        storeId: user.storeId,
+      },
+    });
+
+    // You can consider logging this information using a proper logger.
+    // console.log("Result:", result);
+    // console.log("User:", user);
+    // console.log("Store ID:", user.storeId);
+
+    return result;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  } finally {
+    await db.$disconnect(); // Close the database connection when done.
+  }
 }
 
 export async function deleteBankList(id: string) {
+  // Check if the bank account with the specified ID exists
+  const existingBankAccount = await db.bankAccount.findUnique({
+    where: { id: id },
+  });
+
+  if (!existingBankAccount) {
+    throw new Error(`Bank account with ID ${id} does not exist.`);
+  }
+
+  // Update the related withdraw records to remove the reference to the bank
   await db.withdraw.updateMany({
     where: { bankId: id },
     data: { bankId: null || undefined },
   });
 
+  // Delete the bank account
   await db.bankAccount.delete({
     where: { id: id },
   });
+
   return { success: true };
 }
 
@@ -54,11 +127,17 @@ export async function getNameBank(bank: string) {
   });
 }
 
-export async function createBank(data: any) {
+export async function createBank(data: any, userId: string) {
+  const user = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '1' },
+        connect: { id: user?.storeId ?? '' },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -93,7 +172,6 @@ export async function updateBank(
   }
 }
 
-//Withdraw
 export async function getWithdrawalList() {
   const withdrawalList = await db.withdraw.findMany({
     include: {
@@ -103,7 +181,6 @@ export async function getWithdrawalList() {
       adminDecline: true,
     },
   });
-
   return withdrawalList;
 }
 
@@ -133,21 +210,21 @@ export async function createWithdraw(
   data: any,
   id: any,
   storeId: string,
-  approvedById: string
+  approvedById: string,
+  userId: string
 ) {
   try {
     const amount = parseFloat(data.amount);
-    const user = await db.user.findUnique({
+
+    const user = await db.user.findFirst({
       where: {
-        id: '1',
+        id: userId,
       },
     });
 
-    if (!user) {
-      throw new Error('user Id not found.');
+    if (!user || !user.storeId) {
+      throw new Error('User or store not found');
     }
-
-    const userId = user.id;
 
     const bankAccount = await db.bankAccount.findUnique({
       where: {
@@ -165,7 +242,7 @@ export async function createWithdraw(
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '1' },
+          connect: { id: user?.storeId ?? '' },
         },
         amount: amount,
         status: 'REQUEST',
@@ -174,12 +251,13 @@ export async function createWithdraw(
           connect: { id: bankId },
         },
         approvedBy: {
-          connect: { id: userId },
+          connect: { id: user?.storeId ?? '' },
         },
         updatedAt: now,
       },
     });
 
+    // console.log("ini user id", userId);
     return withdraw;
   } catch (error) {
     console.error('Error creating withdrawal:', error);
@@ -219,7 +297,6 @@ export async function createDeclinedReason(
       reason: data.reason,
     },
   });
-  console.log('this is reason declined:', createReason);
 
   return createReason;
 }
@@ -240,7 +317,7 @@ export async function createAttachmentWithdraw(
       },
     });
 
-    console.log('Attachment creation success:', createAttachment);
+    // console.log("Attachment creation success:", createAttachment);
 
     return createAttachment;
   } catch (error) {
@@ -317,7 +394,7 @@ export async function createAttachmentRefund(
       },
     });
 
-    console.log('Attachment creation success:', createAttachment);
+    // console.log("Attachment creation success:", createAttachment);
 
     return createAttachment;
   } catch (error) {

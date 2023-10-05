@@ -3,22 +3,19 @@ import {
   Button,
   Divider,
   Flex,
-  ListItem,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalOverlay,
   Text,
-  UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
 import moment from 'moment';
 import React from 'react';
 
 import { LuZoomIn } from 'react-icons/lu';
-import { AdminSuccessNotification } from '~/modules/DashboardMailerlite/mailerliteAdminSuccess';
+import { AdminRefundNotification } from '~/modules/DashboardMailerlite/mailerliteAdminRefund';
 
 export default function AdminSuccessRefundPopup(props: any) {
   const { dataRefund } = props;
@@ -156,27 +153,27 @@ export default function AdminSuccessRefundPopup(props: any) {
               </Box>
 
               <Box mt={'10px'}>
-                <Text fontWeight={700}>Bukti Transfer</Text>
+                {/* <Text fontWeight={700}>Bukti Transfer</Text>
                 <Box
-                  mt={'10px'}
-                  width={'100px'}
-                  height={'100px'}
-                  border={'1px solid gray'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
+                  mt={"10px"}
+                  width={"100px"}
+                  height={"100px"}
+                  border={"1px solid gray"}
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
                 >
                   <Link
                     to={
-                      'https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg'
+                      "https://media.karousell.com/media/photos/products/2022/9/14/bukti_transfer_1663144577_a652da3c.jpg"
                     }
                     target="_blank"
                   >
-                    <Text fontWeight={'700'} color={'teal'}>
+                    <Text fontWeight={"700"} color={"teal"}>
                       Lihat Gambar
                     </Text>
                   </Link>
-                </Box>
+                </Box> */}
 
                 <Button
                   width={'100%'}
@@ -186,11 +183,7 @@ export default function AdminSuccessRefundPopup(props: any) {
                   colorScheme="teal"
                   padding={0}
                   onClick={() => {
-                    AdminSuccessNotification(
-                      dataRefund.store?.name,
-                      formattedAmount,
-                      dataRefund.bankAccount
-                    );
+                    AdminRefundNotification();
 
                     onClose();
                   }}
@@ -199,7 +192,7 @@ export default function AdminSuccessRefundPopup(props: any) {
                 </Button>
               </Box>
 
-              <Box mt={'10px'}>
+              {/* <Box mt={'10px'}>
                 <Text fontWeight={700}>Riwayat</Text>
                 <UnorderedList>
                   <ListItem>
@@ -223,7 +216,7 @@ export default function AdminSuccessRefundPopup(props: any) {
                     </ListItem>
                   </ListItem>
                 </UnorderedList>
-              </Box>
+              </Box> */}
             </Box>
           </ModalBody>
           <ModalFooter>
