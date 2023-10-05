@@ -99,8 +99,8 @@ export async function Biteship(payload: any) {
       }
 
       await db.invoice.update({
-        where: { courierId: courier.id },
         data: { waybill: payload.courier_waybill_id },
+        where: { courierId: courier.id },
       });
 
       if (!courier) {
