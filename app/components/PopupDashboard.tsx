@@ -147,7 +147,12 @@ export default function DashboardPopup({ data }: any) {
 
   return (
     <>
-      <Button onClick={onOpen} bg={'#8dc63f'} color={'#fff'} colorScheme="none">
+      <Button
+        onClick={onOpen}
+        bgColor={'lakoeCyan'}
+        color={'#fff'}
+        colorScheme="none"
+      >
         Tarik Credit
       </Button>
       <Modal
