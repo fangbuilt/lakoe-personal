@@ -265,17 +265,35 @@ export async function deleteProduct(id: any) {
 //   return newData;
 // }
 
-export async function getProductTest(searchTerm: any) {
+export async function getProductTest(
+  filterSearch: string,
+  filterCategory: string
+) {
+  const whereSearch = filterSearch
+    ? {
+        name: {
+          contains: filterSearch,
+        },
+      }
+    : {};
+  const whereCategory = filterCategory
+    ? {
+        category: {
+          name: {
+            in: filterCategory,
+          },
+        },
+      }
+    : {};
   const data = await db.product.findMany({
     where: {
-      category: {
-        name: searchTerm,
-      },
+      AND: [whereSearch, whereCategory],
     },
     orderBy: {
       createdAt: 'desc',
     },
     include: {
+      category: true,
       store: true,
       attachments: true,
       variants: {
@@ -289,6 +307,7 @@ export async function getProductTest(searchTerm: any) {
       },
     },
   });
+  console.log('get data product', data);
   return data;
 }
 
@@ -346,6 +365,6 @@ export default async function getProductTestFilter(
       },
     },
   });
-  console.log('ini', data);
+  // console.log('ini', data);
   return data;
 }
