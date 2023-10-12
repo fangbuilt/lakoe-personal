@@ -19,17 +19,23 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { redirect } from '@remix-run/node';
 import { Form, Link } from '@remix-run/react';
 import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMailerlite';
 import moment from 'moment';
 
-export default function DashboardPopup({
-  bankAccount,
-  storeName,
-  createdAt,
-}: any) {
+export default function DashboardPopup({ data }: any) {
+  const [selectedBankAccount, setSelectedBankAccount] = useState<string>('');
+
+  useEffect(() => {
+    // Initialize selected bank account if needed
+    if (data && data.length > 0) {
+      setSelectedBankAccount(data[0].id);
+    }
+  }, [data]);
+  console.log('select bank', selectedBankAccount);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
 
@@ -43,9 +49,10 @@ export default function DashboardPopup({
   const [alertAmountMessage, setAlertAmountMessage] = useState('');
   const [alertBankMessage, setAlertBankMessage] = useState('');
 
-  const createWithdrawal = moment(createdAt, 'YYYY-MM-DD HH:mm:ss').format(
-    'LLLL'
-  );
+  const createWithdrawal = moment(
+    data?.createdAt,
+    'YYYY-MM-DD HH:mm:ss'
+  ).format('LLLL');
 
   const [formData, setFormData] = useState({
     actionType: 'create',
@@ -63,14 +70,26 @@ export default function DashboardPopup({
   const handleAmount = () => {
     const { amount } = formData;
     const parsedAmount = parseFloat(amount);
+    const parsedCredit = parseFloat(String(Number(data?.credit) / 10));
 
     if (isNaN(parsedAmount)) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Amount harus berupa angka');
+      setAlertMessage('Amount harus berupa angka');
     } else if (parsedAmount < 10000) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Penarikan minimal Rp.100.000');
-    } else if (parsedAmount > 250000) {
+      setAlertMessage('Penarikan minimal Rp.100.000');
+    } else if (parsedAmount > 2500000) {
+      setIsFormValidation(false);
       setAlertAmountMessage('Jumlah amount melebihi batas maksimal');
+      setAlertMessage('Jumlah amount melebihi batas maksimal');
+    } else if (parsedAmount > parsedCredit) {
+      setIsFormValidation(false);
+      setAlertAmountMessage('Saldo Anda tidak mencukupi!');
+      setAlertMessage('Saldo Anda tidak mencukupi!');
     } else {
+      setIsFormValidation(true);
       setAlertAmountMessage('');
     }
   };
@@ -229,14 +248,15 @@ export default function DashboardPopup({
                   Tarik ke:
                 </Text>
                 {/* : ( */}
+
                 <Select
                   fontSize={'13px'}
                   name="bankId"
                   onChange={handleChange}
                   value={formData.bankId}
                 >
-                  <option value={bankAccount.id}>Select Bank Account</option>
-                  {bankAccount.map((dataBank: any) => (
+                  <option value="">Select Bank Account</option>
+                  {data.map((dataBank: any) => (
                     <option value={`${dataBank.id}`} key={dataBank.id}>
                       {`${dataBank.accountName} - ${dataBank.bank} - ${dataBank.accountNumber}`}
                     </option>
@@ -269,7 +289,7 @@ export default function DashboardPopup({
                   value={formData.bankAccount}
                 >
                   <option value="">Confirm Your Bank Account</option>
-                  {bankAccount.map((dataBank: any) => (
+                  {data.map((dataBank: any) => (
                     <option
                       key={dataBank.id}
                       value={`${dataBank.id} - ${dataBank.bank} - ${dataBank.accountName} - ${dataBank.accountNumber}`}
@@ -319,6 +339,7 @@ export default function DashboardPopup({
                     toggleTarikKredit();
                     handleAmount();
                   }}
+                  // isDisabled={!isFormValidation}
                 >
                   Tarik Kredit
                 </Button>
@@ -354,7 +375,7 @@ export default function DashboardPopup({
                           <Flex justifyContent={'space-between'} mt={'15px'}>
                             <Box>
                               <Text fontWeight={700}>{accountName}</Text>
-                              <Text fontSize={'12px'}>{storeName}</Text>
+                              <Text fontSize={'12px'}>{data?.store?.name}</Text>
                             </Box>
                             <Box>
                               <Text fontSize={'12px'}>Status: Request</Text>

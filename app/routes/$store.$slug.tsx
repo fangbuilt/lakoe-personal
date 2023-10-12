@@ -1,9 +1,12 @@
 import {
   Box,
   Button,
+  Card,
   Flex,
   Image,
   Input,
+  InputGroup,
+  InputLeftAddon,
   Modal,
   Radio,
   RadioGroup,
@@ -19,17 +22,16 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react';
-import { redirect, type ActionArgs } from '@remix-run/node';
-import { Form, useLoaderData, useParams } from '@remix-run/react';
+import { type ActionArgs } from '@remix-run/node';
+import { Form, Link, useLoaderData, useParams } from '@remix-run/react';
 import { useState } from 'react';
 import {
   InputHidden,
   ModalCheckout,
 } from '~/modules/checkout/component/checkoutForm';
-import {
+import AboutDashboard, {
   useCounter,
-  useCourier,
-  useDistrict,
+  useFormBank,
   useFormCheckout,
   useVariant,
 } from '~/modules/checkout/component/useCheckout';
@@ -50,8 +52,8 @@ export async function loader({ params }: ActionArgs) {
     const detail = await getCheckoutDetail(getData);
     return detail;
   } catch (error) {
-    console.log('error');
-    return redirect(`/error-page/${data.store}/${data.slug}`);
+    console.log('error:', error);
+    return null;
   }
 }
 
@@ -67,6 +69,8 @@ export const action = async ({ request }: ActionArgs) => {
       const district = formData.get('district') as string;
       const village = formData.get('village') as string;
       const getDescription = formData.get('description') as string;
+      const accountName = formData.get('accountName') as string;
+      const accountNumber = formData.get('accountNumber') as string;
       const courier = formData.get('courier') as string;
       const courierService = +(formData.get('courierService') as string);
 
@@ -94,6 +98,12 @@ export const action = async ({ request }: ActionArgs) => {
         return false;
       }
 
+      const bankAccount = {
+        name: accountName,
+        number: accountNumber,
+      };
+      console.log(bankAccount);
+
       const invoice = {
         price: totalPriceUnique + courierService,
         discount: 0,
@@ -101,7 +111,7 @@ export const action = async ({ request }: ActionArgs) => {
         receiverLongitude: '',
         receiverLatitude: '',
         receiverDistrict: district,
-        receiverPhone: telp,
+        receiverPhone: '+62' + telp,
         receiverAddress: village + ' ' + district + ' ' + province,
         receiverName: name,
         receiverEmail: email,
@@ -137,6 +147,8 @@ export const action = async ({ request }: ActionArgs) => {
         amount: totalPriceUnique + courierService,
         status: 'UNPAID',
         userId: userId,
+        accountName: accountName,
+        accountNumber: accountNumber,
       };
 
       const getCourier = {
@@ -178,12 +190,7 @@ export const action = async ({ request }: ActionArgs) => {
         getCourier,
       };
 
-      // await CreateNewCheckout(all);
-
-      console.log('data : ', data);
-
       try {
-        // const create = await createCheckout(data);
         handleClick(telp, name, email);
         const create = await createCheckout(data);
         return create;
@@ -201,59 +208,59 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export default function Checkout() {
-  const data = useLoaderData<typeof loader>();
+type LoaderData = {
+  product: any;
+  unique: number;
+};
 
-  const item =
-    typeof data === 'object' && 'product' in data ? data.product : null;
-  const getUnique = 'unique' in data ? data.unique : null;
-  const uniqueNumber = getUnique as number;
+export default function Checkout() {
+  const data = useLoaderData<LoaderData>();
+
+  const item = data?.product;
+  const getUnique = data?.unique;
+  // const item =
+  //   typeof data === "object" && "product" in data ? data.product : null;
+  // const getUnique = "unique" in data ? data.unique : null;
+
+  const uniqueNumber = getUnique;
 
   const { slug, store } = useParams();
 
   const { selectedOption, handleRadioChange } = useVariant();
 
-  const limit = item?.variants[selectedOption].variantOptions[0]
-    .variantOptionValues[0].stock as number;
+  const limit = item?.variants[selectedOption]?.variantOptions[0]
+    ?.variantOptionValues[0]?.stock as number;
 
   const { count, handleIncrement, handleDecrement, handleChange } =
     useCounter(limit);
+  console.log('count', count);
+
+  // update new
 
   const {
     coment,
-    provinsiOption,
-    selectedProvince,
-    kabupatenOption,
-    selectedKabupaten,
-    kecamatanOption,
-    selectedKecamatan,
-    handleProvinceChange,
-    handleKabupatenChange,
-    handleKecamatanChange,
-  } = useDistrict();
-
-  // from UseCheckout
-  const {
-    postalCode,
-    handleRatesChange,
+    provinceOption,
+    districtOption,
+    regionOption,
     rates,
-    courierServiceSelected,
     dataCourier,
-    courierService,
-    dataRates,
-    setDataRates,
+    handleRatesChange,
+    postalCode,
+    courierServiceOption,
+    handleChangeProvince,
+    handleChangeDistrict,
+    handleChangeRegion,
     handleChangeCourier,
-  } = useCourier();
+    handleChangePostalCode,
+  } = AboutDashboard(item, count);
 
   const [bankMetode, setBankMetode] = useState('');
   const handleBankMetodeChange = (event: any) => {
     setBankMetode(event);
   };
-  console.log('bankMetode : ', bankMetode);
 
-  const { nameFor, form, handleChangeForm } = useFormCheckout();
-
-  console.log('dataRates : ', dataRates.postalCode);
+  const { nameFor, handleChangeForm } = useFormCheckout();
+  const { bankFor, handleChangeBank } = useFormBank();
 
   let comment = 'Currently placing a new order';
   let spinner = 'none';
@@ -265,21 +272,62 @@ export default function Checkout() {
     comment = nameFor;
   } else if (coment !== '') {
     comment = coment;
-  } else if (dataRates.postalCode === '') {
-    comment = 'Harap masukkan kode pos';
-  } else if (courierServiceSelected === '') {
-    comment = 'Harap pilih layanan kurir';
   } else if (rates === '') {
     comment = 'Harap pilih kurir';
+  } else if (bankFor !== '') {
+    comment = bankFor;
   } else if (bankMetode === '') {
     comment = 'Harap pilih metode pembayaran';
   } else {
     spinner = 'block';
     close = 'none';
   }
-  console.log('form : ', form);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  if (!data) {
+    return (
+      <Box>
+        <Box
+          display={'flex'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          mt={'100px'}
+        >
+          <Card
+            display={'flex'}
+            flexDir={'column'}
+            alignItems={'center'}
+            p={5}
+            boxShadow={'dark-lg'}
+          >
+            {/* <Image
+            boxSize={'200px'}
+            src="https://www.pngmart.com/files/19/Sad-Emoji-PNG-File.png"
+            alt="sad emoji"
+          /> */}
+            <Text textAlign={'center'} fontWeight={'bold'} fontSize={'4xl'}>
+              We Have Error
+            </Text>
+            <Box
+              display={'flex'}
+              flexDir={'column'}
+              alignItems={'center'}
+              gap={2}
+            >
+              <Text>Please try again</Text>
+              <Text>Click this button</Text>
+              <Link to={`/${store}/${slug}`} target="_blank">
+                <Button w={'200px'} colorScheme={'red'}>
+                  Reload
+                </Button>
+              </Link>
+            </Box>
+          </Card>
+        </Box>
+      </Box>
+    );
+  }
 
   const handleSubmit = () => {
     if (spinner === 'none') {
@@ -290,9 +338,13 @@ export default function Checkout() {
   };
 
   const rate = parseInt(rates);
-  const isTotal = item?.variants[selectedOption].variantOptions[0]
-    .variantOptionValues[0].price as number;
-  const total = isTotal * count + uniqueNumber;
+  const isTotal = item?.variants[selectedOption]?.variantOptions[0]
+    ?.variantOptionValues[0]?.price as number;
+
+  const priceTotal = isTotal * count;
+  const totalCiel = Math.ceil(priceTotal / 1000) * 1000;
+
+  const total = totalCiel + uniqueNumber;
   let totalValue = 0;
   if (!rate) {
     totalValue = total;
@@ -306,7 +358,7 @@ export default function Checkout() {
   return (
     <>
       <CheckoutDescription
-        image={item?.attachments[0].url}
+        image={item?.attachments ? item?.attachments[0]?.url : ''}
         name={item?.name}
         description={item?.description}
       />
@@ -342,8 +394,6 @@ export default function Checkout() {
             <Box>
               <TableContainer>
                 <Box>
-                  <div id="message"></div>
-                  {/* <Text id="message"></Text> */}
                   <Text>Produk Dipesan</Text>
                 </Box>
                 <Table variant="simple">
@@ -363,22 +413,26 @@ export default function Checkout() {
                           objectFit={'cover'}
                           boxSize={'10'}
                           borderRadius={'10%'}
-                          src={item?.attachments[0].url}
+                          src={
+                            item?.attachments ? item?.attachments[0]?.url : ''
+                          }
                           alt=""
                         />
                         <Box>
                           <Text>{item?.name}</Text>
                           <Text color={'gray.600'}>
-                            {(item?.variants[selectedOption].variantOptions[0]
-                              .variantOptionValues[0].stock as number) - count}
+                            {(item?.variants[selectedOption]?.variantOptions[0]
+                              ?.variantOptionValues[0]?.stock as number) -
+                              count}
                             pcs
                           </Text>
                           <Input
                             type="hidden"
                             name="stock"
                             value={
-                              (item?.variants[selectedOption].variantOptions[0]
-                                .variantOptionValues[0].stock as number) - count
+                              (item?.variants[selectedOption]?.variantOptions[0]
+                                ?.variantOptionValues[0]?.stock as number) -
+                              count
                             }
                             readOnly
                           />
@@ -386,18 +440,9 @@ export default function Checkout() {
                       </Td>
                       <Td>
                         <Box display={'flex'} flexWrap={'wrap'} gap={2}>
-                          {item?.variants.map((i, o) => (
+                          {item?.variants?.map((i: any, o: number) => (
                             <Box key={o}>
-                              <Input
-                                type="radio"
-                                id={i.id}
-                                value={o}
-                                defaultChecked={selectedOption === o}
-                                onChange={handleRadioChange}
-                                style={{ display: 'none' }}
-                              />
                               <label
-                                htmlFor={i.id}
                                 style={{
                                   border: '1px solid',
                                   borderRadius: '5px',
@@ -409,7 +454,14 @@ export default function Checkout() {
                                   cursor: 'pointer',
                                 }}
                               >
-                                {i.name}
+                                <Input
+                                  type="radio"
+                                  value={o}
+                                  checked={selectedOption === o}
+                                  display={'none'}
+                                  onChange={handleRadioChange}
+                                />
+                                {i?.name}
                               </label>
                             </Box>
                           ))}
@@ -431,16 +483,11 @@ export default function Checkout() {
                       <Td>
                         {item?.variants[
                           selectedOption
-                        ].variantOptions[0].variantOptionValues[0].price.toLocaleString(
+                        ]?.variantOptions[0]?.variantOptionValues[0]?.price.toLocaleString(
                           'id-ID'
                         )}
                       </Td>
-                      <Td>
-                        {(
-                          (item?.variants[selectedOption].variantOptions[0]
-                            .variantOptionValues[0].price as number) * count
-                        ).toLocaleString('id-ID')}
-                      </Td>
+                      <Td>{totalCiel.toLocaleString('id-ID')}</Td>
                     </Tr>
                   </Tbody>
                 </Table>
@@ -449,19 +496,19 @@ export default function Checkout() {
             <InputHidden
               selectedOption={selectedOption}
               price={
-                item?.variants[selectedOption].variantOptions[0]
-                  .variantOptionValues[0].price
+                item?.variants[selectedOption]?.variantOptions[0]
+                  ?.variantOptionValues[0]?.price
               }
               storeId={item?.storeId}
               productId={item?.id}
               valueId={
-                item?.variants[selectedOption].variantOptions[0]
-                  .variantOptionValues[0].id
+                item?.variants[selectedOption]?.variantOptions[0]
+                  ?.variantOptionValues[0]?.id
               }
               variantOptionId={
-                item?.variants[selectedOption].variantOptions[0].id
+                item?.variants[selectedOption]?.variantOptions[0]?.id
               }
-              userId={item?.store?.users[selectedOption].id}
+              userId={item?.store?.users[selectedOption]?.id}
             />
             <Box display={'flex'} flexDir={'column'} gap={3}>
               <Box>
@@ -476,13 +523,16 @@ export default function Checkout() {
                     name="username"
                     onChange={handleChangeForm}
                   />
-                  <Input
-                    bgColor={'#fcfcfc'}
-                    type="number"
-                    placeholder="Nomor Telepon"
-                    name="notelp"
-                    onChange={handleChangeForm}
-                  />
+                  <InputGroup>
+                    <InputLeftAddon children="+62" />
+                    <Input
+                      type="tel"
+                      bgColor={'#fcfcfc'}
+                      placeholder="Nomor Telepon"
+                      name="notelp"
+                      onChange={handleChangeForm}
+                    />
+                  </InputGroup>
                   <Input
                     bgColor={'#fcfcfc'}
                     type="email"
@@ -492,136 +542,140 @@ export default function Checkout() {
                   />
                 </Box>
                 <Box mt={3}>
-                  {/* <CheckoutCourierBuyer
-                    name={item?.name}
-                    description={item?.description}
-                    unique={getUnique}
-                    total={
-                      (item?.variants[selectedOption].variantOptions[0]
-                        .variantOptionValues[0].price as number) *
-                        count +
-                      uniqueNumber
-                    }
-                    totalPrice={
-                      (item?.variants[selectedOption].variantOptions[0]
-                        .variantOptionValues[0].price as number) * count
-                    }
-                    totalPriceUnique={
-                      (item?.variants[selectedOption].variantOptions[0]
-                        .variantOptionValues[0].price as number) *
-                        count +
-                      uniqueNumber
-                    }
-                  /> */}
-                  <Box>
-                    <Box display={'flex'} flexDirection={'column'} gap={3}>
+                  {/* Update New */}
+                  <Box display={'flex'} flexDirection={'column'} gap={3}>
+                    <Box>
                       <Select
                         bgColor={'#fcfcfc'}
                         name="province"
-                        value={selectedProvince}
-                        onChange={handleProvinceChange}
+                        onChange={(e) => handleChangeProvince(e.target.value)}
                       >
                         <option hidden>Pilih Provinsi</option>
-                        {provinsiOption.map((option) => (
+                        {provinceOption.map((data) => (
                           <option
-                            key={option.id}
-                            value={option.id + ',' + option.name}
+                            key={data.id}
+                            value={data.id + ',' + data.name}
                           >
-                            {option.name}
+                            {data.name}
                           </option>
                         ))}
                       </Select>
+                    </Box>
 
+                    <Box>
                       <Select
                         bgColor={'#fcfcfc'}
                         name="district"
-                        value={selectedKabupaten}
-                        onChange={handleKabupatenChange}
+                        onChange={(e) => handleChangeDistrict(e.target.value)}
                       >
-                        <option hidden>Pilih Kabupaten</option>
-                        {kabupatenOption.map((kabupaten) => (
+                        <option hidden>Pilih Kota</option>
+                        {districtOption.map((data) => (
                           <option
-                            key={kabupaten.id}
-                            value={kabupaten.id + ',' + kabupaten.name}
+                            key={data.id}
+                            value={data.id + ',' + data.name}
                           >
-                            {kabupaten.name}
+                            {data.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </Box>
+
+                    <Box>
+                      <Select
+                        bgColor={'#fcfcfc'}
+                        name="village"
+                        onChange={(e) => handleChangeRegion(e.target.value)}
+                      >
+                        <option hidden>Pilih Kecamatan</option>
+                        {regionOption.map((data) => (
+                          <option
+                            key={data.id}
+                            value={data.id + ',' + data.name}
+                          >
+                            {data.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </Box>
+
+                    <Box>
+                      <Select
+                        bgColor={'#fcfcfc'}
+                        name="postalCode"
+                        onChange={(e) => handleChangePostalCode(e.target.value)}
+                      >
+                        <option hidden>Pilih Kode Pos</option>
+                        {postalCode.map((data) => (
+                          <option key={data.id} value={data.postal_code}>
+                            {data.postal_code}
+                          </option>
+                        ))}
+                      </Select>
+                    </Box>
+                    <Box display={'flex'} gap={3}>
+                      <Select
+                        w={'50%'}
+                        bgColor={'#fcfcfc'}
+                        name="courier"
+                        onChange={(e) => handleChangeCourier(e.target.value)}
+                      >
+                        <option hidden>Pilih Kurir</option>
+                        {dataCourier.map((data, index) => (
+                          <option value={data} key={index}>
+                            {data}
                           </option>
                         ))}
                       </Select>
 
                       <Select
+                        w={'50%'}
                         bgColor={'#fcfcfc'}
-                        name="village"
-                        value={selectedKecamatan}
-                        onChange={handleKecamatanChange}
+                        name="courierService"
+                        onChange={(e) => {
+                          handleRatesChange(e);
+                        }}
                       >
-                        <option hidden>Pilih Kecamatan</option>
-                        {kecamatanOption.map((kecamatan) => (
-                          <option
-                            key={kecamatan.id}
-                            value={kecamatan.id + ',' + kecamatan.name}
-                          >
-                            {kecamatan.name}
+                        <option selected hidden>
+                          Pilih Servis
+                        </option>
+                        {courierServiceOption.map((data, index) => (
+                          <option value={data.price} key={index}>
+                            {data.duration} {data.service_type} {data.price}{' '}
+                            {data.type}
                           </option>
                         ))}
                       </Select>
-
-                      <Input
-                        bgColor={'#fcfcfc'}
-                        name="postalCode"
-                        placeholder="Kode Pos"
-                        value={postalCode}
-                        onChange={(e) =>
-                          setDataRates({
-                            ...dataRates,
-                            postalCode: e.target.value,
-                          })
-                        }
-                      />
-
+                    </Box>
+                    <Input
+                      bgColor={'#fcfcfc'}
+                      type="text"
+                      name="description"
+                      placeholder="Masukkan Catatan Pemesanan"
+                    />
+                    <Input
+                      bgColor={'#fcfcfc'}
+                      type="text"
+                      name="accountName"
+                      placeholder="Masukkan Nama Rekening Bank"
+                      onChange={handleChangeBank}
+                    />
+                    <Box>
                       <Input
                         bgColor={'#fcfcfc'}
                         type="text"
-                        name="description"
-                        placeholder="Masukkan Catatan Pemesanan"
+                        name="accountNumber"
+                        placeholder="Masukkan Nomor Rekening Bank"
+                        onChange={handleChangeBank}
                       />
+                      <Text fontSize={'sm'}>
+                        Untuk pengembalian uang jika pesananmu dibatalkan
+                      </Text>
+                    </Box>
 
-                      <Box>
-                        <Text fontWeight={'bold'}>Pengiriman</Text>
-                      </Box>
-                      <Box display={'flex'} gap={3}>
-                        <Box width={'50%'}>
-                          <Select
-                            bgColor={'#fcfcfc'}
-                            name="courier"
-                            onChange={(e) =>
-                              handleChangeCourier(e.target.value)
-                            }
-                          >
-                            <option hidden>Pilih Kurir</option>
-                            {dataCourier.map((data, index) => (
-                              <option value={data} key={index}>
-                                {data}
-                              </option>
-                            ))}
-                          </Select>
-                        </Box>
-                        <Box width={'50%'}>
-                          <Select
-                            bgColor={'#fcfcfc'}
-                            name="courierService"
-                            onChange={handleRatesChange}
-                          >
-                            <option hidden>Pilih Tipe Pengiriman</option>
-                            {courierService.map((data, index) => (
-                              <option value={data.price} key={index}>
-                                {data.duration} {data.service_type} {data.price}
-                              </option>
-                            ))}
-                          </Select>
-                        </Box>
-                      </Box>
-                      <Text>Harga Ongkir : {rates} </Text>
+                    <Text>Harga Ongkir : {rates} </Text>
+                  </Box>
+                  <Box>
+                    <Box display={'flex'} flexDirection={'column'} gap={3}>
                       <Box>
                         <Box>
                           <Text fontWeight={'bold'}>Metode Pembayaran</Text>
@@ -710,21 +764,15 @@ export default function Checkout() {
                                 name="totalPrice"
                                 value={
                                   (item?.variants[selectedOption]
-                                    .variantOptions[0].variantOptionValues[0]
-                                    .price as number) * count
+                                    ?.variantOptions[0]?.variantOptionValues[0]
+                                    ?.price as number) * count
                                 }
                                 readOnly
                               />
                               <Input
                                 type="hidden"
                                 name="totalPriceUnique"
-                                value={
-                                  (item?.variants[selectedOption]
-                                    .variantOptions[0].variantOptionValues[0]
-                                    .price as number) *
-                                    count +
-                                  uniqueNumber
-                                }
+                                value={total}
                                 readOnly
                               />
                             </Box>

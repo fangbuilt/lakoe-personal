@@ -1,48 +1,121 @@
-import { json } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 
 // Fetching data store, bankAccount, withdraw
-export async function getStoreData(id: string) {
-  return json(
-    await db.store.findMany({
+// export async function getStoreData(id: string) {
+//   await db.store.findMany({
+//     where: {
+//       id: "1",
+//     },
+//     include: {
+//       bankAccounts: {
+//         include: {
+//           withdraws: {
+//             where: {
+//               storeId: "1",
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
+// }
+export async function getStoreData(userId: string) {
+  try {
+    const user = await db.user.findFirst({
       where: {
-        id: '4',
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const storeId = user.storeId ?? '';
+
+    const res = await db.store.findFirst({
+      where: {
+        id: storeId,
       },
       include: {
         bankAccounts: {
           include: {
             withdraws: {
               where: {
-                storeId: '4',
+                storeId: storeId,
               },
             },
           },
         },
       },
-    })
-  );
+    });
+
+    if (!res) {
+      throw new Error('Store not found');
+    }
+
+    return res;
+  } catch (error) {
+    throw error;
+  } finally {
+    await db.$disconnect(); // Close the database connection when done.
+  }
 }
 
 //BankAccount CRUD
-export async function getBankList(storeId: string) {
-  return json(
-    await db.bankAccount.findMany({
+export async function getBankList(userId: string) {
+  try {
+    const user = await db.user.findFirst({
       where: {
-        storeId: '4',
+        id: userId,
       },
-    })
-  );
+    });
+
+    if (!user || !user.storeId) {
+      throw new Error('User or store not found');
+    }
+
+    const result = await db.bankAccount.findMany({
+      where: {
+        storeId: user.storeId,
+      },
+    });
+
+    // You can consider logging this information using a proper logger.
+    // console.log("Result:", result);
+    // console.log("User:", user);
+    // console.log("Store ID:", user.storeId);
+
+    return result;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  } finally {
+    await db.$disconnect(); // Close the database connection when done.
+  }
 }
 
 export async function deleteBankList(id: string) {
+  // Check if the bank account with the specified ID exists
+  const existingBankAccount = await db.bankAccount.findUnique({
+    where: { id: id },
+  });
+
+  if (!existingBankAccount) {
+    throw new Error(`Bank account with ID ${id} does not exist.`);
+  }
+
+  // Update the related withdraw records to remove the reference to the bank
   await db.withdraw.updateMany({
     where: { bankId: id },
     data: { bankId: null || undefined },
   });
 
+  // Delete the bank account
   await db.bankAccount.delete({
     where: { id: id },
   });
+
   return { success: true };
 }
 
@@ -54,11 +127,17 @@ export async function getNameBank(bank: string) {
   });
 }
 
-export async function createBank(data: any) {
+export async function createBank(data: any, userId: string) {
+  const user = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+
   const createdBank = await db.bankAccount.create({
     data: {
       store: {
-        connect: { id: '4' },
+        connect: { id: user?.storeId ?? '' },
       },
       accountName: data.accountName,
       bank: data.bank,
@@ -93,19 +172,23 @@ export async function updateBank(
   }
 }
 
-//Withdraw
 export async function getWithdrawalList() {
   const withdrawalList = await db.withdraw.findMany({
     include: {
       store: true,
       bankAccount: true,
+      attachmentWithdraw: true,
+      adminDecline: true,
     },
   });
-
   return withdrawalList;
 }
 
-export async function updateStatusWithdraw(id: string, statusUpdated: string) {
+export async function updateStatusWithdraw(
+  id: string,
+  statusUpdated: string,
+  dateUpdated?: string
+) {
   try {
     const updatedStatus = await db.withdraw.update({
       where: {
@@ -113,6 +196,7 @@ export async function updateStatusWithdraw(id: string, statusUpdated: string) {
       },
       data: {
         status: statusUpdated,
+        updatedAt: dateUpdated,
       },
     });
     return updatedStatus;
@@ -126,17 +210,20 @@ export async function createWithdraw(
   data: any,
   id: any,
   storeId: string,
-  approvedById: string
+  approvedById: string,
+  userId: string
 ) {
   try {
     const amount = parseFloat(data.amount);
 
-    const user = await db.user.findUnique({
-      where: { id: '5' },
+    const user = await db.user.findFirst({
+      where: {
+        id: userId,
+      },
     });
 
-    if (!user) {
-      throw new Error('User with id not found.');
+    if (!user || !user.storeId) {
+      throw new Error('User or store not found');
     }
 
     const bankAccount = await db.bankAccount.findUnique({
@@ -151,10 +238,11 @@ export async function createWithdraw(
 
     const bankId = bankAccount.id;
 
+    const now = new Date();
     const withdraw = await db.withdraw.create({
       data: {
         store: {
-          connect: { id: '4' },
+          connect: { id: user?.storeId ?? '' },
         },
         amount: amount,
         status: 'REQUEST',
@@ -163,11 +251,13 @@ export async function createWithdraw(
           connect: { id: bankId },
         },
         approvedBy: {
-          connect: { id: '1' },
+          connect: { id: user?.storeId ?? '' },
         },
+        updatedAt: now,
       },
     });
 
+    // console.log("ini user id", userId);
     return withdraw;
   } catch (error) {
     console.error('Error creating withdrawal:', error);
@@ -184,7 +274,8 @@ export async function deleteWithdraw(id: string) {
 export async function createDeclinedReason(
   data: any,
   withdrawId: string,
-  storeId: string
+  storeId: string,
+  bankAccountId: string
 ) {
   const createReason = await db.adminDecline.create({
     data: {
@@ -198,20 +289,24 @@ export async function createDeclinedReason(
           id: storeId,
         },
       },
+      bankAccount: {
+        connect: {
+          id: bankAccountId,
+        },
+      },
       reason: data.reason,
     },
   });
-  console.log('this is reason declined:', createReason);
 
   return createReason;
 }
 
-export async function createAttachmentAdmin(
+export async function createAttachmentWithdraw(
   attachmentUrl: string,
   withdrawId: string
 ) {
   try {
-    const createAttachment = await db.attachmentAdmin.create({
+    const createAttachment = await db.attachmentWithdraw.create({
       data: {
         withdraw: {
           connect: {
@@ -222,7 +317,7 @@ export async function createAttachmentAdmin(
       },
     });
 
-    console.log('Attachment creation success:', createAttachment);
+    // console.log("Attachment creation success:", createAttachment);
 
     return createAttachment;
   } catch (error) {
@@ -238,8 +333,72 @@ export async function getReasonDeclined() {
     include: {
       store: true,
       withdraw: true,
+      bankAccount: true,
     },
   });
 
   return reasonDeclinedList;
+}
+
+//REFUND
+export async function getRefundData() {
+  const refundData = await db.refund.findMany({
+    include: {
+      invoice: {
+        include: {
+          payment: true,
+        },
+      },
+    },
+  });
+
+  return refundData;
+}
+
+export async function updateStatusRefund(
+  id: string,
+  statusUpdated: string,
+  dateUpdated?: string
+) {
+  try {
+    const updatedStatus = await db.refund.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: statusUpdated,
+        updatedAt: dateUpdated,
+      },
+    });
+    return updatedStatus;
+  } catch (error) {
+    console.error('Error updating status:', error);
+    throw error;
+  }
+}
+
+//CreateAttachmentRefund
+export async function createAttachmentRefund(
+  attachmentUrl: string,
+  refundId: string
+) {
+  try {
+    const createAttachment = await db.attachmentRefund.create({
+      data: {
+        refund: {
+          connect: {
+            id: refundId,
+          },
+        },
+        attachment: attachmentUrl,
+      },
+    });
+
+    // console.log("Attachment creation success:", createAttachment);
+
+    return createAttachment;
+  } catch (error) {
+    console.error('Error creating attachment:', error);
+    throw error;
+  }
 }

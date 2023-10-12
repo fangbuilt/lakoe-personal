@@ -23,7 +23,7 @@ export function InputHidden(data: any) {
         />
         <Input type="hidden" name="price" readOnly value={data.price} />
         <Input type="hidden" name="storeId" value={data.storeId} readOnly />
-        <Input type="hidden" name="productId" value={data.id} readOnly />
+        <Input type="hidden" name="productId" value={data.productId} readOnly />
         <Input type="hidden" name="valueId" readOnly value={data.valueId} />
         <Input
           type="hidden"
@@ -38,8 +38,6 @@ export function InputHidden(data: any) {
 }
 
 export function ModalCheckout(data: any) {
-  console.log('text', data.children);
-
   return (
     <>
       <Box>
@@ -70,14 +68,6 @@ export function ModalCheckout(data: any) {
           <ModalFooter>{data.children}</ModalFooter>
         </ModalContent>
       </Box>
-    </>
-  );
-}
-
-export function CheckoutForm() {
-  return (
-    <>
-      <Box></Box>
     </>
   );
 }

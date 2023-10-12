@@ -66,17 +66,17 @@ export default function ProductModal(props: IProduct) {
           to={`/${props.store?.name.replace(/ /g, '-').toLowerCase()}/${
             props.slug
           }`}
+        />
+        <Button
+          borderRadius={'50px'}
+          size="sm"
+          variant="outline"
+          fontSize={'14px'}
         >
-          <Button
-            borderRadius={'50px'}
-            size="sm"
-            variant="outline"
-            fontSize={'14px'}
-          >
-            <Image src={Link2} />
-            Lihat Halaman
-          </Button>
-        </Link>
+          <Image src={Link2} />
+          Lihat Halaman
+        </Button>
+        {/* </Link> */}
         <Menu>
           <MenuButton
             as={Button}

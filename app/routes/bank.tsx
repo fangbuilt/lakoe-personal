@@ -1,11 +1,11 @@
 import { Box, Button, Flex, Input, Image, Text } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, Link, useLoaderData } from '@remix-run/react';
 import { AiOutlineClose } from 'react-icons/ai';
 import PopupBank from '~/components/PopupBank';
 import UpdateBank from '~/components/PopupBankUpdate.$id';
-import { db } from '~/libs/prisma/db.server';
+import { authorize } from '~/middleware/authorization';
 import { getUserId } from '~/modules/auth/auth.service';
 import {
   createBank,
@@ -14,27 +14,13 @@ import {
   updateBank,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader({ request }: LoaderArgs, storeId: string) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader(
+  { request, context, params }: DataFunctionArgs,
+  storeId: string
+) {
+  await authorize({ request, context, params }, '2');
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return await getBankList(storeId);
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  return await getBankList(storeId);
 }
 
 export async function action({ request }: ActionArgs) {
@@ -61,14 +47,18 @@ export async function action({ request }: ActionArgs) {
   }
 
   if (actionType === 'create' && bank && accountNumber && accountName) {
-    await createBank({
+    const bankData = {
       store: {
         connect: { id: storeId },
       },
       accountName: accountName,
       bank: bank,
       accountNumber: accountNumber,
-    });
+    };
+
+    const userId = await getUserId(request);
+
+    await createBank(bankData, userId as string); // Pass userId as the second argument
     return redirect('/bank');
   }
 

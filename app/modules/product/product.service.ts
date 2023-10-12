@@ -23,7 +23,7 @@ export async function createProduct(data: any, storeId: any) {
         attachments: {
           create: [
             {
-              url: data.url,
+              url: data.url1,
             },
             {
               url: data.url2,
@@ -87,11 +87,11 @@ export async function createProduct(data: any, storeId: any) {
   }
 }
 
-export async function getProduct(id: any) {
+export async function getProduct() {
   const data = await db.product.findMany({
-    where: {
-      id: id,
-    },
+    // where: {
+    //   storeId: id,
+    // },
     orderBy: {
       createdAt: 'desc',
     },
@@ -118,7 +118,7 @@ export async function getProductAll() {
       createdAt: 'desc',
     },
     include: {
-      store: true,
+      // store: true,
       attachments: true,
       variants: {
         include: {

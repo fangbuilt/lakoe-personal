@@ -32,19 +32,19 @@ const mailerlite = new MailerLite({
 });
 
 export function AdminSuccessNotification(
-  storename: string,
-  amount: string,
-  bankAccount: string
+  // storename: string,
+  amount: string
+  // bankAccount: string
 ) {
-  const oriEmail = 'rahmatrizkyrifai@gmail.com';
+  const oriEmail = 'muhammadalisyamsi@gmail.com';
   const params: IDroppingOff = {
     email: generateRandomEmail(oriEmail, 10),
 
     fields: {
       // This is where you can make custom fields variable for email template display
-      storename: { storename },
+      // storename: { storename },
       amount: { amount },
-      bankaccount: { bankAccount },
+      // bankaccount: { bankAccount },
 
       // We must add field first in our MailerLite dashboard for it to work
     },

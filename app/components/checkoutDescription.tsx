@@ -21,6 +21,7 @@ export default function CheckoutDescription(props: any) {
             </Box>
           </Box>
         </Center>
+
         <Center>
           <Box w={'1080px'} h={'100%'} mt={5} bg={'gray.200'}>
             <Box>
@@ -29,13 +30,7 @@ export default function CheckoutDescription(props: any) {
                 <Heading id="description">{props.name}</Heading>
               </Text>
               <Center>
-                <Box
-                  display={'flex'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                  w={'80%'}
-                  pb={'100px'}
-                >
+                <Box w={'80%'} pb={'100px'}>
                   <Text fontSize={'26px'} textAlign={'justify'} mt={5}>
                     {props.description}
                   </Text>

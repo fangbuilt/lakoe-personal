@@ -52,6 +52,7 @@ async function main() {
           .rangeToNumber({ min: 100000000, max: 999999999 })
           .toString(),
         storeId: faker.helpers.arrayElement(relationsId),
+        isVerify: false,
         roleId: '2',
       },
     });
@@ -442,11 +443,11 @@ async function main() {
         bankId: faker.helpers.arrayElement(relationsId),
         amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
         status: faker.helpers.arrayElement([
-          'WITHDRAW_REQUEST',
-          'WITHDRAW_APPROVED',
-          'WITHDRAW_PROCESSING',
-          'WITHDRAW_SUCCESS',
-          'WITHDRAW_DECLINED',
+          'REQUEST',
+          'APPROVED',
+          'PROCESSING',
+          'SUCCESS',
+          'DECLINED',
         ]),
         approvedById: faker.helpers.arrayElement(relationsId),
       },

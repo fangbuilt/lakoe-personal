@@ -11,45 +11,82 @@ import {
   Textarea,
   Text,
   Image,
+  AlertIcon,
   Alert,
   AlertTitle,
   Center,
+  Card,
 } from '@chakra-ui/react';
 import GalleryAdd from '~/assets/icon-pack/gallery-add.svg';
 import GalleryEdit from '~/assets/icon-pack/gallery-edit.svg';
-import TickCircle from '~/assets/icon-pack/tick-circle.svg';
-import CloseCircleRed from '~/assets/icon-pack/close-circle-red.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { ChangeEvent } from 'react';
-import React, { useState } from 'react';
-import { Form } from '@remix-run/react';
+import React, { useEffect, useState } from 'react';
+import { Form, useLoaderData } from '@remix-run/react';
+import type { FileWithPath } from 'react-dropzone';
+import Dropzone from 'react-dropzone';
+import type { AxiosResponse } from 'axios';
+import axios from 'axios';
+import crypto from 'crypto';
+import Loading from '../loading';
+import type { loader } from '~/routes/configuration_.storeConfiguration';
 
-export function Informations() {
+const CLOUDINARY_UPLOAD_PRESET = 'eenwxkso';
+const CLOUDINARY_CLOUD_NAME = 'djpxhz3vu';
+
+export function Informations({ dataStore }: any) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   const [slogan, setSlogan] = useState<string>('');
   const [namaToko, setNamaToko] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
-  const [sloganFilled, setSloganFilled] = useState(false);
-  const [descriptionFilled, setDescriptionFilled] = useState(false);
-  const [namaTokoFilled, setNamaTokoFilled] = useState(false);
-
   const characterLimitSlogan = 48;
   const characterLimitNamaToko = 48;
   const characterLimitDescription = 200;
 
+  const [formData, setFormData] = useState({
+    storeId: '',
+    slogan: '',
+    name: '',
+    description: '',
+  });
+
+  useEffect(() => {
+    const uploadedImageFromLocalStorage = localStorage.getItem('uploadedImage');
+    if (uploadedImageFromLocalStorage) {
+      setSelectedImage(uploadedImageFromLocalStorage);
+      setUploadedImage(uploadedImageFromLocalStorage);
+    }
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSaveButtonClick = () => {
+    console.log('URL gambar:', selectedImage);
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 5000);
+  };
+
   const handleSloganChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
     setSlogan(text);
-    setSloganFilled(!!text);
   };
 
   const handleTokoFilled = (e: React.ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
     setNamaToko(text);
-    setNamaTokoFilled(!!text);
   };
 
   const handleDescriptionFilled = (
@@ -57,54 +94,112 @@ export function Informations() {
   ) => {
     const text = e.target.value;
     setDescription(text);
-    setDescriptionFilled(!!text);
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
+  const handleDrop = async (acceptedFiles: FileWithPath[]) => {
+    const file = acceptedFiles[0];
+    const imageUrl = URL.createObjectURL(file);
 
-      reader.onload = (event) => {
-        if (event.target) {
-          setSelectedImage(event.target.result as string);
+    setSelectedImage(imageUrl);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      setIsUploading(true);
+      const response: AxiosResponse = await axios.post(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         }
-      };
+      );
 
-      reader.readAsDataURL(file);
+      console.log('Image uploaded:', response.data.secure_url);
+      setUploadedImage(response.data.secure_url);
+      localStorage.setItem('uploadedImage', response.data.secure_url);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+      setTimeout(() => {
+        setIsUploading(false);
+      }, 5000);
     }
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      const reader = new FileReader();
+  const handleRemove = () => {
+    if (selectedImage) {
+      URL.revokeObjectURL(selectedImage);
+      setSelectedImage(null);
+      setUploadedImage(null);
 
-      reader.onload = (event) => {
-        if (event.target) {
-          setSelectedImage(event.target.result as string);
-        }
-      };
-
-      reader.readAsDataURL(file);
+      deleteImageFromCloudinary(uploadedImage);
+      console.log('ini adalah', uploadedImage);
     }
   };
 
-  const handleDeleteImage = () => {
-    setSelectedImage(null);
+  const deleteImageFromCloudinary = async (imageUrl: string | null) => {
+    try {
+      // Extract public_id from the Cloudinary image URL
+      const publicId = imageUrl
+        ?.split('/')
+        .pop()
+        ?.replace(/\.[^/.]+$/, '') as string;
+      console.log('publicoy', publicId);
+
+      const timestamp = new Date().getTime();
+      const apiKey = '398171867266613';
+      const apiSecret = '4frGZZhXI0IgySCq2nWuYitfOyE';
+      const signature = generateSHA1(generateSignature(publicId, apiSecret));
+      console.log('ini 1');
+      // Send a DELETE request to Cloudinary
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/destroy`,
+        {
+          public_id: publicId,
+          signature: signature,
+          api_key: apiKey,
+          timestamp: timestamp,
+        }
+      );
+
+      console.log('ini response', response);
+
+      console.log('Image deleted from Cloudinary');
+    } catch (error) {
+      console.error('Error deleting image from Cloudinary:', error);
+    }
   };
-  const handleSaveClick = async () => {
-    setShowAlert(true);
+
+  const generateSHA1 = (data: any) => {
+    const hash = crypto.createHash('sha1');
+    hash.update(data);
+    return hash.digest('hex');
   };
+
+  const generateSignature = (publicId: string, apiSecret: string) => {
+    const timestamp = new Date().getTime();
+    return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+  };
+  const store = useLoaderData<typeof loader>();
+  console.log(store.store as string);
 
   return (
     <TabPanel>
       <Text fontWeight={'semibold'} fontSize={'16px'} mb={3}>
         Informasi Toko
       </Text>
-      <Form method="post">
-        <Input hidden name="actionType" value="createinformation" />
+      <Form method="post" encType="multipart/form-data">
+        <Input hidden name="action" value="updateInformation" />
+        <Input
+          hidden
+          type="text"
+          name="storeId"
+          value={store.store as string}
+        />
         <FormControl>
           <Grid
             h="150px"
@@ -117,12 +212,15 @@ export function Informations() {
                 Slogan
               </FormLabel>
               <Input
+                defaultValue={dataStore?.slogan ?? ''}
                 fontSize={'13px'}
                 placeholder="Buat slogan untuk toko"
                 py={-5}
-                value={slogan}
                 name="slogan"
-                onChange={handleSloganChange}
+                onChange={(event) => {
+                  handleChange(event);
+                  handleSloganChange(event);
+                }}
                 maxLength={characterLimitSlogan}
               />
 
@@ -142,13 +240,15 @@ export function Informations() {
               </FormLabel>
 
               <Textarea
+                defaultValue={dataStore?.description ?? ''}
                 fontSize={'13px'}
                 h={'145px'}
                 resize={'none'}
                 placeholder="Tuliskan deskripsi toko disini"
-                value={description}
                 name="description"
-                onChange={handleDescriptionFilled}
+                onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                  handleDescriptionFilled(event);
+                }}
                 maxLength={characterLimitDescription}
               />
 
@@ -167,11 +267,14 @@ export function Informations() {
                 Nama Toko
               </FormLabel>
               <Input
+                defaultValue={dataStore?.name ?? ''}
                 fontSize={'13px'}
                 placeholder="Buat Nama Toko"
-                value={namaToko}
-                name="namestore"
-                onChange={handleTokoFilled}
+                name="name"
+                onChange={(event) => {
+                  handleChange(event);
+                  handleTokoFilled(event);
+                }}
                 maxLength={characterLimitNamaToko}
               />
 
@@ -185,6 +288,17 @@ export function Informations() {
                 {namaToko.length}/{characterLimitNamaToko}
               </Text>
             </GridItem>
+            <Grid>
+              <Input
+                value={uploadedImage || dataStore?.logoAttachment || ''}
+                name="logoAttachment"
+                fontSize={'13px'}
+                onChange={(event) => {
+                  handleChange(event);
+                }}
+                hidden
+              />
+            </Grid>
           </Grid>
         </FormControl>
 
@@ -198,153 +312,164 @@ export function Informations() {
             color={'white'}
             borderRadius={'full'}
             bg={'#0086B4'}
-            onClick={handleSaveClick}
+            onClick={handleSaveButtonClick}
           >
             Simpan
           </Button>
         </Flex>
-      </Form>
-      {showAlert && (
-        <Center>
-          <Alert
-            justifyContent={'space-between'}
-            w={'30%'}
-            color="white"
-            status={
-              sloganFilled && descriptionFilled && namaTokoFilled
-                ? 'success'
-                : 'error'
-            }
-            variant={'subtle'}
-            borderRadius={'10px'}
-            bg={'blackAlpha.800'}
-            position={'fixed'}
-            top={'5px'}
-            py={0}
-            px={3}
-          >
-            <Image
-              sizes="10px"
-              me={2}
-              src={
-                sloganFilled && descriptionFilled && namaTokoFilled
-                  ? TickCircle
-                  : CloseCircleRed
-              }
-            />
-            <AlertTitle fontWeight={'normal'} fontSize={'13px'}></AlertTitle>
-            <Button
-              fontSize={'13px'}
-              colorScheme="none"
-              onClick={() => setShowAlert(false)}
+        {showAlert && (
+          <Center>
+            <Alert
+              justifyContent={'space-between'}
+              color="white"
+              status="success"
+              mt={4}
+              variant={'subtle'}
+              borderRadius={'10px'}
+              bg={'blackAlpha.800'}
+              position={'fixed'}
+              top={'50px'}
+              py={0}
+              px={3}
+              w={'25%'}
             >
-              Ok
-            </Button>
-          </Alert>
-        </Center>
-      )}
-      <hr />
-      <Text fontWeight={'semibold'} fontSize={'16px'} mt={3}>
-        Logo Toko
-      </Text>
-      <Box
-        w="100px"
-        my={3}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrop}
-      >
-        {selectedImage ? (
-          <>
-            <Box
-              border="0.5px solid "
-              borderColor={'blackAlpha.400'}
-              borderWidth="2px"
-              display="flex"
-              justifyContent="center"
-              flexDirection="column"
-              alignItems="center"
-              borderRadius="10px"
-              p={1}
-              w="130px"
-              h="130px"
-              position={'relative'}
-            >
-              <Image
-                w="100%"
-                h="100%"
-                src={selectedImage} // belum dari data base
-                objectFit={'cover'}
-              />
-              <Input
-                hidden
-                type="file"
-                accept="image/*"
-                name="logoAttachment"
-                onChange={handleImageChange}
-              />
+              <AlertIcon fontSize={'13px'} color={'white'} />
+              <AlertTitle fontWeight={'normal'} fontSize={'13px'}>
+                Informasi toko berhasil disimpan.
+              </AlertTitle>
               <Button
-                size={'xs'}
-                boxShadow={'lg'}
-                p={0}
+                fontSize={'13px'}
                 colorScheme="none"
-                borderRadius={'full'}
-                top={'98px'}
-                left={'72px'}
-                position={'absolute'}
-                bg={'white'}
+                onClick={() => setShowAlert(false)}
               >
-                <Image m={0} boxSize={'15px'} src={GalleryEdit} />
+                ok
               </Button>
-              <Button
-                onClick={handleDeleteImage}
-                size={'xs'}
-                boxShadow={'lg'}
-                p={0}
-                colorScheme="none"
-                borderRadius={'full'}
-                top={'98px'}
-                left={'98px'}
-                position={'absolute'}
-                bg={'white'}
-              >
-                <Image m={0} boxSize={'15px'} src={Trash} />
-              </Button>
-            </Box>
-          </>
-        ) : (
-          <>
-            <FormLabel
-              border="dashed"
-              borderWidth="2px"
-              display="flex"
-              justifyContent="center"
-              flexDirection="column"
-              alignItems="center"
-              borderRadius="10px"
-              borderColor="blackAlpha.300"
-              w="130px"
-              h="130px"
-            >
-              <Image
-                justifyContent="center"
-                w="30px"
-                h="30px"
-                src={GalleryAdd}
-              />
-
-              <Input
-                hidden
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-              <Text fontSize={'13px'} color={'blackAlpha.700'}>
-                Unggah photo
-              </Text>
-            </FormLabel>
-          </>
+            </Alert>
+          </Center>
         )}
-      </Box>
+        <hr />
+        <Text fontWeight={'semibold'} fontSize={'16px'} mt={3}>
+          Logo Toko
+        </Text>
+
+        <Box my={3}>
+          <Dropzone onDrop={(acceptedFiles) => handleDrop(acceptedFiles)}>
+            {({ getRootProps, getInputProps }) => (
+              <Box
+                {...getRootProps()}
+                display="flex"
+                flexDirection="column"
+                position={'relative'}
+                w="130px"
+                h="130px"
+              >
+                <input {...getInputProps()} />
+                {selectedImage ? (
+                  <Box>
+                    {uploadedImage ? (
+                      <Card
+                        border="0.5px solid "
+                        borderColor={'blackAlpha.400'}
+                        borderWidth="2px"
+                        display="flex"
+                        justifyContent="center"
+                        flexDirection="column"
+                        alignItems="center"
+                        borderRadius="10px"
+                        p={1}
+                        w="130px"
+                        h="130px"
+                        position={'relative'}
+                      >
+                        <Image
+                          src={uploadedImage}
+                          alt="Uploaded Photo"
+                          objectFit={'cover'}
+                          w={'100%'}
+                          h={'100%'}
+                        />
+                        <Button
+                          position={'absolute'}
+                          size={'xs'}
+                          boxShadow={'lg'}
+                          p={0}
+                          colorScheme="none"
+                          borderRadius={'full'}
+                          bg={'white'}
+                          top={'98px'}
+                          left={'72px'}
+                        >
+                          <Image src={GalleryEdit} />
+                        </Button>
+                        <Button
+                          position={'absolute'}
+                          size={'xs'}
+                          boxShadow={'lg'}
+                          p={0}
+                          colorScheme="none"
+                          borderRadius={'full'}
+                          bg={'white'}
+                          top={'98px'}
+                          left={'98px'}
+                          onClick={() => handleRemove()}
+                        >
+                          <Image m={0} boxSize={'15px'} src={Trash} />
+                        </Button>
+                      </Card>
+                    ) : (
+                      isUploading && (
+                        <Box
+                          border="dashed"
+                          borderWidth="2px"
+                          display="flex"
+                          justifyContent="center"
+                          flexDirection="column"
+                          alignItems="center"
+                          borderRadius="10px"
+                          borderColor="blackAlpha.300"
+                          w="130px"
+                          h="130px"
+                        >
+                          <Loading justifyContent="center" />
+                        </Box>
+                      )
+                    )}
+                  </Box>
+                ) : (
+                  <>
+                    <Box
+                      border="dashed"
+                      borderWidth="2px"
+                      display="flex"
+                      justifyContent="center"
+                      flexDirection="column"
+                      alignItems="center"
+                      borderRadius="10px"
+                      borderColor="blackAlpha.300"
+                      w="130px"
+                      h="130px"
+                    >
+                      <Image
+                        justifyContent="center"
+                        w="30px"
+                        h="30px"
+                        src={GalleryAdd}
+                      />
+                      <Text
+                        placeholder="pointer"
+                        fontSize={'13px'}
+                        color={'blackAlpha.700'}
+                      >
+                        Unggah Photo
+                      </Text>
+                    </Box>
+                  </>
+                )}
+              </Box>
+            )}
+          </Dropzone>
+        </Box>
+      </Form>
       <Text fontSize={'13px'} w={'70%'}>
         Ukuran optimal 300 x 300 piksel dengan Besar file: Maksimum 10
         Megabytes. Ekstensi file yang diperbolehkan: JPG, JPEG, PNG

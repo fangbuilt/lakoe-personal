@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
 import data from '../utils/dummy.json';
-import React from 'react';
+// import type { ITransfer } from '~/interfaces/Transfer';
 
 export default function PayTransfer() {
   // export default function Transfer(props: ITransfer) {

@@ -6,7 +6,9 @@ import {
   CardBody,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
+  Heading,
   Image,
   Stack,
   Text,
@@ -21,6 +23,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 import type { loader } from '~/routes/product_.add';
 import { useLoaderData } from '@remix-run/react';
+import useAddProduct from '../hooks/useAddProduct';
 
 // import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '~/constants/cloudinary';
 
@@ -128,10 +131,13 @@ export function ProductDetail() {
     return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
   };
 
+  const { description, maxCharacters, handleChange } = useAddProduct();
+
   return (
     <Card>
       <CardBody>
-        <Stack spacing={4} mb={3}>
+        <Heading size={'md'}>Detail Produk</Heading>
+        <Stack mt={7} spacing={4} mb={3}>
           <FormControl isRequired>
             <FormLabel>Deskripsi</FormLabel>
             <Textarea
@@ -139,10 +145,14 @@ export function ProductDetail() {
               minH={200}
               placeholder="Masukkan deskripsi lengkap produk kamu"
               name="description"
+              maxLength={3000}
+              minLength={1}
+              value={description}
+              onChange={handleChange}
             />
-            <Text fontSize="sm" textAlign="right">
-              0/3000
-            </Text>
+            <FormHelperText textAlign={'right'}>
+              {description.length}/{maxCharacters}
+            </FormHelperText>
           </FormControl>
 
           <Flex gap={2} align="end" overflowX="auto" pb={2}>

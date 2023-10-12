@@ -106,9 +106,9 @@ export default function AdminDeclinedPreview(props: any) {
               <Flex justifyContent={'space-between'} mt={'10px'}>
                 <Box>
                   <Text fontWeight={700}>
-                    {/* {dataDeclined.bankAccount.accountName} */}
+                    {dataDeclined.bankAccount?.accountName}
                   </Text>
-                  <Text fontSize={'12px'}>{dataDeclined.store.name}</Text>
+                  <Text fontSize={'12px'}>{dataDeclined.store?.name}</Text>
                 </Box>
                 <Box>
                   <Text fontSize={'12px'}>{dataDeclined.withdraw.status}</Text>
@@ -119,15 +119,15 @@ export default function AdminDeclinedPreview(props: any) {
                 <Text fontWeight={700}>Informasi Bank</Text>
                 <Flex>
                   <Text width={'150px'}>Nama Bank</Text>
-                  {/* <Text>: {dataDeclined.bankAccount.bank}</Text> */}
+                  <Text>: {dataDeclined.bankAccount?.bank}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nomor Rekening</Text>
-                  {/* <Text>:{dataDeclined.bankAccount.accountNumber}</Text> */}
+                  <Text>:{dataDeclined.bankAccount?.accountNumber}</Text>
                 </Flex>
                 <Flex>
                   <Text width={'150px'}>Nama Pemilik</Text>
-                  {/* <Text>: {dataDeclined.bankAccount.accountName}</Text> */}
+                  <Text>: {dataDeclined.bankAccount?.accountName}</Text>
                 </Flex>
               </Box>
 

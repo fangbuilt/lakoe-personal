@@ -108,7 +108,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdmin'}>
+                      <Link to={'/dashboardAdminWithdraw'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -237,6 +237,7 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       </Link>
                     </Box>
                   </Box>
+
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
                       <Link to={'/adminDeclined'}>
@@ -327,9 +328,6 @@ export default function AdminRequest({ dataWithdrawal }: any) {
                       {item.store?.name}
                     </Td>
 
-                    <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {item.store?.name}
-                    </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
                       {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'

@@ -19,7 +19,8 @@ import Trash from '../../../assets/icon-pack/trash.svg';
 import CloseCircle from '../../../assets/icon-pack/close-circle.svg';
 import type { ITemplateMessage } from '~/interfaces/TemplateMessage';
 import { Form, useNavigation } from '@remix-run/react';
-import React, { useRef, useEffect } from 'react';
+import type { FormEvent } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEditor, EditorContent } from '@tiptap/react';
 import Tiptap, { styles } from '../hooks/Tiptap';
@@ -210,6 +211,13 @@ export function CreateButton(data: any) {
   const { state } = useNavigation();
   const formRef = useRef<HTMLFormElement>(null);
 
+  const [allertMessage, setallertMessage] = useState('');
+  const [isFormValidation, setIsFormValidation] = useState(true);
+
+  const [formData, setFormData] = useState({
+    name: '',
+  });
+
   let isAdding = state === 'submitting';
   useEffect(() => {
     if (isAdding) {
@@ -234,6 +242,27 @@ export function CreateButton(data: any) {
     if (editor) {
       editor.commands.clearContent();
     }
+  }
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleMessage = () => {
+    const { name } = formData;
+
+    if (name.length < 4) {
+      setIsFormValidation(false);
+      setallertMessage('Nama harus memiliki setidaknya 5 karakter');
+    } else {
+      setallertMessage('');
+      setIsFormValidation(true);
+    }
+  };
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    throw new Error('Function not implemented.');
   }
 
   return (
@@ -274,17 +303,28 @@ export function CreateButton(data: any) {
               <Image w={'30px'} src={CloseCircle} />
             </Button>
           </Box>
-          <Form method="post" encType="multipart/form-data" ref={formRef}>
+          <Form
+            method="post"
+            encType="multipart/form-data"
+            ref={formRef}
+            onSubmit={handleSubmit}
+          >
             <Box>
               <Input type="hidden" value={data.storeId} name="storeId" />
             </Box>
             <Box fontFamily={'Plus Jakarta Sans'} py={3}>
               <FormControl isRequired mb={5}>
                 <FormLabel>Judul Pesan</FormLabel>
+                <Text color={'red'}>{allertMessage}</Text>
                 <Input
                   name="name"
                   type="text"
+                  value={formData.name}
                   placeholder=" Pesanan Konfirmasi Pengiriman"
+                  onChange={(event) => {
+                    handleChange(event);
+                    handleMessage();
+                  }}
                 />
               </FormControl>
               <FormControl isRequired>
@@ -304,7 +344,7 @@ export function CreateButton(data: any) {
                     editor
                       .chain()
                       .focus()
-                      .insertContent('[<strong>Nama Customer</strong>]')
+                      .insertContent('[<strong>Nama Pembeli</strong>]')
                       .run()
                   }
                 >
@@ -377,6 +417,7 @@ export function CreateButton(data: any) {
                 borderRadius={'50px'}
                 value="create"
                 name="action"
+                isDisabled={!isFormValidation}
               >
                 Simpan
               </Button>

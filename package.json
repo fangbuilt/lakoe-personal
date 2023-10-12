@@ -39,7 +39,7 @@
     "@types/axios": "^0.14.0",
     "@uidotdev/usehooks": "^2.3.1",
     "@vercel/node": "^2.10.3",
-    "bcrypt": "^5.1.1",
+    "axios": "^1.5.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.0",
     "date-fns": "^2.30.0",
@@ -63,7 +63,8 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-icons": "^4.11.0",
-    "react-select": "^5.7.7",
+    "react-loading": "^2.0.3",
+    "react-select": "^5.7.4",
     "source-map-support": "^0.5.21",
     "use-places-autocomplete": "^4.0.1",
     "zod": "^3.22.2"

@@ -31,10 +31,10 @@ import { redirect } from '@remix-run/node';
 import { db } from '~/libs/prisma/db.server';
 import { getUserId } from '~/modules/auth/auth.service';
 
-export async function loader({ request }: LoaderArgs, id: string) {
+export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   if (!userId) {
-    return redirect('/auth/login');
+    throw redirect('/auth/login');
   }
 
   const role = await db.user.findFirst({
@@ -44,13 +44,15 @@ export async function loader({ request }: LoaderArgs, id: string) {
   });
 
   if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
+    throw redirect('/dashboardAdmin');
   } else if (role?.roleId === '2') {
-    return await getStoreData(id);
+    const woi = await getStoreData(userId);
+    console.log('woi', woi);
+    return woi;
   } else if (role?.roleId === '3') {
-    return redirect('/checkout');
+    throw redirect('/checkout');
   } else {
-    return redirect('/logout');
+    throw redirect('/logout');
   }
 }
 
@@ -64,8 +66,8 @@ export async function action({ request }: ActionArgs) {
   const storeId = formData.get('storeId');
   const bankAccount = formData.get('bankAccount');
   const withdrawId = formData.get('withdrawId');
-
-  if (actionType === 'create' && amount && bankAccount) {
+  const userId = await getUserId(request);
+  if (actionType === 'create' && amount && bankAccount && userId) {
     try {
       const createdWithdraw = await createWithdraw(
         {
@@ -80,22 +82,40 @@ export async function action({ request }: ActionArgs) {
         },
         bankId as string,
         storeId as string,
-        approvedById as string
+        approvedById as string,
+        userId as string
       );
 
       console.log('Withdraw created:', createdWithdraw);
+      const user = await db.user.findFirst({
+        where: {
+          id: userId,
+        },
+      });
+
+      if (!user || !user.storeId) {
+        throw new Error('User or store not found');
+      }
+      console.log('user id :', user.id);
+      console.log('store id :', user.storeId);
 
       const store = await db.store.findUnique({
         where: {
-          id: '4',
+          id: user?.storeId,
         },
       });
       if (store) {
-        const newCredit = store.credit - amount;
+        let newCredit = 0;
+
+        if (store.credit > amount) {
+          newCredit = store.credit - amount;
+        } else {
+          throw new Error();
+        }
 
         await db.store.update({
           where: {
-            id: '4',
+            id: user.storeId,
           },
           data: {
             credit: newCredit,
@@ -104,10 +124,10 @@ export async function action({ request }: ActionArgs) {
       } else {
         console.error('User not found');
       }
-      return redirect('/dashboard');
+      throw redirect('/dashboard');
     } catch (error) {
       console.error('Error creating withdrawal:', error);
-      return redirect('/dashboard');
+      throw redirect('/dashboard');
     }
   }
 
@@ -130,31 +150,22 @@ export default function Dashboard() {
   }
 
   let totalWithdrawAmount = 0;
-  data.forEach((item) => {
-    if (item.bankAccounts && item.bankAccounts.length > 0) {
-      item.bankAccounts.forEach((account) => {
-        if (account.withdraws && account.withdraws.length > 0) {
-          account.withdraws.forEach((withdraw) => {
-            if (
-              withdraw.status !== 'SUCCESS' &&
-              withdraw.status !== 'DECLINED'
-            ) {
-              totalWithdrawAmount += parseFloat(withdraw.amount.toString());
-            } else if (withdraw.status === 'DECLINED') {
-              item.credit += parseFloat(withdraw.amount.toString());
-            }
-          });
-        }
-      });
-    }
-  });
+  if (data?.bankAccounts && data?.bankAccounts.length > 0) {
+    data?.bankAccounts.forEach((account) => {
+      if (account.withdraws && account.withdraws.length > 0) {
+        account.withdraws.forEach((withdraw) => {
+          if (withdraw.status !== 'SUCCESS' && withdraw.status !== 'DECLINED') {
+            totalWithdrawAmount += parseFloat(withdraw.amount.toString());
+          }
+        });
+      }
+    });
+  }
 
   let createdAtArray: string[] = [];
-  data.forEach((dataItem) => {
-    dataItem.bankAccounts.forEach((bankAccountItem) => {
-      bankAccountItem.withdraws.forEach((withdrawItem) => {
-        createdAtArray.push(withdrawItem.createdAt);
-      });
+  data?.bankAccounts.forEach((bankAccountItem) => {
+    bankAccountItem.withdraws.forEach((withdrawItem) => {
+      createdAtArray.push(withdrawItem.createdAt);
     });
   });
 
@@ -179,24 +190,17 @@ export default function Dashboard() {
             >
               <Text fontSize={'13px'}>Current Balance</Text>
 
-              {data.map((item) => (
-                <Text
-                  fontSize={'20px'}
-                  fontWeight={'bold'}
-                  color={'#28a745'}
-                  key={item.id}
-                >
-                  {formatRupiah(item.credit)}
-                </Text>
-              ))}
-              {data.map((item) => (
-                <DashboardPopup
-                  key={item.id}
-                  bankAccount={item.bankAccounts}
-                  storeName={item.name}
-                  createdAt={createdAtArray}
-                />
-              ))}
+              <Text
+                fontSize={'20px'}
+                fontWeight={'bold'}
+                color={'#28a745'}
+                key={data?.id}
+              >
+                {formatRupiah(
+                  isNaN(data?.credit as number) ? 0 : (data?.credit as number)
+                )}
+              </Text>
+              <DashboardPopup data={data?.bankAccounts} />
             </Box>
             <Box
               display={'flex'}

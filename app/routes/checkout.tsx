@@ -61,7 +61,7 @@ export default function CheckoutPage() {
                 <Stack align={'start'} spacing={2}>
                   <Image
                     borderRadius={'10px'}
-                    src={i.attachments[0].url}
+                    src={i.attachments ? i.attachments[0]?.url : ''}
                     alt="none"
                   />
                   <Link
@@ -72,19 +72,19 @@ export default function CheckoutPage() {
                   >
                     <Box mt={2}>
                       <Heading size="md">{i.name}</Heading>
-                      {/* <Text>
+                      <Text>
                         Rp.
-                        {i.variants[0].variantOptions[0].variantOptionValues[0].price.toLocaleString(
+                        {i.variants[0]?.variantOptions[0]?.variantOptionValues[0]?.price.toLocaleString(
                           'id-ID'
                         )}
-                      </Text> */}
+                      </Text>
                       <Text>slug :{i.slug}</Text>
                       <Text>{i.store?.name}</Text>
-                      {/* <Text>
-                        {i.variants[0].variantOptions[0].variantOptionValues[0]
-                          .stock + ' '}
+                      <Text>
+                        {i.variants[0]?.variantOptions[0]
+                          ?.variantOptionValues[0]?.stock + ' '}
                         pcs
-                      </Text> */}
+                      </Text>
                     </Box>
                   </Link>
                 </Stack>
