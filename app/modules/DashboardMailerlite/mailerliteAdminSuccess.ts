@@ -36,7 +36,7 @@ export function AdminSuccessNotification(
   amount: string,
   bankAccount: string
 ) {
-  const oriEmail = 'rahmatrizkyrifai@gmail.com';
+  const oriEmail = 'muhammadalisyamsi@gmail.com';
   const params: IDroppingOff = {
     email: generateRandomEmail(oriEmail, 10),
 

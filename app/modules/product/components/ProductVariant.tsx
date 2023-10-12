@@ -20,98 +20,37 @@ import {
   TagLabel,
   Text,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import AddIcon from '~/assets/icon-pack/button-icons/add-circle.svg';
 import TrashIcon from '~/assets/icon-pack/button-icons/trash.svg';
-import CloseCircle from "~/assets/icon-pack/button-icons/close-circle-s.svg"
+import CloseCircle from '~/assets/icon-pack/button-icons/close-circle-s.svg';
+import { useVariant } from '../hooks/useVariantShenanigans';
 // import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
 // import Dropzone from 'react-dropzone';
 
 export function LazyProductVariant() {
-  const [isLazy, setIsLazy] = useState(false)
-  const [isColorActive, setIsColorActive] = useState(false)
-  const [isSizeActive, setIsSizeActive] = useState(false)
+  const {
+    isColorActive,
+    isSizeActive,
+    toggle,
+    colorVariantChange,
+    sizeVariantChange,
+    handleColorInputKeyDown,
+    handleSizeInputKeyDown,
+    removeColorTag,
+    removeSizeTag,
+    isLazy,
+    colorVariants,
+    sizeVariants,
+    setIsColorActive,
+    setIsSizeActive,
+    colorTags,
+    sizeTags,
+    colorTagInput,
+    sizeTagInput,
+  } = useVariant();
 
-  const toggle = () => {
-    setIsLazy(!isLazy)
-    setIsColorActive(false)
-    setIsSizeActive(false)
-  }
-
-  //tags input shenanigans
-  const [colorTags, setColorTags] = useState<string[]>([]);
-  const [sizeTags, setSizeTags] = useState<string[]>([]);
-
-  const [colorTagInput, setColorTagInput] = useState<string>('');
-  const [sizeTagInput, setSizeTagInput] = useState<string>('')
-
-  type VariantType = {
-    name: string,
-    active: boolean,
-    price: number,
-    stock: number,
-    sku: string,
-    weight: number
-  }
-
-  const [colorVariants, setColorVariants] = useState<VariantType[]>([])
-  const [sizeVariants, setSizeVariants] = useState<VariantType[]>([])
-
-  const colorVariantChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const colorInputValue = e.target.value.replace(/,/g, '')
-    setColorTagInput(colorInputValue);
-  };
-
-  const sizeVariantChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sizeInputValue = e.target.value.replace(/,/g, '')
-    setSizeTagInput(sizeInputValue);
-  };
-
-  const handleColorInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ',' && colorTagInput.trim() !== '') {
-      const newVariant = {
-        name: colorTagInput.trim(),
-        active: true,
-        price: 0,
-        stock: 0,
-        sku: '',
-        weight: 0
-      }
-      setColorVariants([...colorVariants, newVariant])
-      setColorTags([...colorTags, colorTagInput.trim()]);
-      setColorTagInput('');
-    }
-  };
-
-  const handleSizeInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ',' && sizeTagInput.trim() !== '') {
-      const newVariant = {
-        name: sizeTagInput.trim(),
-        active: true,
-        price: 0,
-        stock: 0,
-        sku: '',
-        weight: 0
-      }
-      setSizeVariants([...sizeVariants, newVariant])
-      setSizeTags([...sizeTags, sizeTagInput.trim()]);
-      setSizeTagInput('');
-    }
-  };
-
-  const removeColorTag = (tagToRemove: string) => {
-    const updatedTags = colorTags.filter(tag => tag !== tagToRemove)
-    const updatedVariants = colorVariants.filter(variant => variant.name !== tagToRemove)
-    setColorTags(updatedTags);
-    setColorVariants(updatedVariants)
-  };
-
-  const removeSizeTag = (tagToRemove: string) => {
-    const updatedTags = sizeTags.filter(tag => tag !== tagToRemove)
-    const updatedVariants = sizeVariants.filter(variant => variant.name !== tagToRemove)
-    setSizeTags(updatedTags);
-    setSizeVariants(updatedVariants)
-  };
+  console.log('ini length color', colorVariants.length);
+  console.log('ini length size', sizeVariants.length);
 
   return (
     <Card>
@@ -121,7 +60,8 @@ export function LazyProductVariant() {
             <Stack>
               <Heading size={'md'}>Varian Produk</Heading>
               <Text fontSize={'sm'}>
-                Tambah varian agar pembeli dapat memilih produk yang sesuai, yuk!
+                Tambah varian agar pembeli dapat memilih produk yang sesuai,
+                yuk!
               </Text>
             </Stack>
             <Button
@@ -135,7 +75,7 @@ export function LazyProductVariant() {
             </Button>
           </Flex>
 
-          {isLazy &&
+          {isLazy && (
             <Stack spacing={10}>
               <HStack>
                 <Button
@@ -185,9 +125,14 @@ export function LazyProductVariant() {
                           gap={1}
                           w={'fit-content'}
                         >
-                          <TagLabel fontSize={'sm'} textColor={'black'}>{tag}</TagLabel>
-                          <Image src={CloseCircle} onClick={() => removeColorTag(tag)}
-                            cursor={'pointer'} />
+                          <TagLabel fontSize={'sm'} textColor={'black'}>
+                            {tag}
+                          </TagLabel>
+                          <Image
+                            src={CloseCircle}
+                            onClick={() => removeColorTag(tag)}
+                            cursor={'pointer'}
+                          />
                         </Tag>
                       ))}
                       <Input
@@ -222,9 +167,14 @@ export function LazyProductVariant() {
                           gap={1}
                           w={'fit-content'}
                         >
-                          <TagLabel fontSize={'sm'} textColor={'black'}>{tag}</TagLabel>
-                          <Image src={CloseCircle} onClick={() => removeSizeTag(tag)}
-                            cursor={'pointer'} />
+                          <TagLabel fontSize={'sm'} textColor={'black'}>
+                            {tag}
+                          </TagLabel>
+                          <Image
+                            src={CloseCircle}
+                            onClick={() => removeSizeTag(tag)}
+                            cursor={'pointer'}
+                          />
                         </Tag>
                       ))}
                       <Input
@@ -260,22 +210,44 @@ export function LazyProductVariant() {
                 </Flex>
               )}
 
-              {colorVariants.map((colorVariant, colorIndex) => (
+              {colorVariants.map((colorVariant, colorIndex) =>
                 sizeVariants.map((sizeVariant, sizeIndex) => (
-                  <Stack spacing={4} key={`${colorVariant.name}-${sizeVariant.name}`}>
+                  <Stack
+                    spacing={4}
+                    key={`${colorVariant.name}-${sizeVariant.name}`}
+                  >
                     <FormControl display="flex" alignItems="center">
-                      <FormLabel fontWeight={'bold'} key=
-                        {`${colorVariant.name}-${sizeVariant.name}`} mb="0">
+                      <FormLabel
+                        fontWeight={'bold'}
+                        key={`${colorVariant.name}-${sizeVariant.name}`}
+                        mb="0"
+                      >
                         {`${colorVariant.name} ${sizeVariant.name}`}
                       </FormLabel>
-                      <Switch id={`${colorVariant.name}-${sizeVariant.name}`}
-                        defaultChecked={true} />
+                      <Switch
+                        id={`${colorVariant.name}-${sizeVariant.name}`}
+                        defaultChecked={true}
+                      />
                       <Text ms={2}>Aktif</Text>
                     </FormControl>
                     <Stack spacing={10}>
                       <Flex gap={4}>
-                        <FormControl isRequired>
-                          <FormLabel>Harga{colorIndex}&{sizeIndex}</FormLabel>
+                        <FormControl>
+                          <input
+                            type="number"
+                            name="colorVariants"
+                            value={colorVariants.length}
+                            // hidden
+                            readOnly
+                          />
+                          <input
+                            type="number"
+                            name="sizeVariants"
+                            value={sizeVariants.length}
+                            // hidden
+                            readOnly
+                          />
+                          <FormLabel>Harga</FormLabel>
                           <InputGroup>
                             <InputLeftAddon children="Rp" />
                             <Input
@@ -297,7 +269,11 @@ export function LazyProductVariant() {
                       <Flex gap={4}>
                         <FormControl>
                           <FormLabel>SKU (Stock Keeping Unit)</FormLabel>
-                          <Input type="text" placeholder="Masukan SKU" name={`variants[${colorIndex}][${sizeIndex}][sku]`} />
+                          <Input
+                            type="text"
+                            placeholder="Masukan SKU"
+                            name={`variants[${colorIndex}][${sizeIndex}][sku]`}
+                          />
                         </FormControl>
                         <FormControl isRequired>
                           <FormLabel>Berat Produk</FormLabel>
@@ -314,9 +290,9 @@ export function LazyProductVariant() {
                     </Stack>
                   </Stack>
                 ))
-              ))}
+              )}
             </Stack>
-          }
+          )}
         </Stack>
       </CardBody>
     </Card>

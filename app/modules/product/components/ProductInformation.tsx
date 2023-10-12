@@ -20,7 +20,8 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from '@chakra-ui/icons';
-import { ChangeEvent, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import { useState } from 'react';
 
 export function ProductInformation() {
   const {
@@ -40,7 +41,7 @@ export function ProductInformation() {
   const [productName, setProductName] = useState('');
   function handleChange2(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    console.log("ini name", name);
+    console.log('ini name', name);
 
     setProductName(value);
   }
@@ -82,9 +83,11 @@ export function ProductInformation() {
                 type="text"
                 fontSize={'xs'}
                 isReadOnly
-                value={`${selected.grandparent || ''} ${selected.parent ? '>' : ''
-                  } ${selected.parent || ''} ${selected.child ? '>' : ''} ${selected.child || ''
-                  }`}
+                value={`${selected.grandparent || ''} ${
+                  selected.parent ? '>' : ''
+                } ${selected.parent || ''} ${selected.child ? '>' : ''} ${
+                  selected.child || ''
+                }`}
               />
               <InputRightElement>
                 {!openOptions ? <ChevronDownIcon /> : <ChevronUpIcon />}

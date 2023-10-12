@@ -34,8 +34,8 @@ export async function createProduct(data: any, storeId: any) {
               url: data.url4,
             },
             {
-              url: data.url5
-            }
+              url: data.url5,
+            },
           ],
         },
 
@@ -49,20 +49,35 @@ export async function createProduct(data: any, storeId: any) {
                   {
                     name: data.name,
                     variantOptionValues: {
-                      create: [
-                        {
-                          price: data.variants[0].price,
-                          sku: data.variants[0].sku,
-                          stock: data.variants[0].stock,
-                          weight: data.variants[0].weight,
-                          isActive: true,
-                        },
-                      ],
+                      create: data.variants,
                     },
                   },
                 ],
               },
             },
+            // {
+            //   name: data.name,
+            //   isActive: true,
+            //   variantOptions: {
+            //     create: [
+            //       {
+            //         name: data.name,
+            //         variantOptionValues: {
+            //           create:
+            //             [
+            //               {
+            //                 price: data.price2,
+            //                 sku: data.sku2,
+            //                 stock: data.stock2,
+            //                 weight: data.weight2,
+            //                 isActive: true,
+            //               },
+            //             ],
+            //         },
+            //       },
+            //     ],
+            //   },
+            // },
           ],
         },
       },

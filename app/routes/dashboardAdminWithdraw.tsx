@@ -1,37 +1,19 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminAll from '~/components/AdminAll';
-import { ImplementGridAdmin } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { getUserId } from '~/modules/auth/auth.service';
+import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
+import { authorize } from '~/middleware/authorization';
 import {
   getWithdrawalList,
   updateStatusWithdraw,
 } from '~/modules/dashboard/dashboard.service';
 
-export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    return redirect('/auth/login');
-  }
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, '1');
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
-  if (role?.roleId === '1') {
-    return await getWithdrawalList();
-  } else if (role?.roleId === '2') {
-    return redirect('/dashboard');
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
+  return await getWithdrawalList();
 }
 
 export async function Action({ request }: ActionArgs) {
@@ -78,13 +60,13 @@ export async function action({ request }: ActionArgs) {
   return redirect('/adminProcessing');
 }
 
-export default function DashboardAdmin() {
+export default function DashboardAdminWithdraw() {
   const dataWithdrawal = useLoaderData<typeof loader>();
   return (
-    <ImplementGridAdmin>
+    <ImplementGridAdminWithdraw>
       <Flex h={'100vh'} width={'100%'}>
         <AdminAll dataWithdrawal={dataWithdrawal} />
       </Flex>
-    </ImplementGridAdmin>
+    </ImplementGridAdminWithdraw>
   );
 }

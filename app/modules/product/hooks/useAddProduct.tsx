@@ -3,7 +3,13 @@ import type { ChangeEvent } from 'react';
 import type { Product } from '~/interfaces/product';
 
 export default function useAddProduct() {
-  const [previews, setPreviews] = useState<(string | undefined)[]>([undefined, undefined, undefined, undefined, undefined]);
+  const [previews, setPreviews] = useState<(string | undefined)[]>([
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ]);
 
   const [form, setForm] = useState<Product>({
     name: '',
@@ -22,8 +28,8 @@ export default function useAddProduct() {
     height: 0,
   });
 
-  const [description, setDescription] = useState('')
-  const maxCharacters = 3000
+  const [description, setDescription] = useState('');
+  const maxCharacters = 3000;
 
   function handleChange(
     event: ChangeEvent<
@@ -43,29 +49,27 @@ export default function useAddProduct() {
 
       const mediaFile = files as MediaSource | Blob;
       console.log('mediaFile:', mediaFile);
-      const newPreviews = [...previews]
-      const index = Number(name.split('_')[1])
+      const newPreviews = [...previews];
+      const index = Number(name.split('_')[1]);
 
-      newPreviews[index] = URL.createObjectURL(mediaFile)
-      setPreviews(newPreviews)
+      newPreviews[index] = URL.createObjectURL(mediaFile);
+      setPreviews(newPreviews);
 
       setForm({
         ...form,
         [name]: mediaFile,
       });
-
     } else if (name === 'description') {
-      const descValue = event.target.value
+      const descValue = event.target.value;
 
       if (descValue.length <= maxCharacters) {
-        setDescription(descValue)
+        setDescription(descValue);
       }
 
       setForm({
         ...form,
         [name]: value,
       });
-
     } else {
       setForm({
         ...form,
@@ -75,8 +79,8 @@ export default function useAddProduct() {
   }
 
   function cancelPreview(index: number) {
-    const newPreviews = [...previews]
-    newPreviews[index] = undefined
+    const newPreviews = [...previews];
+    newPreviews[index] = undefined;
     setForm({
       ...form,
       attachments: [],

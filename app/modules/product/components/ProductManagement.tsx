@@ -21,7 +21,7 @@ export function ProductManagement() {
             <Input
               type="number"
               placeholder="Masukan jumlah stok"
-              name="stock"
+              name={`variants[0][0][stock]`}
               onChange={handleChange}
             />
           </FormControl>
@@ -31,7 +31,7 @@ export function ProductManagement() {
             <Input
               type="text"
               placeholder="Masukan SKU"
-              name="sku"
+              name={`variants[0][0][sku]`}
               onChange={handleChange}
             />
           </FormControl>

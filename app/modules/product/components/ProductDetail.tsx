@@ -129,7 +129,7 @@ export function ProductDetail() {
     return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
   };
 
-  const { description, maxCharacters, handleChange } = useAddProduct()
+  const { description, maxCharacters, handleChange } = useAddProduct();
 
   return (
     <Card>
@@ -142,7 +142,8 @@ export function ProductDetail() {
               maxH={400}
               minH={200}
               placeholder="Masukkan deskripsi lengkap produk kamu"
-              name="description" maxLength={3000}
+              name="description"
+              maxLength={3000}
               minLength={1}
               value={description}
               onChange={handleChange}

@@ -83,6 +83,7 @@ export default function AdminApproved({ dataWithdrawal }: any) {
         p="6"
         rounded="md"
         bg="white"
+        overflow={'auto'}
       >
         <Box>
           <Tabs defaultIndex={2}>
@@ -105,7 +106,7 @@ export default function AdminApproved({ dataWithdrawal }: any) {
                 <TabList mx={5}>
                   <Box textAlign={'center'}>
                     <Box display={'flex'}>
-                      <Link to={'/dashboardAdmin'}>
+                      <Link to={'/dashboardAdminWithdraw'}>
                         <Tab>
                           {/* NOTIFICATION ORDER */}
                           <Text
@@ -320,7 +321,7 @@ export default function AdminApproved({ dataWithdrawal }: any) {
                       123ASD
                     </Td>
                     <Td px={'5px'} fontSize={'10px'} textAlign={'center'}>
-                      {moment(item.createdAt, 'YYYY-MM-DD HH:mm:ss').format(
+                      {moment(item.updatedAt, 'YYYY-MM-DD HH:mm:ss').format(
                         'LLLL'
                       )}
                     </Td>
