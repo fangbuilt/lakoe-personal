@@ -323,6 +323,37 @@ export async function getDataProductReadyToShip() {
   });
 }
 
+export default async function ServiceSuccess() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'ORDER_COMPLETED',
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: {
+            include: {
+              messageTemplates: true,
+            },
+          },
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export async function getProductByCategoryId(id: any) {
   try {
     const productcategoryid = await db.product.findMany({
@@ -370,6 +401,9 @@ export async function updateStatusInvoice(data: any) {
   });
 }
 
+export async function whatsappTemplateDb() {
+  return await db.messageTemplate.findMany({});
+}
 export async function updateStatusInvoice2(data: any) {
   const { id } = data;
   const invoice = await db.invoice.findUnique({

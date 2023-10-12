@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Card,
   Flex,
@@ -13,18 +12,18 @@ import {
 import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { ImplementGrid } from '~/layouts/Grid';
-import { Informations } from '~/modules/configuration/components/informations/information';
 import Locations from '~/modules/configuration/components/location/Locations';
+import { Informations } from '~/modules/configuration/components/informations/information';
 import createLocation, {
-  createMessage,
-  createStoreInformation,
-  deleteLocation,
-  deleteMessage,
   getAllDataLocation,
-  getMessages,
-  getStoreid,
-  updateMessage,
   updateStoreInformation,
+  getMessages,
+  updateMessage,
+  deleteMessage,
+  createMessage,
+  deleteLocation,
+  updateLocation,
+  getStoreid,
 } from '~/modules/configuration/configuration.service';
 
 import {
@@ -46,62 +45,59 @@ import {
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
 
-  const userId = getUserId(request);
+  const userId = await getUserId(request);
 
   const user = await db.user.findFirst({
     where: {
-      id: String(userId),
+      id: userId as string,
     },
     include: {
       store: true,
     },
   });
 
+  const storePromise = user?.storeId;
+  console.log(storePromise as string);
+
   const getLocationDataPromise = getAllDataLocation();
   const messagesPromise = getMessages(user?.storeId);
   const storeIdPromise = getStoreid(user?.storeId);
 
-  const [getLocationData, messages, store_id] = await Promise.all([
+  const [getLocationData, messages, store_id, store] = await Promise.all([
     getLocationDataPromise,
     messagesPromise,
     storeIdPromise,
+    storePromise,
   ]);
 
-  return { messages, store_id, getLocationData };
+  return { messages, store_id, getLocationData, store };
 }
 
 export async function action({ request }: ActionArgs) {
-  //ini adalah action location ===============================================
+  // action BAGZA==============================
   const formData = await request.formData();
   console.log('ini isi dari formData', formData);
 
-  const actionType = formData.get('actionType');
-  console.log('ini isi dari actionType', actionType);
+  const action = formData.get('action');
 
   const name = formData.get('name');
   const address = formData.get('address');
   const latitude = formData.get('latitude');
   const longtitude = formData.get('longtitude');
   const cityDistrict = formData.get('cityDistrict');
-  const postalCode = formData.get('postalCode');
-  const isMainLocation = true;
+  const postalCode = formData.get('postalCode') as string;
+
   console.log('ini isi dari name :', name);
   console.log('ini isi dari adres :', address);
   console.log('ini isi dari lat :', latitude);
   console.log('ini isi dari long :', longtitude);
   console.log('ini isi dari city :', cityDistrict);
   console.log('ini isi dari poscode :', postalCode);
-  console.log('ini isi dari isman :', isMainLocation);
 
-  //ini action rifki===========================
-  const nameStore = formData.get('namestore');
-  const slogan = formData.get('slogan');
-  const description = formData.get('description');
-  const domain = `lakoe.store/${name}`;
-  const logoAttachment = formData.get('logoAttachment');
-
-  if (actionType === 'createlocation') {
-    console.log('data berhasil masuk!');
+  if (action === 'createlocation') {
+    const isMainLocation = false;
+    console.log('ini isi dari isman :', isMainLocation);
+    console.log('data berhasil di simpan!');
 
     await createLocation({
       name,
@@ -112,43 +108,64 @@ export async function action({ request }: ActionArgs) {
       postalCode,
       isMainLocation,
     });
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const redirectURL = `/configuration/storeConfiguration `;
 
     return redirect(redirectURL);
-  } else if (actionType === 'deletelocation') {
+  } else if (action === 'deletelocation') {
     const id = formData.get('id') as string;
     await deleteLocation(id);
+    const redirectURL = `/configuration/storeConfiguration `;
+
+    return redirect(redirectURL);
+  } else if (action === 'editlocation') {
+    const isMainLocation = false;
+    console.log('ini isi dari isman :', isMainLocation);
+
+    console.log('update ok!');
+    const id = formData.get('id') as string;
+
+    await updateLocation(id, {
+      name,
+      address,
+      latitude,
+      longtitude,
+      cityDistrict,
+      postalCode,
+      isMainLocation,
+    });
+    // } else if (action === "editmainlocation") {
+    //   const isMainLocation = true;
+    //   console.log("main ok!");
+    //   const id = formData.get("id") as string;
+
+    //   await updateMain(id, {
+    //     isMainLocation,
+    //   });
   }
+  //======================================================
+  if (action === 'updateInformation') {
+    const slogan = formData.get('slogan') as string;
+    const description = formData.get('description') as string;
+    const name = formData.get('name') as string;
+    const domain = `lakoe.store/${name}`;
+    const logoAttachment = formData.get('logoAttachment') as string;
 
-  //=======================================================================
+    console.log('ini logoAttachment', logoAttachment);
 
-  if (actionType === 'createinformation') {
-    const storeId = '';
-    if (storeId) {
-      await updateStoreInformation(storeId, {
-        storeId: storeId,
-        name: nameStore,
-        slogan,
-        description,
-        domain,
-        logoAttachment,
-      });
-    } else {
-      await createStoreInformation({
-        name: nameStore,
-        slogan,
-        description,
-        domain,
-        logoAttachment,
-      });
-    }
-    const redirectURL = `/configuration/storeConfiguration/1 `;
+    const id = formData.get('storeId') as string;
+
+    await updateStoreInformation(id, {
+      slogan,
+      domain,
+      name,
+      logoAttachment,
+      description,
+    });
+
+    const redirectURL = `/configuration/storeConfiguration `;
+
     return redirect(redirectURL);
   }
-
-  //ini action template message ==================================================================
-
-  const action = formData.get('action');
 
   if (action === 'create') {
     const name = formData.get('name') as string;
@@ -176,6 +193,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function StoreConfiguration() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <ImplementGrid>
       <Flex h={'105vh'} mt={5}>
@@ -210,7 +228,7 @@ export default function StoreConfiguration() {
           </TabList>
 
           <TabPanels>
-            <Informations />
+            <Informations dataStore={data.store_id} />
 
             <Locations />
 

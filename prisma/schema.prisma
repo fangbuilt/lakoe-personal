@@ -180,7 +180,7 @@ model Location {
   longtitude     String
   postalCode     String?
   cityDistrict   String
-  isMainLocation Boolean?
+  isMainLocation Boolean? @default(false)
   store          Store?   @relation(fields: [storeId], references: [id])
   storeId        String
   profile        Profile? @relation(fields: [profileId], references: [id])
@@ -369,6 +369,7 @@ model Payment {
   @@index([userId])
   @@map("payments")
 }
+
 
 model Courier {
   id                           String    @id @unique @default(uuid())

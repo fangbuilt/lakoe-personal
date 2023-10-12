@@ -6,14 +6,12 @@ import {
   FormControl,
   FormLabel,
   Input,
-  ListItem,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalOverlay,
   Text,
-  UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react';
 import moment from 'moment';
@@ -177,16 +175,19 @@ export default function AdminDeclinedPopup(props: any) {
                       type="text"
                       name="withdrawId"
                       value={formData.withdrawId}
+                      hidden
                     />
                     <Input
                       type="text"
                       name="storeId"
                       value={formData.storeId}
+                      hidden
                     />
                     <Input
                       type="text"
                       name="bankAccountId"
                       value={formData.bankAccountId}
+                      hidden
                     />
                     <FormLabel fontSize="12px" fontWeight={700}>
                       Alasan Penolakan
@@ -217,30 +218,30 @@ export default function AdminDeclinedPopup(props: any) {
                 </form>
               </Box>
 
-              <Box mt={'10px'}>
+              {/* <Box mt={"10px"}>
                 <Text fontWeight={700}>Riwayat</Text>
                 <UnorderedList>
                   <ListItem>
-                    Permintaan ditolak oleh Admin A{' '}
-                    <ListItem ml={'20px'}>
+                    Permintaan ditolak oleh Admin A{" "}
+                    <ListItem ml={"20px"}>
                       {moment(
                         dataWithdrawal.updatedAt,
-                        'YYYY-MM-DD HH:mm:ss'
-                      ).format('LLLL')}{' '}
+                        "YYYY-MM-DD HH:mm:ss"
+                      ).format("LLLL")}{" "}
                     </ListItem>
                   </ListItem>
 
                   <ListItem>
-                    Permintaan dibuat{' '}
-                    <ListItem ml={'20px'}>
+                    Permintaan dibuat{" "}
+                    <ListItem ml={"20px"}>
                       {moment(
                         dataWithdrawal.createdAt,
-                        'YYYY-MM-DD HH:mm:ss'
-                      ).format('LLLL')}{' '}
+                        "YYYY-MM-DD HH:mm:ss"
+                      ).format("LLLL")}{" "}
                     </ListItem>
                   </ListItem>
                 </UnorderedList>
-              </Box>
+              </Box> */}
             </Box>
           </ModalBody>
           <ModalFooter>

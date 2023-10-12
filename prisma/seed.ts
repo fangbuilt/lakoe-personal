@@ -207,8 +207,6 @@ async function main() {
         amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
         bank: 'BCA',
         status: 'UNPAID',
-        accountName: 'Lakoe',
-        accountNumber: '1234567890',
         userId: '1', // just in case buyer can login
       },
       {
@@ -216,8 +214,6 @@ async function main() {
         amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
         bank: 'JAGO',
         status: 'UNPAID',
-        accountName: 'Lakoe',
-        accountNumber: '1234567890',
         userId: '1', // just in case buyer can login
       },
       {
@@ -225,8 +221,6 @@ async function main() {
         amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
         bank: 'DANAMON',
         status: 'UNPAID',
-        accountName: 'Lakoe',
-        accountNumber: '1234567890',
         userId: '1', // just in case buyer can login
       },
       {
@@ -234,8 +228,6 @@ async function main() {
         amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
         bank: 'MANDIRI SYARIAH',
         status: 'UNPAID',
-        accountName: 'Lakoe',
-        accountNumber: '1234567890',
         userId: '1', // just in case buyer can login
       },
       {
@@ -243,8 +235,6 @@ async function main() {
         amount: faker.helpers.rangeToNumber({ min: 10000, max: 100000 }),
         bank: 'MANDIRI',
         status: 'UNPAID',
-        accountName: 'Lakoe',
-        accountNumber: '1234567890',
         userId: '1', // just in case buyer can login
       },
     ],

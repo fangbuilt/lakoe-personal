@@ -313,6 +313,12 @@ export default function CheckoutCourier(props: any) {
             placeholder="Masukkan Catatan Pemesanan"
           />
 
+          {/* <Input bgColor={'#fcfcfc'} name='accountName' placeholder="Masukkan Nama Akun Bank" />
+          <Box>
+            <Input bgColor={'#fcfcfc'} name='accountNumber' placeholder="Masukkan Nomor Akun Bank" />
+            <Text fontSize={'sm'}>untuk pengembalian uang jika pesananmu dibatalkan</Text>
+          </Box> */}
+
           <Box>
             <Text fontWeight={'bold'}>Pengiriman</Text>
           </Box>

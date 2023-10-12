@@ -57,6 +57,8 @@ export default function Maps() {
           console.log('Longitude:', newLongitude);
         }
       });
+
+      console.log(autocomplete, 'atc');
     };
 
     // Buat elemen <script> untuk memuat pustaka Google Maps API
@@ -70,7 +72,11 @@ export default function Maps() {
     // Tambahkan elemen <script> ke dalam body dokumen
     document.body.appendChild(googleMapScript);
   }, []);
-
+  function handlekeypress(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  }
   return (
     <Center>
       <Box p={2} border={'1px solid #eaeaea'} borderRadius={'10px'}>
@@ -81,7 +87,8 @@ export default function Maps() {
           type="text"
           placeholder="Cari alamat..."
           mb={'10px'}
-          //bg={"red"}
+          onKeyDown={handlekeypress}
+          required
         />
         <Box id="map" style={{ height: '300px', width: '400px' }}></Box>
         {latitude !== null && longitude !== null && (

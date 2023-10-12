@@ -4,6 +4,14 @@ import {
   updateInvoiceStatusInTransit,
 } from './hooks/useDroppingOff';
 import { pickingUp, updateInvoiceStatus } from './hooks/usePickingUp';
+import {
+  SellerAutomation,
+  UpdateInvoiceStatusInDelivered,
+} from './hooks/sellerAutomation';
+import {
+  UpdateInvoiceStatusInTransit,
+  UseOrderSucces,
+} from './hooks/useOrderSuccess';
 
 export async function getEmail(payload: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -11,7 +19,11 @@ export async function getEmail(payload: any) {
       waybill: payload.courier_waybill_id,
     },
     include: {
-      user: true,
+      user: {
+        include: {
+          store: true,
+        },
+      },
     },
   });
 
@@ -33,6 +45,9 @@ export async function Biteship(payload: any) {
     const email = dataInvoice?.user?.email as string;
     const name = dataInvoice?.user?.name as string;
     const waybill = dataInvoice?.waybill as string;
+    const price = dataInvoice?.price as number;
+    const receiverEmail = dataInvoice?.receiverEmail as string;
+    const receiverName = dataInvoice?.receiverName as string;
 
     // The courier was informed
     if (payload.status === 'allocated') {
@@ -76,6 +91,10 @@ export async function Biteship(payload: any) {
 
     // Item successfully recieved
     if (payload.status === 'delivered') {
+      SellerAutomation(email, name, price);
+      UseOrderSucces(receiverEmail, receiverName, waybill);
+      UpdateInvoiceStatusInTransit(dataInvoice);
+      UpdateInvoiceStatusInDelivered(dataInvoice);
       // Handle 'delivered' status
       console.log('this is payload status: ' + payload.status);
     }
