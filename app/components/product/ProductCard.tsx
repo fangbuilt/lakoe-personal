@@ -43,7 +43,7 @@ export default function ProductCard(props: IProductCardProps) {
               objectFit={'cover'}
             />
             <Box>
-              <Box display={'flex'}>
+              <Box>
                 <Text
                   fontSize={'18px'}
                   color={'#1D1D1D'}
@@ -54,16 +54,14 @@ export default function ProductCard(props: IProductCardProps) {
                 >
                   {product.name}
                 </Text>
-                <Box ms={'65px'}></Box>
               </Box>
               <Box display={'flex'} alignItems={'center'} gap={2} mb={2}>
                 <Text fontSize={'16px'}>
                   Rp
-                  {product.variants.map((a) =>
-                    a.variantOptions.map((b) =>
-                      b.variantOptionValues.map((c) => c.price)
-                    )
-                  )}
+                  {
+                    product.variants[0]?.variantOptions[0]
+                      ?.variantOptionValues[0].price
+                  }
                 </Text>
                 <Box
                   display={'flex'}
@@ -74,11 +72,10 @@ export default function ProductCard(props: IProductCardProps) {
                   <FaCircle size="5px" />
                   <Text fontSize={'16px'}>
                     Stok:{' '}
-                    {product.variants.map((a) =>
-                      a.variantOptions.map((b) =>
-                        b.variantOptionValues.map((c) => c.stock)
-                      )
-                    )}
+                    {
+                      product.variants[0]?.variantOptions[0]
+                        ?.variantOptionValues[0].stock
+                    }
                   </Text>
                 </Box>
                 <Box
@@ -90,11 +87,10 @@ export default function ProductCard(props: IProductCardProps) {
                   <FaCircle size="5px" />
                   <Text fontSize={'16px'}>
                     SKU:{' '}
-                    {product.variants.map((a) =>
-                      a.variantOptions.map((b) =>
-                        b.variantOptionValues.map((c) => c.sku)
-                      )
-                    )}
+                    {
+                      product.variants[0]?.variantOptions[0]
+                        ?.variantOptionValues[0].sku
+                    }
                   </Text>
                 </Box>
               </Box>
@@ -103,10 +99,10 @@ export default function ProductCard(props: IProductCardProps) {
           </Box>
           <Box
             display={'flex'}
-            alignItems={'flex-end'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
             flexDirection={'column'}
             py={1}
-            gap={10}
           >
             <Checkbox
               size="lg"
