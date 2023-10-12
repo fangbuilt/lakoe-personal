@@ -30,7 +30,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form, Link } from '@remix-run/react';
+import { Form, Link, useLoaderData } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { BsCircleFill } from 'react-icons/bs';
 import barcode from '~/assets/DetailOrderIcon/barcode.svg';
@@ -54,6 +54,7 @@ import {
 } from '../hooks/useOrderDetail';
 import getStatusBadge from './statusInvoice';
 import NewOrderHooks from '~/modules/webhook/hooks/NewOrderHooks';
+import type { loader } from '~/routes/order_.detail.$id';
 
 export default function StatusOrderDetail({
   data,
@@ -64,6 +65,9 @@ export default function StatusOrderDetail({
   dataTracking: ITracking;
   apiKey: string;
 }) {
+  const dataTrack = useLoaderData<typeof loader>();
+  const currentTime = dataTrack.currentTime;
+
   const {
     isOrderHistoryVisible,
     toggleOrderHistory,
@@ -211,44 +215,117 @@ export default function StatusOrderDetail({
     }
   }
 
-  function useStatusLacakPengiriman(status: string, dataTracking: ITracking) {
+  function useStatusLacakPengiriman(status: string) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [selectedCardId, setSelectedCardId] = useState<string>('');
+    const [cardModals, setCardModals] = useState<{ [key: string]: boolean }>(
+      {}
+    );
 
-    function openModal() {
+    function openModal(trackingId: string, id: string) {
+      // Check if the modal for this card is already open
+      if (cardModals[id]) {
+        return;
+      }
+
+      // Set the modal state for this card to open
+      const updatedCardModals = { ...cardModals };
+      updatedCardModals[id] = true;
+      setCardModals(updatedCardModals);
+
+      setSelectedCardId(trackingId);
       setModalIsOpen(true);
     }
 
-    function closeModal() {
+    function closeModal(id: string) {
+      // Set the modal state for this card to closed
+      const updatedCardModals = { ...cardModals };
+      updatedCardModals[id] = false;
+      setCardModals(updatedCardModals);
+
       setModalIsOpen(false);
     }
 
-    if (status?.toUpperCase() === 'IN_TRANSIT') {
+    if (status.toUpperCase() === 'IN_TRANSIT') {
       return (
         <>
-          <Button
-            fontSize={'14px'}
-            fontWeight={'700'}
-            lineHeight={'20px'}
-            color={'#0086B4'}
-            background={'#FFFFFF)'}
-            colorScheme="#FFFFFF)"
-            w={'120px'}
-            onClick={openModal}
+          <Form
+            method="POST"
+            onSubmit={() => {
+              openModal(data.courier?.trackingId as string, data.id);
+              console.log(
+                new Date(
+                  data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                ).getTime() / 10000
+              );
+              console.log(
+                currentTime -
+                  new Date(
+                    data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                  ).getTime() /
+                    (30 * 60 * 1000)
+              );
+              console.log(
+                new Date(
+                  data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                ).getTime() /
+                  (30 * 60 * 1000) -
+                  currentTime
+              );
+              console.log(30 * 60 * 1000);
+              console.log(currentTime / (30 * 60 * 1000));
+              console.log(
+                currentTime / 1000 -
+                  new Date(
+                    data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                  ).getTime() /
+                    1000
+              );
+              console.log(
+                'Condition Value:',
+                currentTime / 1000 <
+                  new Date(
+                    data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                  ).getTime() /
+                    1000
+              );
+            }}
           >
-            Lacak Pengiriman
-          </Button>
+            <Input name="actionType" value={'createTrackingLimit'} hidden />
+            <Input name="invoiceId" value={data.id} hidden />
+            <Button
+              fontSize={'14px'}
+              fontWeight={'700'}
+              lineHeight={'20px'}
+              color={'#0086B4'}
+              background={'#FFFFFF)'}
+              colorScheme="#FFFFFF)"
+              w={'120px'}
+              type="submit"
+              isDisabled={
+                currentTime / 1000 <
+                new Date(
+                  data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                ).getTime() /
+                  1000
+              }
+            >
+              Lacak Pengiriman
+            </Button>
+          </Form>
+
           {modalIsOpen && (
             <ModalInShipping
               isOpen={modalIsOpen}
-              onClose={closeModal}
-              data={dataTracking}
+              onClose={() => closeModal(selectedCardId)}
+              selectedCardId={selectedCardId}
             />
           )}
         </>
       );
     }
 
-    if (status?.toUpperCase() === 'ORDER_COMPLETED') {
+    if (status.toUpperCase() === 'ORDER_COMPLETED') {
       return (
         <Button
           fontSize={'14px'}
@@ -662,7 +739,7 @@ export default function StatusOrderDetail({
               <Text fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'}>
                 Detail Pengiriman
               </Text>
-              {useStatusLacakPengiriman(data?.status, dataTracking)}
+              {useStatusLacakPengiriman(data?.status)}
             </Box>
             <Box display={'flex'}>
               <Box display={'flex'} flexDirection={'column'} gap={3}>
@@ -930,7 +1007,12 @@ export default function StatusOrderDetail({
                     Cancel
                   </Button>
                   <Form method="post">
-                    <Input name="id" type="hidden" value={data.id} />
+                    <Input
+                      name="actionType"
+                      defaultValue={'cancelNotif'}
+                      hidden
+                    />
+                    <Input name="id" type="hidden" defaultValue={data.id} />
                     <Button
                       variant="ghost"
                       onClick={handleCancelNotif}
