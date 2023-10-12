@@ -80,12 +80,12 @@ export async function action({ request }: ActionArgs) {
     }
 
     const data = {
+      name: getValue('name'),
       url1: getValue('mainPhoto'),
       url2: getValue('photo2'),
       url3: getValue('photo3'),
       url4: getValue('photo4'),
       url5: getValue('photo5'),
-      name: getValue('name'),
       description: getValue('description'),
       minimumOrder: Number(getValue('min_order')),
       variants: variants,
@@ -99,6 +99,8 @@ export async function action({ request }: ActionArgs) {
       width: parseFloat(formData.get('width') as string),
       height: parseFloat(formData.get('height') as string),
     };
+
+    console.log('ini data', data);
 
     await createProduct(data, storeId);
     return redirect('/product');

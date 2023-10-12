@@ -234,17 +234,23 @@ export function LazyProductVariant() {
                       <Flex gap={4}>
                         <FormControl>
                           <input
+                            type="text"
+                            hidden
+                            name={`variants[${colorIndex}][${sizeIndex}][name]`}
+                            value={`${colorVariant.name} ${sizeVariant.name}`}
+                          />
+                          <input
                             type="number"
                             name="colorVariants"
                             value={colorVariants.length}
-                            // hidden
+                            hidden
                             readOnly
                           />
                           <input
                             type="number"
                             name="sizeVariants"
                             value={sizeVariants.length}
-                            // hidden
+                            hidden
                             readOnly
                           />
                           <FormLabel>Harga</FormLabel>
