@@ -1,4 +1,4 @@
-import { Stack } from '@chakra-ui/react';
+import { Input, Stack } from '@chakra-ui/react';
 import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
@@ -115,6 +115,7 @@ export default function AddProduct() {
     <ImplementGrid>
       <Form method="post" encType="multipart/form-data">
         <Stack mt={'7.5vh'} spacing={4}>
+          <Input name="storeId" defaultValue={data.storeId} readOnly />
           <ProductInformation />
           <ProductDetail />
           <input
