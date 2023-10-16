@@ -291,8 +291,12 @@ export default function StatusOrderDetail({
               );
             }}
           >
-            <Input name="actionType" value={'createTrackingLimit'} hidden />
-            <Input name="invoiceId" value={data.id} hidden />
+            <Input
+              name="actionType"
+              defaultValue={'createTrackingLimit'}
+              hidden
+            />
+            <Input name="invoiceId" defaultValue={data.id} hidden />
             <Button
               fontSize={'14px'}
               fontWeight={'700'}
@@ -494,7 +498,7 @@ export default function StatusOrderDetail({
                       <StepDescription
                         style={{ fontWeight: '500', fontSize: '12px' }}
                       >
-                        {dateConversion(sortedHistories[index].createdAt)} WIB
+                        {dateConversion(sortedHistories[index]?.createdAt)} WIB
                       </StepDescription>
                     </Box>
 
