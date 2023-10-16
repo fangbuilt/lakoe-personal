@@ -1,18 +1,17 @@
-import {
-  SellerAutomation,
-  UpdateInvoiceStatusInDelivered,
-} from '~/hooks/sellerAutomation';
-import {
-  UpdateInvoiceStatusInTransit,
-  UseOrderSucces,
-} from '~/hooks/useOrderSucces';
-
 import { db } from '~/libs/prisma/db.server';
 import { pickingUp, updateInvoiceStatus } from './hooks/usePickingUp';
 import {
   droppingOff,
   updateInvoiceStatusInTransit,
 } from './hooks/useDroppingOff';
+import {
+  SellerAutomation,
+  UpdateInvoiceStatusInDelivered,
+} from './hooks/sellerAutomation';
+import {
+  UpdateInvoiceStatusInTransit,
+  UseOrderSucces,
+} from './hooks/useOrderSuccess';
 
 export async function getEmail(payload: any) {
   const dataInvoice = await db.invoice.findFirst({
@@ -23,28 +22,6 @@ export async function getEmail(payload: any) {
       user: {
         include: {
           store: true,
-        },
-      },
-      courier: true,
-      cart: {
-        include: {
-          cartItems: {
-            include: {
-              product: {
-                include: {
-                  variants: {
-                    include: {
-                      variantOptions: {
-                        include: {
-                          variantOptionValues: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
         },
       },
     },
@@ -74,6 +51,24 @@ export async function Biteship(payload: any) {
 
   // Allocated
   try {
+    const dataInvoice = await getEmail(payload);
+    console.log(dataInvoice);
+
+    if (!dataInvoice) {
+      // Handle the case where dataInvoice is null (no matching record)
+      console.log(
+        'No matching record found for waybill: ' + payload.courier_waybill_id
+      );
+    }
+
+    const email = dataInvoice?.user?.email as string;
+    const name = dataInvoice?.user?.name as string;
+    const waybill = dataInvoice?.waybill as string;
+    const price = dataInvoice?.price as number;
+    const receiverEmail = dataInvoice?.receiverEmail as string;
+    const receiverName = dataInvoice?.receiverName as string;
+
+    // The courier was informed
     if (payload.status === 'allocated') {
       // const invoice = await db.invoice.findFirst({
       //   where: {
@@ -202,10 +197,11 @@ export async function Biteship(payload: any) {
 
     // Item successfully recieved
     if (payload.status === 'delivered') {
-      UseOrderSucces(receiverEmail, receiverName, waybill);
       SellerAutomation(email, name, price);
+      UseOrderSucces(receiverEmail, receiverName, waybill);
       UpdateInvoiceStatusInTransit(dataInvoice);
       UpdateInvoiceStatusInDelivered(dataInvoice);
+      // Handle 'delivered' status
       console.log('this is payload status: ' + payload.status);
     }
 

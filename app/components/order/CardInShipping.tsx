@@ -27,9 +27,9 @@ import { useState } from 'react';
 // import ModalWhatsapp from "../modalProps/modalWhatsapp";
 import { Form, Link, useLoaderData } from '@remix-run/react';
 import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
-import { UseFilterInShipping } from '~/modules/order/hooks/useFIlterCanceled';
 import type { loader } from '~/routes/order';
 import ModalInShipping from '../ModalInShipping';
+import { UseFilterInShipping } from '~/modules/order/hooks/useFIlterCanceled';
 export default function CardInShipping() {
   const {
     getSelectedCourier,
@@ -362,6 +362,7 @@ export default function CardInShipping() {
                         height={'24px'}
                       >
                         {data.status === 'IN_TRANSIT' ? 'Dalam Pengiriman' : ''}
+                        
                       </Button>
 
                       {/* SET WHAT DO YOU WANT TO DO WITH YOUR BUTTON HERE */}
@@ -373,45 +374,7 @@ export default function CardInShipping() {
                             data.courier?.trackingId as string,
                             data.id
                           );
-                          console.log(
-                            new Date(
-                              data.biteshipTrackinglimits?.nextAccessTime ?? ''
-                            ).getTime() / 10000
-                          );
-                          console.log(
-                            currentTime -
-                              new Date(
-                                data.biteshipTrackinglimits?.nextAccessTime ??
-                                  ''
-                              ).getTime() /
-                                (30 * 60 * 1000)
-                          );
-                          console.log(
-                            new Date(
-                              data.biteshipTrackinglimits?.nextAccessTime ?? ''
-                            ).getTime() /
-                              (30 * 60 * 1000) -
-                              currentTime
-                          );
-                          console.log(30 * 60 * 1000);
-                          console.log(currentTime / (30 * 60 * 1000));
-                          console.log(
-                            currentTime / 1000 -
-                              new Date(
-                                data.biteshipTrackinglimits?.nextAccessTime ??
-                                  ''
-                              ).getTime() /
-                                1000
-                          );
-                          console.log(
-                            'Condition Value:',
-                            currentTime / 1000 <
-                              new Date(
-                                data.biteshipTrackinglimits?.nextAccessTime ??
-                                  ''
-                              ).getTime() /
-                                1000
-                          );
+                         
                         }}
                       >
                         <Input
@@ -511,10 +474,8 @@ export default function CardInShipping() {
           {modalIsOpen && (
             <ModalInShipping
               isOpen={modalIsOpen}
-              // onClose={closeModal}
               onClose={() => closeModal(selectedCardId)}
               selectedCardId={selectedCardId}
-              data={undefined}
             />
           )}
         </Box>

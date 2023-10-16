@@ -393,6 +393,62 @@ export async function getDataProductReadyToShip() {
   });
 }
 
+export async function getDataInShipping() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'IN_TRANSIT',
+    },
+    include: {
+      courier: true,
+      biteshipTrackinglimits: true,
+      cart: {
+        include: {
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export default async function ServiceSuccess() {
+  return await db.invoice.findMany({
+    where: {
+      status: 'ORDER_COMPLETED',
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: {
+            include: {
+              messageTemplates: true,
+            },
+          },
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export async function getProductByCategoryId(id: any) {
   try {
     const productcategoryid = await db.product.findMany({
@@ -519,27 +575,4 @@ export async function whatsappTemplateDb() {
   return await db.messageTemplate.findMany({});
 }
 
-export default async function getDataInShipping() {
-  return await db.invoice.findMany({
-    where: {
-      status: 'IN_TRANSIT',
-    },
-    include: {
-      courier: true,
-      biteshipTrackinglimits: true,
-      cart: {
-        include: {
-          cartItems: {
-            include: {
-              product: {
-                include: {
-                  attachments: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-}
+

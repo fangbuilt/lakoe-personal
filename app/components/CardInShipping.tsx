@@ -6,9 +6,7 @@ import type { loader } from '~/routes/order';
 import ModalInShipping from './ModalInShipping';
 import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 
-export default function CardInShipping(props: {
-  dataTracking: IBiteshipTracking;
-}) {
+export default function CardInShipping() {
   const data = useLoaderData<typeof loader>();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
@@ -57,7 +55,6 @@ export default function CardInShipping(props: {
                       key={data.id}
                       isOpen={modalIsOpen}
                       onClose={closeModal}
-                      data={props.dataTracking}
                       selectedCardId={selectedCardId}
                     />
                   )}

@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import type { ActionArgs } from '@remix-run/node';
 import {
+  redirect,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
@@ -26,13 +27,10 @@ import {
   useNavigation,
   useParams,
 } from '@remix-run/react';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PiShoppingCartThin } from 'react-icons/pi';
 import { db } from '../libs/prisma/db.server';
-import { uploadImage } from '~/utils/uploadFile/uploads';
-import moment from 'moment';
-import { ConfirmationPaymentsApiMoota } from '~/modules/order/order.service';
-import { confirmationApiSchema } from '~/modules/order/order.schema';
+import { uploadImage } from '~/utils/uploadImage';
 
 export async function loader({ params }: ActionArgs) {
   const data = params;
@@ -48,133 +46,46 @@ export async function loader({ params }: ActionArgs) {
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method.toLowerCase() === 'post') {
-    try {
-      const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
-        if (name !== 'attachment') {
-          return undefined;
-        }
-
-        const uploadedImage = await uploadImage(data);
-
-        return uploadedImage.secure_url;
-      }, createMemoryUploadHandler());
-
-      const formData = await parseMultipartFormData(request, uploadHandler);
-
-      const invoiceId = formData.get('invoiceId') as string;
-      const bank = formData.get('bank') as string;
-      const createdAt = new Date().toISOString();
-      const amount = parseFloat(formData.get('amount') as string);
-      const attachment = formData.get('attachment') as string;
-
-      const data = {
-        invoiceId,
-        bank,
-        createdAt,
-        amount,
-        attachment,
-      };
-      console.log('data', data);
-
-      const apiData: number | any = await fetchWebhookStatusWithRetry();
-
-      const apiDataString = apiData.toString();
-
-      const latestAmount = apiData ? parseFloat(apiDataString) : null;
-
-      if (amount === latestAmount) {
-        console.log('data amount berhasil !');
-        const MootaOrderApi = confirmationApiSchema.parse({
-          invoiceId,
-          bank,
-          createdAt,
-          amount: latestAmount,
-          attachment,
-        });
-        await ConfirmationPaymentsApiMoota(MootaOrderApi);
-      } else {
-        console.log('AMOUNT NOT FOUND !');
+    const uploadHandler = composeUploadHandlers(async ({ name, data }) => {
+      if (name !== 'attachment') {
+        return undefined;
       }
-    } catch (error) {
-      console.error('gagal post bro:', error);
-    }
-  }
 
-  return null;
-};
-const maxRetryAttempts = 5;
-const baseRetryInterval = 5 * 60 * 1000;
-const maxRetryInterval = 24 * 60 * 60 * 1000;
+      const uploadedImage = await uploadImage(data);
+      return uploadedImage.secure_url;
+    }, createMemoryUploadHandler());
 
-export async function fetchWebhookStatusWithRetry(
-  retryCount = 0,
-  retryInterval = baseRetryInterval
-) {
-  let confirmationPay = null;
-  try {
-    const bank_id = process.env.ID_BANK as string;
-    const token = process.env.TOKEN_ACCOUNT_BANK as string;
+    const formData = await parseMultipartFormData(request, uploadHandler);
+    const invoiceId = formData.get('invoiceId') as string;
+    const bank = formData.get('bank') as string;
+    const createdAt = new Date().toISOString();
+    const amount = parseFloat(formData.get('amount') as string);
+    const attachment = formData.get('attachment') as string;
+    console.log(attachment);
 
-    const startDate = moment()
-      .subtract(4, 'days')
-      .format('YYYY-MM-DD') as string;
-    const endDate = moment().format('YYYY-MM-DD') as string;
-
-    const url = `https://app.moota.co/api/v2/mutation?bank=${bank_id}&start_date=${startDate}&end_date=${endDate}`;
-
-    const headers = {
-      Location: '/api/v2/mutation{?bank}&{?start_date}&{?end_date}',
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
+    const data = {
+      invoiceId,
+      bank,
+      createdAt,
+      amount,
+      attachment,
     };
+    console.log(data);
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers,
+    await db.confirmationPayment.create({
+      data: {
+        invoiceId: data.invoiceId,
+        bank: data.bank,
+        createdAt: data.createdAt,
+        amount: isNaN(data.amount) ? 0 : data.amount,
+        attachment: data.attachment,
+      },
     });
-
-    if (response.ok) {
-      let responseData = await response.json();
-
-      if (responseData.data && responseData.data.length > 0) {
-        // descending date
-        responseData.data.sort((a: any, b: any) => {
-          const dateA = new Date(a.date).getTime();
-          const dateB = new Date(b.date).getTime();
-          return dateB - dateA;
-        });
-
-        const latestTransaction = responseData.data[0];
-
-        const amount = latestTransaction.amount as number;
-
-        confirmationPay = amount;
-      }
-    }
-  } catch (error) {
-    console.error('Kesalahan dalam permintaan API:', error);
-
-    if (retryCount < maxRetryAttempts - 1) {
-      //  interval eksponensial
-      retryInterval *= 2;
-      retryInterval = Math.min(retryInterval, maxRetryInterval);
-
-      console.log(
-        `Percobaan ke-${retryCount + 1} akan dilakukan dalam ${
-          retryInterval / 1000
-        } detik.`
-      );
-      await new Promise((resolve) => setTimeout(resolve, retryInterval));
-      return fetchWebhookStatusWithRetry(retryCount + 1, retryInterval);
-    } else {
-      console.error(
-        'Percobaan retry telah mencapai batas. Tidak dapat mengambil status webhook.'
-      );
-      throw new Error('Percobaan retry telah mencapai batas.');
-    }
+    // await db.confirmationPayment.create({ data });
   }
-  return confirmationPay;
-}
+
+  return redirect(`/checkout/transfer/confirm`);
+};
 
 export default function TransferPayment() {
   const { invoiceId } = useParams();

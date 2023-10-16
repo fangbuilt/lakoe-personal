@@ -31,7 +31,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Form, Link, useLoaderData } from '@remix-run/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsCircleFill } from 'react-icons/bs';
 import barcode from '~/assets/DetailOrderIcon/barcode.svg';
 import box from '~/assets/DetailOrderIcon/box.svg';
@@ -52,65 +52,8 @@ import {
   useOrderDetail,
 } from '../hooks/useOrderDetail';
 import getStatusBadge from './statusInvoice';
+import NewOrderHooks from '~/modules/webhook/hooks/NewOrderHooks';
 import type { loader } from '~/routes/order_.detail.$id';
-
-export function getStatusLacakButton(status: string) {
-  if (status.toUpperCase() === 'NEW_ORDER') {
-    return (
-      <Flex
-        justifyContent={'space-between'}
-        padding={`var(--4, 16px) var(--5, 20px)`}
-        alignItems={'center'}
-        alignSelf={'stretch'}
-        background={`var(--gray-50, #FFF)`}
-      >
-        <Box>
-          <Button
-            display={'flex'}
-            height={'40px'}
-            padding={`var(--3, 12px) var(--4, 16px)`}
-            justifyContent={'center'}
-            alignItems={'center'}
-            gap={`var(--1, 4px)`}
-            borderRadius={`var(--rounded-full, 9999px)`}
-            border={`1px solid var(--red-800, #EA3829)`}
-            background={`var(--gray-50, #FFF)`}
-          >
-            <Text
-              color={`var(--text-red, #EA3829)`}
-              fontSize={'14px'}
-              fontWeight={'600'}
-              lineHeight={'15.5px'}
-            >
-              Tolak Pesanan
-            </Text>
-          </Button>
-        </Box>
-        <Box>
-          <Button
-            display={'flex'}
-            height={'40px'}
-            padding={`var(--3, 12px) var(--4, 16px)`}
-            justifyContent={'center'}
-            alignItems={'center'}
-            gap={`var(--1, 4px)`}
-            borderRadius={`var(--rounded-full, 9999px)`}
-            background={`var(--cyan-800, #0086B4)`}
-          >
-            <Text
-              color={`var(--text-light, #FFF)`}
-              fontSize={'14px'}
-              fontWeight={'600'}
-              lineHeight={'15.5px'}
-            >
-              Proses Pesanan
-            </Text>
-          </Button>
-        </Box>
-      </Flex>
-    );
-  }
-}
 
 export default function StatusOrderDetail({
   data,
@@ -164,134 +107,15 @@ export default function StatusOrderDetail({
     onClose: onCloseModal2,
   } = useDisclosure();
 
-  const systembalance = 100000;
+  const { afterpacking, setSelectedProps } = NewOrderHooks();
 
-  const afterpacking = () => {
-    if (systembalance > 50000) {
-      handleOrderCourier();
-    } else {
-      handleBalanceNotif();
-    }
-  };
+  useEffect(() => {
+    setSelectedProps(data);
+  }, []);
 
-  const handleBalanceNotif = async () => {
-    try {
-      const mailerBaseUrl = 'https://connect.mailerlite.com';
-      const mailerEndPoint = '/api/subscribers';
-      const mailerApiKey =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
-
-      const mailerData = {
-        email: `angga.ardiansyah955+${new Date().getTime()}@gmail.com`,
-        fields: {
-          company: 'ADD MORE BALANCE', //company berperan sebagai "title" dalam mailerlite
-          last_name:
-            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message") dalam mailerlite
-        },
-        groups: ['98713000939095999'],
-      };
-
-      const mailerRequest = {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${mailerApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(mailerData),
-      };
-
-      const response = await fetch(
-        `${mailerBaseUrl}${mailerEndPoint}`,
-        mailerRequest
-      );
-      const responseData = await response.json();
-      console.log('Data Email :', responseData);
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  const handleOrderCourier = async () => {
-    try {
-      const baseUrl = 'https://api.biteship.com';
-      const endpoint = '/v1/orders';
-      const apiKey =
-        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmlub3B1amEiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUwMjM4NjZ9.V0mGHUqraz6uvr0_uYGyKcTFLTXQq5JqESQSvvmXA2Y'; //hapus dan gunakan processa.env.blablabla sebelum publish (credentials bukan konsumsi public)
-
-      const dataforBiteShip = {
-        shipper_contact_name: data?.cart?.user?.name,
-        shipper_contact_phone: data?.cart?.user.phone,
-        shipper_contact_email: data?.cart?.user.email,
-        shipper_organization: data?.cart?.store?.name,
-        origin_contact_name: data?.cart?.user?.name,
-        origin_contact_phone: data?.cart?.user.phone,
-        origin_address: data?.cart?.store?.locations[0].address,
-        origin_note: data?.cart?.store?.locations[0].addressNote,
-
-        origin_coordinate: {
-          latitude: -6.2253114,
-          longitude: 106.7993735,
-        },
-        origin_postal_code: '12440',
-        destination_contact_name: data?.receiverName,
-        destination_contact_phone: data?.receiverPhone,
-        destination_contact_email: data?.receiverEmail,
-        destination_address: data?.receiverAddress,
-        destination_postal_code: data?.receiverPostalCode,
-        destination_note:
-          'antar sampai tujuan dan jangan diturunkan ditengah jalan',
-        destination_cash_proof_of_delivery: true,
-        destination_coordinate: {
-          latitude: -6.28927,
-          longitude: 106.77492000000007,
-        },
-        courier_company: 'grab',
-
-        courier_type: 'instant',
-        courier_insurance: true,
-        delivery_type: 'later',
-        delivery_date: '2024-09-24',
-        delivery_time: '12:00',
-        order_note: 'satukan semua pesanan kedalam satu packaging',
-        metadata: {},
-        items: [
-          {
-            id: 1,
-            name: data?.cart.cartItems[0].product.name,
-            image: '',
-            description: data?.cart.cartItems[0].product.description,
-            value: data?.cart.cartItems[0].price,
-            quantity: 2,
-            height: 10,
-            length: 20,
-            weight: 0.5,
-            width: 15,
-          },
-        ],
-      };
-
-      const orderDataJSON = JSON.stringify(dataforBiteShip);
-
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: orderDataJSON,
-      };
-
-      await fetch(`${baseUrl}${endpoint}`, requestOptions);
-      alert(
-        'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
-      );
-    } catch (error) {
-      alert(error);
-    }
-  };
   const stepCount = filterStepsByStatus(data?.status).length;
   const stepHeight = 65;
-  const sortedHistories = data.invoiceHistories.slice().sort((a, b) => {
+  const sortedHistories = data?.invoiceHistories.slice().sort((a, b) => {
     return b.id.localeCompare(a.id);
   });
 
@@ -324,19 +148,18 @@ export default function StatusOrderDetail({
         `${mailerBaseUrl}${mailerEndPoint}`,
         mailerRequest
       );
-      const responseData = await response.json();
-      console.log('Data Email :', responseData);
+      await response.json();
     } catch (error) {
       alert(error);
     }
   };
 
-  const products = data.cart.cartItems.map((cartItem) => {
+  const products = data?.cart?.cartItems.map((cartItem) => {
     return { ...cartItem, cartItem };
   });
 
   function getStatusText(status: string) {
-    if (status.toUpperCase() === 'UNPAID') {
+    if (status?.toUpperCase() === 'UNPAID') {
       return (
         <Text fontWeight={'400'} fontSize={'14px'} lineHeight={'20px'}>
           Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
@@ -349,7 +172,7 @@ export default function StatusOrderDetail({
         </Text>
       );
     }
-    if (status.toUpperCase() === 'NEW_ORDER') {
+    if (status?.toUpperCase() === 'NEW_ORDER') {
       return (
         <Text fontWeight={'400'} fontSize={'14px'} lineHeight={'20px'}>
           Segera proses pesanan yang masuk. Jangan membuat pembeli menunggu
@@ -357,14 +180,14 @@ export default function StatusOrderDetail({
         </Text>
       );
     }
-    if (status.toUpperCase() === 'READY_TO_SHIP') {
+    if (status?.toUpperCase() === 'READY_TO_SHIP') {
       return (
         <Text fontWeight={'400'} fontSize={'14px'} lineHeight={'20px'}>
           Pesanan telah di-pickup oleh Kurir dan siap untuk dikirim.
         </Text>
       );
     }
-    if (status.toUpperCase() === 'IN_TRANSIT') {
+    if (status?.toUpperCase() === 'IN_TRANSIT') {
       return (
         <Text fontWeight={'400'} fontSize={'14px'} lineHeight={'20px'}>
           Pesanan sudah dalam proses pengiriman. Silakan tunggu penerimaan
@@ -372,14 +195,14 @@ export default function StatusOrderDetail({
         </Text>
       );
     }
-    if (status.toUpperCase() === 'ORDER_COMPLETED') {
+    if (status?.toUpperCase() === 'ORDER_COMPLETED') {
       return (
         <Text fontWeight={'400'} fontSize={'14px'} lineHeight={'20px'}>
           Produk telah diterima oleh pembeli dan pesanan ini diselesaikan.
         </Text>
       );
     }
-    if (status.toUpperCase() === 'ORDER_CANCELLED') {
+    if (status?.toUpperCase() === 'ORDER_CANCELLED') {
       return (
         <Text fontWeight={'400'} fontSize={'14px'} lineHeight={'20px'}>
           Pesanan dibatalkan karena pembeli tidak melakukan pembayaran tepat
@@ -517,6 +340,11 @@ export default function StatusOrderDetail({
     return null;
   }
 
+  let totalQuantity = 0;
+  for (const item of data?.cart?.cartItems || 'tidak ada data') {
+    totalQuantity += item.qty;
+  }
+
   return (
     <>
       <Box display={'flex'} flexDirection={'column'} gap={3}>
@@ -529,7 +357,7 @@ export default function StatusOrderDetail({
             maxW="200px"
           >
             <ChevronRightIcon />
-            {data.cart.cartItems[0].product?.name}
+            {data?.cart?.cartItems[0]?.product?.name}
           </Text>
           {isCopied1 && (
             <Box {...toastStyle}>
@@ -663,7 +491,7 @@ export default function StatusOrderDetail({
                       <StepDescription
                         style={{ fontWeight: '500', fontSize: '12px' }}
                       >
-                        {dateConversion(sortedHistories[index].createdAt)} WIB
+                        {dateConversion(sortedHistories[index]?.createdAt)} WIB
                       </StepDescription>
                     </Box>
 
@@ -696,7 +524,7 @@ export default function StatusOrderDetail({
               </Text>
             </Box>
             <Text fontSize={'14px'} fontWeight={'400'} lineHeight={'20px'}>
-              {dateConversion(data.createdAt)} WIB
+              {dateConversion(data?.createdAt)} WIB
             </Text>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
@@ -725,7 +553,7 @@ export default function StatusOrderDetail({
                 color={'gray.900'}
               />
               <Text fontSize={'14px'} fontWeight={'400'} lineHeight={'20px'}>
-                {data.invoiceNumber}
+                {data?.invoiceNumber}
               </Text>
             </Box>
           </Box>
@@ -748,7 +576,7 @@ export default function StatusOrderDetail({
               justifyContent={'center'}
               alignItems={'center'}
             >
-              <Link to={`https://wa.me/${data.receiverPhone}`} target="_blank">
+              <Link to={`https://wa.me/${data?.receiverPhone}`} target="_blank">
                 <Box
                   display={'flex'}
                   width={'32px'}
@@ -770,7 +598,7 @@ export default function StatusOrderDetail({
                 </Box>
               </Link>
               <Text fontSize={'14px'} fontWeight={'400'} lineHeight={'20px'}>
-                {data.receiverName}
+                {data?.receiverName}
               </Text>
             </Box>
           </Box>
@@ -797,19 +625,20 @@ export default function StatusOrderDetail({
               </Text>
             </Box>
             <Box>
-              {products.map((item) => (
+              {products?.map((item) => (
                 <Card
                   overflow="hidden"
                   variant="outline"
                   display={'flex'}
                   justifyContent={'space-between'}
                   key={item.id}
+                  mb={1.5}
                 >
                   <Divider w={'100%'} />
                   <Box
                     display={'flex'}
                     justifyContent={'space-between'}
-                    padding={'15px'}
+                    padding="var(--2, 8px) var(--3, 12px)"
                   >
                     <Box display={'flex'}>
                       <Box
@@ -910,104 +739,117 @@ export default function StatusOrderDetail({
               {useStatusLacakPengiriman(data?.status)}
             </Box>
             <Box display={'flex'}>
-              <Box display={'flex'} flexDirection={'column'} width={'192px'}>
-                <Text
-                  color={`var(--text-dark, #1D1D1D)`}
-                  fontSize={'14px'}
-                  fontWeight={'400'}
-                  lineHeight={'20px'}
-                  fontStyle={'normal'}
-                >
-                  Kurir
-                </Text>
-                <Box display={'flex'} gap={1}>
-                  <Text
-                    color={`var(--text-dark, #1D1D1D)`}
-                    fontSize={'14px'}
-                    fontWeight={'400'}
-                    lineHeight={'20px'}
-                    fontStyle={'normal'}
-                  >
-                    No. Resi
-                  </Text>
-                  <Image
-                    height={'18px'}
-                    width={'18px'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                    src={copy}
-                    onClick={handleCopyResiClick}
-                    style={{ cursor: 'pointer' }}
-                    color={'gray.900'}
-                  />
+              <Box display={'flex'} flexDirection={'column'} gap={3}>
+                <Box display={'flex'}>
+                  <Box width={'192px'}>
+                    <Text
+                      color={`var(--text-dark, #1D1D1D)`}
+                      fontSize={'14px'}
+                      fontWeight={'400'}
+                      lineHeight={'20px'}
+                      fontStyle={'normal'}
+                    >
+                      Kurir
+                    </Text>
+                  </Box>
+                  <Box width={'100%'}>
+                    <Text
+                      color={`var(--text-dark, #1D1D1D)`}
+                      fontSize={'14px'}
+                      fontWeight={'700'}
+                      lineHeight={'20px'}
+                    >
+                      {data?.courier?.courierName} -{' '}
+                      {data?.courier?.courierServiceName}
+                    </Text>
+                  </Box>
                 </Box>
-                <Box display={'flex'} gap={1}>
-                  <Text
-                    color={`var(--text-dark, #1D1D1D)`}
-                    fontSize={'14px'}
-                    fontWeight={'400'}
-                    lineHeight={'20px'}
-                    fontStyle={'normal'}
-                  >
-                    Alamat
-                  </Text>
-                  <Image
-                    height={'18px'}
-                    width={'18px'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                    src={copy}
-                    onClick={handleCopyAddressClick}
-                    style={{ cursor: 'pointer' }}
-                    color={'gray.900'}
-                  />
+                <Box display={'flex'}>
+                  <Box display={'flex'} gap={1} width={'192px'}>
+                    <Text
+                      color={`var(--text-dark, #1D1D1D)`}
+                      fontSize={'14px'}
+                      fontWeight={'400'}
+                      lineHeight={'20px'}
+                      fontStyle={'normal'}
+                    >
+                      No. Resi
+                    </Text>
+                    {data?.waybill ? (
+                      <Image
+                        height={'18px'}
+                        width={'18px'}
+                        justifyContent={'center'}
+                        alignItems={'center'}
+                        src={copy}
+                        onClick={handleCopyResiClick}
+                        style={{ cursor: 'pointer' }}
+                        color={'gray.900'}
+                      />
+                    ) : null}
+                  </Box>
+                  <Box width={'100%'}>
+                    <Text
+                      color={`var(--text-dark, #1D1D1D)`}
+                      fontSize={'14px'}
+                      fontWeight={'700'}
+                      lineHeight={'20px'}
+                    >
+                      {data?.waybill ? data.waybill : '-'}
+                    </Text>
+                  </Box>
                 </Box>
-              </Box>
-              <Box display={'flex'} flexDirection={'column'}>
-                <Text
-                  color={`var(--text-dark, #1D1D1D)`}
-                  fontSize={'14px'}
-                  fontWeight={'700'}
-                  lineHeight={'20px'}
-                >
-                  {data.courier.courierName} - {data.courier.courierServiceName}
-                </Text>
-                <Text
-                  color={`var(--text-dark, #1D1D1D)`}
-                  fontSize={'14px'}
-                  fontWeight={'700'}
-                  lineHeight={'20px'}
-                >
-                  {data.waybill}
-                </Text>
-                <Box display={'flex'} flexDirection={'column'}>
-                  <Text
-                    color={`var(--text-dark, #1D1D1D)`}
-                    fontSize={'14px'}
-                    fontWeight={'400'}
-                    lineHeight={'20px'}
-                    fontStyle={'normal'}
-                  >
-                    {data.receiverAddress}
-                  </Text>
-                  <Text
-                    color={`var(--text-gray, #909090)`}
-                    fontSize={'14px'}
-                    fontWeight={'400'}
-                    lineHeight={'20px'}
-                    fontStyle={'normal'}
-                  >
-                    {data.receiverPhone}
-                  </Text>
-                  <Text
-                    color={`var(--text-gray, #909090)`}
-                    fontSize={'14px'}
-                    fontWeight={'400'}
-                    lineHeight={'20px'}
-                    fontStyle={'normal'}
-                  >
-                    {data.receiverName}
-                  </Text>
+                <Box display={'flex'}>
+                  <Box display={'flex'} gap={1} width={'192px'}>
+                    <Text
+                      color={`var(--text-dark, #1D1D1D)`}
+                      fontSize={'14px'}
+                      fontWeight={'400'}
+                      lineHeight={'20px'}
+                      fontStyle={'normal'}
+                    >
+                      Alamat
+                    </Text>
+                    <Image
+                      height={'18px'}
+                      width={'18px'}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      src={copy}
+                      onClick={handleCopyAddressClick}
+                      style={{ cursor: 'pointer' }}
+                      color={'gray.900'}
+                    />
+                  </Box>
+                  <Box display={'flex'} flexDirection={'column'} width={'100%'}>
+                    <Text
+                      color={`var(--text-dark, #1D1D1D)`}
+                      fontSize={'14px'}
+                      fontWeight={'400'}
+                      lineHeight={'20px'}
+                      fontStyle={'normal'}
+                    >
+                      {data?.receiverAddress}
+                    </Text>
+                    <Text
+                      color={`var(--text-gray, #909090)`}
+                      fontSize={'14px'}
+                      fontWeight={'400'}
+                      lineHeight={'20px'}
+                      fontStyle={'normal'}
+                    >
+                      {data?.receiverPhone}
+                    </Text>
+                    <Text
+                      color={`var(--text-gray, #909090)`}
+                      fontSize={'14px'}
+                      fontWeight={'400'}
+                      lineHeight={'20px'}
+                      fontStyle={'normal'}
+                    >
+                      {data?.receiverName}
+                    </Text>
+                  </Box>
                 </Box>
               </Box>
             </Box>
@@ -1029,32 +871,31 @@ export default function StatusOrderDetail({
               src={wallet}
             />
           </Box>
-
-          <Box display={'flex'} flexDirection={'column'} width={'100%'}>
+          <Box display={'flex'} flexDirection={'column'} width={'100%'} gap={3}>
             <Text fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'}>
               Rincian Pembayaran
             </Text>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box>
                 <Text fontSize={'14px'} fontWeight={'400'} lineHeight={'20px'}>
-                  Total Harga
+                  Total Harga ({totalQuantity} barang)
                 </Text>
               </Box>
               <Box>
                 <Text fontSize={'14px'} fontWeight={'700'} lineHeight={'20px'}>
-                  {formatCurrency(data.cart.price)}
+                  {formatCurrency(data?.cart.price)}
                 </Text>
               </Box>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box>
                 <Text fontSize={'14px'} fontWeight={'400'} lineHeight={'20px'}>
-                  Total Ongkos Kirim (10kg)
+                  Total Ongkos Kirim
                 </Text>
               </Box>
               <Box>
                 <Text fontSize={'14px'} fontWeight={'700'} lineHeight={'20px'}>
-                  {formatCurrency(data.courier.price)}
+                  {formatCurrency(data?.courier.price)}
                 </Text>
               </Box>
             </Box>
@@ -1066,7 +907,7 @@ export default function StatusOrderDetail({
               </Box>
               <Box>
                 <Text fontSize={'14px'} fontWeight={'700'} lineHeight={'20px'}>
-                  {formatCurrency(data.discount)}
+                  {formatCurrency(data?.discount)}
                 </Text>
               </Box>
             </Box>
@@ -1091,7 +932,7 @@ export default function StatusOrderDetail({
               </Box>
               <Box>
                 <Text fontSize={'18px'} fontWeight={'700'} lineHeight={'24px'}>
-                  {formatCurrency(data.price)}
+                  {formatCurrency(data?.price)}
                 </Text>
               </Box>
             </Box>
@@ -1163,8 +1004,12 @@ export default function StatusOrderDetail({
                     Cancel
                   </Button>
                   <Form method="post">
-                    <Input name="actionType" value={'cancelNotif'} hidden />
-                    <Input name="id" type="hidden" value={data.id} />
+                    <Input
+                      name="actionType"
+                      defaultValue={'cancelNotif'}
+                      hidden
+                    />
+                    <Input name="id" type="hidden" defaultValue={data.id} />
                     <Button
                       variant="ghost"
                       onClick={handleCancelNotif}
@@ -1231,17 +1076,19 @@ export default function StatusOrderDetail({
                   >
                     Cancel
                   </Button>
-                  <Form method="patch">
-                    <Input name="actionType" value={'afterPacking'} hidden />
-                    <Input name="id" type="hidden" value={data.id} />
-                    <Button
-                      variant="ghost"
-                      onClick={afterpacking}
-                      type="submit"
-                    >
-                      Selesai di Packing
-                    </Button>
-                  </Form>
+                  {/* <Form method="patch"> */}
+                  {/* <Input name="id" type="hidden" value={data.id} /> */}
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      afterpacking();
+                      onCloseModal2();
+                    }}
+                    type="submit"
+                  >
+                    Selesai di Packing
+                  </Button>
+                  {/* </Form> */}
                 </ModalFooter>
               </ModalContent>
             </Modal>

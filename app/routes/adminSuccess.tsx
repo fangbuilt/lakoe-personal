@@ -5,7 +5,6 @@ import AdminSuccess from '~/components/AdminSuccess';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';
 import { authorize } from '~/middleware/authorization';
 import { getWithdrawalList } from '~/modules/dashboard/dashboard.service';
-
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '1');
 

@@ -509,7 +509,6 @@ export default function CardAllOrder() {
                           <ModalInShipping
                             onClose={closeModal}
                             isOpen={isOrderInTransitModalOpen}
-                            data={item.dataTracking}
                             selectedCardId={selectedCardId}
                           />
                         )}

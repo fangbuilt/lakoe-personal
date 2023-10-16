@@ -9,7 +9,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import ScrollBox from '~/components/ScrollBox';
 import type { loader } from '~/routes/order';
@@ -21,6 +21,7 @@ import { number } from 'zod';
 import CardAllOrder from '~/components/order/CardAllOerder';
 import UnpaidCard from '~/components/order/CardUnpaid';
 import CardNewOrderBa from '~/components/order/CardNewOrderBa';
+import CardSuccess from '~/components/CardSuccess';
 // import CardSucces from '~/components/order/CardSuccesOrder';
 // import UnpaidCard from '~/components/order/CardUnpaid';
 // import UnpaidCard from '~/components/order/CardUnpaid';
@@ -245,7 +246,13 @@ export function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardInShipping />
+                    <CardInShipping/>
+                  </TabPanel>
+                </ScrollBox>
+
+                <ScrollBox>
+                  <TabPanel>
+                    <CardSuccess />
                   </TabPanel>
                 </ScrollBox>
 

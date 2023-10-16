@@ -4,9 +4,10 @@ export interface IProduct {
   attachments: IProductAttachment[];
   isActive: boolean;
   storeId: string;
+  category: ICategory;
   categoryId: string;
   variants: IVariant[];
-  // store: IStore;
+  store: IStore;
   slug: string;
 }
 
@@ -40,4 +41,10 @@ export interface IProductAttachment {
 export interface IStore {
   id: string;
   name: string;
+}
+
+export interface ICategory {
+  id: string;
+  name: string;
+  parentId: String;
 }

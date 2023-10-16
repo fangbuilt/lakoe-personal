@@ -5,23 +5,25 @@ import type { LoaderArgs, ActionArgs } from '@remix-run/node';
 
 import { MootaOrderSchema } from '~/modules/order/order.schema';
 
-import getDataInShipping, {
+import {
   MootaOrderStatusUpdate,
   getAllProductUnpid,
   getDataProductReadyToShip,
   getInvoiceByStatus,
   updateInvoiceStatus,
   CanceledService,
-  whatsappTemplateDb,
   SuccessService,
   getTemplateMessage,
   getProductUnpid,
+  whatsappTemplateDb,
+  getDataInShipping,
 } from '~/modules/order/order.service';
 
 import { Flex } from '@chakra-ui/react';
 import { useLoaderData } from '@remix-run/react';
 import { ImplementGrid } from '~/layouts/Grid';
 import { db } from '~/libs/prisma/db.server';
+import { authorize } from '~/middleware/authorization';
 import { getUserId } from '~/modules/auth/auth.service';
 import SuccesService from '~/modules/order/orderSuccessService';
 import { NavOrder } from '~/layouts/NavOrder';
@@ -47,7 +49,6 @@ export async function loader({ request }: LoaderArgs) {
     whatsappTemplateDbs,
     getDataInShippings,
     dataInvoice,
-    ,
   ] = await Promise.all([
     getAllProductUnpid(),
     getProductUnpid(),

@@ -25,7 +25,7 @@ export function WeightAndShipment() {
               <Input
                 type="number"
                 placeholder="Masukan berat produk"
-                name="weight"
+                name={`variants[0][0][weight]`}
                 onChange={handleChange}
               />
               <InputRightAddon children="Gram" />
