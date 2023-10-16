@@ -18,13 +18,14 @@ import {
 } from '@chakra-ui/react';
 import type { ChangeEvent } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form } from '@remix-run/react';
+import { Form, useLoaderData } from '@remix-run/react';
 import ReactLoading from 'react-loading';
 import CloseCircle from '~/assets/icon-pack/close-circle.svg';
 import Edit from '~/assets/icon-pack/edit.svg';
 import Trash from '~/assets/icon-pack/trash.svg';
 import type { ILocation } from '~/interfaces/Location';
 import Maps from './Maps';
+import type { loader } from '~/routes/configuration_.storeConfiguration';
 
 //interface modal
 interface CustomModalProps {
@@ -33,6 +34,8 @@ interface CustomModalProps {
 }
 //=======================
 export function CreateButtonLocation() {
+  const store = useLoaderData<typeof loader>();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -264,6 +267,7 @@ export function CreateButtonLocation() {
               <Input hidden name="action" value="createlocation" />
               <FormControl isRequired>
                 <FormLabel>Nama Lokasi</FormLabel>
+                <Input hidden value={store.store_id?.id} name="storeId" />
                 <Input
                   type="text"
                   name="name"
@@ -563,6 +567,8 @@ export function DeleteButtonLocation(props: ILocation) {
 }
 
 export function UpdateButtonLocation(props: ILocation) {
+  const store = useLoaderData<typeof loader>();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -795,6 +801,7 @@ export function UpdateButtonLocation(props: ILocation) {
               <Input hidden name="action" value="editlocation" />
               <FormControl isRequired>
                 <FormLabel>Nama Lokasi</FormLabel>
+                <Input hidden value={store.store_id?.id} name="storeId" />
                 <Input
                   name="name"
                   value={name}
@@ -928,16 +935,16 @@ export function UpdateButtonLocation(props: ILocation) {
   );
 }
 
-// export function UpdateButtonMain(props: ILocation) {
-//   return (
-//     <Box>
-//       <Form method="patch">
-//         <Input hidden name="id" value={props.id} />
-//         <Input hidden name="action" value="editmainlocation" />
-//         <Button type="submit" borderRadius={"full"} size={"xs"}>
-//           Buat jadi alamat utama
-//         </Button>
-//       </Form>
-//     </Box>
-//   );
-// }
+export function UpdateButtonMain(props: ILocation) {
+  return (
+    <Box>
+      <Form method="patch">
+        <Input hidden name="id" value={props.id} />
+        <Input hidden name="action" value="editmainlocation" />
+        <Button type="submit" borderRadius={'full'} size={'xs'}>
+          Buat jadi alamat utama
+        </Button>
+      </Form>
+    </Box>
+  );
+}

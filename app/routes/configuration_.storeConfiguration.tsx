@@ -59,7 +59,7 @@ export async function loader({ request, context, params }: DataFunctionArgs) {
   const storePromise = user?.storeId;
   console.log(storePromise as string);
 
-  const getLocationDataPromise = getAllDataLocation();
+  const getLocationDataPromise = getAllDataLocation(user?.storeId);
   const messagesPromise = getMessages(user?.storeId);
   const storeIdPromise = getStoreid(user?.storeId);
 
@@ -79,7 +79,7 @@ export async function action({ request }: ActionArgs) {
   console.log('ini isi dari formData', formData);
 
   const action = formData.get('action');
-
+  const storeId = formData.get('storeId');
   const name = formData.get('name');
   const address = formData.get('address');
   const latitude = formData.get('latitude');
@@ -87,6 +87,7 @@ export async function action({ request }: ActionArgs) {
   const cityDistrict = formData.get('cityDistrict');
   const postalCode = formData.get('postalCode') as string;
 
+  console.log('ini isi dari name :', storeId);
   console.log('ini isi dari name :', name);
   console.log('ini isi dari adres :', address);
   console.log('ini isi dari lat :', latitude);
@@ -99,7 +100,7 @@ export async function action({ request }: ActionArgs) {
     console.log('ini isi dari isman :', isMainLocation);
     console.log('data berhasil di simpan!');
 
-    await createLocation({
+    await createLocation(storeId, {
       name,
       address,
       latitude,
@@ -124,7 +125,7 @@ export async function action({ request }: ActionArgs) {
     console.log('update ok!');
     const id = formData.get('id') as string;
 
-    await updateLocation(id, {
+    await updateLocation(storeId, id, {
       name,
       address,
       latitude,
@@ -199,7 +200,7 @@ export default function StoreConfiguration() {
       <Flex h={'105vh'} mt={5}>
         <Tabs bg={'white'} mt={5} w={'100%'} borderRadius={5}>
           <Text fontWeight={'bold'} fontSize={'16px'} my={4} ms={4}>
-            Fesyen Store
+            {data.store_id?.name} Store
           </Text>
           <TabList>
             <Tab

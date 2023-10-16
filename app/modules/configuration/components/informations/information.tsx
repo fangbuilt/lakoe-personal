@@ -200,9 +200,10 @@ export function Informations({ dataStore }: any) {
           name="storeId"
           value={store.store as string}
         />
-        <FormControl>
+        <FormControl mb="5">
           <Grid
             h="150px"
+            mb="5"
             templateRows="repeat(2, 1fr)"
             templateColumns="repeat(2, 1fr)"
             gap={4}
@@ -302,21 +303,6 @@ export function Informations({ dataStore }: any) {
           </Grid>
         </FormControl>
 
-        <Flex alignItems={'end'} justifyContent={'end'}>
-          <Button
-            type="submit"
-            size={'sm'}
-            px={5}
-            mt={'70px'}
-            mb={'3'}
-            color={'white'}
-            borderRadius={'full'}
-            bg={'#0086B4'}
-            onClick={handleSaveButtonClick}
-          >
-            Simpan
-          </Button>
-        </Flex>
         {showAlert && (
           <Center>
             <Alert
@@ -347,8 +333,7 @@ export function Informations({ dataStore }: any) {
             </Alert>
           </Center>
         )}
-        <hr />
-        <Text fontWeight={'semibold'} fontSize={'16px'} mt={3}>
+        <Text fontWeight={'semibold'} fontSize={'16px'} mt={'80px'}>
           Logo Toko
         </Text>
 
@@ -382,7 +367,7 @@ export function Informations({ dataStore }: any) {
                         position={'relative'}
                       >
                         <Image
-                          src={uploadedImage}
+                          src={dataStore.logoAttachment}
                           alt="Uploaded Photo"
                           objectFit={'cover'}
                           w={'100%'}
@@ -469,11 +454,25 @@ export function Informations({ dataStore }: any) {
             )}
           </Dropzone>
         </Box>
+        <Text fontSize={'13px'} w={'70%'}>
+          Ukuran optimal 300 x 300 piksel dengan Besar file: Maksimum 10
+          Megabytes. Ekstensi file yang diperbolehkan: JPG, JPEG, PNG
+        </Text>
+        <Flex alignItems={'end'} justifyContent={'end'}>
+          <Button
+            type="submit"
+            size={'sm'}
+            px={5}
+            mb={'3'}
+            color={'white'}
+            borderRadius={'full'}
+            bg={'#0086B4'}
+            onClick={handleSaveButtonClick}
+          >
+            Simpan
+          </Button>
+        </Flex>
       </Form>
-      <Text fontSize={'13px'} w={'70%'}>
-        Ukuran optimal 300 x 300 piksel dengan Besar file: Maksimum 10
-        Megabytes. Ekstensi file yang diperbolehkan: JPG, JPEG, PNG
-      </Text>
     </TabPanel>
   );
 }
