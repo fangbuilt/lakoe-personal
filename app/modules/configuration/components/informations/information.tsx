@@ -213,7 +213,7 @@ export function Informations({ dataStore }: any) {
                 Slogan
               </FormLabel>
               <Input
-                defaultValue={dataStore.slogan}
+                defaultValue={dataStore?.slogan ?? ''}
                 fontSize={'13px'}
                 placeholder="Buat slogan untuk toko"
                 py={-5}
@@ -241,7 +241,7 @@ export function Informations({ dataStore }: any) {
               </FormLabel>
 
               <Textarea
-                defaultValue={dataStore.description}
+                defaultValue={dataStore?.description ?? ''}
                 fontSize={'13px'}
                 h={'145px'}
                 resize={'none'}
@@ -268,7 +268,7 @@ export function Informations({ dataStore }: any) {
                 Nama Toko
               </FormLabel>
               <Input
-                defaultValue={dataStore.name}
+                defaultValue={dataStore?.name ?? ''}
                 fontSize={'13px'}
                 placeholder="Buat Nama Toko"
                 name="name"
@@ -291,7 +291,7 @@ export function Informations({ dataStore }: any) {
             </GridItem>
             <Grid>
               <Input
-                value={uploadedImage || dataStore.logoAttachment || ''}
+                value={uploadedImage || dataStore?.logoAttachment || ''}
                 name="logoAttachment"
                 fontSize={'13px'}
                 onChange={(event) => {

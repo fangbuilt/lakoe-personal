@@ -24,33 +24,31 @@ import { useState } from 'react';
 import { BsCircleFill } from 'react-icons/bs';
 import copy from '~/assets/DetailOrderIcon/copy.svg';
 import { UseBiteshipTrack } from '~/hooks/useBiteshipTrack';
-import type { IBiteshipTracking } from '~/interfaces/orderTracking';
 
 export default function ModalInShipping(props: {
   isOpen: boolean;
   onClose: () => void;
-  data: IBiteshipTracking;
   selectedCardId: string;
 }) {
   const { trackingInfoArray, trackingInfo } = UseBiteshipTrack(
     props.selectedCardId
   );
 
-  const steps = trackingInfoArray;
-
-  const stepCount = steps.length;
+  console.log('step', trackingInfoArray);
+  const stepCount = trackingInfoArray.length;
   const stepHeight = 65;
 
   const { activeStep } = useSteps({
     index: 1,
-    count: steps.length,
+    count: stepCount,
   });
 
   const toast = useToast();
-  const [, setCopied] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setCopied] = useState(false);
 
   const handleCopyClick = () => {
-    const textToCopy = props.data?.waybill_id as string;
+    const textToCopy = trackingInfo?.waybill_id as string;
     navigator.clipboard.writeText(textToCopy).then(() => {
       setCopied(true);
 
@@ -233,62 +231,64 @@ export default function ModalInShipping(props: {
                   padding={'var(--4, 16px)'}
                   borderRadius={'var(--rounded-lg, 12px)'}
                 >
-                  {steps.reverse().map((step: any, index: number) => (
-                    <Step key={index}>
-                      <StepIndicator>
-                        <StepStatus
-                          complete={
-                            <div
-                              style={{
-                                background:
-                                  index === 0 ? '#C5F8FF' : 'transparent',
-                                borderRadius: '50%',
-                                padding: '7px',
-                                display: 'inline-block',
-                              }}
-                            >
-                              <BsCircleFill size={'12px'} color="#0086B4" />
-                            </div>
-                          }
-                          incomplete={
-                            <div
-                              style={{
-                                background: '#F8F8F8',
-                                borderRadius: '50%',
-                                padding: '7px',
-                                display: 'inline-block',
-                              }}
-                            >
-                              <BsCircleFill size={'12px'} color="#D5D5D5" />
-                            </div>
-                          }
-                          active={
-                            <div
-                              style={{
-                                background: '#F8F8F8',
-                                borderRadius: '50%',
-                                padding: '7px',
-                                display: 'inline-block',
-                              }}
-                            >
-                              <BsCircleFill size={'12px'} color="#D5D5D5" />
-                            </div>
-                          }
-                        />
-                      </StepIndicator>
-                      <Box flexShrink="0">
-                        <StepTitle>{step?.note}</StepTitle>
-                        <StepDescription>
-                          {format(
-                            new Date(step?.updated_at),
-                            'EEE, dd MMM yyyy - HH:mm zzzz', // Desired output format
-                            { timeZone: 'Asia/Jakarta' } // Time zone (WIB)
-                          )}
-                        </StepDescription>
-                      </Box>
-                      <StepSeparator style={{ background: '#E6E6E6' }} />
-                    </Step>
-                  ))}
+                  {trackingInfoArray
+                    .reverse()
+                    .map((step: any, index: number) => (
+                      <Step key={index}>
+                        <StepIndicator>
+                          <StepStatus
+                            complete={
+                              <div
+                                style={{
+                                  background:
+                                    index === 0 ? '#C5F8FF' : 'transparent',
+                                  borderRadius: '50%',
+                                  padding: '7px',
+                                  display: 'inline-block',
+                                }}
+                              >
+                                <BsCircleFill size={'12px'} color="#0086B4" />
+                              </div>
+                            }
+                            incomplete={
+                              <div
+                                style={{
+                                  background: '#F8F8F8',
+                                  borderRadius: '50%',
+                                  padding: '7px',
+                                  display: 'inline-block',
+                                }}
+                              >
+                                <BsCircleFill size={'12px'} color="#D5D5D5" />
+                              </div>
+                            }
+                            active={
+                              <div
+                                style={{
+                                  background: '#F8F8F8',
+                                  borderRadius: '50%',
+                                  padding: '7px',
+                                  display: 'inline-block',
+                                }}
+                              >
+                                <BsCircleFill size={'12px'} color="#D5D5D5" />
+                              </div>
+                            }
+                          />
+                        </StepIndicator>
+                        <Box flexShrink="0">
+                          <StepTitle>{step?.note}</StepTitle>
+                          <StepDescription>
+                            {format(
+                              new Date(step?.updated_at),
+                              'EEE, dd MMM yyyy - HH:mm zzzz', // Desired output format
+                              { timeZone: 'Asia/Jakarta' } // Time zone (WIB)
+                            )}
+                          </StepDescription>
+                        </Box>
+                        <StepSeparator style={{ background: '#E6E6E6' }} />
+                      </Step>
+                    ))}
                 </Stepper>
               </Box>
             </Box>

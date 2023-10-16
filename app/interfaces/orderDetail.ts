@@ -261,7 +261,7 @@ export interface IOrderDetailInvoice {
   userId: string;
   payment: IOrderDetailPayment;
   paymentId: string;
-  biteshipTrackinglimits: IOrderDetailBiteshipTrackingLimit[];
+  biteshipTrackinglimits: IOrderDetailBiteshipTrackingLimit;
   invoiceHistories: IOrderDetailInvoiceHistory[];
   createdAt: Date;
   updatedAt: Date;

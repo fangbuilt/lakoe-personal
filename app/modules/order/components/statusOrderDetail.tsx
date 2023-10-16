@@ -30,8 +30,8 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Form, Link } from '@remix-run/react';
-import { useState } from 'react';
+import { Form, Link, useLoaderData } from '@remix-run/react';
+import { useEffect, useState } from 'react';
 import { BsCircleFill } from 'react-icons/bs';
 import barcode from '~/assets/DetailOrderIcon/barcode.svg';
 import box from '~/assets/DetailOrderIcon/box.svg';
@@ -53,6 +53,8 @@ import {
   useOrderDetail,
 } from '../hooks/useOrderDetail';
 import getStatusBadge from './statusInvoice';
+import NewOrderHooks from '~/modules/webhook/hooks/NewOrderHooks';
+import type { loader } from '~/routes/order_.detail.$id';
 
 export default function StatusOrderDetail({
   data,
@@ -63,6 +65,9 @@ export default function StatusOrderDetail({
   dataTracking: ITracking;
   apiKey: string;
 }) {
+  const dataTrack = useLoaderData<typeof loader>();
+  const currentTime = dataTrack.currentTime;
+
   const {
     isOrderHistoryVisible,
     toggleOrderHistory,
@@ -105,173 +110,12 @@ export default function StatusOrderDetail({
     onClose: onCloseModal2,
   } = useDisclosure();
 
-  // const MOOTA_API_TOKEN =
-  //   'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJucWllNHN3OGxsdyIsImp0aSI6ImEwYzhhMWYwODFkYjI2M2RkNDAxZjA2OWZjNmMxNTJhYjgyYjljYzM1Yjg2ODk2YWRhNjU5MGM5YTkwNDM2N2MwMTE2M2MzNTQwZmUwOWM0IiwiaWF0IjoxNjk1ODAwODgyLjQ4MjAyNywibmJmIjoxNjk1ODAwODgyLjQ4MjAyOSwiZXhwIjoxNzI3NDIzMjgyLjQ4MDEyNywic3ViIjoiMzAyNTciLCJzY29wZXMiOlsiYXBpIiwidXNlciIsInVzZXJfcmVhZCIsImJhbmsiLCJiYW5rX3JlYWQiLCJtdXRhdGlvbiIsIm11dGF0aW9uX3JlYWQiXX0.HTdlVZF6dJJaEWpQ5cGY42YzjXpvBGwrtvm4BxUo2Q0DYoO8QR0g8w7I5LfQov-E0Hp8jL3TX78u5H2iXEnAsBuOVgS_oEeRFCNF6PCNnTCbUbg94c5CRg870u0UIsXHPjdoCflzybZZ3qj6nYTQmJanIaQ0ckn8SF2--SWccwwBvE0gRIOCCKD55lsfx1M4lSXF1dbkOfXTq-kmLtqlBup7V34X2-kPQssSeKWYf2UBTbzljj2pnjw4iyN6P9zCfRc0IOuP5BZO7yQPPXJJB_AzNdb8PzzzhG9yeV88CX9xpJ43dw5liYek1RzmCysL_iV-tnjQJsF16l3W8Omkkjo5jd6JnMg4YB6Oig6dPBGAc6-QAyX1cBbO5rjiP6Z2N5rh6byEe5RnXgRkh13S0JPnUnEvM2-02TRreiBRdwkE96-jLAR1_P5Jk2hHbh7X_zWsRNQaMxhCmmL0IEo88QWq-1N8pNeyJAVionN_LqhXdkhhJNLzsbQCLOUaZTShEi7FZPPTnStNE3X3Q4WwU7sQAwej3YI1trlN0UwNzvGPQ1RXjIrsRZeaaTPuD9PMxJBoC-GQF9pvKlhULa66Z3TMXRAwdyuduHdGGRig8vp5hTo1AKZRRjGJyndYWzIxpN86e0KGA9jLh5o7dcbiJ6ICXx8M3ZTyKzEQQbnpsws';
-  // Fungsi untuk mengambil saldo dari Moota API
-  // const fetchSaldo = async () => {
-  //   const url = 'https://app.moota.co/api/v2/bank';
-  //   const headers = {
-  //     Accept: 'application/json',
-  //     Authorization: `Bearer ${MOOTA_API_TOKEN}`,
-  //   };
+  const { afterpacking, setSelectedProps } = NewOrderHooks();
 
-  //   const response = await fetch(url, { headers });
-  //   if (!response.ok) {
-  //     throw new Error('Gagal mengambil saldo dari Moota API');
-  //   }
+  useEffect(() => {
+    setSelectedProps(data);
+  }, []);
 
-  //   const data = await response.json();
-  //   return data.data[0].balance;
-  // };
-
-  // (async () => {
-  //   try {
-  //     const saldo = await fetchSaldo();
-  //     console.log('ini saldo moota', saldo);
-  //   } catch (error) {
-  //     console.error('Terjadi kesalahan:', error);
-  //   }
-  // })();
-
-  // const afterpacking = async () => {
-  //   try {
-  //     const saldo = await fetchSaldo();
-  //     if (saldo > 50000) {
-  //       handleOrderCourier();
-  //     } else {
-  //       handleBalanceNotif();
-  //     }
-  //   } catch (error) {
-  //     console.error('Gagal mengambil saldo:', error);
-  //   }
-  // };
-
-  const systembalance = 100000;
-
-  const afterpacking = () => {
-    if (systembalance > 50000) {
-      handleOrderCourier();
-    } else {
-      handleBalanceNotif();
-    }
-  };
-
-  const handleBalanceNotif = async () => {
-    try {
-      const mailerBaseUrl = 'https://connect.mailerlite.com';
-      const mailerEndPoint = '/api/subscribers';
-      const mailerApiKey =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
-
-      const mailerData = {
-        email: `angga.ardiansyah955+${new Date().getTime()}@gmail.com`,
-        fields: {
-          company: 'ADD MORE BALANCE', //company berperan sebagai "title" dalam mailerlite
-          last_name:
-            "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message") dalam mailerlite
-        },
-        groups: ['98713000939095999'],
-      };
-
-      const mailerRequest = {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${mailerApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(mailerData),
-      };
-
-      const response = await fetch(
-        `${mailerBaseUrl}${mailerEndPoint}`,
-        mailerRequest
-      );
-      await response.json();
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  const handleOrderCourier = async () => {
-    try {
-      const baseUrl = 'https://api.biteship.com';
-      const endpoint = '/v1/orders';
-      const apiKey =
-        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmlub3B1amEiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUwMjM4NjZ9.V0mGHUqraz6uvr0_uYGyKcTFLTXQq5JqESQSvvmXA2Y'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
-      const dataforBiteShip = {
-        shipper_contact_name: data?.cart?.user?.name,
-        shipper_contact_phone: data?.cart?.user.phone,
-        shipper_contact_email: data?.cart?.user.email,
-        shipper_organization: data?.cart?.store?.name,
-        origin_contact_name: data?.cart?.user?.name,
-        origin_contact_phone: data?.cart?.user.phone,
-        origin_address: data?.cart?.store?.locations[0].address,
-        origin_note: data?.cart?.store?.locations[0].addressNote,
-
-        origin_coordinate: {
-          latitude: -6.2253114,
-          longitude: 106.7993735,
-        },
-        origin_postal_code: '12440',
-        destination_contact_name: data?.receiverName,
-        destination_contact_phone: data?.receiverPhone,
-        destination_contact_email: data?.receiverEmail,
-        destination_address: data?.receiverAddress,
-        destination_postal_code: '14470',
-        destination_note:
-          'antar sampai tujuan dan jangan diturunkan ditengah jalan',
-        destination_cash_proof_of_delivery: true,
-        destination_coordinate: {
-          latitude: -6.28927,
-          longitude: 106.77492000000007,
-        },
-
-        courier_company: 'grab',
-
-        courier_type: data?.courier.courierType,
-        courier_insurance: data?.courier.courierInsurance,
-        delivery_type: 'later',
-        delivery_date: Date.parse(data?.courier.deliveryDate),
-        delivery_time: Date.parse(data?.courier.deliveryTime),
-        order_note: 'satukan semua pesanan kedalam satu packaging',
-        metadata: {},
-        items: [
-          {
-            id: data?.cart.cartItems[0].product.id,
-            name: data?.cart.cartItems[0].product.name,
-            image: '',
-            description: data?.cart.cartItems[0].product.description,
-            value: data?.price,
-            quantity: data?.cart.cartItems[0].qty,
-            height: data?.cart.cartItems[0].product.height,
-            length: data?.cart.cartItems[0].product.length,
-            weight:
-              data?.cart.cartItems[0].variantOption.variantOptionValues[0]
-                .weight,
-            width: data?.cart.cartItems[0].product.width,
-          },
-        ],
-      };
-
-      const orderDataJSON = JSON.stringify(dataforBiteShip);
-
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: orderDataJSON,
-      };
-
-      await fetch(`${baseUrl}${endpoint}`, requestOptions);
-      alert(
-        'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
-      );
-    } catch (error) {
-      alert(error);
-    }
-  };
   const stepCount = filterStepsByStatus(data?.status).length;
   const stepHeight = 65;
   const sortedHistories = data?.invoiceHistories.slice().sort((a, b) => {
@@ -371,43 +215,121 @@ export default function StatusOrderDetail({
     }
   }
 
-  function useStatusLacakPengiriman(status: string, dataTracking: ITracking) {
+  function useStatusLacakPengiriman(status: string) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    function openModal() {
+    const [selectedCardId, setSelectedCardId] = useState<string>('');
+    const [cardModals, setCardModals] = useState<{ [key: string]: boolean }>(
+      {}
+    );
+
+    function openModal(trackingId: string, id: string) {
+      // Check if the modal for this card is already open
+      if (cardModals[id]) {
+        return;
+      }
+
+      // Set the modal state for this card to open
+      const updatedCardModals = { ...cardModals };
+      updatedCardModals[id] = true;
+      setCardModals(updatedCardModals);
+
+      setSelectedCardId(trackingId);
       setModalIsOpen(true);
     }
 
-    function closeModal() {
+    function closeModal(id: string) {
+      // Set the modal state for this card to closed
+      const updatedCardModals = { ...cardModals };
+      updatedCardModals[id] = false;
+      setCardModals(updatedCardModals);
+
       setModalIsOpen(false);
     }
 
-    if (status?.toUpperCase() === 'IN_TRANSIT') {
+    if (status.toUpperCase() === 'IN_TRANSIT') {
       return (
         <>
-          <Button
-            fontSize={'14px'}
-            fontWeight={'700'}
-            lineHeight={'20px'}
-            color={'#0086B4'}
-            background={'#FFFFFF)'}
-            colorScheme="#FFFFFF)"
-            w={'120px'}
-            onClick={openModal}
+          <Form
+            method="POST"
+            onSubmit={() => {
+              openModal(data.courier?.trackingId as string, data.id);
+              console.log(
+                new Date(
+                  data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                ).getTime() / 10000
+              );
+              console.log(
+                currentTime -
+                  new Date(
+                    data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                  ).getTime() /
+                    (30 * 60 * 1000)
+              );
+              console.log(
+                new Date(
+                  data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                ).getTime() /
+                  (30 * 60 * 1000) -
+                  currentTime
+              );
+              console.log(30 * 60 * 1000);
+              console.log(currentTime / (30 * 60 * 1000));
+              console.log(
+                currentTime / 1000 -
+                  new Date(
+                    data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                  ).getTime() /
+                    1000
+              );
+              console.log(
+                'Condition Value:',
+                currentTime / 1000 <
+                  new Date(
+                    data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                  ).getTime() /
+                    1000
+              );
+            }}
           >
-            Lacak Pengiriman
-          </Button>
+            <Input
+              name="actionType"
+              defaultValue={'createTrackingLimit'}
+              hidden
+            />
+            <Input name="invoiceId" defaultValue={data.id} hidden />
+            <Button
+              fontSize={'14px'}
+              fontWeight={'700'}
+              lineHeight={'20px'}
+              color={'#0086B4'}
+              background={'#FFFFFF)'}
+              colorScheme="#FFFFFF)"
+              w={'120px'}
+              type="submit"
+              isDisabled={
+                currentTime / 1000 <
+                new Date(
+                  data.biteshipTrackinglimits?.nextAccessTime ?? ''
+                ).getTime() /
+                  1000
+              }
+            >
+              Lacak Pengiriman
+            </Button>
+          </Form>
+
           {modalIsOpen && (
             <ModalInShipping
               isOpen={modalIsOpen}
-              onClose={closeModal}
-              data={dataTracking}
+              onClose={() => closeModal(selectedCardId)}
+              selectedCardId={selectedCardId}
             />
           )}
         </>
       );
     }
 
-    if (status?.toUpperCase() === 'ORDER_COMPLETED') {
+    if (status.toUpperCase() === 'ORDER_COMPLETED') {
       return (
         <Button
           fontSize={'14px'}
@@ -576,7 +498,7 @@ export default function StatusOrderDetail({
                       <StepDescription
                         style={{ fontWeight: '500', fontSize: '12px' }}
                       >
-                        {dateConversion(sortedHistories[index].createdAt)} WIB
+                        {dateConversion(sortedHistories[index]?.createdAt)} WIB
                       </StepDescription>
                     </Box>
 
@@ -821,7 +743,7 @@ export default function StatusOrderDetail({
               <Text fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'}>
                 Detail Pengiriman
               </Text>
-              {useStatusLacakPengiriman(data?.status, dataTracking)}
+              {useStatusLacakPengiriman(data?.status)}
             </Box>
             <Box display={'flex'}>
               <Box display={'flex'} flexDirection={'column'} gap={3}>
@@ -1089,7 +1011,12 @@ export default function StatusOrderDetail({
                     Cancel
                   </Button>
                   <Form method="post">
-                    <Input name="id" type="hidden" value={data.id} />
+                    <Input
+                      name="actionType"
+                      defaultValue={'cancelNotif'}
+                      hidden
+                    />
+                    <Input name="id" type="hidden" defaultValue={data.id} />
                     <Button
                       variant="ghost"
                       onClick={handleCancelNotif}
@@ -1156,16 +1083,19 @@ export default function StatusOrderDetail({
                   >
                     Cancel
                   </Button>
-                  <Form method="patch">
-                    <Input name="id" type="hidden" value={data.id} />
-                    <Button
-                      variant="ghost"
-                      onClick={afterpacking}
-                      type="submit"
-                    >
-                      Selesai di Packing
-                    </Button>
-                  </Form>
+                  {/* <Form method="patch"> */}
+                  {/* <Input name="id" type="hidden" value={data.id} /> */}
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      afterpacking();
+                      onCloseModal2();
+                    }}
+                    type="submit"
+                  >
+                    Selesai di Packing
+                  </Button>
+                  {/* </Form> */}
                 </ModalFooter>
               </ModalContent>
             </Modal>

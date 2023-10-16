@@ -1,5 +1,9 @@
 import { Flex } from '@chakra-ui/react';
-import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
+import {
+  redirect,
+  type ActionArgs,
+  type DataFunctionArgs,
+} from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import AdminApproved from '~/components/AdminApproved';
 import { ImplementGridAdminWithdraw } from '~/layouts/Grid';

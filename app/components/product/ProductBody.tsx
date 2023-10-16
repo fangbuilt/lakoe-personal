@@ -24,6 +24,8 @@ import { useEffect, useState } from 'react';
 import ProductEmpty from './ProductEmpty';
 import ProductEmptyActive from './ProductEmptyActive';
 import ProductEmptyNonActive from './ProductEmptyNonActive';
+import { updateIsActive } from '~/modules/product/product.service';
+import ProductModalSelect from './ProductModalSelect';
 
 interface IProductBodyProps {
   product: IProduct[];
@@ -41,9 +43,39 @@ export default function ProductBody(props: IProductBodyProps) {
     useFilterProducts();
   const { selectedSortOption, setSortOption, getSelectedSortOption } =
     useSortProducts();
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const handleSelectAllChange = () => {
+    setSelectAllChecked(!selectAllChecked);
+    const selectedIds = searchProducts.map((product) => product.id);
+    setSelectedItems(selectAllChecked ? [] : selectedIds);
+    selectedIds.forEach((productId) => {
+      updateIsActive({ id: productId, isActive: !selectAllChecked });
+    });
+  };
+
   useEffect(() => {
     setSearchQuery(debouncedSearchTerm);
   }, [debouncedSearchTerm, setSearchQuery]);
+
+  useEffect(() => {
+    if (selectAllChecked) {
+      setSelectedItems(searchProducts.map((product) => product.id));
+    } else {
+      setSelectedItems([]);
+    }
+  }, [selectAllChecked, searchProducts]);
+
+  const handleItemSelectChange = (productId: string, isSelected: boolean) => {
+    setSelectedItems((prevSelected) => {
+      if (isSelected) {
+        return [...prevSelected, productId];
+      } else {
+        return prevSelected.filter((id) => id !== productId);
+      }
+    });
+  };
+
   return (
     <>
       <Box w={'100%'} bgColor={'white'} borderRadius={10}>
@@ -72,7 +104,6 @@ export default function ProductBody(props: IProductBodyProps) {
           </Box>
         </Box>
         <Tabs w={'100%'} onChange={(index) => setActiveTab(index)}>
-          {/* <Tabs w={'100%'}> */}
           <TabList px={1}>
             <Tab>
               <Text fontSize={'16px'}>Semua</Text>
@@ -109,12 +140,31 @@ export default function ProductBody(props: IProductBodyProps) {
                       {searchProducts.length} Produk
                     </Text>
                     <Box display={'flex'} gap={2}>
+                      {selectAllChecked && (
+                        <>
+                          <ProductModalSelect
+                            {...searchProducts[0]}
+                            selectedProductCount={searchProducts.length}
+                          />
+                        </>
+                      )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
-                      <Checkbox defaultChecked></Checkbox>
+                      <Checkbox
+                        isChecked={selectAllChecked}
+                        onChange={handleSelectAllChange}
+                      ></Checkbox>
                     </Box>
                   </Box>
                   {searchProducts.map((a) => (
-                    <ProductCard key={a.id} product={a}>
+                    <ProductCard
+                      key={a.id}
+                      product={a}
+                      isActive={a.isActive}
+                      isSelected={selectedItems.includes(a.id)}
+                      onSelectChange={(isSelected) =>
+                        handleItemSelectChange(a.id, isSelected)
+                      }
+                    >
                       <ProductModal {...a} />
                     </ProductCard>
                   ))}
@@ -135,12 +185,31 @@ export default function ProductBody(props: IProductBodyProps) {
                       {searchProducts.length} Produk
                     </Text>
                     <Box display={'flex'} gap={2}>
+                      {selectAllChecked && (
+                        <>
+                          <ProductModalSelect
+                            {...searchProducts[0]}
+                            selectedProductCount={searchProducts.length}
+                          />
+                        </>
+                      )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
-                      <Checkbox defaultChecked></Checkbox>
+                      <Checkbox
+                        isChecked={selectAllChecked}
+                        onChange={handleSelectAllChange}
+                      ></Checkbox>
                     </Box>
                   </Box>
                   {searchProducts.map((a) => (
-                    <ProductCard key={a.id} product={a}>
+                    <ProductCard
+                      key={a.id}
+                      product={a}
+                      isActive={a.isActive}
+                      isSelected={selectedItems.includes(a.id)}
+                      onSelectChange={(isSelected) =>
+                        handleItemSelectChange(a.id, isSelected)
+                      }
+                    >
                       <ProductModal {...a} />
                     </ProductCard>
                   ))}
@@ -161,12 +230,31 @@ export default function ProductBody(props: IProductBodyProps) {
                       {searchProducts.length} Produk
                     </Text>
                     <Box display={'flex'} gap={2}>
+                      {selectAllChecked && (
+                        <>
+                          <ProductModalSelect
+                            {...searchProducts[0]}
+                            selectedProductCount={searchProducts.length}
+                          />
+                        </>
+                      )}
                       <Text fontSize={'14px'}>Pilih Semua</Text>
-                      <Checkbox defaultChecked></Checkbox>
+                      <Checkbox
+                        isChecked={selectAllChecked}
+                        onChange={handleSelectAllChange}
+                      ></Checkbox>
                     </Box>
                   </Box>
                   {searchProducts.map((a) => (
-                    <ProductCard key={a.id} product={a}>
+                    <ProductCard
+                      key={a.id}
+                      product={a}
+                      isActive={a.isActive}
+                      isSelected={selectedItems.includes(a.id)}
+                      onSelectChange={(isSelected) =>
+                        handleItemSelectChange(a.id, isSelected)
+                      }
+                    >
                       <ProductModal {...a} />
                     </ProductCard>
                   ))}

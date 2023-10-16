@@ -248,6 +248,7 @@ model VariantOption {
 
 model VariantOptionValue {
   id              String         @id @unique @default(uuid())
+  name            String
   sku             String
   weight          Float
   stock           Int
@@ -368,6 +369,7 @@ model Payment {
   @@index([userId])
   @@map("payments")
 }
+
 
 model Courier {
   id                           String    @id @unique @default(uuid())
