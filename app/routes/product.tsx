@@ -5,6 +5,7 @@ import { useLoaderData } from '@remix-run/react';
 import ProductBody from '~/components/product/ProductBody';
 import { ImplementGrid } from '~/layouts/Grid';
 import { authorize } from '~/middleware/authorization';
+import { getUserId } from '~/modules/auth/auth.service';
 import {
   deleteProduct,
   getProduct,
@@ -14,8 +15,9 @@ import {
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
+  const userId = await getUserId(request);
 
-  return await getProduct();
+  return await getProduct(userId);
 }
 
 export async function action({ request }: ActionArgs) {

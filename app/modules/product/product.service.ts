@@ -11,7 +11,6 @@ export async function createProduct(data: any, storeId: any) {
         length: data.length,
         width: data.width,
         height: data.height,
-        // storeId: storeId,
         store: {
           connect: { id: storeId },
         },
@@ -50,20 +49,35 @@ export async function createProduct(data: any, storeId: any) {
                   {
                     name: data.name,
                     variantOptionValues: {
-                      create: [
-                        {
-                          price: data.price,
-                          sku: data.sku,
-                          stock: data.stock,
-                          weight: data.weight,
-                          isActive: true,
-                        },
-                      ],
+                      create: data.variants,
                     },
                   },
                 ],
               },
             },
+            // {
+            //   name: data.name,
+            //   isActive: true,
+            //   variantOptions: {
+            //     create: [
+            //       {
+            //         name: data.name,
+            //         variantOptionValues: {
+            //           create:
+            //             [
+            //               {
+            //                 price: data.price2,
+            //                 sku: data.sku2,
+            //                 stock: data.stock2,
+            //                 weight: data.weight2,
+            //                 isActive: true,
+            //               },
+            //             ],
+            //         },
+            //       },
+            //     ],
+            //   },
+            // },
           ],
         },
       },
@@ -87,16 +101,27 @@ export async function createProduct(data: any, storeId: any) {
   }
 }
 
-export async function getProduct() {
+export async function getProduct(id: any) {
+  const store = await db.user.findFirst({
+    where: {
+      id: id,
+    },
+  });
   const data = await db.product.findMany({
-    // where: {
-    //   storeId: id,
-    // },
+    where: {
+      store: {
+        id: store?.storeId as string,
+      },
+    },
     orderBy: {
       createdAt: 'desc',
     },
     include: {
-      store: true,
+      store: {
+        include: {
+          users: true,
+        },
+      },
       attachments: true,
       variants: {
         include: {
