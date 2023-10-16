@@ -14,7 +14,6 @@ import { ProductManagement } from '~/modules/product/components/ProductManagemen
 import { LazyProductVariant } from '~/modules/product/components/ProductVariant';
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
 import { createProduct } from '~/modules/product/product.service';
-// import { useState } from 'react';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
   await authorize({ request, context, params }, '2');
@@ -45,37 +44,63 @@ export async function action({ request }: ActionArgs) {
   if (request.method.toLowerCase() === 'post') {
     const formData = await request.formData();
 
-    const imageUrl = formData.get('mainPhoto') as string;
-    const imageUrl2 = formData.get('photo2') as string;
-    const imageUrl3 = formData.get('photo3') as string;
-    const imageUrl4 = formData.get('photo4') as string;
-    const imageUrl5 = formData.get('photo5') as string;
-
     const storeId = formData.get('storeId') as string;
 
+    const getValue = (fieldName: string): string => {
+      const value = formData.get(fieldName);
+      return typeof value === 'string' ? value : '';
+    };
+
+    const colorVariantLength = parseInt(getValue('colorVariants'));
+    const sizeVariantLength = parseInt(getValue('sizeVariants'));
+
+    const variants = [];
+    for (let color = 0; color < colorVariantLength; color++) {
+      for (let size = 0; size < sizeVariantLength; size++) {
+        const variantName = getValue(`variants[${color}][${size}][name]`);
+        const variantPrice = parseFloat(
+          getValue(`variants[${color}][${size}][price]`)
+        );
+        const variantStock = parseInt(
+          getValue(`variants[${color}][${size}][stock]`)
+        );
+        const variantSku = formData.get(`variants[${color}][${size}][sku]`);
+        const variantWeight = parseInt(
+          getValue(`variants[${color}][${size}][weight]`)
+        );
+
+        variants.push({
+          name: variantName,
+          price: variantPrice,
+          stock: variantStock,
+          sku: variantSku,
+          weight: variantWeight,
+        });
+      }
+    }
+
     const data = {
-      url1: imageUrl,
-      url2: imageUrl2,
-      url3: imageUrl3,
-      url4: imageUrl4,
-      url5: imageUrl5,
-      name: formData.get('name'),
-      description: formData.get('description') as string,
-      minimumOrder: Number(formData.get('min_order')),
-      price: parseFloat(formData.get('price') as string),
-      stock: parseInt(formData.get('stock') as string),
-      sku: formData.get('sku'),
-      price2: parseFloat(formData.get('price-variant') as string),
-      stock2: parseInt(formData.get('stock-variant') as string),
-      weight2: parseInt(formData.get('weight-variant') as string),
-      sku2: formData.get('sku-variant'),
+      name: getValue('name'),
+      url1: getValue('mainPhoto'),
+      url2: getValue('photo2'),
+      url3: getValue('photo3'),
+      url4: getValue('photo4'),
+      url5: getValue('photo5'),
+      description: getValue('description'),
+      minimumOrder: Number(getValue('min_order')),
+      variants: variants,
+      // price2: parseFloat(formData.get('price') as string),
+      // stock2: parseInt(formData.get('stock') as string),
+      // weight2: parseInt(formData.get('weight') as string),
+      // sku2: formData.get('sku'),
       slug: formData.get('url'),
       category: formData.get('category') as string,
-      weight: parseInt(formData.get('weight') as string),
       length: parseFloat(formData.get('length') as string),
       width: parseFloat(formData.get('width') as string),
       height: parseFloat(formData.get('height') as string),
     };
+
+    console.log('ini data', data);
 
     await createProduct(data, storeId);
     return redirect('/product');

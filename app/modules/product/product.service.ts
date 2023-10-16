@@ -49,20 +49,35 @@ export async function createProduct(data: any, storeId: any) {
                   {
                     name: data.name,
                     variantOptionValues: {
-                      create: [
-                        {
-                          price: data.price,
-                          sku: data.sku,
-                          stock: data.stock,
-                          weight: data.weight,
-                          isActive: true,
-                        },
-                      ],
+                      create: data.variants,
                     },
                   },
                 ],
               },
             },
+            // {
+            //   name: data.name,
+            //   isActive: true,
+            //   variantOptions: {
+            //     create: [
+            //       {
+            //         name: data.name,
+            //         variantOptionValues: {
+            //           create:
+            //             [
+            //               {
+            //                 price: data.price2,
+            //                 sku: data.sku2,
+            //                 stock: data.stock2,
+            //                 weight: data.weight2,
+            //                 isActive: true,
+            //               },
+            //             ],
+            //         },
+            //       },
+            //     ],
+            //   },
+            // },
           ],
         },
       },
@@ -92,7 +107,7 @@ export async function getProduct() {
       createdAt: 'desc',
     },
     include: {
-      // store: true,
+      store: true,
       attachments: true,
       variants: {
         include: {

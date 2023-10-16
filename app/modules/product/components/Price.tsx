@@ -26,7 +26,7 @@ export function Price() {
               <Input
                 type="text"
                 placeholder="Masukan harga satuan barang"
-                name="price"
+                name={`variants[0][0][price]`}
                 onChange={handleChange}
               />
             </InputGroup>

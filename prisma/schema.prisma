@@ -248,6 +248,7 @@ model VariantOption {
 
 model VariantOptionValue {
   id              String         @id @unique @default(uuid())
+  name            String
   sku             String
   weight          Float
   stock           Int

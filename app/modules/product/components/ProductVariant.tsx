@@ -20,104 +20,37 @@ import {
   TagLabel,
   Text,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import AddIcon from '~/assets/icon-pack/button-icons/add-circle.svg';
 import TrashIcon from '~/assets/icon-pack/button-icons/trash.svg';
 import CloseCircle from '~/assets/icon-pack/button-icons/close-circle-s.svg';
+import { useVariant } from '../hooks/useVariantShenanigans';
 // import GalleryAdd from '~/assets/icon-pack/button-icons/gallery-add.svg';
 // import Dropzone from 'react-dropzone';
 
 export function LazyProductVariant() {
-  const [isLazy, setIsLazy] = useState(false);
-  const [isColorActive, setIsColorActive] = useState(false);
-  const [isSizeActive, setIsSizeActive] = useState(false);
+  const {
+    isColorActive,
+    isSizeActive,
+    toggle,
+    colorVariantChange,
+    sizeVariantChange,
+    handleColorInputKeyDown,
+    handleSizeInputKeyDown,
+    removeColorTag,
+    removeSizeTag,
+    isLazy,
+    colorVariants,
+    sizeVariants,
+    setIsColorActive,
+    setIsSizeActive,
+    colorTags,
+    sizeTags,
+    colorTagInput,
+    sizeTagInput,
+  } = useVariant();
 
-  const toggle = () => {
-    setIsLazy(!isLazy);
-    setIsColorActive(false);
-    setIsSizeActive(false);
-  };
-
-  //tags input shenanigans
-  const [colorTags, setColorTags] = useState<string[]>([]);
-  const [sizeTags, setSizeTags] = useState<string[]>([]);
-
-  const [colorTagInput, setColorTagInput] = useState<string>('');
-  const [sizeTagInput, setSizeTagInput] = useState<string>('');
-
-  type VariantType = {
-    name: string;
-    active: boolean;
-    price: number;
-    stock: number;
-    sku: string;
-    weight: number;
-  };
-
-  const [colorVariants, setColorVariants] = useState<VariantType[]>([]);
-  const [sizeVariants, setSizeVariants] = useState<VariantType[]>([]);
-
-  const colorVariantChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const colorInputValue = e.target.value.replace(/,/g, '');
-    setColorTagInput(colorInputValue);
-  };
-
-  const sizeVariantChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sizeInputValue = e.target.value.replace(/,/g, '');
-    setSizeTagInput(sizeInputValue);
-  };
-
-  const handleColorInputKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === ',' && colorTagInput.trim() !== '') {
-      const newVariant = {
-        name: colorTagInput.trim(),
-        active: true,
-        price: 0,
-        stock: 0,
-        sku: '',
-        weight: 0,
-      };
-      setColorVariants([...colorVariants, newVariant]);
-      setColorTags([...colorTags, colorTagInput.trim()]);
-      setColorTagInput('');
-    }
-  };
-
-  const handleSizeInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ',' && sizeTagInput.trim() !== '') {
-      const newVariant = {
-        name: sizeTagInput.trim(),
-        active: true,
-        price: 0,
-        stock: 0,
-        sku: '',
-        weight: 0,
-      };
-      setSizeVariants([...sizeVariants, newVariant]);
-      setSizeTags([...sizeTags, sizeTagInput.trim()]);
-      setSizeTagInput('');
-    }
-  };
-
-  const removeColorTag = (tagToRemove: string) => {
-    const updatedTags = colorTags.filter((tag) => tag !== tagToRemove);
-    const updatedVariants = colorVariants.filter(
-      (variant) => variant.name !== tagToRemove
-    );
-    setColorTags(updatedTags);
-    setColorVariants(updatedVariants);
-  };
-
-  const removeSizeTag = (tagToRemove: string) => {
-    const updatedTags = sizeTags.filter((tag) => tag !== tagToRemove);
-    const updatedVariants = sizeVariants.filter(
-      (variant) => variant.name !== tagToRemove
-    );
-    setSizeTags(updatedTags);
-    setSizeVariants(updatedVariants);
-  };
+  console.log('ini length color', colorVariants.length);
+  console.log('ini length size', sizeVariants.length);
 
   return (
     <Card>
@@ -173,7 +106,7 @@ export function LazyProductVariant() {
               </HStack>
 
               {isColorActive && (
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Warna</FormLabel>
                   <Box
                     border={'1px'}
@@ -215,7 +148,7 @@ export function LazyProductVariant() {
               )}
 
               {isSizeActive && (
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Ukuran</FormLabel>
                   <Box
                     border={'1px'}
@@ -277,8 +210,8 @@ export function LazyProductVariant() {
                 </Flex>
               )}
 
-              {colorVariants.map((colorVariant) =>
-                sizeVariants.map((sizeVariant) => (
+              {colorVariants.map((colorVariant, colorIndex) =>
+                sizeVariants.map((sizeVariant, sizeIndex) => (
                   <Stack
                     spacing={4}
                     key={`${colorVariant.name}-${sizeVariant.name}`}
@@ -299,14 +232,34 @@ export function LazyProductVariant() {
                     </FormControl>
                     <Stack spacing={10}>
                       <Flex gap={4}>
-                        <FormControl isRequired>
+                        <FormControl>
+                          <input
+                            type="text"
+                            hidden
+                            name={`variants[${colorIndex}][${sizeIndex}][name]`}
+                            value={`${colorVariant.name} ${sizeVariant.name}`}
+                          />
+                          <input
+                            type="number"
+                            name="colorVariants"
+                            value={colorVariants.length}
+                            hidden
+                            readOnly
+                          />
+                          <input
+                            type="number"
+                            name="sizeVariants"
+                            value={sizeVariants.length}
+                            hidden
+                            readOnly
+                          />
                           <FormLabel>Harga</FormLabel>
                           <InputGroup>
                             <InputLeftAddon children="Rp" />
                             <Input
                               type="text"
                               placeholder="Masukan harga satuan barang"
-                              name="price"
+                              name={`variants[${colorIndex}][${sizeIndex}][price]`}
                             />
                           </InputGroup>
                         </FormControl>
@@ -315,7 +268,7 @@ export function LazyProductVariant() {
                           <Input
                             type="number"
                             placeholder="Masukan jumlah stok"
-                            name="stock"
+                            name={`variants[${colorIndex}][${sizeIndex}][stock]`}
                           />
                         </FormControl>
                       </Flex>
@@ -325,7 +278,7 @@ export function LazyProductVariant() {
                           <Input
                             type="text"
                             placeholder="Masukan SKU"
-                            name="sku"
+                            name={`variants[${colorIndex}][${sizeIndex}][sku]`}
                           />
                         </FormControl>
                         <FormControl isRequired>
@@ -334,7 +287,7 @@ export function LazyProductVariant() {
                             <Input
                               type="number"
                               placeholder="Masukan berat produk"
-                              name="weight"
+                              name={`variants[${colorIndex}][${sizeIndex}][weight]`}
                             />
                             <InputRightAddon children="Gram" />
                           </InputGroup>
