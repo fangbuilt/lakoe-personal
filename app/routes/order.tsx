@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 import { json, redirect } from "@remix-run/node";
-import type { LoaderArgs, ActionArgs, DataFunctionArgs } from "@remix-run/node";
+import type { DataFunctionArgs, ActionArgs } from "@remix-run/node";
 
 import { MootaOrderSchema } from "~/modules/order/order.schema";
 
@@ -36,7 +36,7 @@ export async function loader({ request, context, params }: DataFunctionArgs) {
     return redirect("/auth/login");
   }
 
-  const role = await db.user.findFirst({
+  const user = await db.user.findFirst({
     where: {
       id: userId,
     },
@@ -62,12 +62,13 @@ export async function loader({ request, context, params }: DataFunctionArgs) {
     getProductUnpid(),
     CanceledService(),
     getTemplateMessage(),
-    getDataProductReadyToShip(),
+    getDataProductReadyToShip(user?.storeId),
     SuccesService(),
     whatsappTemplateDb(),
-    getDataInShipping(role?.storeId),
+    getDataInShipping(user?.storeId),
     getInvoiceByStatus(),
   ]);
+
 
   return json({
     unpaidCardAll,
@@ -81,7 +82,6 @@ export async function loader({ request, context, params }: DataFunctionArgs) {
     succesService,
     dataInvoice,
     currentTime,
-    // dataShipping: await getDataInShipping(),
     apiKey,
   });
 }

@@ -1,11 +1,12 @@
-import { db } from '~/libs/prisma/db.server';
-import type { z } from 'zod';
-import type { MootaOrderSchema, confirmationApiSchema } from './order.schema';
+import { db } from "~/libs/prisma/db.server";
+import type { z } from "zod";
+import type { MootaOrderSchema, confirmationApiSchema } from "./order.schema";
+import { getUserId } from "../auth/auth.service";
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
     where: {
-      status: 'UNPAID',
+      status: "UNPAID",
     },
     include: {
       user: true,
@@ -76,7 +77,7 @@ export async function MootaOrderStatusUpdate(
   const existingTransaction = await db.payment.findFirst({
     where: {
       amount: data.amount,
-      status: 'UNPAID',
+      status: "UNPAID",
     },
   });
 
@@ -103,7 +104,7 @@ export async function MootaOrderStatusUpdate(
         id: invoiceId,
       },
       data: {
-        status: 'PAID',
+        status: "PAID",
       },
     });
 
@@ -118,18 +119,18 @@ export async function MootaOrderStatusUpdate(
           id: relatedInvoice.id,
         },
         data: {
-          status: 'NEW_ORDER',
+          status: "NEW_ORDER",
         },
       });
       await db.invoiceHistory.create({
         data: {
-          status: 'PAYMENT_COMPLETED',
+          status: "PAYMENT_COMPLETED",
           invoiceId: relatedInvoice.id,
         },
       });
     }
 
-    console.log('Paid Payment ,Good Luck Brother :) !');
+    console.log("Paid Payment ,Good Luck Brother :) !");
   }
 }
 export async function ConfirmationPaymentsApiMoota(
@@ -225,7 +226,7 @@ export async function updateInvoiceStatus(data: any): Promise<any> {
     });
 
     if (!currentData) {
-      throw new Error('Invoice tidak ditemukan');
+      throw new Error("Invoice tidak ditemukan");
     }
 
     const newData = {
@@ -252,7 +253,7 @@ export async function getInvoiceByStatus() {
   try {
     const getorderdataforbiteship = await db.invoice.findMany({
       where: {
-        status: 'NEW_ORDER',
+        status: "NEW_ORDER",
       },
       include: {
         payment: true,
@@ -295,7 +296,7 @@ export async function getInvoiceProductData() {
   try {
     const dataproductNewOrder = await db.invoice.findMany({
       where: {
-        status: 'NEW_ORDER',
+        status: "NEW_ORDER",
       },
       include: {
         payment: true,
@@ -361,15 +362,24 @@ export async function getProductByStoreId(id: any) {
   }
 }
 
-export async function getDataProductReadyToShip() {
-  return await db.invoice.findMany({
+export async function getDataProductReadyToShip(storeId: any) {
+  const user = await db.user.findFirst({
     where: {
-      status: 'READY_TO_SHIP',
+      storeId: storeId
+    }
+  })
+
+  const data = await db.invoice.findMany({
+    where: {
+      status: "READY_TO_SHIP",
+      cart: {
+        storeId: user?.storeId as string
+      },
     },
     include: {
       invoiceHistories: true,
-      courier: true,
       biteshipTrackinglimits: true,
+      courier: true,
       cart: {
         include: {
           user: true,
@@ -391,6 +401,8 @@ export async function getDataProductReadyToShip() {
       },
     },
   });
+  return data;
+
 }
 
 export async function getDataInShipping(storeId: any) {
@@ -489,10 +501,10 @@ export async function updateStatusInvoice(data: any) {
   const { id } = data;
   await db.invoice.update({
     data: {
-      status: 'READY_TO_SHIP',
+      status: "READY_TO_SHIP",
       invoiceHistories: {
         create: {
-          status: 'READY_TO_SHIP',
+          status: "READY_TO_SHIP",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -511,26 +523,10 @@ export async function getTemplateMessage() {
 export async function CanceledService() {
   return await db.invoice.findMany({
     where: {
-      status: 'ORDER_CANCELLED',
+      status: "ORDER_CANCELLED",
     },
-    include: {
-      courier: true,
-      user: true,
-      cart: {
-        include: {
-          store: true,
-          cartItems: {
-            include: {
-              product: {
-                include: {
-                  attachments: true,
-                  store: true,
-                },
-              },
-            },
-          },
-        },
-      },
+    select: {
+      price: true,
     },
   });
 }
@@ -538,10 +534,10 @@ export async function updateStatusInvoice2(data: any) {
   const { id } = data;
   await db.invoice.update({
     data: {
-      status: 'ORDER_CANCELLED',
+      status: "ORDER_CANCELLED",
       invoiceHistories: {
         create: {
-          status: 'ORDER_CANCELLED',
+          status: "ORDER_CANCELLED",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -555,7 +551,7 @@ export async function updateStatusInvoice2(data: any) {
 export async function SuccessService() {
   return await db.invoice.findMany({
     where: {
-      status: 'ORDER_COMPLETED',
+      status: "ORDER_COMPLETED",
     },
     include: {
       courier: true,
@@ -582,5 +578,4 @@ export async function SuccessService() {
 export async function whatsappTemplateDb() {
   return await db.messageTemplate.findMany({});
 }
-
 
