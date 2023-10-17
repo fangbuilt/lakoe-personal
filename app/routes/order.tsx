@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 import { json, redirect } from "@remix-run/node";
-import type { LoaderArgs, ActionArgs } from "@remix-run/node";
+import type { DataFunctionArgs, ActionArgs } from "@remix-run/node";
 
 import { MootaOrderSchema } from "~/modules/order/order.schema";
 
@@ -25,12 +25,21 @@ import { db } from "~/libs/prisma/db.server";
 import { getUserId } from "~/modules/auth/auth.service";
 import SuccesService from "~/modules/order/orderSuccessService";
 import { NavOrder } from "~/layouts/NavOrder";
+import { authorize } from "~/middleware/authorization";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, "2");
+
   const userId = await getUserId(request);
   if (!userId) {
     return redirect("/auth/login");
   }
+
+  const user = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  });
 
   const apiKey = process.env.BITESHIP_API_KEY;
   // const dataProductReadyToShip = await getDataProductReadyToShip();
@@ -49,44 +58,30 @@ export async function loader({ request }: LoaderArgs) {
     getProductUnpid(),
     CanceledService(),
     getTemplateMessage(),
-    getDataProductReadyToShip(),
+    getDataProductReadyToShip(user?.storeId),
     SuccesService(),
     whatsappTemplateDb(),
     getDataInShipping(),
   ]);
   const dataInvoice = await getInvoiceByStatus();
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
-  });
-
   const currentTime = new Date().getTime();
 
-  if (role?.roleId === "1") {
-    return redirect("/dashboardAdmin");
-  } else if (role?.roleId === "2") {
-    return json({
-      unpaidCardAll,
-      unpaidCard,
-      canceledService,
-      getTemplateMessages,
-      dataProductReadyToShip,
-      succesService,
-      whatsappTemplateDbs,
-      SuccessService,
-      getDataInShippings,
-      dataInvoice,
-      dataShipping: await getDataInShipping(),
-      apiKey,
-      currentTime
-    });
-  } else if (role?.roleId === "3") {
-    return redirect("/checkout");
-  } else {
-    return redirect("/logout");
-  }
+  return json({
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    getTemplateMessages,
+    dataProductReadyToShip,
+    succesService,
+    whatsappTemplateDbs,
+    SuccessService,
+    getDataInShippings,
+    dataInvoice,
+    dataShipping: await getDataInShipping(),
+    apiKey,
+    currentTime,
+  });
 }
 
 export async function action({ request }: ActionArgs) {
@@ -142,9 +137,9 @@ export async function action({ request }: ActionArgs) {
     return json({ message: "data added." });
   }
 
-  if (actionType === 'updateDbCourierId') {
-    const id = formData.get('id') as string;
-    const orderId = formData.get('orderId') as string;
+  if (actionType === "updateDbCourierId") {
+    const id = formData.get("id") as string;
+    const orderId = formData.get("orderId") as string;
 
     await db.courier.update({
       where: {

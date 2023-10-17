@@ -1,6 +1,7 @@
 import { db } from "~/libs/prisma/db.server";
 import type { z } from "zod";
 import type { MootaOrderSchema } from "./order.schema";
+import { getUserId } from "../auth/auth.service";
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
@@ -315,10 +316,19 @@ export async function getProductByStoreId(id: any) {
   }
 }
 
-export async function getDataProductReadyToShip() {
-  return await db.invoice.findMany({
+export async function getDataProductReadyToShip(storeId: any) {
+  const user = await db.user.findFirst({
+    where: {
+      storeId: storeId
+    }
+  })
+
+  const data = await db.invoice.findMany({
     where: {
       status: "READY_TO_SHIP",
+      cart: {
+        storeId: user?.storeId as string
+      },
     },
     include: {
       invoiceHistories: true,
@@ -345,6 +355,8 @@ export async function getDataProductReadyToShip() {
       },
     },
   });
+  return data;
+
 }
 
 export async function getProductByCategoryId(id: any) {

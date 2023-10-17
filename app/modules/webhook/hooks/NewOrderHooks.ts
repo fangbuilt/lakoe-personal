@@ -90,11 +90,11 @@ export default function NewOrderHooks() {
       // 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
-        shipper_contact_name: "TESTERKU #01",
+        shipper_contact_name: "AKUSIAP #01",
         shipper_contact_phone: 123123321321,
-        shipper_contact_email: "TESTERKU.01@example.com",
-        shipper_organization: "TESTERKU #01",
-        origin_contact_name: "TESTERKU #01",
+        shipper_contact_email: "AKUSIAP.01@example.com",
+        shipper_organization: "AKUSIAP #01",
+        origin_contact_name: "AKUSIAP #01",
         origin_contact_phone: 1234567890,
         origin_address: "123 Main St",
         origin_note: "Near the park",

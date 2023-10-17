@@ -21,6 +21,7 @@ import { Form, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import type { loader } from '~/routes/order';
 import ModalTracking from '../orderTrackingModal';
+import { Link } from "react-router-dom";
 import ReceiptSearch from '../../assets/icon-pack/receipt-search.svg';
 
 import Empty from '../../assets/icon-pack/empty-dot.svg';
@@ -344,6 +345,7 @@ export default function CardReadyToShip() {
       ) : (
         <Box>
           {sortedOrders.map((data) => (
+
             <Card mb={5} boxShadow={'xs'} key={data.id}>
               <Box key={data.id}>
                 <Box mt={5}>
@@ -398,7 +400,7 @@ export default function CardReadyToShip() {
                       {data.invoiceNumber}
                     </Text>
                     <Divider />
-
+                  <Link to={`detail/${data.id}`}>
                     <Flex justifyContent={'space-between'}>
                       <Box display={'flex'} gap={3} w={'80%'}>
                         {data.cart?.cartItems.map((item: any) => (
@@ -444,6 +446,7 @@ export default function CardReadyToShip() {
                         </Text>
                       </Box>
                     </Flex>
+                  </Link>
                   </Box>
                 </Box>
               </Box>
