@@ -60,8 +60,13 @@ export default function ProductCard(props: IProductCardProps) {
                   Rp
                   {
                     product.variants[0]?.variantOptions[0]
-                      ?.variantOptionValues[0].price
+                      ?.variantOptionValues[0]?.price
                   }
+                  {/* {product.variants.map((a) =>
+                    a.variantOptions.map((b) =>
+                      b.variantOptionValues.map((c) => c.price)
+                    )
+                  )} */}
                 </Text>
                 <Box
                   display={'flex'}
@@ -74,8 +79,13 @@ export default function ProductCard(props: IProductCardProps) {
                     Stok:{' '}
                     {
                       product.variants[0]?.variantOptions[0]
-                        ?.variantOptionValues[0].stock
+                        ?.variantOptionValues[0]?.stock
                     }
+                    {/* {product.variants.map((a) =>
+                      a.variantOptions.map((b) =>
+                        b.variantOptionValues.map((c) => c.stock)
+                      )
+                    )} */}
                   </Text>
                 </Box>
                 <Box
@@ -89,8 +99,13 @@ export default function ProductCard(props: IProductCardProps) {
                     SKU:{' '}
                     {
                       product.variants[0]?.variantOptions[0]
-                        ?.variantOptionValues[0].sku
+                        ?.variantOptionValues[0]?.sku
                     }
+                    {/* {product.variants.map((a) =>
+                      a.variantOptions.map((b) =>
+                        b.variantOptionValues.map((c) => c.sku)
+                      )
+                    )} */}
                   </Text>
                 </Box>
               </Box>

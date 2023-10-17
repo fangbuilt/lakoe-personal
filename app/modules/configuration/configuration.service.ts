@@ -5,12 +5,12 @@ import type {
 } from './configuration.schema';
 import { db } from '~/libs/prisma/db.server';
 
-export default async function createLocation(data: any) {
+export default async function createLocation(storeId: any, data: any) {
   try {
     const location = await db.location.create({
       data: {
         store: {
-          connect: { id: '4' },
+          connect: { id: storeId },
         },
         profile: {
           connect: { id: '1' },
@@ -37,13 +37,13 @@ export async function deleteLocation(id: any) {
   });
 }
 
-export async function updateLocation(id: any, data: any) {
+export async function updateLocation(storeId: any, id: any, data: any) {
   try {
     const updateLocation = await db.location.update({
       where: { id: id },
       data: {
         store: {
-          connect: { id: '4' },
+          connect: { id: storeId },
         },
         profile: {
           connect: { id: '1' },
@@ -64,32 +64,35 @@ export async function updateLocation(id: any, data: any) {
   }
 }
 
-// export async function updateMain(id: any) {
-//   try {
-//     const updateMain = await db.location.update({
-//       where: { id: id },
-//       data: {
-//         isMainLocation: true,
-//       },
-//     });
-//     const getMain = await db.location.findMany({
-//       where: { NOT: { id: id } },
-//     });
-//     const updateNotMain = await db.location.updateMany({
-//       where: { NOT: { id: id } },
-//       data: {
-//         isMainLocation: false,
-//       },
-//     });
+export async function updateMain(id: any) {
+  try {
+    const updateMain = await db.location.update({
+      where: { id: id },
+      data: {
+        isMainLocation: true,
+      },
+    });
+    const getMain = await db.location.findMany({
+      where: { NOT: { id: id } },
+    });
+    const updateNotMain = await db.location.updateMany({
+      where: { NOT: { id: id } },
+      data: {
+        isMainLocation: false,
+      },
+    });
 
-//     return { updateMain, getMain, updateNotMain };
-//   } catch (error) {
-//     console.log("error service", error);
-//   }
-// }
+    return { updateMain, getMain, updateNotMain };
+  } catch (error) {
+    console.log('error service', error);
+  }
+}
 
-export async function getAllDataLocation() {
+export async function getAllDataLocation(storeId: any) {
   return await db.location.findMany({
+    where: {
+      storeId: storeId,
+    },
     orderBy: {
       createdAt: 'asc',
     },

@@ -77,6 +77,17 @@ export default function Locations() {
                     <Tr>
                       <Td p={'0px'} fontWeight={'bold'}>
                         {data.name}
+                        {/* <span
+                          style={{
+                            marginLeft: "10px",
+                            backgroundColor: "Green",
+                            padding: "2px 10px",
+                            color: "white",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          Alamat Utama
+                        </span> */}
                       </Td>
                     </Tr>
                     <Tr>
@@ -123,7 +134,7 @@ export default function Locations() {
                             longtitude={''}
                             postalCode={''}
                             cityDistrict={''}
-                            isMainLocation={data.isMainLocation}
+                            isMainLocation={false}
                           />
                           <UpdateButtonLocation
                             id={data.id}
@@ -134,7 +145,7 @@ export default function Locations() {
                             longtitude={data.longtitude}
                             postalCode={''}
                             cityDistrict={data.cityDistrict}
-                            isMainLocation={data.isMainLocation}
+                            isMainLocation={false}
                           />
                         </Flex>
                       </Td>
@@ -159,7 +170,7 @@ export default function Locations() {
                           longtitude={data.longtitude}
                           postalCode={""}
                           cityDistrict={data.cityDistrict}
-                          isMainLocation={data.isMainLocation}
+                          isMainLocation={false}
                         /> */}
                       </Td>
                     </Tr>
