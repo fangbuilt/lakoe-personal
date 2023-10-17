@@ -22,7 +22,7 @@ export default function CardInShipping() {
   return (
     <>
       <Card mb={5} boxShadow={'xs'}>
-        {data.dataShipping.map((data) => (
+        {data.getDataInShippings.map((data) => (
           <Box key={data.id}>
             <Box mt={5}>
               <Box>

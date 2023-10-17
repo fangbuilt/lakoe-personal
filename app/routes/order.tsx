@@ -1,9 +1,9 @@
-import crypto from 'crypto';
+import crypto from "crypto";
 
-import { json, redirect } from '@remix-run/node';
-import type { LoaderArgs, ActionArgs } from '@remix-run/node';
+import { json, redirect } from "@remix-run/node";
+import type { LoaderArgs, ActionArgs, DataFunctionArgs } from "@remix-run/node";
 
-import { MootaOrderSchema } from '~/modules/order/order.schema';
+import { MootaOrderSchema } from "~/modules/order/order.schema";
 
 import {
   MootaOrderStatusUpdate,
@@ -17,22 +17,30 @@ import {
   getProductUnpid,
   whatsappTemplateDb,
   getDataInShipping,
-} from '~/modules/order/order.service';
+} from "~/modules/order/order.service";
 
-import { Flex } from '@chakra-ui/react';
-import { useLoaderData } from '@remix-run/react';
-import { ImplementGrid } from '~/layouts/Grid';
-import { db } from '~/libs/prisma/db.server';
-import { authorize } from '~/middleware/authorization';
-import { getUserId } from '~/modules/auth/auth.service';
-import SuccesService from '~/modules/order/orderSuccessService';
-import { NavOrder } from '~/layouts/NavOrder';
+import { Flex } from "@chakra-ui/react";
+import { useLoaderData } from "@remix-run/react";
+import { ImplementGrid } from "~/layouts/Grid";
+import { db } from "~/libs/prisma/db.server";
+import { authorize } from "~/middleware/authorization";
+import { getUserId } from "~/modules/auth/auth.service";
+import SuccesService from "~/modules/order/orderSuccessService";
+import { NavOrder } from "~/layouts/NavOrder";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request, context, params }: DataFunctionArgs) {
+  await authorize({ request, context, params }, "2");
+
   const userId = await getUserId(request);
   if (!userId) {
-    return redirect('/auth/login');
+    return redirect("/auth/login");
   }
+
+  const role = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  });
 
   const apiKey = process.env.BITESHIP_API_KEY;
 
@@ -57,57 +65,44 @@ export async function loader({ request }: LoaderArgs) {
     getDataProductReadyToShip(),
     SuccesService(),
     whatsappTemplateDb(),
-    getDataInShipping(),
+    getDataInShipping(role?.storeId),
     getInvoiceByStatus(),
   ]);
 
-  const role = await db.user.findFirst({
-    where: {
-      id: userId as string,
-    },
+  return json({
+    unpaidCardAll,
+    unpaidCard,
+    canceledService,
+    getTemplateMessages,
+    dataProductReadyToShip,
+    SuccessService,
+    whatsappTemplateDbs,
+    getDataInShippings,
+    succesService,
+    dataInvoice,
+    currentTime,
+    // dataShipping: await getDataInShipping(),
+    apiKey,
   });
-
-  if (role?.roleId === '1') {
-    return redirect('/dashboardAdmin');
-  } else if (role?.roleId === '2') {
-    return json({
-      unpaidCardAll,
-      unpaidCard,
-      canceledService,
-      getTemplateMessages,
-      dataProductReadyToShip,
-      succesService,
-      whatsappTemplateDbs,
-      SuccessService,
-      getDataInShippings,
-      dataInvoice,
-      currentTime,
-      dataShipping: await getDataInShipping(),
-      apiKey,
-    });
-  } else if (role?.roleId === '3') {
-    return redirect('/checkout');
-  } else {
-    return redirect('/logout');
-  }
 }
 
 export async function action({ request }: ActionArgs) {
-  const requestIP = request.headers.get('x-forwarded-for') as string;
+  const requestIP = request.headers.get("x-forwarded-for") as string;
 
   if (isMootaIP(requestIP)) {
-    if (request.method === 'POST') {
+    if (request.method === "POST") {
       try {
         const requestBody = await request.text();
 
         const payloads = JSON.parse(requestBody);
-        console.log('payloads', payloads);
+        console.log("payloads", payloads);
 
         const secretKey = process.env.MOOTA_SECRET as string;
 
-        const amount = payloads[0].amount as number;
+        const rawAmount = payloads[0].amount;
+        const amount = parseFloat(rawAmount);
 
-        const signature = request.headers.get('Signature') as string;
+        const signature = request.headers.get("Signature") as string;
 
         if (verifySignature(secretKey, requestBody, signature)) {
           const MootaOrder = MootaOrderSchema.parse({
@@ -115,30 +110,30 @@ export async function action({ request }: ActionArgs) {
           });
           await MootaOrderStatusUpdate(MootaOrder);
         } else {
-          console.log('error verify Signature!');
+          console.log("error verify Signature!");
         }
 
         return json({ data: payloads }, 200);
       } catch (error) {
-        return new Response('Error in The Use webhook', {
+        return new Response("Error in The Use webhook", {
           status: 500,
         });
       }
     }
   }
   const formData = await request.formData();
-  const id = formData.get('id') as string;
-  const status = formData.get('status') as string;
-  const actionType = formData.get('actionType') as string;
+  const id = formData.get("id") as string;
+  const status = formData.get("status") as string;
+  const actionType = formData.get("actionType") as string;
 
-  const invoiceId = String(formData.get('invoiceId'));
-  const userId = '2';
+  const invoiceId = String(formData.get("invoiceId"));
+  const userId = "2";
   const now = new Date();
 
   // Calculate the timestamp 30 minutes in the future
   const nextAccessTime = new Date(now.getTime() + 100000);
 
-  if (actionType === 'createTrackingLimit') {
+  if (actionType === "createTrackingLimit") {
     const data = {
       userId,
       invoiceId,
@@ -173,10 +168,10 @@ export async function action({ request }: ActionArgs) {
 
     // await db.biteshipTrackingLimit.create({data})
 
-    return json({ message: 'data added.' });
+    return json({ message: "data added." });
   }
 
-  if (actionType === 'updateInvoiceAndHistoryStatusReadyToShip') {
+  if (actionType === "updateInvoiceAndHistoryStatusReadyToShip") {
     await db.invoiceHistory.create({
       data: {
         status: status,
@@ -194,26 +189,26 @@ export async function action({ request }: ActionArgs) {
     });
   }
 
-  if (request.method.toLowerCase() === 'patch') {
+  if (request.method.toLowerCase() === "patch") {
     const formData = await request.formData();
 
-    const id = formData.get('id') as string;
-    const price = formData.get('price');
-    const stock = formData.get('stock');
+    const id = formData.get("id") as string;
+    const price = formData.get("price");
+    const stock = formData.get("stock");
 
     await updateInvoiceStatus({ id, price, stock });
   }
-  return redirect('/order');
+  return redirect("/order");
 }
 
 function isMootaIP(requestIP: string) {
-  const allowedIPs = process.env.ALLOWED_IPS?.split(',') || [];
-  const allowedIPSandBox = process.env.ALLOWED_IPS_SAND?.split(',') || [];
+  const allowedIPs = process.env.ALLOWED_IPS?.split(",") || [];
+  const allowedIPSandBox = process.env.ALLOWED_IPS_SAND?.split(",") || [];
   return allowedIPs.includes(requestIP) || allowedIPSandBox.includes(requestIP);
 }
 function verifySignature(secretKey: string, data: string, signature: string) {
-  const hmac = crypto.createHmac('sha256', secretKey);
-  const computedSignature = hmac.update(data).digest('hex');
+  const hmac = crypto.createHmac("sha256", secretKey);
+  const computedSignature = hmac.update(data).digest("hex");
   return computedSignature === signature;
 }
 
@@ -222,7 +217,7 @@ export default function Order() {
 
   return (
     <ImplementGrid>
-      <Flex align={'center'} justify={'center'} h={'100vh'}>
+      <Flex align={"center"} justify={"center"} h={"100vh"}>
         <NavOrder cardProduct={data} />
       </Flex>
     </ImplementGrid>

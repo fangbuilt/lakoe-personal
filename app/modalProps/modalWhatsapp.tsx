@@ -27,7 +27,7 @@ interface SendProps {
   itemPhone: string;
 }
 export default function ModalWhatsapp(props: SendProps) {
-  const { whatsappDb } = useLoaderData<typeof loader>();
+  const { whatsappTemplateDbs } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -38,7 +38,7 @@ export default function ModalWhatsapp(props: SendProps) {
           <ModalCloseButton />
           <ModalBody>
             <Accordion allowToggle>
-              {whatsappDb.map((itemtemp) => (
+              {whatsappTemplateDbs?.map((itemtemp) => (
                 <AccordionItem key={itemtemp.id}>
                   <Text>
                     <AccordionButton>

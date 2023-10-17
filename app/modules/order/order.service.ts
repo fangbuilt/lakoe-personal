@@ -393,10 +393,18 @@ export async function getDataProductReadyToShip() {
   });
 }
 
-export async function getDataInShipping() {
+export async function getDataInShipping(storeId: any) {
+  const user = await db.user.findFirst({
+    where: {
+      storeId: storeId
+    }
+  })
   return await db.invoice.findMany({
     where: {
       status: 'IN_TRANSIT',
+      user: {
+        storeId: user?.storeId as string
+      },
     },
     include: {
       courier: true,
