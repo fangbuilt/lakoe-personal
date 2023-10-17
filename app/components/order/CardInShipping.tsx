@@ -514,7 +514,6 @@ export default function CardInShipping() {
               // onClose={closeModal}
               onClose={() => closeModal(selectedCardId)}
               selectedCardId={selectedCardId}
-              data={undefined}
             />
           )}
         </Box>

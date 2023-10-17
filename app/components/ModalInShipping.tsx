@@ -30,7 +30,6 @@ export default function ModalInShipping(props: {
   isOpen: boolean;
   onClose: () => void;
   selectedCardId: string;
-  data: IBiteshipTracking;
 }) {
   const { trackingInfoArray, trackingInfo } = UseBiteshipTrack(
     props.selectedCardId
