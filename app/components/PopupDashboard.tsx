@@ -1,4 +1,3 @@
-/* eslint-disable no-lone-blocks */
 import {
   Box,
   Button,

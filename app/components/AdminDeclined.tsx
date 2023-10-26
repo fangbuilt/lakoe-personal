@@ -1,28 +1,28 @@
 import {
   Box,
-  Flex,
-  FormControl,
-  Input,
-  Select,
   Tab,
   TabList,
-  Table,
-  TableContainer,
   Tabs,
-  Tbody,
-  Td,
   Text,
-  Th,
+  Flex,
+  TableContainer,
+  Table,
   Thead,
   Tr,
+  Th,
+  Tbody,
+  Td,
+  Input,
+  FormControl,
+  Select,
   VStack,
 } from '@chakra-ui/react';
 
-import { CheckCircleIcon } from '@chakra-ui/icons';
 import { Link } from '@remix-run/react';
 import moment from 'moment';
 import { useState } from 'react';
 import AdminDeclinedPreview from './AdminDeclinedPreview';
+import { CheckCircleIcon } from '@chakra-ui/icons';
 
 export default function AdminDeclined({ dataDeclined }: any) {
   const filteredDataDeclined = dataDeclined

@@ -1,7 +1,5 @@
-import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import type { loader } from '~/routes/order';
-// import UseSearchAll from './useSearchOrderAll';
+import UseSearchAll from './useSearchOrderAll';
 
 export interface Order {
   id: number;
@@ -9,8 +7,27 @@ export interface Order {
   orderNumber: string;
 }
 export function useFilterCourier() {
-  const { unpaidCard } = useLoaderData<typeof loader>();
+  const { filteredOrders } = UseSearchAll();
   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
+  //   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
+  //   // const [searchResults, setSearchResults] = useState([]);
+  //   const toggleCourier = (courier: string) => {
+  //     if (selectedCouriers.includes(courier)) {
+  //       setSelectedCouriers((prevSelected) =>
+  //         prevSelected.filter((selected) => selected !== courier)
+  //       );
+  //     } else {
+  //       setSelectedCouriers((prevSelected) => [...prevSelected, courier]);
+  //     }
+  //   };
+  //   const getSelectedCourier = () => {
+  //     return selectedCouriers.length;
+  //   };
+
+  //   return { selectedCouriers, toggleCourier, getSelectedCourier };
+  // }
+
+  // Fungsi untuk menerpkan filter berdasarkan kurir yang dipilih
 
   const toggleCourier = (courier: string) => {
     if (selectedCouriers.includes(courier)) {
@@ -22,9 +39,8 @@ export function useFilterCourier() {
     }
   };
 
-  const filteredOrdersList = unpaidCard.filter((order: any) => {
+  const filteredOrdersList = filteredOrders.filter((order) => {
     const courierName = order.courier?.courierName;
-
     return courierName && selectedCouriers.includes(courierName);
   });
   const getSelectedCourier = () => {
@@ -34,31 +50,8 @@ export function useFilterCourier() {
   return {
     filteredOrdersList,
     getSelectedCourier,
-    selectedCouriers: selectedCouriers as Array<string>,
+    selectedCouriers,
     toggleCourier,
     setSelectedCouriers,
   };
 }
-// hooks/useFilterCourier.ts
-// import { useLoaderData } from "@remix-run/react";
-// import { useState } from "react";
-// import { loader } from "~/routes/order";
-
-// export function useFilterCourier() {
-//   const {canceledService} = useLoaderData<typeof loader>();
-
-//   const [selectedCouriers, setSelectedCouriers] = useState<string[]>([]);
-
-//   const toggleCourier = (courier: string) => {
-//     // Check if the courier is already selected
-//     if (selectedCouriers.includes(courier)) {
-//       setSelectedCouriers(selectedCouriers.filter((c) => c !== courier));
-//     } else {
-//       setSelectedCouriers([...selectedCouriers, courier]);
-//     }
-//   };
-
-//   const getSelectedCourier = () => selectedCouriers.length;
-
-//   return { selectedCouriers, toggleCourier, getSelectedCourier };
-// }

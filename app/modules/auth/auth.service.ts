@@ -21,7 +21,7 @@ export async function register({
       password: hashedPassword,
       storeId,
       roleId,
-      isVerify
+      isVerify,
     },
   });
 
@@ -29,7 +29,7 @@ export async function register({
 }
 
 export async function login({ email, password }: LoginForm) {
-  const user = await db.user.findFirst({
+  const user = await db.user.findUnique({
     where: {
       email: email,
     },
@@ -83,7 +83,7 @@ export async function getUserId(request: Request) {
 
 export async function logout(request: Request) {
   const session = await getUserSession(request);
-  return redirect('/login', {
+  return redirect('/auth/login', {
     headers: {
       'Set-Cookie': await storage.destroySession(session),
     },

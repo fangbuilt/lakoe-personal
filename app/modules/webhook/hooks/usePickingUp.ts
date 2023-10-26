@@ -6,16 +6,7 @@ const mailerlite = new MailerLite({
   api_key: process.env.MAILERLITE_API_KEY as string,
 });
 
-export function pickingUp(
-  email: string,
-  name: string,
-  waybill: string,
-  invoiceNumber: string,
-  courierName: string,
-  productName: string,
-  quantity: number,
-  variants: string
-): void {
+export function pickingUp(email: string, name: string, waybill: string) {
   const emailAddress = `${email}`;
   const date = new Date().getTime();
   const username = `${date}`;
@@ -36,15 +27,9 @@ export function pickingUp(
       // This is where you can make custom fields variable for email template display
       name: `${name}`,
       waybill: `${waybill}`,
-      invoicenumber: `${invoiceNumber}`,
-      couriername: `${courierName}`,
-      productname: `${productName}`,
-      quantity: `${quantity}`,
-      variant: `${variants}`,
-
       // address: `${address}`,
     },
-    groups: ['100917108885423441'], // This is where you need to categorize which group it should go for email automation trigger
+    groups: ['98353352732051296'], // This is where you need to categorize which group it should go for email automation trigger
     status: 'active', // possible statuses: active, unsubscribed, unconfirmed, bounced or junk.
   };
 
@@ -59,7 +44,6 @@ export function pickingUp(
 }
 
 export async function updateInvoiceStatus(invoiceId: string) {
-  // const date = new Date().getTime().toString()
   await db.invoice.update({
     where: { id: invoiceId },
     data: { status: 'IN_TRANSIT' },

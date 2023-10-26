@@ -1,4 +1,4 @@
-import { object, string, z } from 'zod';
+import { z } from 'zod';
 
 export const createMessageSchema = z.object({
   name: z.string().min(5),

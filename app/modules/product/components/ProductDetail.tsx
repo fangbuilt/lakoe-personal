@@ -8,6 +8,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Heading,
   Image,
   Stack,
   Text,
@@ -133,7 +134,8 @@ export function ProductDetail() {
   return (
     <Card>
       <CardBody>
-        <Stack spacing={4} mb={3}>
+        <Heading size={'md'}>Detail Produk</Heading>
+        <Stack mt={7} spacing={4} mb={3}>
           <FormControl isRequired>
             <FormLabel>Deskripsi</FormLabel>
             <Textarea

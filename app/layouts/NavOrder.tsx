@@ -11,94 +11,87 @@ import {
 } from '@chakra-ui/react';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import ScrollBox from '~/components/ScrollBox';
 import type { loader } from '~/routes/order';
-import CardCenceled from '~/components/order/CardCanceled';
-import CardSucces from '~/components/order/CardSuccesOrder';
-import CardReadyToShip from '~/components/order/CardReadyToShip';
-import CardInShipping from '~/components/order/CardInShipping';
-import { number } from 'zod';
-import CardAllOrder from '~/components/order/CardAllOerder';
-import UnpaidCard from '~/components/order/CardUnpaid';
-import CardNewOrderBa from '~/components/order/CardNewOrderBa';
+import ScrollBox from '../components/ScrollBox';
+import CardReadyToShip from '~/components/CardReadyToShip';
+import UnpaidAllCard from '~/components/CardUnpaidAll';
+import UnpaidCard from '~/components/CardUnpaid';
+import CardInShipping from '~/components/CardInShipping';
+import CardNewOrderBa from '~/components/CardNewOrderBa';
 import CardSuccess from '~/components/CardSuccess';
-// import CardSucces from '~/components/order/CardSuccesOrder';
-// import UnpaidCard from '~/components/order/CardUnpaid';
-// import UnpaidCard from '~/components/order/CardUnpaid';
-export function NavOrder({ allOrderSevice }: any) {
-  const {
-    dataProductReadyToShip,
-    unpaidCard,
-    getDataInShippings,
-    dataInvoice,
-  } = useLoaderData<typeof loader>();
-  // const {unpaidCard} = useLoaderData<typeof loader>();
-  // const notificationCount =
-  //   dataProductReadyToShip.dataProductReadyToShip.length > 0
-  //     ? dataProductReadyToShip.dataProductReadyToShip.length
-  //     : 0;
+import CardCenceled from '~/components/CardCanceled';
+
+export default function NavOrder({ allOrderSevice }: any) {
+  const cardProduct = useLoaderData<typeof loader>();
+  const { unpaidCard } = useLoaderData<typeof loader>();
+  const notificationCount =
+    cardProduct.dataProductReadyToShip.length > 0
+      ? cardProduct.dataProductReadyToShip.length
+      : 0;
   const [activeTab, setActiveTab] = useState(0);
   const handleClickTab = (index: number) => {
     setActiveTab(index);
   };
-  // const notifCountInShipping = dataProductReadyToShip..length > 0 ? dataProductReadyToShip..length : 0;
+  // const {unpaidCard} = useLoaderData<typeof loader>()
   return (
     <>
       <Box
-        background={"whitesmoke"}
-        style={{ width: "100%", marginLeft: "-5px", marginRight: "50%" }}
+        key={allOrderSevice}
+        background={'whitesmoke'}
+        style={{ width: '100%', marginLeft: '-5px', marginRight: '50%' }}
       >
         <Box
-          background={"white"}
-          position={"fixed"}
-          top={"50"}
+          background={'white'}
+          position={'fixed'}
+          top={'50'}
           style={{
-            marginTop: "1.3%",
-            width: "47.5%",
-            height: "100%",
-            borderRadius: "10px",
+            marginTop: '1.3%',
+            width: '47.5%',
+            height: '100%',
+            borderRadius: '10px',
           }}
         >
           <Tabs>
             <Box my={4} mx={5}>
-              <Text fontWeight={"bold"} fontSize={"20px"}>
+              <Text fontWeight={'bold'} fontSize={'20px'}>
                 Daftar Pesanan
               </Text>
             </Box>
 
             <Box>
               <Box
-                display={"flex"}
-                overflow={"scroll"}
+                display={'flex'}
+                overflow={'scroll'}
                 sx={{
-                  "::-webkit-scrollbar": {
-                    display: "none",
+                  '::-webkit-scrollbar': {
+                    // i want displayed scrollbar if user use mouse for scrolling, but if scrollbar not none is a no clear ,
+                    display: 'none',
                   },
                 }}
-                mb={"10"}
+                mb={'10'}
               >
                 <TabList mx={5}>
                   <Tab
                     onClick={() => handleClickTab(0)}
-                    fontWeight={activeTab === 0 ? "700" : "500"}
+                    fontWeight={activeTab === 0 ? '700' : '500'}
                   >
                     Semua
                   </Tab>
 
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab
                         onClick={() => handleClickTab(1)}
-                        fontWeight={activeTab === 1 ? "700" : "500"}
+                        fontWeight={activeTab === 1 ? '700' : '500'}
                       >
                         {/* NOTIFICATION ORDER */}
 
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"#0086B4"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'#0086B4'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
@@ -113,24 +106,23 @@ export function NavOrder({ allOrderSevice }: any) {
                     </Box>
                   </Box>
 
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab
                         onClick={() => handleClickTab(2)}
-                        fontWeight={activeTab === 2 ? "700" : "500"}
+                        fontWeight={activeTab === 2 ? '700' : '500'}
                       >
                         {/* NOTIFICATION ORDER */}
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"#0086B4"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'#0086B4'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
-                          {dataInvoice.length}{' '}
-                          {/* INSERT YOUR NOTIF DATA HERE */}
+                          2 {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 
@@ -141,23 +133,23 @@ export function NavOrder({ allOrderSevice }: any) {
                     </Box>
                   </Box>
 
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab
                         onClick={() => handleClickTab(3)}
-                        fontWeight={activeTab === 3 ? "700" : "500"}
+                        fontWeight={activeTab === 3 ? '700' : '500'}
                       >
                         {/* NOTIFICATION ORDER  !*/}
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"#0086B4"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'#0086B4'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
-                          {dataProductReadyToShip.length}
+                          {notificationCount}{' '}
                           {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
@@ -168,24 +160,23 @@ export function NavOrder({ allOrderSevice }: any) {
                       </Tab>
                     </Box>
                   </Box>
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab
                         onClick={() => handleClickTab(4)}
-                        fontWeight={activeTab === 4 ? "700" : "500"}
+                        fontWeight={activeTab === 4 ? '700' : '500'}
                       >
                         {/* NOTIFICATION ORDER */}
-
                         <Text
                           my={4}
-                          color={"white"}
-                          bg={"#0086B4"}
-                          borderRadius={"full"}
-                          boxSize={"24px"}
+                          color={'white'}
+                          bg={'#0086B4'}
+                          borderRadius={'full'}
+                          boxSize={'24px'}
                           fontSize={14}
                           marginRight={2}
                         >
-                          {getDataInShippings.length}
+                          2 {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
                         <Flex gap={1.5}>
@@ -194,11 +185,11 @@ export function NavOrder({ allOrderSevice }: any) {
                       </Tab>
                     </Box>
                   </Box>
-                  <Box textAlign={"center"}>
-                    <Box display={"flex"}>
+                  <Box textAlign={'center'}>
+                    <Box display={'flex'}>
                       <Tab
                         onClick={() => handleClickTab(5)}
-                        fontWeight={activeTab === 5 ? "700" : "500"}
+                        fontWeight={activeTab === 5 ? '700' : '500'}
                       >
                         <Flex gap={1.5} my={4}>
                           <Text>Pesanan </Text> <Text> Selesai</Text>
@@ -208,7 +199,7 @@ export function NavOrder({ allOrderSevice }: any) {
                   </Box>
                   <Tab
                     onClick={() => handleClickTab(6)}
-                    fontWeight={activeTab === 6 ? "700" : "500"}
+                    fontWeight={activeTab === 6 ? '700' : '500'}
                   >
                     Dibatalkan
                   </Tab>
@@ -216,13 +207,13 @@ export function NavOrder({ allOrderSevice }: any) {
               </Box>
             </Box>
 
-            <Box my={5} paddingBottom={"100px"} background={"white"}>
+            <Box my={5} paddingBottom={'100px'} background={'white'}>
               <TabPanels>
                 {/* YOUR CARD START IN HERE ! */}
 
                 <ScrollBox>
                   <TabPanel>
-                    <CardAllOrder />
+                    <UnpaidAllCard />
                   </TabPanel>
                 </ScrollBox>
 
@@ -245,20 +236,12 @@ export function NavOrder({ allOrderSevice }: any) {
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel>
-                    <CardInShipping/>
-                  </TabPanel>
+                  <TabPanel></TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
                     <CardSuccess />
-                  </TabPanel>
-                </ScrollBox>
-
-                <ScrollBox>
-                  <TabPanel>
-                    <CardSucces />
                   </TabPanel>
                 </ScrollBox>
 

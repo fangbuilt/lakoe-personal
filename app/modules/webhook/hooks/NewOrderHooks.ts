@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
-import type { IOrderDetailInvoice } from "~/interfaces/orderDetail";
-import { useSubmit } from "@remix-run/react";
-import { db } from "~/libs/prisma/db.server";
+import { useState } from 'react';
+import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
+import { useSubmit } from '@remix-run/react';
+import { db } from '~/libs/prisma/db.server';
 
 export default function NewOrderHooks() {
   const [selectedProps, setSelectedProps] = useState<IOrderDetailInvoice>();
@@ -11,19 +11,19 @@ export default function NewOrderHooks() {
   async function updateInvoiceAndHistoryStatusReadyToShip() {
     try {
       if (!selectedProps?.id) {
-        return console.log("Order ID not found!");
+        return console.log('Order ID not found!');
       }
 
       submit(
         {
           id: selectedProps.id,
-          status: "READY_TO_SHIP",
-          actionType: "updateInvoiceAndHistoryStatusReadyToShip",
+          status: 'READY_TO_SHIP',
+          actionType: 'updateInvoiceAndHistoryStatusReadyToShip',
         },
-        { method: "POST" }
+        { method: 'POST' }
       );
     } catch (error) {
-      console.error("Terjadi kesalahan:", error);
+      console.error('Terjadi kesalahan:', error);
       throw error;
     }
   }
@@ -32,26 +32,26 @@ export default function NewOrderHooks() {
 
   const handleBalanceNotif = async () => {
     try {
-      const mailerBaseUrl = "https://connect.mailerlite.com";
-      const mailerEndPoint = "/api/subscribers";
+      const mailerBaseUrl = 'https://connect.mailerlite.com';
+      const mailerEndPoint = '/api/subscribers';
       const mailerApiKey =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY"; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2E4ZjZkNTMxMDdkY2M1MjZjM2M5YTQxY2JhMjg0ZjJlOTc5NmFjOTA2MjVkMzRjN2I5NTVmNDY1ODlkZjcxOGM5NzY5ZmYyMzU5OTcxZTkiLCJpYXQiOjE2OTQxNTU1NDQuMTI1MzUyLCJuYmYiOjE2OTQxNTU1NDQuMTI1MzU0LCJleHAiOjQ4NDk4MjkxNDQuMTIwNDQsInN1YiI6IjYxNDY4NSIsInNjb3BlcyI6W119.KgsXIIo-rqViucL5U0QTHaG-Nhp0YJn0c752CSW1taUIVgfP0Dyk-vL-mHEGCLWl4CROGPwtzGakauaIGV1A-ijvg_16vEz04u8xKRzzuP4F9Hza78RnhTXjewo6oEiB4_E3WwFU6qalQmzoNaSzmaBI4zi6HZOO29uEHtZRswRfmi5g1XmDyqo2SmaL6S3nTU7xMoHaBlvY7UnanzqdpX0nr-nxS-05ADZRlo1a3YDQBihDFLzrhN8xgtXipU5O7nz18-Ivpj2TNjaMNk85zZukLYPxF1lVXrbNFWKVWJKMk9gthqMWsPDQTg7GexZSE-0uzZL8CO1azw_hCdJUJQYM3KYw1pb6PUm4YSO-Br4etsClpICaivipa5EGSOKF3wvAhyHa12ZIZuJcBadQPyAaiDi8a0s1O6UbLMBa_45oDDfeNQsEpXg9i5hkAe7H0DEdgM69JMh0zmu4Vi8s3f_fmz0pfGjXfKVT6g0KHx0K6AYhN714R2x6FOB-au4QrPlE_UdvIOO959uozJ4CHHiBKClWcTLRELWwCPmo6y5s-K8_s7h1czfV2MVx5mfihABiLyxCv3y6EwxgTi6gjKiN4NcCMoGnxt0dwPos67QQ-gRn2SdQoN0rsrKGuZltLOBza1cnqoHAZAFHiSrJq332VNoJhNuXN-3MoXw1LCY'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const mailerData = {
-        email: "payumiswari+112224555bismilah@gmail.com",
+        email: 'payumiswari+112224555bismilah@gmail.com',
         fields: {
-          company: "ADD MORE BALANCE", //company berperan sebagai "title" dalam mailerlite
+          company: 'ADD MORE BALANCE', //company berperan sebagai "title" dalam mailerlite
           last_name:
             "you need to add more balance to your platform system so that your sellers can keep sending packages to their customer without being delayed just because you're lack of money. do what you gotta do", //last_name berperan sebagai isian pesan ("message") dalam mailerlite
         },
-        groups: ["98713000939095999"],
+        groups: ['98713000939095999'],
       };
 
       const mailerRequest = {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${mailerApiKey}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(mailerData),
       };
@@ -61,8 +61,8 @@ export default function NewOrderHooks() {
         mailerRequest
       );
       const responseData = await response.json();
-      console.log("Data Email :", responseData);
-      alert("System sedang terkendala, cobalah beberapa saat lagi");
+      console.log('Data Email :', responseData);
+      alert('System sedang terkendala, cobalah beberapa saat lagi');
     } catch (error) {
       alert(error);
     }
@@ -83,11 +83,10 @@ export default function NewOrderHooks() {
 
   const handleOrderCourier = async () => {
     try {
-      const baseUrl = "https://api.biteship.com";
-      const endpoint = "/v1/orders";
+      const baseUrl = 'https://api.biteship.com';
+      const endpoint = '/v1/orders';
       const apiKey =
-        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQVBJX0xBS09FX1RFU1QiLCJ1c2VySWQiOiI2NGY1MjYyMjM5Yzk5YzNkMjg0MDkwM2MiLCJpYXQiOjE2OTQ1NjQ5Mzh9.c7NG5ncA_iE66d3Iv5LAjZ9pdTBMDj5EjqqwoDi6IZQ';
-      // 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
+        'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmlub1B1amEtTEFLT0UiLCJ1c2VySWQiOiI2NTA4MDJiOTA5ZWRjNTViMThjNGQxNDMiLCJpYXQiOjE2OTUxOTkyOTZ9.yNL64MzGSESlk-zln4iv0-yz9Nv3osEmt2_sVqOJ2xI'; //hapus dan gunakan process.env.blablabla sebelum publish (credentials bukan konsumsi public)
 
       const dataforBiteShip = {
         shipper_contact_name: 'TESTERKU #01',
@@ -199,10 +198,10 @@ export default function NewOrderHooks() {
       const orderDataJSON = JSON.stringify(dataforBiteShip);
 
       const requestOptions = {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: orderDataJSON,
       };
@@ -217,26 +216,26 @@ export default function NewOrderHooks() {
       async function updateDbCourierId() {
         try {
           if (!selectedProps?.courier.orderId) {
-            return console.log("Order ID not found!");
+            return console.log('Order ID not found!');
           }
 
           submit(
             {
               id: selectedProps.courier.id,
               orderId: order_id,
-              actionType: "updateDbCourierId",
+              actionType: 'updateDbCourierId',
             },
-            { method: "POST" }
+            { method: 'POST' }
           );
         } catch (error) {
-          console.error("Terjadi kesalahan:", error);
+          console.error('Terjadi kesalahan:', error);
           throw error;
         }
       }
       updateDbCourierId();
-      console.log("check id-nya :", responseDataBITESHIP);
+      console.log('check id-nya :', responseDataBITESHIP);
       alert(
-        "Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu"
+        'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
       );
     } catch (error) {
       alert(error);
@@ -247,15 +246,15 @@ export default function NewOrderHooks() {
 }
 
 export async function LakoeBalanceByMoota() {
-  const MootaBaseURL = "https://app.moota.co";
-  const MootaGetBankEndPoint = "/api/v2/bank";
+  const MootaBaseURL = 'https://app.moota.co';
+  const MootaGetBankEndPoint = '/api/v2/bank';
   const MootaAPI = process.env.MOOTA_API;
 
   const LakoeRequestToMoota = {
-    method: "GET",
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${MootaAPI}`,
-      Accept: "application/json",
+      Accept: 'application/json',
     },
   };
 
@@ -268,20 +267,20 @@ export async function LakoeBalanceByMoota() {
     if (responseMoota.ok) {
       const responseData = await responseMoota.json();
       const balance = parseFloat(responseData.data[0].balance);
-      console.log("Saldo Bank Lakoe:", balance);
+      console.log('Saldo Bank Lakoe:', balance);
     } else {
       console.error(
-        "Gagal mengambil data dari Moota:",
+        'Gagal mengambil data dari Moota:',
         responseMoota.statusText
       );
     }
   } catch (err) {
-    console.error("Terjadi kesalahan:", err);
+    console.error('Terjadi kesalahan:', err);
   }
 }
 
 // Memanggil fungsi untuk melakukan permintaan ke Moota
 LakoeBalanceByMoota();
 function updateDbCourier() {
-  throw new Error("Function not implemented.");
+  throw new Error('Function not implemented.');
 }

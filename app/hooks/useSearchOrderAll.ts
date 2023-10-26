@@ -4,12 +4,11 @@ import { useState, useEffect } from 'react';
 import { useLoaderData } from '@remix-run/react';
 import type { loader } from '~/routes/order';
 
-export default function UseSearchProductAll() {
+export default function UseSearchAll() {
   const { unpaidCardAll } = useLoaderData<typeof loader>();
   const dataArray = Object.values(unpaidCardAll);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredOrder, setFilteredOrder] = useState(dataArray);
-  const [selectedCouriers, setSelectedCouriers] = useState<Courier[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState(dataArray);
 
   useEffect(() => {
     const lowerQuery = searchQuery.toLowerCase();
@@ -19,49 +18,23 @@ export default function UseSearchProductAll() {
           .map((item) => item.product?.name?.toLowerCase())
           .flat() || [];
       const invoiceNumber = items.invoiceNumber?.toLowerCase() || '';
-      const itemCourier = items.courier?.courierName?.toLowerCase() || '';
-      console.log('Nama Kurir:', itemCourier);
 
-      // const kurirSearch = dataArray.map((item) => item.courier?.courierName);
+      // const kurirSearch = filteredOrders.map((item) => item.courier?.courierName);
       // console.log("ini kururrrrrrrrr", kurirSearch);
+      // const kurirSearch = items.courier?.courierName || "";
+      // console.log("ini kurirSearch", kurirSearch);
+
+      // Menggunakan indexOf untuk memeriksa ketersediaan lowerQuery di dalam productName atau invoiceNumber
       return (
-        productName.some((name) => name && name.includes(lowerQuery)) ||
-        invoiceNumber.includes(lowerQuery) ||
-        itemCourier.includes(lowerQuery)
+        productName.some((name) => name && name.indexOf(lowerQuery) !== -1) ||
+        invoiceNumber.indexOf(lowerQuery) !== -1
+        // || kurirSearch.indexOf(lowerQuery) !== -1
       );
     });
-    setFilteredOrder(filtered);
+    // console.log('filtered data:', filtered); // Tambahkan log ini
+    setFilteredOrders(filtered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, unpaidCardAll]);
 
-  type Courier = string;
-  // Fungsi untuk menangani perubahan status checkbox kurir terpilih
-  const handleCourierCheckboxChange = (courierName: Courier) => {
-    // Salin array kurir terpilih untuk memodifikasinya
-    const updatedSelectedCouriers = [...selectedCouriers];
-    // Periksa apakah kurir sudah dipilih atau tidak
-    if (updatedSelectedCouriers.includes(courierName)) {
-      // Jika sudah dipilih, hilangkan dari array
-      const index = updatedSelectedCouriers.indexOf(courierName);
-      updatedSelectedCouriers.splice(index, 1);
-    } else {
-      // Jika belum dipilih, tambahkan ke array
-      updatedSelectedCouriers.push(courierName);
-    }
-    // Perbarui state kurir terpilih
-    setSelectedCouriers(updatedSelectedCouriers);
-    // Perbarui pencarian dengan kurir terpilih
-    setSearchQuery(updatedSelectedCouriers.join(' '));
-  };
-  const getSelectedCourier = () => {
-    return selectedCouriers.length;
-  };
-  return {
-    getSelectedCourier,
-    filteredOrder,
-    setSearchQuery,
-    searchQuery,
-    selectedCouriers,
-    handleCourierCheckboxChange,
-  };
+  return { filteredOrders, setSearchQuery, searchQuery };
 }

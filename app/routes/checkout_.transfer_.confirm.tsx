@@ -1,4 +1,5 @@
 import { Box, Card, Text } from '@chakra-ui/react';
+import React from 'react';
 
 export default function TransferConfirm() {
   return (
