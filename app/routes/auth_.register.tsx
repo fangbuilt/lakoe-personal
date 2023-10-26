@@ -24,11 +24,8 @@ import {
 import { AiOutlineGooglePlus } from 'react-icons/ai';
 import { BsFacebook } from 'react-icons/bs';
 import { db } from '~/libs/prisma/db.server';
-import {
-  createUserSession,
-  getUserId,
-  register,
-} from '~/modules/auth/auth.service';
+import { createUserSession, getUserId } from '~/modules/auth/auth.service';
+import { register } from '~/modules/auth/register';
 import { badRequest } from '~/utils/request.server';
 import { generateRandomString } from '~/utils/randomString';
 import { verifyEmail } from '~/utils/verifyEmail';
@@ -146,7 +143,7 @@ export async function action({ request }: ActionArgs) {
     password,
     storeId,
     roleId,
-    isVerify,
+    isVerify: false,
   });
 
   const token = generateRandomString(15);

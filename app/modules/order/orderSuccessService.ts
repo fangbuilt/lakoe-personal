@@ -1,9 +1,9 @@
 import { db } from '~/libs/prisma/db.server';
 
-export default async function CanceledService() {
+export default async function SuccesService() {
   return await db.invoice.findMany({
     where: {
-      status: 'ORDER_CANCELLED',
+      status: 'ORDER_COMPLETED',
     },
     include: {
       courier: true,
@@ -31,10 +31,6 @@ export default async function CanceledService() {
   });
 }
 
-export async function ready() {
-  return await db.invoice.findMany({
-    where: {
-      status: 'ORDER_CANCELLED',
-    },
-  });
+export async function templateMessage() {
+  return await db.messageTemplate.findMany({});
 }

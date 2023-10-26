@@ -1,15 +1,17 @@
-import type { z } from 'zod';
-import type { MootaOrderSchema } from './order.schema';
-import { db } from '~/libs/prisma/db.server';
+import { db } from "~/libs/prisma/db.server";
+import type { z } from "zod";
+import type { MootaOrderSchema, confirmationApiSchema } from "./order.schema";
+import { getUserId } from "../auth/auth.service";
 
 export async function getProductUnpid() {
   const payments = await db.invoice.findMany({
     where: {
-      status: 'UNPAID',
+      status: "UNPAID",
     },
     include: {
       user: true,
       payment: true,
+      courier: true,
       cart: {
         include: {
           store: {
@@ -75,23 +77,40 @@ export async function MootaOrderStatusUpdate(
   const existingTransaction = await db.payment.findFirst({
     where: {
       amount: data.amount,
-      status: 'UNPAID',
+      status: "UNPAID",
     },
   });
 
-  if (existingTransaction) {
+  const matchingConfirmationPayment = await db.confirmationPayment.findFirst({
+    where: {
+      amount: data.amount,
+    },
+    include: {
+      invoice: {
+        select: {
+          paymentId: true,
+        },
+      },
+    },
+  });
+
+  if (existingTransaction || matchingConfirmationPayment) {
+    const invoiceId = existingTransaction
+      ? existingTransaction.id
+      : matchingConfirmationPayment?.invoice?.paymentId;
+
     await db.payment.update({
       where: {
-        id: existingTransaction.id,
+        id: invoiceId,
       },
       data: {
-        status: 'PAID',
+        status: "PAID",
       },
     });
 
     const relatedInvoice = await db.invoice.findFirst({
       where: {
-        paymentId: existingTransaction.id,
+        paymentId: invoiceId,
       },
     });
     if (relatedInvoice) {
@@ -100,19 +119,64 @@ export async function MootaOrderStatusUpdate(
           id: relatedInvoice.id,
         },
         data: {
-          status: 'NEW_ORDER',
+          status: "NEW_ORDER",
         },
       });
       await db.invoiceHistory.create({
         data: {
-          status: 'PAID',
+          status: "PAYMENT_COMPLETED",
           invoiceId: relatedInvoice.id,
         },
       });
     }
 
-    console.log('Paid Payment ,Good Luck Brother :)!');
+    console.log("Paid Payment ,Good Luck Brother :) !");
   }
+}
+export async function ConfirmationPaymentsApiMoota(
+  data: z.infer<typeof confirmationApiSchema>
+) {
+  console.log('data service', data);
+  await db.confirmationPayment.create({
+    data: {
+      invoiceId: data.invoiceId,
+      bank: data.bank,
+      createdAt: data.createdAt,
+      amount: data.amount,
+      attachment: data.attachment,
+    },
+  });
+  const relatedInvoice = await db.invoice.findFirst({
+    where: {
+      paymentId: data.invoiceId,
+    },
+  });
+  if (relatedInvoice) {
+    await db.invoice.update({
+      where: {
+        id: relatedInvoice.id,
+      },
+      data: {
+        status: 'NEW_ORDER',
+      },
+    });
+    await db.invoiceHistory.create({
+      data: {
+        status: 'PAYMENT_COMPLETED',
+        invoiceId: relatedInvoice.id,
+      },
+    });
+  }
+  await db.payment.update({
+    where: {
+      id: data.invoiceId,
+    },
+    data: {
+      status: 'PAID',
+    },
+  });
+
+  console.log('confirmation berhasil di tambahkan');
 }
 
 export async function getInvoiceById(id: any) {
@@ -123,9 +187,15 @@ export async function getInvoiceById(id: any) {
     include: {
       invoiceHistories: true,
       courier: true,
+      biteshipTrackinglimits: true,
       cart: {
         include: {
           user: true,
+          store: {
+            include: {
+              locations: true,
+            },
+          },
           cartItems: {
             include: {
               variantOption: {
@@ -156,7 +226,7 @@ export async function updateInvoiceStatus(data: any): Promise<any> {
     });
 
     if (!currentData) {
-      throw new Error('Invoice tidak ditemukan');
+      throw new Error("Invoice tidak ditemukan");
     }
 
     const newData = {
@@ -183,7 +253,7 @@ export async function getInvoiceByStatus() {
   try {
     const getorderdataforbiteship = await db.invoice.findMany({
       where: {
-        status: 'NEW_ORDER',
+        status: "NEW_ORDER",
       },
       include: {
         payment: true,
@@ -226,7 +296,7 @@ export async function getInvoiceProductData() {
   try {
     const dataproductNewOrder = await db.invoice.findMany({
       where: {
-        status: 'NEW_ORDER',
+        status: "NEW_ORDER",
       },
       include: {
         payment: true,
@@ -292,13 +362,23 @@ export async function getProductByStoreId(id: any) {
   }
 }
 
-export async function getDataProductReadyToShip() {
-  return await db.invoice.findMany({
+export async function getDataProductReadyToShip(storeId: any) {
+  const user = await db.user.findFirst({
     where: {
-      status: 'READY_TO_SHIP',
+      storeId: storeId
+    }
+  })
+
+  const data = await db.invoice.findMany({
+    where: {
+      status: "READY_TO_SHIP",
+      cart: {
+        storeId: user?.storeId as string
+      },
     },
     include: {
       invoiceHistories: true,
+      biteshipTrackinglimits: true,
       courier: true,
       cart: {
         include: {
@@ -310,6 +390,41 @@ export async function getDataProductReadyToShip() {
                   variantOptionValues: true,
                 },
               },
+              product: {
+                include: {
+                  attachments: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  return data;
+
+}
+
+export async function getDataInShipping(storeId: any) {
+  const user = await db.user.findFirst({
+    where: {
+      storeId: storeId
+    }
+  })
+  return await db.invoice.findMany({
+    where: {
+      status: 'IN_TRANSIT',
+      user: {
+        storeId: user?.storeId as string
+      },
+    },
+    include: {
+      courier: true,
+      biteshipTrackinglimits: true,
+      cart: {
+        include: {
+          cartItems: {
+            include: {
               product: {
                 include: {
                   attachments: true,
@@ -386,10 +501,10 @@ export async function updateStatusInvoice(data: any) {
   const { id } = data;
   await db.invoice.update({
     data: {
-      status: 'READY_TO_SHIP',
+      status: "READY_TO_SHIP",
       invoiceHistories: {
         create: {
-          status: 'READY_TO_SHIP',
+          status: "READY_TO_SHIP",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -397,6 +512,65 @@ export async function updateStatusInvoice(data: any) {
     },
     where: {
       id: id,
+    },
+  });
+}
+
+export async function getTemplateMessage() {
+  return await db.messageTemplate.findMany();
+}
+
+export async function CanceledService() {
+  return await db.invoice.findMany({
+    where: {
+      status: "ORDER_CANCELLED",
+    },
+    select: {
+      price: true,
+    },
+  });
+}
+export async function updateStatusInvoice2(data: any) {
+  const { id } = data;
+  await db.invoice.update({
+    data: {
+      status: "ORDER_CANCELLED",
+      invoiceHistories: {
+        create: {
+          status: "ORDER_CANCELLED",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+    },
+    where: {
+      id: id,
+    },
+  });
+}
+export async function SuccessService() {
+  return await db.invoice.findMany({
+    where: {
+      status: "ORDER_COMPLETED",
+    },
+    include: {
+      courier: true,
+      user: true,
+      cart: {
+        include: {
+          store: true,
+          cartItems: {
+            include: {
+              product: {
+                include: {
+                  attachments: true,
+                  store: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 }
@@ -404,40 +578,4 @@ export async function updateStatusInvoice(data: any) {
 export async function whatsappTemplateDb() {
   return await db.messageTemplate.findMany({});
 }
-export async function updateStatusInvoice2(data: any) {
-  const { id } = data;
-  const invoice = await db.invoice.findUnique({
-    where: {
-      id: id,
-    },
-    select: {
-      price: true,
-    },
-  });
-  const price = invoice?.price;
 
-  await db.invoice.update({
-    where: {
-      id: id,
-    },
-    data: {
-      status: 'ORDER_CANCELLED',
-      invoiceHistories: {
-        create: {
-          status: 'ORDER_CANCELLED',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      },
-      refund: {
-        create: {
-          attachment: '',
-          amount: price ?? 0,
-          status: 'REQUEST',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      },
-    },
-  });
-}

@@ -147,8 +147,8 @@ export const action = async ({ request }: ActionArgs) => {
         amount: totalPriceUnique + courierService,
         status: 'UNPAID',
         userId: userId,
-        accountName: accountName,
-        accountNumber: accountNumber,
+        // accountName: accountName,
+        // accountNumber: accountNumber,
       };
 
       const getCourier = {
