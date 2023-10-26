@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useLoaderData } from "@remix-run/react";
-import type { loader } from "~/routes/order";
+import { useState, useEffect } from 'react';
+import { useLoaderData } from '@remix-run/react';
+import type { loader } from '~/routes/order';
 
 export default function UseFilterSuccess() {
-  const { succesService } = useLoaderData<typeof loader>();
-  const dataArray = Object.values(succesService);
-  const [searchQuery, setSearchQuery] = useState("");
+  const { successedService } = useLoaderData<typeof loader>();
+  const dataArray = Object.values(successedService);
+  const [searchQuery, setSearchQuery] = useState('');
   const [filteredOrder, setFilteredOrder] = useState(dataArray);
   const [selectedCouriers, setSelectedCouriers] = useState<Courier[]>([]);
 
@@ -16,9 +16,9 @@ export default function UseFilterSuccess() {
         items.cart?.cartItems
           .map((item) => item.product?.name?.toLowerCase())
           .flat() || [];
-      const invoiceNumber = items.invoiceNumber?.toLowerCase() || "";
-      const itemCourier = items.courier?.courierName?.toLowerCase() || "";
-      console.log("Nama Kurir:", itemCourier);
+      const invoiceNumber = items.invoiceNumber?.toLowerCase() || '';
+      const itemCourier = items.courier?.courierName?.toLowerCase() || '';
+      console.log('Nama Kurir:', itemCourier);
 
       return (
         productName.some((name) => name && name.includes(lowerQuery)) ||
@@ -28,7 +28,7 @@ export default function UseFilterSuccess() {
     });
     setFilteredOrder(filtered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, succesService]);
+  }, [searchQuery, successedService]);
 
   type Courier = string;
   // Fungsi untuk menangani perubahan status checkbox kurir terpilih
@@ -47,7 +47,7 @@ export default function UseFilterSuccess() {
     // Perbarui state kurir terpilih
     setSelectedCouriers(updatedSelectedCouriers);
     // Perbarui pencarian dengan kurir terpilih
-    setSearchQuery(updatedSelectedCouriers.join(" "));
+    setSearchQuery(updatedSelectedCouriers.join(' '));
   };
   const getSelectedCourier = () => {
     return selectedCouriers.length;

@@ -89,6 +89,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function TransferPayment() {
   const { invoiceId } = useParams();
+
   const [file] = useState<File | null>(null);
   const item = useLoaderData<typeof loader>();
 
@@ -125,7 +126,12 @@ export default function TransferPayment() {
           <Stack spacing={4}>
             <FormControl id="invoiceId" isRequired>
               <FormLabel>Order ID</FormLabel>
-              <Input name="invoiceId" value={item?.id} type="readOnly" />
+              <Input
+                name="invoiceId"
+                value={item?.id}
+                type="text"
+                // placeholder={item?.id}
+              />
             </FormControl>
             <FormControl id="invoice" isRequired>
               <FormLabel>Atas Nama Rekening</FormLabel>
@@ -133,7 +139,6 @@ export default function TransferPayment() {
                 name="invoice"
                 type="text"
                 value={item?.receiverName}
-
                 // placeholder={item?.receiverName}
               />
             </FormControl>
@@ -172,7 +177,6 @@ export default function TransferPayment() {
               <FormLabel>Bukti Transfer</FormLabel>
               <Box position={'relative'} mb={5} alignItems={'center'}>
                 <Input
-                  id="file-input"
                   name="attachment"
                   position={'absolute'}
                   p={1}
@@ -197,7 +201,7 @@ export default function TransferPayment() {
         </Form>
       </Container>
       <Box display={'none'}>
-        <Text>{invoiceId} </Text>
+        <Text>{invoiceId}</Text>
       </Box>
     </Flex>
   );

@@ -1,6 +1,6 @@
 import { Stack } from '@chakra-ui/react';
 import type { ActionArgs, DataFunctionArgs } from '@remix-run/node';
-import { redirect, json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import type { ITracking } from '~/interfaces/order/orderTracking';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
@@ -12,7 +12,6 @@ import { MootaOrderSchema } from '~/modules/order/order.schema';
 import {
   MootaOrderStatusUpdate,
   getInvoiceById,
-  updateStatusInvoice,
   updateStatusInvoice2,
 } from '~/modules/order/order.service';
 import crypto from 'crypto';
@@ -134,19 +133,6 @@ export async function action({ request }: ActionArgs) {
     return redirect('/order/detail/' + id);
   }
 
-  if (request.method.toLowerCase() === 'post' && actionType === 'cancelNotif') {
-    const status = formData.get('status') as string;
-    const id = formData.get('id') as string;
-
-    const validateDataUpdate = {
-      id,
-      status,
-    };
-
-    await updateStatusInvoice2(validateDataUpdate);
-    return redirect('/order/detail/' + id);
-  }
-
   if (actionType === 'createTrackingLimit') {
     // Calculate the timestamp 30 minutes in the future
     const nextAccessTime = new Date(now.getTime() + 10000);
@@ -182,9 +168,7 @@ export async function action({ request }: ActionArgs) {
       await db.biteshipTrackingLimit.create({ data });
     }
 
-    // await db.biteshipTrackingLimit.create({data})
-
-    return json({ message: 'data added.' });
+    return json({});
   }
 }
 

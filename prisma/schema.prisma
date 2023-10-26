@@ -23,7 +23,7 @@ model User {
   role                   Role?                   @relation(fields: [roleId], references: [id])
   roleId                 String
   profile                Profile?
-  biteshipTrackingLimits BiteshipTrackingLimit?
+  biteshipTrackingLimits BiteshipTrackingLimit[]
   carts                  Cart[]
   cartItems              CartItem[]
   invoices               Invoice[]
@@ -248,6 +248,7 @@ model VariantOption {
 
 model VariantOptionValue {
   id              String         @id @unique @default(uuid())
+  name            String
   sku             String
   weight          Float
   stock           Int
@@ -334,7 +335,7 @@ model Invoice {
   cart                   Cart?                  @relation(fields: [cartId], references: [id])
   cartId                 String
   courier                Courier?               @relation(fields: [courierId], references: [id])
-  courierId              String                 @unique
+  courierId              String
   user                   User?                  @relation(fields: [userId], references: [id])
   userId                 String?
   payment                Payment?               @relation(fields: [paymentId], references: [id])
@@ -457,7 +458,7 @@ model ConfirmationPayment {
 model BiteshipTrackingLimit {
   id             String   @id @unique @default(uuid())
   user           User?    @relation(fields: [userId], references: [id])
-  userId         String    @unique
+  userId         String
   invoice        Invoice? @relation(fields: [invoiceId], references: [id])
   invoiceId      String   @unique
   nextAccessTime DateTime

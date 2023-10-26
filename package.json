@@ -6,8 +6,7 @@
     "dev": "remix dev",
     "typecheck": "tsc",
     "postinstall": "prisma generate",
-    "prepare": "husky install",
-    "test": "jest"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@chakra-ui/icon": "^3.1.0",
@@ -67,7 +66,7 @@
     "react-loading": "^2.0.3",
     "react-select": "^5.7.4",
     "source-map-support": "^0.5.21",
-    "use-debounce": "^9.0.4",
+    "use-places-autocomplete": "^4.0.1",
     "zod": "^3.22.2"
   },
   "devDependencies": {

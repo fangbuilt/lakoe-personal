@@ -1,16 +1,14 @@
 import { useLoaderData } from '@remix-run/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import type { IBiteshipTracking } from '~/interfaces/orderTracking';
+import type { ITracking } from '~/interfaces/order/orderTracking';
 import type { loader } from '~/routes/order';
 
 export function UseBiteshipTrack(trackingNumber: string) {
   const data = useLoaderData<typeof loader>();
 
-  const [trackingInfoArray, setTrackingInfoArray] = useState<
-    IBiteshipTracking[]
-  >([]);
-  const [trackingInfo, setTrackingInfo] = useState<IBiteshipTracking>();
+  const [trackingInfoArray, setTrackingInfoArray] = useState<ITracking[]>([]);
+  const [trackingInfo, setTrackingInfo] = useState<ITracking>();
   const [error, setError] = useState(null);
 
   const fetchData = async () => {
@@ -26,6 +24,7 @@ export function UseBiteshipTrack(trackingNumber: string) {
 
       setTrackingInfo(response.data);
       setTrackingInfoArray(response.data.history);
+      // }
     } catch (err) {
       setError(null);
     }
@@ -33,7 +32,6 @@ export function UseBiteshipTrack(trackingNumber: string) {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
