@@ -10,7 +10,7 @@ export default function useSearchFilter() {
   //   const toLowerCase = searchQuery.toLowerCase();
   //   const filtered = canceledService.filter((order) => {
   //     const productNames =
-  //       order.cart?.cartItems.map((item: any) =>
+  //       order.cart?.cartItems.map((item: any) =>a
   //         item.product?.name.toLowerCase()
   //       ) || [];
   //     const invoiceNumber = order.invoiceNumber.toLowerCase();

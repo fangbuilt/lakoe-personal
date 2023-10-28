@@ -3,8 +3,8 @@ import { useLoaderData } from '@remix-run/react';
 import type { loader } from '~/routes/order';
 
 export default function UseFilterSuccess() {
-  const { successedService } = useLoaderData<typeof loader>();
-  const dataArray = Object.values(successedService);
+  const { succesService } = useLoaderData<typeof loader>();
+  const dataArray = Object.values(succesService);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredOrder, setFilteredOrder] = useState(dataArray);
   const [selectedCouriers, setSelectedCouriers] = useState<Courier[]>([]);
@@ -28,7 +28,7 @@ export default function UseFilterSuccess() {
     });
     setFilteredOrder(filtered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, successedService]);
+  }, [searchQuery, succesService]);
 
   type Courier = string;
   // Fungsi untuk menangani perubahan status checkbox kurir terpilih

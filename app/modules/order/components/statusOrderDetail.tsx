@@ -44,7 +44,6 @@ import truck from '~/assets/DetailOrderIcon/truck-fast.svg';
 import wallet from '~/assets/DetailOrderIcon/wallet.svg';
 import whatsapp from '~/assets/DetailOrderIcon/whatsapp.svg';
 import ModalInShipping from '~/components/ModalInShipping';
-import type { ITracking } from '~/interfaces/order/orderTracking';
 import type { IOrderDetailInvoice } from '~/interfaces/orderDetail';
 import useCopyToClipboard from '../hooks/useCopyToClipboard';
 import {
@@ -58,11 +57,9 @@ import type { loader } from '~/routes/order_.detail.$id';
 
 export default function StatusOrderDetail({
   data,
-  dataTracking,
   apiKey,
 }: {
   data: IOrderDetailInvoice;
-  dataTracking: ITracking;
   apiKey: string;
 }) {
   const dataTrack = useLoaderData<typeof loader>();
@@ -291,12 +288,8 @@ export default function StatusOrderDetail({
               );
             }}
           >
-            <Input
-              name="actionType"
-              defaultValue={'createTrackingLimit'}
-              hidden
-            />
-            <Input name="invoiceId" defaultValue={data.id} hidden />
+            <Input name="actionType" value={'createTrackingLimit'} hidden />
+            <Input name="invoiceId" value={data.id} hidden />
             <Button
               fontSize={'14px'}
               fontWeight={'700'}

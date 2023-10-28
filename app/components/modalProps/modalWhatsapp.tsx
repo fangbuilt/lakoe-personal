@@ -38,7 +38,7 @@ export default function ModalWhatsapp(props: SendProps) {
           <ModalCloseButton />
           <ModalBody>
             <Accordion allowToggle>
-              {whatsappTemplateDbs?.map((itemtemp) => (
+              {whatsappTemplateDbs.map((itemtemp) => (
                 <AccordionItem key={itemtemp.id}>
                   <Text>
                     <AccordionButton>

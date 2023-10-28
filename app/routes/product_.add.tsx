@@ -115,7 +115,7 @@ export default function AddProduct() {
     <ImplementGrid>
       <Form method="post" encType="multipart/form-data">
         <Stack mt={'7.5vh'} spacing={4}>
-          <Input name="storeId" defaultValue={data.storeId} readOnly />
+          <Input name="storeId" defaultValue={data.storeId} hidden />
           <ProductInformation />
           <ProductDetail />
           <input

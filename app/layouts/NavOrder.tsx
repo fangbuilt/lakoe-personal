@@ -11,32 +11,43 @@ import {
 } from '@chakra-ui/react';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
+import ScrollBox from '~/components/ScrollBox';
 import type { loader } from '~/routes/order';
-import ScrollBox from '../components/ScrollBox';
-import CardReadyToShip from '~/components/CardReadyToShip';
-import UnpaidAllCard from '~/components/CardUnpaidAll';
-import UnpaidCard from '~/components/CardUnpaid';
-import CardInShipping from '~/components/CardInShipping';
-import CardNewOrderBa from '~/components/CardNewOrderBa';
+import CardCenceled from '~/components/order/CardCanceled';
+import CardSucces from '~/components/order/CardSuccesOrder';
+import CardReadyToShip from '~/components/order/CardReadyToShip';
+import CardInShipping from '~/components/order/CardInShipping';
+import { number } from 'zod';
+import CardAllOrder from '~/components/order/CardAllOerder';
+import UnpaidCard from '~/components/order/CardUnpaid';
+import CardNewOrderBa from '~/components/order/CardNewOrderBa';
 import CardSuccess from '~/components/CardSuccess';
-import CardCenceled from '~/components/CardCanceled';
-
-export default function NavOrder({ allOrderSevice }: any) {
-  const cardProduct = useLoaderData<typeof loader>();
-  const { unpaidCard } = useLoaderData<typeof loader>();
-  const notificationCount =
-    cardProduct.dataProductReadyToShip.length > 0
-      ? cardProduct.dataProductReadyToShip.length
-      : 0;
+// import CardSucces from '~/components/order/CardSuccesOrder';
+// import UnpaidCard from '~/components/order/CardUnpaid';
+// import UnpaidCard from '~/components/order/CardUnpaid';
+export function NavOrder({ allOrderSevice }: any) {
+  const {
+    dataProductReadyToShip,
+    unpaidCard,
+    getDataInShippings,
+    dataInvoice,
+  } = useLoaderData<typeof loader>();
+  // const {unpaidCard} = useLoaderData<typeof loader>();
+  // const notificationCount =
+  //   dataProductReadyToShip.dataProductReadyToShip.length > 0
+  //     ? dataProductReadyToShip.dataProductReadyToShip.length
+  //     : 0;
   const [activeTab, setActiveTab] = useState(0);
   const handleClickTab = (index: number) => {
     setActiveTab(index);
   };
-  // const {unpaidCard} = useLoaderData<typeof loader>()
+  // const notifCountInShipping = dataProductReadyToShip..length > 0 ? dataProductReadyToShip..length : 0;
+
+  // console.log('unpaid card', unpaidCard[0].cart?.cartItems[0].product?.attachments[0]);
+
   return (
     <>
       <Box
-        key={allOrderSevice}
         background={'whitesmoke'}
         style={{ width: '100%', marginLeft: '-5px', marginRight: '50%' }}
       >
@@ -64,7 +75,6 @@ export default function NavOrder({ allOrderSevice }: any) {
                 overflow={'scroll'}
                 sx={{
                   '::-webkit-scrollbar': {
-                    // i want displayed scrollbar if user use mouse for scrolling, but if scrollbar not none is a no clear ,
                     display: 'none',
                   },
                 }}
@@ -122,7 +132,8 @@ export default function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {dataInvoice.length}{' '}
+                          {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
 
@@ -149,7 +160,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          {notificationCount}{' '}
+                          {dataProductReadyToShip.length}
                           {/* INSERT YOUR NOTIF DATA HERE */}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
@@ -167,6 +178,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                         fontWeight={activeTab === 4 ? '700' : '500'}
                       >
                         {/* NOTIFICATION ORDER */}
+
                         <Text
                           my={4}
                           color={'white'}
@@ -176,7 +188,7 @@ export default function NavOrder({ allOrderSevice }: any) {
                           fontSize={14}
                           marginRight={2}
                         >
-                          2 {/* INSERT YOUR NOTIF DATA HERE */}
+                          {getDataInShippings.length}
                         </Text>
                         {/* END NOTIFICATION ORDER */}
                         <Flex gap={1.5}>
@@ -213,7 +225,7 @@ export default function NavOrder({ allOrderSevice }: any) {
 
                 <ScrollBox>
                   <TabPanel>
-                    <UnpaidAllCard />
+                    <CardAllOrder />
                   </TabPanel>
                 </ScrollBox>
 
@@ -236,12 +248,20 @@ export default function NavOrder({ allOrderSevice }: any) {
                 </ScrollBox>
 
                 <ScrollBox>
-                  <TabPanel></TabPanel>
+                  <TabPanel>
+                    <CardInShipping />
+                  </TabPanel>
                 </ScrollBox>
 
                 <ScrollBox>
                   <TabPanel>
                     <CardSuccess />
+                  </TabPanel>
+                </ScrollBox>
+
+                <ScrollBox>
+                  <TabPanel>
+                    <CardSucces />
                   </TabPanel>
                 </ScrollBox>
 
