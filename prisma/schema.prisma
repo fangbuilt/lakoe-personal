@@ -370,7 +370,6 @@ model Payment {
   @@map("payments")
 }
 
-
 model Courier {
   id                           String    @id @unique @default(uuid())
   availableForCashOnDelivery   Boolean?
