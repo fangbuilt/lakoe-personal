@@ -61,7 +61,7 @@ export function LazyProductVariant() {
               <Heading size={'md'}>Varian Produk</Heading>
               <Text fontSize={'sm'}>
                 Tambah varian agar pembeli dapat memilih produk yang sesuai,
-                yuk!
+                yuk! 😊
               </Text>
             </Stack>
             <Button
