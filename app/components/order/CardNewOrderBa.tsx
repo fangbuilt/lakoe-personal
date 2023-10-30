@@ -34,7 +34,7 @@ import SearchProduct from '../../assets/icon-pack/search-product.svg';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import ReceiptSearch from '../../assets/icon-pack/receipt-search.svg';
-import UseFilterNewOrder from '~/modules/order/hooks/useFIlterCanceled';
+import UseFilterNewOrder from '../../modules/order/hooks/useFilterCanceled';
 import NewOrderHooks from '~/modules/webhook/hooks/NewOrderHooks';
 import type { loader } from '~/routes/order';
 import { useSortFilter } from '~/hooks/useSortFilter';

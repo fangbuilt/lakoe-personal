@@ -27,7 +27,7 @@ import { useState } from 'react';
 import ModalWhatsapp from '../modalProps/modalWhatsapp';
 import { Link } from '@remix-run/react';
 import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
-import UseFilterSucces from '~/modules/order/hooks/useFIlterCanceled';
+import UseFilterSucces from '../../modules/order/hooks/useFilterCanceled';
 export default function CardSucces(props: any) {
   const {
     getSelectedCourier,

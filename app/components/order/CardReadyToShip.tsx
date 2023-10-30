@@ -26,7 +26,7 @@ import ReceiptSearch from '../../assets/icon-pack/receipt-search.svg';
 import Empty from '../../assets/icon-pack/empty-dot.svg';
 import ChevronDownIcon from '../../assets/icon-pack/arrow-dropdown.svg';
 import SearchProduct from '../../assets/icon-pack/search-product.svg';
-import UseFilterReadyToShip from '~/modules/order/hooks/useFIlterCanceled';
+import UseFilterReadyToShip from '../../modules/order/hooks/useFilterCanceled';
 import { useSortFilter } from '~/hooks/useSortFilter';
 // import type { IBiteshipTracking } from "~/interfaces/orderTracking";
 

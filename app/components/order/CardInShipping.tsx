@@ -29,7 +29,8 @@ import { Form, Link, useLoaderData } from '@remix-run/react';
 import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
 import type { loader } from '~/routes/order';
 import ModalInShipping from '../ModalInShipping';
-import UseFilterInShipping from '~/modules/order/hooks/useFIlterCanceled';
+import UseFilterInShipping from '../../modules/order/hooks/useFilterCanceled';
+
 export default function CardInShipping() {
   const {
     getSelectedCourier,

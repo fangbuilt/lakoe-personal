@@ -27,7 +27,7 @@ import { useState } from 'react';
 import ModalWhatsapp from '../modalProps/modalWhatsapp';
 import { Link } from '@remix-run/react';
 import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
-import UseFilterCanceled from '~/modules/order/hooks/useFIlterCanceled';
+import UseFilterCanceled from '../../modules/order/hooks/useFilterCanceled';
 export default function CardCenceled(props: any) {
   const {
     getSelectedCourier,
