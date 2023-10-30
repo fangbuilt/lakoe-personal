@@ -34,7 +34,7 @@ import SearchProduct from '../../assets/icon-pack/search-product.svg';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import ReceiptSearch from '../../assets/icon-pack/receipt-search.svg';
-import UseFilterNewOrder from '../../modules/order/hooks/useFilterCanceled';
+import { UseFilterNewOrder } from '../../modules/order/hooks/useFilterCanceled';
 import NewOrderHooks from '~/modules/webhook/hooks/NewOrderHooks';
 import type { loader } from '~/routes/order';
 import { useSortFilter } from '~/hooks/useSortFilter';
@@ -414,19 +414,17 @@ export default function CardNewOrderBa() {
                         {props.invoiceNumber}
                       </Text>
                       <hr />
-                      <Flex justifyContent={'space-between'}>
-                        <Box display={'flex'} w={'80%'}>
-                          <Image
-                            w={'52px'}
-                            h={'52px'}
-                            display={'inline'}
-                            src={`${props.cart?.cartItems.map((a) =>
-                              a.product?.attachments.map((b) => b.url)
-                            )}`}
-                            mt={3}
-                            mx={3}
-                          />
-                          <Link to={`/order/detail/${props.id}`}>
+                      <Link to={`detail/${props.id}`}>
+                        <Flex justifyContent={'space-between'} px={3}>
+                          <Box display={'flex'} gap={3} w={'80%'}>
+                            <Img
+                              w={'52px'}
+                              h={'52px'}
+                              display={'inline'}
+                              borderRadius={'md'}
+                              src={`${props.cart?.cartItems[0]?.product?.attachments[0].url}`}
+                              mt={3}
+                            />
                             <Text
                               mt={4}
                               id="fm500"
@@ -437,29 +435,35 @@ export default function CardNewOrderBa() {
                               fontWeight={'700'}
                             >
                               {props.cart?.cartItems.map(
-                                (a) => a.product?.name
+                                (item: any) => item.product?.name
                               )}
+                              <Text
+                                color={'gray.400'}
+                                pb={3}
+                                fontWeight={'normal'}
+                              >
+                                {props.cart?.cartItems.map(
+                                  (item: any) => item.qty
+                                )}{' '}
+                                Barang
+                              </Text>
                             </Text>
-                          </Link>
-                          <Text color={'gray.400'} pb={3} fontWeight={'normal'}>
-                            {props.cart?.cartItems.map((a) => a.qty)} Barang
-                          </Text>
-                        </Box>
-                        <Box mt={4} w={'15%'}>
-                          <Flex gap={1}>
-                            <Text color={'#909090'} fontSize={'14px'}>
-                              Total
+                          </Box>
+                          <Box mt={4} w={'18%'}>
+                            <Flex gap={1} fontWeight={'500'}>
+                              <Text color={'#909090'} fontSize={'14px'}>
+                                Total
+                              </Text>
+                              <Text color={'#909090'} fontSize={'14px'}>
+                                Belanja
+                              </Text>
+                            </Flex>
+                            <Text fontWeight={'bold'} fontSize={'14px'}>
+                              Rp {props.price.toLocaleString('id-ID')}
                             </Text>
-                            <Text color={'#909090'} fontSize={'14px'}>
-                              Belanja
-                            </Text>
-                          </Flex>
-
-                          <Text fontWeight={'bold'} fontSize={'14px'}>
-                            {formatCurrency(props.price)}
-                          </Text>
-                        </Box>
-                      </Flex>
+                          </Box>
+                        </Flex>
+                      </Link>
                     </Box>
                   </Box>
                 </Box>

@@ -26,15 +26,15 @@ import { WithdrawNotification } from '~/modules/DashboardMailerlite/dashboardMai
 import moment from 'moment';
 
 export default function DashboardPopup({ data }: any) {
-  const [selectedBankAccount, setSelectedBankAccount] = useState<string>('');
+  // const [_, setSelectedBankAccount] = useState<string>('');
 
   useEffect(() => {
     // Initialize selected bank account if needed
     if (data && data.length > 0) {
-      setSelectedBankAccount(data[0].id);
+      // setSelectedBankAccount(data[0].id);
     }
   }, [data]);
-  console.log('select bank', selectedBankAccount);
+  // console.log('select bank', selectedBankAccount);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showTarikKredit, setShowTarikKredit] = useState(false);
@@ -95,7 +95,7 @@ export default function DashboardPopup({ data }: any) {
   };
 
   const toggleTarikKredit = () => {
-    const { actionType, amount, bankAccount, bankId } = formData;
+    const { amount, bankAccount, bankId } = formData;
 
     if (!amount || !bankAccount || !bankId) {
       setIsFormValidation(false);
@@ -113,13 +113,13 @@ export default function DashboardPopup({ data }: any) {
       setIsFormValidation(true);
       setShowTarikKredit(!showTarikKredit);
     }
-    console.log(
-      'ini data-data inputan withdraw',
-      actionType,
-      bankId,
-      amount,
-      bankAccount.split(' - ')[0]
-    );
+    // console.log(
+    //   'ini data-data inputan withdraw',
+    //   actionType,
+    //   bankId,
+    //   amount,
+    //   bankAccount.split(' - ')[0]
+    // );
   };
 
   const splitBankAccount = formData.bankAccount.split(' - ');

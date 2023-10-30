@@ -34,7 +34,7 @@ export default function ModalInShipping(props: {
     props.selectedCardId
   );
 
-  console.log('step', trackingInfoArray);
+  // console.log('step', trackingInfoArray);
   const stepCount = trackingInfoArray.length;
   const stepHeight = 65;
 

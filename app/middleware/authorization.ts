@@ -12,9 +12,9 @@ export async function authorize(
   role: UserRole
 ): Promise<{}> {
   const userId = await getUserId(request);
-  console.log('this  is user id', userId);
+  // console.log('this  is user id', userId);
   if (!userId) {
-    console.log('there is no token');
+    // console.log('there is no token');
     throw redirect('/auth/login');
   }
 

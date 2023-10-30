@@ -47,7 +47,7 @@ export async function loader({ request }: LoaderArgs) {
     throw redirect('/dashboardAdmin');
   } else if (role?.roleId === '2') {
     const woi = await getStoreData(userId);
-    console.log('woi', woi);
+    // console.log('woi', woi);
     return woi;
   } else if (role?.roleId === '3') {
     throw redirect('/checkout');

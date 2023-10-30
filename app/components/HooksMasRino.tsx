@@ -54,12 +54,7 @@ export default function HooksMasRino() {
         body: JSON.stringify(mailerData),
       };
 
-      const response = await fetch(
-        `${mailerBaseUrl}${mailerEndPoint}`,
-        mailerRequest
-      );
-      const responseData = await response.json();
-      console.log('Data Email :', responseData);
+      await fetch(`${mailerBaseUrl}${mailerEndPoint}`, mailerRequest);
       alert('System sedang terkendala, cobalah beberapa saat lagi');
     } catch (error) {
       alert(error);
@@ -149,12 +144,7 @@ export default function HooksMasRino() {
         body: orderDataJSON,
       };
 
-      const responsebiteship = await fetch(
-        `${baseUrl}${endpoint}`,
-        requestOptions
-      );
-      const responseDataBITESHIP = await responsebiteship.json();
-      console.log(responseDataBITESHIP);
+      await fetch(`${baseUrl}${endpoint}`, requestOptions);
       alert(
         'Kami sedang mencarikan kurir untuk penjemputan paket anda, Mohon Menunggu'
       );

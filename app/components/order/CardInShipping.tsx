@@ -29,7 +29,7 @@ import { Form, Link, useLoaderData } from '@remix-run/react';
 import { formatCurrency } from '~/modules/order/hooks/useOrderDetail';
 import type { loader } from '~/routes/order';
 import ModalInShipping from '../ModalInShipping';
-import UseFilterInShipping from '../../modules/order/hooks/useFilterCanceled';
+import { UseFilterInShipping } from '../../modules/order/hooks/useFilterCanceled';
 
 export default function CardInShipping() {
   const {
@@ -89,6 +89,8 @@ export default function CardInShipping() {
   }
   const dataTrack = useLoaderData<typeof loader>();
   const currentTime = dataTrack.currentTime;
+
+  console.log('filteredOrder', filteredOrder);
 
   return (
     <>
