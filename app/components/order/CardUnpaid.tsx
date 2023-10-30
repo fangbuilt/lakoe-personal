@@ -59,13 +59,6 @@ export default function UnpaidCard() {
   } = useSortFilter(); // sort selcted
   const sortedOrders = sortOrders(filteredOrder);
 
-  // console.log('sorted orders', sortedOrders[0].cart.cartItems[0].product.attachments[0]);
-
-  console.log(
-    'test check',
-    sortedOrders[0].cart?.cartItems[0].product?.attachments[0].url
-  );
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => {
     setModalIsOpen(true);
