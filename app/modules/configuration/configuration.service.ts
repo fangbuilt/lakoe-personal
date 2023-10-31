@@ -12,9 +12,9 @@ export default async function createLocation(storeId: any, data: any) {
         store: {
           connect: { id: storeId },
         },
-        profile: {
-          connect: { id: '1' },
-        },
+        // profile: {
+        //   connect: { id: '1' },
+        // },
         name: data.name,
         address: data.address,
         latitude: data.latitude,

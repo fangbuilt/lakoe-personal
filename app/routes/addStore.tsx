@@ -40,7 +40,7 @@ export async function action({ request }: ActionArgs) {
     });
   }
 
-  return redirect('/dashboard');
+  return redirect('/configuration');
 }
 
 export default function useAddStore() {

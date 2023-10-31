@@ -13,6 +13,7 @@ import { ProductInformation } from '~/modules/product/components/ProductInformat
 import { ProductManagement } from '~/modules/product/components/ProductManagement';
 import { LazyProductVariant } from '~/modules/product/components/ProductVariant';
 import { WeightAndShipment } from '~/modules/product/components/WeightAndShipment';
+import { LazyProvider } from '~/modules/product/hooks/useVariantShenanigans';
 import { createProduct } from '~/modules/product/product.service';
 
 export async function loader({ request, context, params }: DataFunctionArgs) {
@@ -113,25 +114,27 @@ export default function AddProduct() {
 
   return (
     <ImplementGrid>
-      <Form method="post" encType="multipart/form-data">
-        <Stack mt={'7.5vh'} spacing={4}>
-          <Input name="storeId" defaultValue={data.storeId} hidden />
-          <ProductInformation />
-          <ProductDetail />
-          <input
-            type="text"
-            name="storeId"
-            value={data.storeId}
-            hidden
-            readOnly
-          />
-          <LazyProductVariant />
-          <Price />
-          <ProductManagement />
-          <WeightAndShipment />
-          <Action />
-        </Stack>
-      </Form>
+      <LazyProvider>
+        <Form method="post" encType="multipart/form-data">
+          <Stack mt={'7.5vh'} spacing={4}>
+            <Input name="storeId" defaultValue={data.storeId} hidden />
+            <ProductInformation />
+            <ProductDetail />
+            <input
+              type="text"
+              name="storeId"
+              value={data.storeId}
+              hidden
+              readOnly
+            />
+            <LazyProductVariant />
+            <Price />
+            <ProductManagement />
+            <WeightAndShipment />
+            <Action />
+          </Stack>
+        </Form>
+      </LazyProvider>
     </ImplementGrid>
   );
 }

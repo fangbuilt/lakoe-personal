@@ -56,7 +56,7 @@ export function LazyProductVariant() {
     <Card>
       <CardBody>
         <Stack spacing={10}>
-          <Flex justify={'space-between'} align={'center'}>
+          <Flex justify={'space-between'} align={'center'} gap={5}>
             <Stack>
               <Heading size={'md'}>Varian Produk</Heading>
               <Text fontSize={'sm'}>
@@ -67,15 +67,16 @@ export function LazyProductVariant() {
             <Button
               variant={'outline'}
               borderRadius={'full'}
-              leftIcon={<Image src={isLazy ? TrashIcon : AddIcon} />}
-              fontSize={'sm'}
+              leftIcon={<Image src={isLazy ? AddIcon : TrashIcon} />}
+              fontSize={'smaller'}
+              px={8}
               onClick={toggle}
             >
-              {isLazy ? 'Hapus Varian' : 'Tambah Varian'}
+              {isLazy ? 'Tambah Varian' : 'Hapus Varian'}
             </Button>
           </Flex>
 
-          {isLazy && (
+          {!isLazy && (
             <Stack spacing={10}>
               <HStack>
                 <Button
@@ -210,22 +211,110 @@ export function LazyProductVariant() {
                 </Flex>
               )}
 
-              {colorVariants.map((colorVariant, colorIndex) =>
-                sizeVariants.map((sizeVariant, sizeIndex) => (
-                  <Stack
-                    spacing={4}
-                    key={`${colorVariant.name}-${sizeVariant.name}`}
-                  >
+              {colorVariants.length > 0 &&
+                sizeVariants.length > 0 &&
+                colorVariants.map((colorVariant, colorIndex) =>
+                  sizeVariants.map((sizeVariant, sizeIndex) => (
+                    <Stack
+                      spacing={4}
+                      key={`${colorVariant.name}-${sizeVariant.name}`}
+                    >
+                      <FormControl display="flex" alignItems="center">
+                        <FormLabel
+                          fontWeight={'bold'}
+                          key={`${colorVariant.name}-${sizeVariant.name}`}
+                          mb="0"
+                        >
+                          {`${colorVariant.name} ${sizeVariant.name}`}
+                        </FormLabel>
+                        <Switch
+                          id={`${colorVariant.name}-${sizeVariant.name}`}
+                          defaultChecked={true}
+                        />
+                        <Text ms={2}>Aktif</Text>
+                      </FormControl>
+                      <Stack spacing={10}>
+                        <Flex gap={4}>
+                          <FormControl>
+                            <input
+                              type="text"
+                              hidden
+                              name={`variants[${colorIndex}][${sizeIndex}][name]`}
+                              value={`${colorVariant.name} ${sizeVariant.name}`}
+                            />
+                            <input
+                              type="number"
+                              name="colorVariants"
+                              value={colorVariants.length}
+                              hidden
+                              readOnly
+                            />
+                            <input
+                              type="number"
+                              name="sizeVariants"
+                              value={sizeVariants.length}
+                              hidden
+                              readOnly
+                            />
+                            <FormLabel>Harga</FormLabel>
+                            <InputGroup>
+                              <InputLeftAddon children="Rp" />
+                              <Input
+                                type="text"
+                                placeholder="Masukan harga satuan barang"
+                                name={`variants[${colorIndex}][${sizeIndex}][price]`}
+                              />
+                            </InputGroup>
+                          </FormControl>
+                          <FormControl isRequired>
+                            <FormLabel>Stock Produk</FormLabel>
+                            <Input
+                              type="number"
+                              placeholder="Masukan jumlah stok"
+                              name={`variants[${colorIndex}][${sizeIndex}][stock]`}
+                            />
+                          </FormControl>
+                        </Flex>
+                        <Flex gap={4}>
+                          <FormControl>
+                            <FormLabel>SKU (Stock Keeping Unit)</FormLabel>
+                            <Input
+                              type="text"
+                              placeholder="Masukan SKU"
+                              name={`variants[${colorIndex}][${sizeIndex}][sku]`}
+                            />
+                          </FormControl>
+                          <FormControl isRequired>
+                            <FormLabel>Berat Produk</FormLabel>
+                            <InputGroup>
+                              <Input
+                                type="number"
+                                placeholder="Masukan berat produk"
+                                name={`variants[${colorIndex}][${sizeIndex}][weight]`}
+                              />
+                              <InputRightAddon children="Gram" />
+                            </InputGroup>
+                          </FormControl>
+                        </Flex>
+                      </Stack>
+                    </Stack>
+                  ))
+                )}
+
+              {colorVariants.length > 0 &&
+                sizeVariants.length === 0 &&
+                colorVariants.map((colorVariant, colorIndex) => (
+                  <Stack spacing={4} key={`${colorVariant.name}`}>
                     <FormControl display="flex" alignItems="center">
                       <FormLabel
                         fontWeight={'bold'}
-                        key={`${colorVariant.name}-${sizeVariant.name}`}
+                        key={`${colorVariant.name}`}
                         mb="0"
                       >
-                        {`${colorVariant.name} ${sizeVariant.name}`}
+                        {`${colorVariant.name}`}
                       </FormLabel>
                       <Switch
-                        id={`${colorVariant.name}-${sizeVariant.name}`}
+                        id={`${colorVariant.name}`}
                         defaultChecked={true}
                       />
                       <Text ms={2}>Aktif</Text>
@@ -236,8 +325,8 @@ export function LazyProductVariant() {
                           <input
                             type="text"
                             hidden
-                            name={`variants[${colorIndex}][${sizeIndex}][name]`}
-                            value={`${colorVariant.name} ${sizeVariant.name}`}
+                            name={`variants[${colorIndex}][name]`}
+                            value={`${colorVariant.name}`}
                           />
                           <input
                             type="number"
@@ -246,9 +335,80 @@ export function LazyProductVariant() {
                             hidden
                             readOnly
                           />
+                          <FormLabel>Harga</FormLabel>
+                          <InputGroup>
+                            <InputLeftAddon children="Rp" />
+                            <Input
+                              type="text"
+                              placeholder="Masukan harga satuan barang"
+                              name={`variants[${colorIndex}][price]`}
+                            />
+                          </InputGroup>
+                        </FormControl>
+                        <FormControl isRequired>
+                          <FormLabel>Stock Produk</FormLabel>
+                          <Input
+                            type="number"
+                            placeholder="Masukan jumlah stok"
+                            name={`variants[${colorIndex}][stock]`}
+                          />
+                        </FormControl>
+                      </Flex>
+                      <Flex gap={4}>
+                        <FormControl>
+                          <FormLabel>SKU (Stock Keeping Unit)</FormLabel>
+                          <Input
+                            type="text"
+                            placeholder="Masukan SKU"
+                            name={`variants[${colorIndex}][sku]`}
+                          />
+                        </FormControl>
+                        <FormControl isRequired>
+                          <FormLabel>Berat Produk</FormLabel>
+                          <InputGroup>
+                            <Input
+                              type="number"
+                              placeholder="Masukan berat produk"
+                              name={`variants[${colorIndex}][weight]`}
+                            />
+                            <InputRightAddon children="Gram" />
+                          </InputGroup>
+                        </FormControl>
+                      </Flex>
+                    </Stack>
+                  </Stack>
+                ))}
+
+              {colorVariants.length === 0 &&
+                sizeVariants.length > 0 &&
+                sizeVariants.map((sizeVariant, sizeIndex) => (
+                  <Stack spacing={4} key={`${sizeVariant.name}`}>
+                    <FormControl display="flex" alignItems="center">
+                      <FormLabel
+                        fontWeight={'bold'}
+                        key={`${sizeVariant.name}`}
+                        mb="0"
+                      >
+                        {`${sizeVariant.name}`}
+                      </FormLabel>
+                      <Switch
+                        id={`${sizeVariant.name}`}
+                        defaultChecked={true}
+                      />
+                      <Text ms={2}>Aktif</Text>
+                    </FormControl>
+                    <Stack spacing={10}>
+                      <Flex gap={4}>
+                        <FormControl>
+                          <input
+                            type="text"
+                            hidden
+                            name={`variants[${sizeIndex}][name]`}
+                            value={`${sizeVariant.name}`}
+                          />
                           <input
                             type="number"
-                            name="sizeVariants"
+                            name="colorVariants"
                             value={sizeVariants.length}
                             hidden
                             readOnly
@@ -259,7 +419,7 @@ export function LazyProductVariant() {
                             <Input
                               type="text"
                               placeholder="Masukan harga satuan barang"
-                              name={`variants[${colorIndex}][${sizeIndex}][price]`}
+                              name={`variants[${sizeIndex}][price]`}
                             />
                           </InputGroup>
                         </FormControl>
@@ -268,7 +428,7 @@ export function LazyProductVariant() {
                           <Input
                             type="number"
                             placeholder="Masukan jumlah stok"
-                            name={`variants[${colorIndex}][${sizeIndex}][stock]`}
+                            name={`variants[${sizeIndex}][stock]`}
                           />
                         </FormControl>
                       </Flex>
@@ -278,7 +438,7 @@ export function LazyProductVariant() {
                           <Input
                             type="text"
                             placeholder="Masukan SKU"
-                            name={`variants[${colorIndex}][${sizeIndex}][sku]`}
+                            name={`variants[${sizeIndex}][sku]`}
                           />
                         </FormControl>
                         <FormControl isRequired>
@@ -287,7 +447,7 @@ export function LazyProductVariant() {
                             <Input
                               type="number"
                               placeholder="Masukan berat produk"
-                              name={`variants[${colorIndex}][${sizeIndex}][weight]`}
+                              name={`variants[${sizeIndex}][weight]`}
                             />
                             <InputRightAddon children="Gram" />
                           </InputGroup>
@@ -295,8 +455,7 @@ export function LazyProductVariant() {
                       </Flex>
                     </Stack>
                   </Stack>
-                ))
-              )}
+                ))}
             </Stack>
           )}
         </Stack>

@@ -1,7 +1,43 @@
-import { useState } from 'react';
+import type { ReactNode} from 'react';
+import { createContext, useContext, useState } from 'react';
+
+interface LazyContextProps {
+  isLazy: boolean;
+  setIsLazy: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const defaultLazyValue: LazyContextProps = {
+  isLazy: true,
+  setIsLazy: () => {},
+};
+
+const LazyContext = createContext<LazyContextProps>(defaultLazyValue);
+
+interface LazyProviderProps {
+  children: ReactNode;
+}
+
+export const LazyProvider: React.FC<LazyProviderProps> = ({ children }) => {
+  const [isLazy, setIsLazy] = useState(true);
+
+  return (
+    <LazyContext.Provider value={{ isLazy, setIsLazy }}>
+      {children}
+    </LazyContext.Provider>
+  );
+};
+
+export const useLazy = (): LazyContextProps => {
+  const context = useContext(LazyContext);
+  if (!context) {
+    throw new Error('useLazy must be used within a Lazy Provider');
+  }
+  return context;
+};
 
 export function useVariant() {
-  const [isLazy, setIsLazy] = useState(false);
+  // const [isLazy, setIsLazy] = useState(false);
+  const { isLazy, setIsLazy } = useLazy();
   const [isColorActive, setIsColorActive] = useState(false);
   const [isSizeActive, setIsSizeActive] = useState(false);
 

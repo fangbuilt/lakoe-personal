@@ -11,26 +11,34 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import useAddProduct from '../hooks/useAddProduct';
+import { useLazy } from '../hooks/useVariantShenanigans';
 
 export function WeightAndShipment() {
   const { handleChange } = useAddProduct();
+  const { isLazy } = useLazy();
   return (
     <Card>
       <CardBody>
-        <Heading size={'md'}>Berat & Pengiriman</Heading>
+        {isLazy ? (
+          <Heading size={'md'}>Berat & Pengiriman</Heading>
+        ) : (
+          <Heading size={'md'}>Pengiriman</Heading>
+        )}
         <Stack mt={7} spacing={4} mb={3}>
-          <FormControl isRequired>
-            <FormLabel>Berat Produk</FormLabel>
-            <InputGroup>
-              <Input
-                type="number"
-                placeholder="Masukan berat produk"
-                name={`variants[0][0][weight]`}
-                onChange={handleChange}
-              />
-              <InputRightAddon children="Gram" />
-            </InputGroup>
-          </FormControl>
+          {isLazy && (
+            <FormControl isRequired>
+              <FormLabel>Berat Produk</FormLabel>
+              <InputGroup>
+                <Input
+                  type="number"
+                  placeholder="Masukan berat produk"
+                  name={`variants[0][0][weight]`}
+                  onChange={handleChange}
+                />
+                <InputRightAddon children="Gram" />
+              </InputGroup>
+            </FormControl>
+          )}
 
           <Flex justify={'space-between'} align={'end'} gap={4}>
             <FormControl>

@@ -46,8 +46,10 @@ export function ProductInformation() {
     setProductName(value);
   }
   const productNameWithHyphen = productName.replace(/ /g, '-');
-  // const randomNumber = Math.floor(Math.random() * 90) + 10;
-  // const finalProductName = productNameWithHyphen + '-' + randomNumber
+
+  const checkChildValue = selected.child;
+  console.log('check child value:', checkChildValue);
+
   return (
     <Card>
       <CardBody>
@@ -72,6 +74,7 @@ export function ProductInformation() {
                 name="url"
                 placeholder="nama-produk"
                 value={productNameWithHyphen}
+                onChange={handleChange}
               />
             </InputGroup>
           </FormControl>

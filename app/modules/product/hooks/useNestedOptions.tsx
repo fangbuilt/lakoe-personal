@@ -622,12 +622,13 @@ export default function useNestedOptions() {
   const handleCategoryClick = (id: number, type: keyof CategoryNames) => {
     if (type === 'grandparent') {
       setActiveGrandparent(id);
-      setActiveParent(id);
+      setActiveParent(null);
       setActiveChild(null);
       const newCategoryData = options.filter(
         (option) => option.parentId === id
       );
       setParentData([]);
+      setChildData([]);
       setGrandParentData(newCategoryData);
     } else if (type === 'parent') {
       setActiveParent(id);
@@ -635,6 +636,7 @@ export default function useNestedOptions() {
       const newCategoryData = options.filter(
         (option) => option.parentId === id
       );
+      setChildData([]);
       setParentData(newCategoryData);
     } else if (type === 'child') {
       setActiveChild(id);

@@ -22,6 +22,7 @@ import ActiveDot from '~/assets/icon-pack/navigation-icons/active-dot.svg';
 import InactiveDot from '~/assets/icon-pack/navigation-icons/inactive-dot.svg';
 import ProfileFilled from '~/assets/icon-pack/navigation-icons/profile-filled.svg';
 import ProfileOutline from '~/assets/icon-pack/navigation-icons/profile-outline.svg';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
 
 export function LeftNavigation() {
   const navigate = useNavigate();
@@ -260,12 +261,12 @@ export function LeftNavigation() {
         </Button>
         <Form action="/auth/logout" method="post">
           <Button
-            bgColor={'lakoeCyan'}
-            textColor={'white'}
-            _hover={{ textColor: 'black', bgColor: 'gray.200' }}
-            borderRadius={'full'}
+            variant={'ghost'}
+            w={'full'}
+            textColor={'red.500'}
             type="submit"
             justifyContent={'left'}
+            leftIcon={<ArrowLeftIcon />}
             py={6}
           >
             Logout
